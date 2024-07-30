@@ -37,8 +37,3 @@ next-env.d.ts
 
 # prettier
 .prettierrc
-
-# git 빈 폴더 추가
-!constants/*
-!hooks/*
-!libs/*
