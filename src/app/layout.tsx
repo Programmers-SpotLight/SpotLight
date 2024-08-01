@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import ModalController from "@/components/common/modal/ModalController";
 
@@ -15,8 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ModalController/>
-      <body>{children}</body>
+      <body>
+        <ModalController/>
+        {children}
+        </body>
     </html>
   );
 }
