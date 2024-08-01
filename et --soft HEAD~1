@@ -1,0 +1,292 @@
+[33mcommit b54f85b8a8f3e9d53ae4fb4467bec704df2d3a05[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/#28-SelectionDetailUI[m[33m)[m
+Author: changchangwoo <changchangwoo@naver.com>
+Date:   Thu Aug 1 20:56:54 2024 +0900
+
+    셀렉션 탭 별로 컴포넌트 분리
+
+[33mcommit b13359eba4638d3078ef02d561591afd1cc2fcba[m[33m ([m[1;31morigin/feature/#28-SelectionDetailUI[m[33m, [m[1;31morigin/develop[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdevelop[m[33m)[m
+Merge: 9e87425 cb7bb5c
+Author: changchangwoo <50562562+changchangwoo@users.noreply.github.com>
+Date:   Thu Aug 1 19:41:29 2024 +0900
+
+    Merge pull request #21 from Programmers-SpotLight/Feat/#9-Modal
+    
+    Feat/#9 modal
+
+[33mcommit cb7bb5c93bad2d4415e1737f5404435c5bcd03c6[m[33m ([m[1;31morigin/Feat/#9-Modal[m[33m, [m[1;32mFeat/#9-Modal[m[33m)[m
+Author: changchangwoo <changchangwoo@naver.com>
+Date:   Thu Aug 1 19:37:17 2024 +0900
+
+    Style : 모달 오버레이 z-index 수정
+
+[33mcommit 9e87425aa8faffa9194ddf2401717f17bf1a2c0c[m[33m ([m[1;31morigin/Feat/#8-Input,-Button[m[33m)[m
+Merge: b66e36b c3b944e
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Thu Aug 1 18:42:08 2024 +0900
+
+    Merge pull request #26 from Programmers-SpotLight/Fix/#24-drawer
+    
+    FIX : translate-x 수정
+
+[33mcommit c3b944e443574f42e7be7422f38af8357115fe91[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Thu Aug 1 18:40:29 2024 +0900
+
+    FIX : translate-x 수정
+
+[33mcommit b66e36b1b78d983a18edad5c2167ffa793f13400[m
+Merge: 9fe5ef4 5733de3
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Thu Aug 1 18:26:32 2024 +0900
+
+    Merge pull request #23 from Programmers-SpotLight/Feat/#20-Tabs
+    
+    FEAT : tabs 구현
+
+[33mcommit 5733de381248bfab8ef38d0436891bd0ea4d2c5b[m
+Merge: e13399c 9fe5ef4
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Thu Aug 1 18:26:23 2024 +0900
+
+    Merge branch 'develop' into Feat/#20-Tabs
+
+[33mcommit 9fe5ef49d34a5f50e347ec086bbcdd006d1247ae[m
+Merge: eaf4174 2f2cde2
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Thu Aug 1 18:25:45 2024 +0900
+
+    Merge pull request #25 from Programmers-SpotLight/Fix/#24-drawer
+    
+    fix : drawer 찌그러짐 해결
+
+[33mcommit 2f2cde283010c92d23bda13635675489185bfc0e[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Thu Aug 1 18:23:37 2024 +0900
+
+    fix : drawer 찌그러짐 해결
+
+[33mcommit e13399cc4fd8e8f721280ef83b10ed908434e83c[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Thu Aug 1 16:19:30 2024 +0900
+
+    FEAT : tabs 구현
+
+[33mcommit dd56961ee02d6feab7c7fe21a7b548a5597c6400[m
+Merge: f5c3d66 eaf4174
+Author: changchangwoo <50562562+changchangwoo@users.noreply.github.com>
+Date:   Thu Aug 1 15:11:10 2024 +0900
+
+    Merge branch 'develop' into Feat/#9-Modal
+
+[33mcommit f5c3d6601c862336f4d113bc0c98f76f088ee422[m
+Author: changchangwoo <changchangwoo@naver.com>
+Date:   Thu Aug 1 14:54:43 2024 +0900
+
+    Comment : 모달 설명 주석 추가
+
+[33mcommit eaf4174f48e455c3c1d4f87f21e63f57b7207b47[m[33m ([m[1;31morigin/feature#22-selectionDetailUI[m[33m, [m[1;32mfeature#22-selectionDetailUI[m[33m)[m
+Merge: b944cd1 16d8bb7
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Thu Aug 1 14:27:05 2024 +0900
+
+    Merge pull request #19 from Programmers-SpotLight/Feat/#18-Drawer
+    
+    FEAT : drawer 구현
+
+[33mcommit 16d8bb76ca3725d7d7ae75473b0a6c02de707b43[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Thu Aug 1 14:16:45 2024 +0900
+
+    FEAT : drawer 구현
+
+[33mcommit ca4f5a5f4d673785b68de1ef1044c097dad76cca[m
+Author: changchangwoo <changchangwoo@naver.com>
+Date:   Thu Aug 1 13:54:18 2024 +0900
+
+    Feat : 모달 컨트롤러 구현
+
+[33mcommit b944cd13edabd5c21709cd1e96298d208121df52[m
+Merge: eea5e54 74a86f2
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Thu Aug 1 11:06:56 2024 +0900
+
+    Merge pull request #17 from Wongilk/feature/#16-selectionPage생성
+    
+    FEAT : 셀렉션 페이지 생성
+
+[33mcommit 74a86f26ecf02b0ecf74252a6fe164ee9d620880[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Thu Aug 1 11:04:35 2024 +0900
+
+    FEAT : selection page 생성
+
+[33mcommit eea5e547d0cfd1e8a82882370d50e79679d2d838[m
+Merge: b70780e 83e7206
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Thu Aug 1 10:25:37 2024 +0900
+
+    Merge pull request #13 from Programmers-SpotLight/feature/#10-Footer
+    
+    FEAT: Footer 공통 컴포넌트 구현
+
+[33mcommit b70780ee37c5969682848d9c167266125e93833e[m
+Merge: ea4c56f 57d5af5
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Thu Aug 1 10:19:47 2024 +0900
+
+    Merge pull request #15 from Wongilk/feature/#12-header
+    
+    FEAT : 공통 컴포넌트 header 구현
+
+[33mcommit 57d5af51ffe4d9bedff4b2589e4809e8edaf1501[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Thu Aug 1 10:12:18 2024 +0900
+
+    FEAT : header 구현
+
+[33mcommit 83e7206b883cd19d25fe256f6606b9412ed76d50[m[33m ([m[1;31morigin/feature/#10-Footer[m[33m)[m
+Author: Eomjihee <eomjihee.code@gmail.com>
+Date:   Wed Jul 31 23:59:32 2024 +0900
+
+    FEAT: Footer 공통 컴포넌트 구현
+
+[33mcommit efad7959a128add19136146bf6a2e6aef2aa9130[m
+Author: changchangwoo <changchangwoo@naver.com>
+Date:   Wed Jul 31 19:20:14 2024 +0900
+
+    Feat : 모달 UI 구현, 전역 상태 관리 적용
+
+[33mcommit ea4c56f02b35ed155bb1e95b5c79b79b2d466cb4[m
+Merge: 8729910 6152393
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Wed Jul 31 15:56:10 2024 +0900
+
+    Merge pull request #11 from Wongilk/feature-issue#1
+    
+    FEAT : 카드 구현
+
+[33mcommit 615239343a06876d5d84ea51768fc02aca000d5b[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Wed Jul 31 15:51:33 2024 +0900
+
+    FEAT : 카드 구현
+
+[33mcommit 872991059941d0cf255b95c86c27741dbc053807[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: jh0222 <gihyuny0222@gmail.com>
+Date:   Tue Jul 30 17:39:47 2024 +0900
+
+    Chore: 폴더 구조 추가(빈폴더 안에 gitkeep 추가함)
+
+[33mcommit 8755b8303b96ea708fd46aef64f45f6d313d0450[m
+Author: jh0222 <gihyuny0222@gmail.com>
+Date:   Tue Jul 30 17:34:29 2024 +0900
+
+    Chore: 폴더 구조 추가
+
+[33mcommit b7e9d45248979562f29f33faacb3050abae5e65b[m
+Author: jh0222 <gihyuny0222@gmail.com>
+Date:   Tue Jul 30 17:31:25 2024 +0900
+
+    Chore: 폴더 구조 추가
+
+[33mcommit 9c0d433d5e7b57786eecfe0a342f4ab9a26df6a1[m
+Merge: f55b337 6db7385
+Author: jh0222 <gihyuny0222@gmail.com>
+Date:   Tue Jul 30 17:14:26 2024 +0900
+
+    Merge branch 'main' of https://github.com/Programmers-SpotLight/SpotLight
+
+[33mcommit 6db73850937fb8b2587ef8143b380b71153e9868[m
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Tue Jul 30 16:45:27 2024 +0900
+
+    Update pull_request_template.md
+    
+    pr template 수정
+
+[33mcommit 343077dbdb914a217f8773be219cad60269f4f51[m
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Tue Jul 30 16:43:40 2024 +0900
+
+    Update pull_request_template.md
+    
+    pr template 수정
+
+[33mcommit f55b3370890038920155863d92d9ab9c6836487c[m
+Author: jh0222 <gihyuny0222@gmail.com>
+Date:   Tue Jul 30 16:42:48 2024 +0900
+
+    Chore: 폴더 구조 추가
+
+[33mcommit 242f971dfe172da40d438053e9226fb264c88f52[m
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Tue Jul 30 16:22:26 2024 +0900
+
+    Delete .github/issue_template.md
+    
+    기존 issue template 삭제
+
+[33mcommit 4132805039f67481e53089648355efcade85fb38[m
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Tue Jul 30 15:59:03 2024 +0900
+
+    Update issue templates
+    
+    bug 템플릿 추가
+
+[33mcommit 555d15b6537a2678845cba2cac632338bf2eccba[m
+Author: Wongilk <108254103+Wongilk@users.noreply.github.com>
+Date:   Tue Jul 30 15:52:45 2024 +0900
+
+    Update issue templates
+    
+    기능 구현 issue template
+
+[33mcommit 3bf014546c94a56932dab2a95d0a02c56e716e22[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Tue Jul 30 15:43:04 2024 +0900
+
+    Docs : 기본 css 설정
+
+[33mcommit cf1cfb57a7a6bcb2941b6e5be880b1c4f47c0d58[m
+Merge: 45a3718 02da8fa
+Author: WongilK <wwwkim99@naver.com>
+Date:   Tue Jul 30 15:27:20 2024 +0900
+
+    Merge branch 'main' of https://github.com/Programmers-SpotLight/SpotLight
+
+[33mcommit 45a37188ff93c2fc5906aa47ff81e75e874c121f[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Tue Jul 30 15:27:15 2024 +0900
+
+    Docs : tailwind config에 color, fontSize 추가
+
+[33mcommit 531deeb2bdf7e3fc462a03fd7cb14ffa252fede4[m
+Author: WongilK <wwwkim99@naver.com>
+Date:   Tue Jul 30 15:16:19 2024 +0900
+
+    Chore : zustand, react-hook-form, daiseyui 설치
+
+[33mcommit 02da8fafc3e30d91b7157f7f064cc0c5fc7402c0[m
+Author: Ud293nBqda@outlook.kr <johndoe@example.com>
+Date:   Tue Jul 30 15:07:30 2024 +0900
+
+    Chore: prettier 설정 파일 추가
+    
+    - .prettierrc 파일 추가
+
+[33mcommit 0693599e4e73c220acf93a8801199870419f2f38[m
+Author: Ud293nBqda@outlook.kr <johndoe@example.com>
+Date:   Tue Jul 30 14:59:28 2024 +0900
+
+    Docs: 개발 필요 문서 템플릿 추가
+    
+    - Issue 전용 템플릿 추가
+    - PR 전용 템플릿 추가
+    - Commit 전용 템플릿 추가
+
+[33mcommit d5d8883396c3b188693d1ba458609f8c0573a12f[m
+Author: Ud293nBqda@outlook.kr <johndoe@example.com>
+Date:   Tue Jul 30 14:47:39 2024 +0900
+
+    Initial commit from Create Next App
