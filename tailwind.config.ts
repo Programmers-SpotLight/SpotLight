@@ -14,12 +14,14 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))"
       },
       colors: {
+        white: "#FFFFFF",
         grey0: "#F8F9FA",
         grey1: "#E9E9E9",
         grey2: "#E1E1E1",
         grey3: "#B7B7B7",
         grey4: "#7C7C7C",
-        primary: "#02588E"
+        primary: "#02588E",
+        danger: "#F53454"
       },
       fontSize: {
         extraLarge: "24px",
