@@ -5,6 +5,7 @@ interface ISpotSectionProps {
   isSpotDrawerOpen: boolean;
 }
 
+
 const SpotSection = ({
   isSpotDrawerOpen,
   isSelectionDrawerOpen
