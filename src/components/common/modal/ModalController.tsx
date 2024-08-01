@@ -40,7 +40,7 @@ const ModalController = () => {
 
   return (
     <div
-      className="flex justify-center items-center fixed inset-0 bg-black bg-opacity-50"
+      className="flex justify-center items-center fixed inset-0 bg-black bg-opacity-50 z-20"
       onClick={handleOverlayClick}
     >
       <div

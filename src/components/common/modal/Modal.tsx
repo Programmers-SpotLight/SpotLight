@@ -32,7 +32,7 @@ const Modal = ({ size, title, children, closeModal }: ModalProps) => {
   return (
     <div
       style={{ width: getModalSize() }}
-      className={`bg-white rounded p-5 relative max-h-[90vh] overflow-y-auto`}
+      className={`bg-white rounded p-5 relative max-h-[90vh] overflow-y-auto z-20`}
     >
       <div className="flex justify-between items-center mb-4">
         {size !== "small" && (
