@@ -1,5 +1,6 @@
 "use client";
 
+import Drawer from "@/components/selection-detail/Drawer";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -12,7 +13,11 @@ const SelectionPage = () => {
 
   const selectionId = params.selectionId;
 
-  return <div>Selection ID: {selectionId}</div>;
+  return (
+    <>
+      <Drawer />
+    </>
+  );
 };
 
 export default SelectionPage;
