@@ -5,7 +5,6 @@ interface ISpotSectionProps {
 }
 
 const SpotSection = ({ isSpotDrawerOpen }: ISpotSectionProps) => {
-  console.log(isSpotDrawerOpen);
   return (
     <div
       className={`bg-white ${
