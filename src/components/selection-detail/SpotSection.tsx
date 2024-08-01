@@ -13,10 +13,13 @@ const SpotSection = ({
   return (
     <div
       className={`bg-grey0 ${
-        isSelectionDrawerOpen ? "-translate-x-full" : "-translate-x-[200%]"
+        isSelectionDrawerOpen && isSpotDrawerOpen
+          ? "translate-x-0"
+          : isSelectionDrawerOpen
+          ? "-translate-x-full"
+          : "-translate-x-[200%]"
       }
-        ${isSpotDrawerOpen ? "translate-x-0" : "-translate-x-full"}
-      } transition- ease-in-out duration-500
+      transition- ease-in-out duration-500
 border-[0.5px] border-grey2 border-solid overflow-hidden w-[375px]`}
       style={{ height: "calc(100vh - 74px)" }}
     >
