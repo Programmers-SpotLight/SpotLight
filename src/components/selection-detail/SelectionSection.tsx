@@ -12,9 +12,9 @@ const SelectionSection = ({
   return (
     <div
       className={`bg-grey0 ${
-        isSelectionDrawerOpen ? "w-[375px]" : "w-0"
-      } transition-all ease-in-out duration-500
-   border-[0.5px] border-grey2 border-solid overflow-hidden`}
+        isSelectionDrawerOpen ? "translate-x-0" : "-translate-x-full"
+      } transition- ease-in-out duration-500
+border-[0.5px] border-grey2 border-solid overflow-hidden w-[375px] z-10`}
       style={{ height: "calc(100vh - 74px)" }}
     >
       <ul onClick={spotClickHandler}>

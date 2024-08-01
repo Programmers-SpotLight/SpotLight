@@ -14,9 +14,9 @@ const SelectionPage = () => {
   const selectionId = params.selectionId;
 
   return (
-    <>
+    <div className="flex">
       <Drawer />
-    </>
+    </div>
   );
 };
 
