@@ -18,7 +18,8 @@ module.exports = {
         grey1: "#E9E9E9",
         grey2: "#E1E1E1",
         grey3: "#B7B7B7",
-        grey4: "#7C7C7C"
+        grey4: "#7C7C7C",
+        primary: "#02588E"
       },
       fontSize: {
         extraLarge: "24px",
