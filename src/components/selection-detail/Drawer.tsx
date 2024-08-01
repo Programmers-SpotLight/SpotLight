@@ -8,21 +8,17 @@ const Drawer = () => {
     useState<boolean>(false);
   const [isSpotDrawerOpen, setIsSpotDrawerOpen] = useState<boolean>(false);
 
-  //selectedSpot type은 임의로 string|null로, selectedSpot은 SpotSection의 prop으로 전달
-  const [selectedSpot, setSelectedSpot] = useState<string | null>(null);
-
   const toggleDrawer = () => {
     if (isSpotDrawerOpen) setIsSpotDrawerOpen((prev) => !prev);
     else if (!isSpotDrawerOpen) setIsSelectionDrawerOpen((prev) => !prev);
   };
 
   const spotClickHandler = () => {
-    //setSelectedSpot()
     setIsSpotDrawerOpen(true);
   };
 
   return (
-    <div className="fixed left-0 flex">
+    <div className={`fixed flex z-10`}>
       {/**selection drawer */}
       <SelectionSection
         isSelectionDrawerOpen={isSelectionDrawerOpen}
@@ -30,10 +26,21 @@ const Drawer = () => {
       />
 
       {/**spot drawer */}
-      <SpotSection isSpotDrawerOpen={isSpotDrawerOpen} />
+      <SpotSection
+        isSelectionDrawerOpen={isSelectionDrawerOpen}
+        isSpotDrawerOpen={isSpotDrawerOpen}
+      />
 
       {/**button */}
-      <div className="absolute top-1/2 right-0 transform translate-x-full -translate-y-1/2">
+      <div
+        className={`absolute top-1/2 ${
+          isSelectionDrawerOpen && isSpotDrawerOpen
+            ? "left-[750px]"
+            : isSelectionDrawerOpen
+            ? "left-[375px]"
+            : "left-0"
+        } transform -translate-y-1/2 transition-all ease-in-out duration-500`}
+      >
         <button
           className={`w-[24px] h-[50px] bg-grey0 border-t border-r border-b border-primary border-solid rounded-sm`}
           onClick={toggleDrawer}
