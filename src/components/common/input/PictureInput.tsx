@@ -24,7 +24,7 @@ const PictureInput = ({ inputSize }: IPictureInputProps) => {
   };
 
   return (
-    <div className={`${sizeStyles[inputSize]} relative border border-solid border-grey2 text-grey4 text-Large rounded-lg flex flex-col items-center justify-center`}>
+    <div className={`${sizeStyles[inputSize]} relative border border-solid border-grey2 text-grey4 text-large rounded-lg flex flex-col items-center justify-center`}>
       {/* <FaCamera /> */}
       {image ? (
         <img src={image as string} alt="Uploaded" className="w-full h-full object-fill rounded-lg" />

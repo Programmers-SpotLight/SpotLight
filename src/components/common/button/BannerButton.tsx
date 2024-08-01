@@ -12,7 +12,7 @@ const BannerButton = ({
   return (
     <button
       type="button"
-      className={"bg-white text-Large text-primary font-extrabold w-[234px] h-[46px] rounded-[20px]"}
+      className={"bg-white text-large text-primary font-extrabold w-[234px] h-[46px] rounded-[20px]"}
       onClick={onClick}
     >
       {children}

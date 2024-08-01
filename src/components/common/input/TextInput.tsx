@@ -16,7 +16,7 @@ const TextInput = ({
   iconPosition = "left",
   ...props
 }: ITextInputProps) => {
-  const baseStyles = "border rounded-lg text-Medium p-3 focus:outline-none focus:border-2";
+  const baseStyles = "border rounded-lg text-medium p-3 focus:outline-none focus:border-2";
   const borderStyle = error ? "border-danger" : "border-grey2";
   const iconPadding = icon ? (iconPosition === "left" ? 'left-0 pl-3' : 'right-0 pr-3') : '';
   const inputPadding = icon ? (iconPosition === "left" ? 'pl-8' : 'pr-8') : '';

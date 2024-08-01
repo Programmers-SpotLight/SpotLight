@@ -12,7 +12,7 @@ const TextAreaInput = ({
   height = "small",
   ...props
 }: ITextAreaProps) => {
-  const baseStyles = "border rounded-lg text-Medium p-3 focus:outline-none focus:border-2 resize-none";
+  const baseStyles = "border rounded-lg text-medium p-3 focus:outline-none focus:border-2 resize-none";
   const borderStyle = error ? "border-danger" : "border-grey2";
 
   const widthSize = {
