@@ -27,7 +27,14 @@ const selectionTabData = (spotClickHandler: () => void) => [
 const tempData = {
   temp_title: "슬램덩크 무대 탐방 공유합니다!",
   temp_category: "애니메이션",
-  temp_hashtags: ["슬램덩크", "슬램덩크 무대탐방", "당일치기", "도쿄", "북산고", "정대만"],
+  temp_hashtags: [
+    "슬램덩크",
+    "슬램덩크 무대탐방",
+    "당일치기",
+    "도쿄",
+    "북산고",
+    "정대만"
+  ],
   temp_img:
     "https://contents.kyobobook.co.kr/sih/fit-in/400x0/pdt/9791169794930.jpg",
   temp_writer_img:
@@ -53,12 +60,21 @@ const SelectionSection = ({
       />
       <div className="p-5 box-border">
         <div className="relative flex flex-col gap-[5px]">
-          <h2 className="text-small text-grey4 font-medium">{tempData.temp_category}</h2>
-          <h1 className="text-large text-black font-bold">{tempData.temp_title}</h1>
-          <div className="flex gap-[5px]">
+          <h2 className="text-small text-grey4 font-medium">
+            {tempData.temp_category}
+          </h2>
+          <h1 className="text-large text-black font-bold">
+            {tempData.temp_title}
+          </h1>
+          <div className="flex gap-[5px] overflow-x-visible mt-[5px] mb-[15px]">
             {tempData.temp_hashtags.map((hashtag, index) => (
-              <div key={index} className="p-1 w-auto h-7 bg-white border-2 border-grey2 rounded-lg
-              text-extraSmall text-grey3 ">{hashtag}</div>
+              <div
+                key={index}
+                className="p-2 bg-white border border-solid border-grey3 rounded-3xl text-extraSmall text-grey3 flex justify-center items-center whitespace-nowrap
+                font-medium"
+              >
+                {hashtag}
+              </div>
             ))}
           </div>
         </div>
