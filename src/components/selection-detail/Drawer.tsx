@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaCaretRight } from "react-icons/fa";
-import SpotSection from "./SpotSection";
+import SpotSection from "./spot/SpotSection";
 import SelectionSection from "./SelectionSection";
 
 const Drawer = () => {
