@@ -4,55 +4,17 @@ import Image from "next/image";
 import React from "react";
 import { LuMapPin } from "react-icons/lu";
 import { useStore } from "zustand";
+import SpotHeader from "./spot-selection-contents/SpotHeader";
+import SpotReview from "./spot-selection-contents/SpotReview";
+import SpotInfo from "./spot-selection-contents/SpotInfo";
 
 interface ISpotSectionProps {
   isSelectionDrawerOpen: boolean;
   isSpotDrawerOpen: boolean;
 }
 
-interface ISpot {
-  name: string;
-  icon: string;
-  color: string;
-}
-
-type Spots = ISpot[];
-
-const spots: Spots = [
-  {
-    name: "관광지",
-    icon: "/icons/spot/관광지.svg",
-    color: "#8CDC29"
-  },
-  {
-    name: "맛집",
-    icon: "/icons/spot/맛집.svg",
-    color: "#F58E34"
-  },
-  {
-    name: "쇼핑",
-    icon: "/icons/spot/쇼핑.svg",
-    color: "#3478F5"
-  },
-  {
-    name: "카페",
-    icon: "/icons/spot/카페.svg",
-    color: "#B9781E"
-  },
-  {
-    name: "기타",
-    icon: "/icons/spot/기타.svg",
-    color: "#F53454"
-  }
-];
-
-const hashtag = (
-  <div className="h-7 border-2 border-solid border-black rounded-3xl w-fit">
-    슬램덩크
-  </div>
-);
 const sampleSpot = {
-  image: ["/샌과치히로.jpg", "/샌과치히로.jpg", "/샌과치히로.jpg"],
+  images: [""],
   spotCategoryName: "기타",
   title: "가마쿠라코코마에역",
   description: `1. 위치와 접근성 👍
@@ -67,16 +29,23 @@ const sampleSpot = {
 4. 사진 명소❤️
 가마쿠라코코마에 역은 사진 찍기 좋은 명소로도 유명합니다. 특히 해질녘의 풍경은 환상적이에요. 석양이 바다를 물들이는 순간은 정말 아름답습니다. 이곳에서 찍은 사진은 인스타그램 등 SNS에 올리면 반응이 아주 뜨거울 거예요. 제가 방문했을 때도 많은 사람들이 카메라를 들고 사진을 찍느라 여념이 없더라고요.`,
   address: "일본 〒248-0033 가나가와현 가마쿠라시 고시고에 1 조메1",
-  hashtag: [hashtag, hashtag, hashtag, hashtag, hashtag, hashtag]
+  hashtag: ["슬램덩크", "슬램덩크"]
 };
 
 const SpotSection = ({
   isSpotDrawerOpen,
   isSelectionDrawerOpen
 }: ISpotSectionProps) => {
-  const filtered = spots.filter(
-    (spot) => spot.name === sampleSpot.spotCategoryName
-  )[0];
+  const spotTab = [
+    {
+      title: "스팟 정보",
+      component: <SpotInfo />
+    },
+    {
+      title: "유저 리뷰",
+      component: <SpotReview />
+    }
+  ];
 
   return (
     <div
@@ -88,59 +57,25 @@ const SpotSection = ({
           : "-translate-x-[200%]"
       }
       transition- ease-in-out duration-500
-border-[0.5px] border-grey2 border-solid overflow-y-scroll w-[375px]`}
+border-[0.5px] border-grey2 border-solid overflow-y-scroll w-[375px] scrollbar-hide`}
       style={{ height: "calc(100vh - 74px)" }}
     >
-      <div className="w-full h-[194px] relative mb-5">
-        <Image
-          src={"/샌과치히로.jpg"}
-          alt="spot image"
-          fill
-          sizes="width:100%, height:194px"
-          className="cursor-pointer"
-          style={{ objectFit: "cover" }}
-        />
-        <div className="absolute bottom-0 right-0 rounded-tl-md bg-black w-11 h-7 text-white flex items-center justify-center text-medium font-bold">
-          + {sampleSpot.image.length - 1}
-        </div>
-      </div>
+      <SpotHeader
+        images={sampleSpot.images}
+        categoryName={sampleSpot.spotCategoryName}
+        title={sampleSpot.title}
+        address={sampleSpot.address}
+        hashtag={sampleSpot.hashtag}
+      />
 
       <div className="px-4">
-        <div className="flex flex-col gap-2">
-          {/** spot category */}
-          <div
-            className={`text-small font-semibold flex items-center gap-2`}
-            style={{ color: filtered.color }}
-          >
-            <div className="relative w-4 h-4">
-              <Image src={filtered.icon} alt={filtered.name} fill />
-            </div>
-            {filtered.name}
-          </div>
-          {/**title */}
-          <span className="font-bold text-large">{sampleSpot.title}</span>
-          {/**address */}
-          <div className="font-medium text-extraSmall text-grey4 flex items-center gap-1">
-            <LuMapPin />
-            {sampleSpot.address}
-          </div>
-          {/**hashtag */}
-          <div className="flex gap-3 flex-wrap">
-            {sampleSpot.hashtag.map((h) => h)}
-          </div>
-        </div>
-
         <hr className="my-5 text-grey0" />
-
         <Tabs>
-          <Tab title="스팟 정보">
-            <p className="whitespace-pre-wrap break-keep">
-              {sampleSpot.description}
-            </p>
-          </Tab>
-          <Tab title="유저 리뷰">
-            <p>유저 리뷰</p>
-          </Tab>
+          {spotTab.map((tab) => (
+            <Tab key={tab.title} title={tab.title}>
+              {tab.component}
+            </Tab>
+          ))}
         </Tabs>
       </div>
     </div>
