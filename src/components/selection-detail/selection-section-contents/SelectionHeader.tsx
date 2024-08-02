@@ -2,11 +2,12 @@ import React from "react";
 import { FaBookmark, FaShareAlt } from "react-icons/fa";
 
 interface SelectionHeaderProps {
-  selectionDetailData : ISelectionDetail
+  selectionDetailData: ISelectionDetail;
 }
 
-const SelectionHeader = ({selectionDetailData} : SelectionHeaderProps)  => {
-  const shareClickHandler = () => { // 클립보드 핸들러
+const SelectionHeader = ({ selectionDetailData }: SelectionHeaderProps) => {
+  const shareClickHandler = () => {
+    // 클립보드 핸들러
     const currentUrl = window.location.href;
     navigator.clipboard
       .writeText(currentUrl)
