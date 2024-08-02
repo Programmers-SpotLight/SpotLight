@@ -4,17 +4,19 @@ import { devtools } from "zustand/middleware";
 
 interface IModalStore {
   isOpen: boolean;
-  modalType : TmodalType
-  openModal: (modalType : TmodalType) => void;
+  modalType: TmodalType;
+  props?: object | null;
+  openModal: <T extends object>(modalType: TmodalType, props?: T) => void;
   closeModal: () => void;
 }
 
 export const useModalStore = create<IModalStore>()(
   devtools((set) => ({
     isOpen: false,
-    modalType : null,
-    openModal: (modalType : TmodalType = null) => 
-      set({ isOpen: true, modalType: modalType }),
-    closeModal: () => set({ isOpen: false, modalType: null})
+    modalType: null,
+    props: null,
+    openModal: <T extends object>(modalType: TmodalType, props?: T) =>
+      set({ isOpen: true, modalType, props: props || null }),
+    closeModal: () => set({ isOpen: false, modalType: null, props: null }),
   }))
 );
