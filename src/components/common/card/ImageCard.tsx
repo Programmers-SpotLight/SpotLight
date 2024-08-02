@@ -3,26 +3,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-interface IImageCardProps {
+
+export interface IImageCardProps {
   thumbnail: string;
   title: string;
+  subTitle: string;
   selectionId: number;
 }
 
-const ImageCard = ({ thumbnail, title, selectionId }: IImageCardProps) => {
+const ImageCard = ({ thumbnail, title, selectionId, subTitle }: IImageCardProps) => {
   return (
     <Link
       href={`/selection/${selectionId}`}
-      className="flex w-[335px] h-[288px] rounded-lg shadow-lg relative border-[0.5px] border-solid border-grey2 hover:brightness-75"
+      className="flex w-[335px] h-[288px] rounded-lg shadow-lg relative border-[0.5px] border-solid border-grey2 overflow-hidden hover:brightness-75"
     >
       <Image
         src={thumbnail}
-        alt="title"
+        alt={title}
         fill
-        className="rounded-lg object-cover"
-        sizes="width:100%, height:100%"
+        className="object-cover"
+        sizes="(max-width: 335px) 100vw, 335px"
       />
-      <p className="absolute bottom-5 right-5 text-white text-large line-clamp-1">
+      <div className="absolute inset-0 bg-black opacity-20"></div>
+      <p className="absolute bottom-12 right-5 text-white text-small">{subTitle}</p>
+      <p className="absolute bottom-5 right-5 text-white text-extraLarge line-clamp-1 font-semibold">
         {title}
       </p>
     </Link>
