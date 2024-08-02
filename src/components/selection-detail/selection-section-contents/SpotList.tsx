@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import { FaCartShopping, FaLocationDot } from "react-icons/fa6";
 import { MdFastfood, MdLocalCafe, MdTour } from "react-icons/md";
@@ -8,12 +6,12 @@ interface SpotListProps {
   spotClickHandler: () => void;
 }
 
-const tempSpotList = [
+const tempSpotList = [ // UI 스타일용 임시 데이터입니다. 수정하시면 될 것 같습니다.
   {
     spotIcon: <FaLocationDot />,
     spotName: "도쿄 도립 무시노키타 고등학교",
   },
-  {
+  { 
     spotIcon: <FaCartShopping />,
     spotName: "adhoc 신주쿠점",
   },
@@ -34,7 +32,7 @@ const tempSpotList = [
 const SpotList = ({ spotClickHandler }: SpotListProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const handleClick = (index: number) => {
+  const handleSpotDetail = (index: number) => {
     setSelectedIndex(index);
     spotClickHandler();
   };
@@ -47,7 +45,7 @@ const SpotList = ({ spotClickHandler }: SpotListProps) => {
           className={`flex items-center gap-[5px] text-grey4 font-medium text-medium p-[3px] pl-2 pr-2 box-border ${
             selectedIndex === index ? "bg-grey1" : ""
           } p-2 rounded-md`}
-          onClick={() => handleClick(index)}
+          onClick={() => handleSpotDetail(index)}
         >
           <span
             className={selectedIndex === index ? "text-primary" : "text-grey4"}
