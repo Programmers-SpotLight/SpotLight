@@ -1,4 +1,5 @@
 import React from "react";
+import SelectionReview from "./review/selection-review/SelectionReview";
 
 interface ISelectionSection {
   isSelectionDrawerOpen: boolean;
@@ -21,6 +22,7 @@ border-[0.5px] border-grey2 border-solid overflow-hidden w-[375px] z-10`}
         <li>spot1</li>
         <li>spot2</li>
       </ul>
+      <SelectionReview></SelectionReview>
     </div>
   );
 };
