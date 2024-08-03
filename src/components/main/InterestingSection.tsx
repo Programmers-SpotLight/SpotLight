@@ -1,78 +1,89 @@
-'use client';
+"use client";
 
+import Link from "next/link";
 import React from "react";
-import ImageCard, { IImageCardProps } from "../common/card/ImageCard";
+import { NextArrow, PrevArrow } from "./RecommendationSection";
 import Slider from "react-slick";
+import ColCard, { IColCardProps } from "../common/card/ColCard";
 
-const PrevArrow = (props: any) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={`${className} absolute top-1/2 left-0 transform -translate-y-1/2 p-2 bg-grey3 text-grey-3 rounded-full cursor-pointer `}
-      style={{ ...style, zIndex: 1 }}
-      onClick={onClick}
-    >
-      &lt;
-    </div>
-  );
-};
-
-const NextArrow = (props: any) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={`${className} absolute top-1/2 right-0 transform -translate-y-1/2 p-2 bg-gray-800 text-white rounded-full cursor-pointer`}
-      style={{ ...style, zIndex: 1 }}
-      onClick={onClick}
-    >
-      &gt;
-    </div>
-  );
-};
-
-const tempData: IImageCardProps[] = [
+const tempData: IColCardProps[] = [
+  // 임시 카드 UI 데이터
   {
     thumbnail: "https://img.newspim.com/news/2016/12/22/1612220920255890.jpg",
-    title: "너의 이름은 무대 탐방 셀렉션",
-    subTitle: "애니메이션 좋아한다면 필수!",
-    selectionId: 1
-  },
-  {
-    thumbnail:
-      "https://file.mk.co.kr/meet/neds/2023/11/image_readtop_2023_846577_16989928215689644.jpg",
-    title: "BTS 정국 맛집 탐방 셀렉션",
-    subTitle: "ARMY라면 죽기 전에 꼭 가봐야 할",
-    selectionId: 2
+    title: "조커2 개봉기념 조커 계단 장소",
+    category: "영화",
+    description:
+      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
+    selectionId: 101,
+    userName: "이창우",
+    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
+    isPublic: true,
+    hashtags: [<div className="box-border p-[5px] flex justify-center items-center w-[53px] border border-solid border-grey3 text-grey3 text-[10px] rounded-badge">해시태그</div>]
   },
   {
     thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "선재 업고 튀어 무대 탐방 셀렉션",
-    subTitle: "드라마 속 두근 거림을 또 한번 느끼는",
-    selectionId: 3
+    title: "조커2 개봉기념 조커 계단 장소",
+    category: "영화",
+    description:
+      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
+    selectionId: 101,
+    userName: "이창우",
+    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
+    isPublic: true,
+    hashtags: [<div className="box-border p-[5px] flex justify-center items-center w-[53px] border border-solid border-grey3 text-grey3 text-[10px] rounded-badge">해시태그</div>]
+  },
+  {
+    thumbnail: "https://file.mk.co.kr/meet/neds/2023/11/image_readtop_2023_846577_16989928215689644.jpg",
+    title: "조커2 개봉기념 조커 계단 장소",
+    category: "영화",
+    description:
+      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
+    selectionId: 101,
+    userName: "이창우",
+    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
+    isPublic: true,
+    hashtags: [<div className="box-border p-[5px] flex justify-center items-center w-[53px] border border-solid border-grey3 text-grey3 text-[10px] rounded-badge">해시태그</div>]
+  },
+  {
+    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
+    title: "조커2 개봉기념 조커 계단 장소",
+    category: "영화",
+    description:
+      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
+    selectionId: 101,
+    userName: "이창우",
+    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
+    isPublic: true,
+    hashtags: [<div className="box-border p-[5px] flex justify-center items-center w-[53px] border border-solid border-grey3 text-grey3 text-[10px] rounded-badge">해시태그</div>]
   }
 ];
 
-const InterestingSection = () => {
-  const settings = {
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 3,
-    prevArrow: <PrevArrow />,
-    nextArrow: <NextArrow />
-  };
+const settings = {
+  infinite: true,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  prevArrow: <PrevArrow />,
+  nextArrow: <NextArrow />
+};
 
+const InterestingSection = () => {
   return (
     <div className="pl-5 pr-5 relative">
-      <h1 className="text-large font-bold">
-        Spotlight가 추천하는 이색 셀렉션 ✨
+      <h1 className="text-large font-extrabold">
+        혹시 이런 셀렉션은 어떠세요? 👀
       </h1>
-      <h2 className="text-medium font-medium text-grey3 mt-[10px] mb-[20px]">
-        Spotlight 큐레이터 선정 베스트 셀렉션!
-      </h2>
+      <div className="flex justify-between">
+        <h2 className="text-medium font-medium text-grey3 mt-[10px] mb-[20px]">
+          사용자님이 관심이 있을만한 셀렉션으로 구성해봤어요
+        </h2>
+        <Link href="/search" className="cursor-pointer text-medium font-medium text-grey3 mt-[10px]">
+          전체보기
+        </Link>
+      </div>
       <Slider {...settings}>
         {tempData.map((data) => (
-          <ImageCard key={data.selectionId} {...data} />
+          <ColCard key={data.selectionId} {...data} />
         ))}
       </Slider>
     </div>
