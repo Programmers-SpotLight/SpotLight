@@ -1,11 +1,22 @@
 import React from "react";
 import SearchDropdown from "./SearchDropdown";
 
+const SearchEngineSection = () => {
+  return (
+    <div className="px-5">
+      <div className="flex gap-5">
+        <SearchDropdown title="카테고리" contents={CategoryContents} />
+        <SearchDropdown title="지역" contents={RegionContents} />
+      </div>
+    </div>
+  );
+};
+
 const CategoryContents = [
   {
     name: "전체",
-    id : 0
-  },  
+    id: 0
+  },
   {
     name: "아이돌",
     id: 1
@@ -35,8 +46,8 @@ const CategoryContents = [
 const RegionContents = [
   {
     name: "전체",
-    id : 0
-  },  
+    id: 0
+  },
   {
     name: "서울",
     id: 1
@@ -68,21 +79,7 @@ const RegionContents = [
   {
     name: "전라도",
     id: 6
-  },
-
-
-
-]
-const SearchEngineSection = () => {
-  return (
-    <div className="px-5">
-      <div className="flex gap-5">
-        <SearchDropdown title="카테고리" contents={CategoryContents} />
-        <SearchDropdown title="지역" contents={RegionContents} />
-      </div>
-      
-    </div>
-  );
-};
+  }
+];
 
 export default SearchEngineSection;

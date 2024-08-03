@@ -94,7 +94,7 @@ const ColCard = ({
 
         <p className="font-bold mb-3 text-medium line-clamp-1">{title}</p>
 
-        <div className="mb-5">
+        <div className="mb-5 flex overflow-hidden	">
           {hashtags.map((tag, index) => (
             <React.Fragment key={index}>{tag}</React.Fragment>
           ))}
