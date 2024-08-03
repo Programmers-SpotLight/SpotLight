@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ModalController from "@/components/common/modal/ModalController";
 import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,6 +20,7 @@ export default function RootLayout({
         <ModalController/>
         <Header />
         {children}
+        <Footer/>
       </body>
     </html>
   );
