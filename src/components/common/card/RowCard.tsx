@@ -45,7 +45,7 @@ const RowCard = ({
       </div>
 
       <div className="w-[270px] py-5 px-5">
-        <p className="font-bold mb-1 text-medium line-clamp-1">{title}</p>
+        <p className="font-bold mb-2 text-medium line-clamp-1">{title}</p>
         <p className="text-grey4 mb-4 text-extraSmall font-semibold">
           {category}
           {region && ` > ${region}`}

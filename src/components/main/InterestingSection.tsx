@@ -69,7 +69,7 @@ const settings = {
 
 const InterestingSection = () => {
   return (
-    <div className="pl-5 pr-5 relative">
+    <div className="pl-5 pr-5 relative mb-10">
       <h1 className="text-large font-extrabold">
         혹시 이런 셀렉션은 어떠세요? 👀
       </h1>
