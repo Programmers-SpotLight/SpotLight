@@ -58,9 +58,9 @@ const SearchDropdown = ({ title, contents }: SearchDropdownProps) => {
         />
       </div>
       {isClicked && ( // 드롭다운 클릭시 출력
-        <div className="absolute top-full p-5 mt-2 bg-white w-[369px] h-[315px] z-10 border border-solid border-grey3 rounded-lg">
+        <div className="absolute top-full p-5 mt-2 bg-white w-[369px] h-[315px] z-10 border border-solid border-grey2 rounded-lg">
           <h1 className="text-large font-extrabold">{title}</h1>
-          <hr className="mt-5 mb-[10px] border-grey3" />
+          <hr className="mt-5 mb-[10px] border-grey2" />
           <ul className="list-none p-2 h-[200px] overflow-y-auto">
             {contents.map((content) => (
               <li

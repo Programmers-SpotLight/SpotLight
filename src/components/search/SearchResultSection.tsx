@@ -82,7 +82,7 @@ const tempData: IColCardProps[] = [
     category: "영화",
     description:
       "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 1,
+    selectionId: 5,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
     isPublic: true,
@@ -100,7 +100,7 @@ const tempData: IColCardProps[] = [
     category: "영화",
     description:
       "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 2,
+    selectionId: 6,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
     isPublic: true,
@@ -119,7 +119,7 @@ const tempData: IColCardProps[] = [
     category: "영화",
     description:
       "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 3,
+    selectionId: 7,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
     isPublic: true,
@@ -137,7 +137,7 @@ const tempData: IColCardProps[] = [
     category: "영화",
     description:
       "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 4,
+    selectionId: 8,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
     isPublic: true,
@@ -155,7 +155,7 @@ const tempData: IColCardProps[] = [
     category: "영화",
     description:
       "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 1,
+    selectionId: 9,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
     isPublic: true,
@@ -173,7 +173,7 @@ const tempData: IColCardProps[] = [
     category: "영화",
     description:
       "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 2,
+    selectionId: 10,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
     isPublic: true,
@@ -192,7 +192,7 @@ const tempData: IColCardProps[] = [
     category: "영화",
     description:
       "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 3,
+    selectionId: 11,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
     isPublic: true,
@@ -210,7 +210,7 @@ const tempData: IColCardProps[] = [
     category: "영화",
     description:
       "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 4,
+    selectionId: 12,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
     isPublic: true,

@@ -1,17 +1,23 @@
-import AddBannerSection from '@/components/search/AddBannerSection'
-import Pagination from '@/components/search/Pagination'
-import SearchEngineSection from '@/components/search/SearchEngineSection'
-import SearchResultSection from '@/components/search/SearchResultSection'
-import React from 'react'
+'use client';
+
+import AddBannerSection from "@/components/search/AddBannerSection";
+import Pagination from "@/components/search/Pagination";
+import SearchEngineSection from "@/components/search/SearchEngineSection";
+import SearchResultSection from "@/components/search/SearchResultSection";
+import React from "react";
+import { useSearchParams } from "next/navigation";
 
 const SearchPage = () => {
+  const searchParams = useSearchParams();
+
   return (
     <main className="w-[1086px] bg-grey0 border border-solid border-grey2 m-auto pt-10 flex flex-col gap-10 box-border h-auto">
-      <AddBannerSection/>
-      <SearchEngineSection/>
-      <SearchResultSection/>
-      <Pagination/>
-    </main>  )
-}
+      <AddBannerSection />
+      <SearchEngineSection />
+      <SearchResultSection />
+      <Pagination />
+    </main>
+  );
+};
 
-export default SearchPage
+export default SearchPage;
