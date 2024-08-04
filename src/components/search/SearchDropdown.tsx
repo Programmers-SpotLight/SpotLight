@@ -1,5 +1,6 @@
 "use client";
 
+import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
 import React, { useState, useRef, useEffect } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdNavigateNext } from "react-icons/md";
@@ -15,25 +16,25 @@ interface SearchDropdownProps {
 const SearchDropdown = ({ title, contents }: SearchDropdownProps) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [currentCategory, setCurrentCategory] = useState<string>(title);
-  const dropdownRef = useRef<HTMLDivElement>(null); // Create a ref for the dropdown
+  const dropdownRef = useRef<HTMLDivElement>(null); 
 
   const handleDropdownToggle = () => {
     setIsClicked((prev) => !prev);
   };
 
-  const handleItemClick = (name: string) => {
+  const handleItemClick = (name: string, id: number) => {
     setCurrentCategory(name);
     setIsClicked(false);
+    deleteQueryString(title);
+    addQueryString(title,id.toString());
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsClicked(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -67,7 +68,7 @@ const SearchDropdown = ({ title, contents }: SearchDropdownProps) => {
                 key={content.id}
                 className="p-2 hover:bg-grey1 flex justify-between rounded-lg text-grey4 cursor-pointer"
                 onClick={() => {
-                  handleItemClick(content.name);
+                  handleItemClick(content.name, content.id);
                 }}
               >
                 {content.name}
