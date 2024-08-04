@@ -79,7 +79,7 @@ const SearchEngineSection = () => {
 };
 
 const CategoryContents = [ // 임시데이터(이후 API를 통해 받을 데이터) 
-  { name: "전체", id: 0 },
+  { name: "카테고리 전체", id: 0 },
   { name: "아이돌", id: 1 },
   { name: "영화", id: 2 },
   { name: "드라마", id: 3 },
@@ -89,7 +89,7 @@ const CategoryContents = [ // 임시데이터(이후 API를 통해 받을 데이
 ];
 
 const RegionContents = [ // 임시데이터(이후 API를 통해 받을 데이터) 
-  { name: "전체", id: 0 },
+  { name: "지역 전체", id: 0 },
   { name: "서울", id: 1 },
   { name: "경기도", id: 2 },
   { name: "충청도", id: 3 },
