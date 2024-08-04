@@ -1,10 +1,17 @@
 import ReviewItem from "../ReviewItem";
 
-const SelectionReviewList = () => {
+interface ISelectionReviewListProps {
+  reviews: ISelectionReview[];
+}
+
+const SelectionReviewList = ({ reviews }: ISelectionReviewListProps) => {
   return (
-    <div>
-      <ReviewItem></ReviewItem>
-      <ReviewItem></ReviewItem>
+    <div className="space-y-4">
+      {
+        reviews.map((review) => (
+          <ReviewItem key={review.sltReviewId} review={review} />
+        ))
+      }
     </div>
   );
 };

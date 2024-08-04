@@ -6,12 +6,12 @@ import React from "react";
 import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 import { IBaseCardProps } from "./ColCard";
 
-interface IRowCardProps extends IBaseCardProps {
+export interface IRowCardProps extends IBaseCardProps {
   userName: string;
   userImage: string;
-  likes: number;
-  liked: boolean;
-  ranking: number;
+  likes?: number;
+  liked?: boolean;
+  ranking?: number;
 }
 
 const RowCard = ({
@@ -30,7 +30,7 @@ const RowCard = ({
   return (
     <Link
       href={`/selection/${selectionId}`}
-      className="flex w-[512px] h-[150px] rounded-lg shadow-lg relative border-[0.5px] border-solid border-grey2 hover:brightness-75"
+      className="flex w-[512px] h-[150px] rounded-lg relative border-[0.5px] border-solid border-grey2 hover:brightness-75 bg-white"
     >
       <Image
         src={thumbnail}
@@ -40,13 +40,12 @@ const RowCard = ({
         alt="title"
         className="rounded-bl-lg rounded-tl-lg object-cover"
       />
-      <div className="absolute w-[30px] h-[23px] bg-black rounded-tl-lg top-0 left-0 text-white flex items-center justify-center text-small">
+      <div className="absolute w-[30px] h-[23px] bg-black rounded-tl-lg top-0 left-0 text-white flex items-center justify-center text-small font-bold">
         {ranking}
       </div>
 
       <div className="w-[270px] py-5 px-5">
-        <p className="font-bold mb-3 text-medium line-clamp-1">{title}</p>
-
+        <p className="font-bold mb-2 text-medium line-clamp-1">{title}</p>
         <p className="text-grey4 mb-4 text-extraSmall font-semibold">
           {category}
           {region && ` > ${region}`}

@@ -1,6 +1,8 @@
 "use client";
 
 import Drawer from "@/components/selection-detail/Drawer";
+import ReviewAddModal from "@/components/selection-detail/review/ReviewAddModal";
+import ReviewImageModal from "@/components/selection-detail/review/ReviewImageModal";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -16,6 +18,8 @@ const SelectionPage = () => {
   return (
     <div className="flex">
       <Drawer />
+      <ReviewAddModal />
+      <ReviewImageModal />
     </div>
   );
 };
