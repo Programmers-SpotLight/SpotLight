@@ -1,5 +1,6 @@
 "use client";
 
+import useClickOutside from "@/hooks/useClickOutside";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
 import React, { useState, useRef, useEffect } from "react";
 import { FaCaretDown } from "react-icons/fa";
@@ -17,6 +18,7 @@ const SearchDropdown = ({ title, contents }: SearchDropdownProps) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [currentCategory, setCurrentCategory] = useState<string>(title);
   const dropdownRef = useRef<HTMLDivElement>(null); 
+  useClickOutside(dropdownRef, setIsClicked)
 
   const handleDropdownToggle = () => {
     setIsClicked((prev) => !prev);
@@ -29,17 +31,6 @@ const SearchDropdown = ({ title, contents }: SearchDropdownProps) => {
     addQueryString(title,id.toString());
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsClicked(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
     <div ref={dropdownRef} className="relative">

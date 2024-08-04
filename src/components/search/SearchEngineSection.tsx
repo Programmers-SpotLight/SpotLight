@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from "react";
 import SearchDropdown from "./SearchDropdown";
 import TextInput from "../common/input/TextInput";
