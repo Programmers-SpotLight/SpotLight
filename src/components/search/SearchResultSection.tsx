@@ -8,6 +8,7 @@ import { FaCaretDown } from "react-icons/fa";
 import { MdNavigateNext } from "react-icons/md";
 import useClickOutside from "@/hooks/useClickOutside";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
+import { fetchSearchResult } from "@/http/search";
 
 const sortData = [
   { name: "최신순", id: 0 },
@@ -37,11 +38,18 @@ const SearchResultSection = () => {
   useEffect(() => {
     if (searchParams) {
       // 쿼리스트링 변경 시 동작되는 함수
-      const tags = searchParams.getAll("tags");
-      const catgeory = searchParams.get("카테고리") || "0";
-      const region = searchParams.get("지역") || "0";
-
-      console.log(tags, catgeory, region);
+      const tags = searchParams.getAll('tags');
+      const category = searchParams.get('카테고리') || '0';
+      const region = searchParams.get('지역') || '0';
+      const sort = searchParams.get("sort") || '0';
+      // API 요청 함수 호출
+      fetchSearchResult(category, region, tags, sort)
+        .then((data) => {
+          console.log('Search Results:', data);
+        })
+        .catch((error) => {
+          console.error('Error fetching search results:', error);
+        });
     }
   }, [searchParams]);
 
@@ -100,205 +108,4 @@ const tempData: IColCardProps[] = [
       <Hashtag size="small" name="선재업고 튀어" />
     ]
   },
-  {
-    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 2,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail:
-      "https://file.mk.co.kr/meet/neds/2023/11/image_readtop_2023_846577_16989928215689644.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 3,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 4,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail: "https://img.newspim.com/news/2016/12/22/1612220920255890.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 5,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 6,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail:
-      "https://file.mk.co.kr/meet/neds/2023/11/image_readtop_2023_846577_16989928215689644.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 7,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 8,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail: "https://img.newspim.com/news/2016/12/22/1612220920255890.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 9,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 10,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail:
-      "https://file.mk.co.kr/meet/neds/2023/11/image_readtop_2023_846577_16989928215689644.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 11,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  },
-  {
-    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 12,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [
-      <Hashtag size="small" name="구름" />,
-      <Hashtag size="small" name="슬램덩크" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />,
-      <Hashtag size="small" name="선재업고 튀어" />
-    ]
-  }
 ];
