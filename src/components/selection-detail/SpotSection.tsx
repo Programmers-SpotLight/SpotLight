@@ -1,10 +1,6 @@
 import { Tab, Tabs } from "@/components/common/Tabs";
-import { useModalStore } from "@/stores/modalStore";
-import Image from "next/image";
 import React from "react";
-import { LuMapPin } from "react-icons/lu";
-import { useStore } from "zustand";
-import SpotHeader from "./spot-selection-contents/SpotHeader";
+import SpotHeader, { SpotCategory } from "./spot-selection-contents/SpotHeader";
 import SpotReview from "./spot-selection-contents/SpotReview";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
 
@@ -15,7 +11,7 @@ interface ISpotSectionProps {
 
 const sampleSpot = {
   images: [""],
-  spotCategoryName: "기타",
+  spotCategoryName: "맛집" as SpotCategory,
   title: "가마쿠라코코마에역",
   description: `1. 위치와 접근성 👍
 가마쿠라코코마에 역은 도쿄에서 남서쪽으로 약 50km 떨어진 가나가와현에 위치해 있어요. 도쿄에서 출발하는 경우, JR 요코스카 선을 타고 요코하마에서 에노시마 전철로 갈아타면 쉽게 도착할 수 있습니다. 여행자들이 많이 이용하는 경로라서 표지판과 안내도 잘 되어 있어요.
