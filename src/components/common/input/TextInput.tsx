@@ -2,8 +2,8 @@ import React, { InputHTMLAttributes, ReactNode } from 'react';
 
 interface ITextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
-  width?: "small" | "medium" | "large" | "xlarge";
-  height?: "small" | "medium" | "large";
+  width?: "small" | "medium" | "large" | "xlarge" | "full";
+  height?: "small" | "smallPlus" | "medium" | "large";
   icon?: ReactNode;
   iconPosition?: "left" | "right";
 }
@@ -25,11 +25,13 @@ const TextInput = ({
     small: "w-72", /* 288px */
     medium: "w-96", /* 384px */
     large: "w-[660px]",
-    xlarge: "w-[800px]"
+    xlarge: "w-[800px]",
+    full : "w-[full]"
   };
 
   const heightSize = {
     small: "h-9", /* 36px */
+    smallPlus : "[50px]",
     medium: "h-20", /* 80px */
     large: "h-36", /* 144px */
   };
