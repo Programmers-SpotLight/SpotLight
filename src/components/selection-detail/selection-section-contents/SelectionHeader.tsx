@@ -51,7 +51,7 @@ const SelectionHeader = ({ selectionDetailData }: SelectionHeaderProps) => {
           {selectionDetailData.title}
         </h1>
         <div className="flex flex-wrap gap-[5px] overflow-auto mt-4 mb-[15px]">
-          {selectionDetailData.hashtag.map((tag, index) => (
+          {selectionDetailData.hashtags.map((tag, index) => (
             <Hashtag size="big" name={tag} key={tag} />
           ))}
         </div>

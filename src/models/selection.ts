@@ -1,7 +1,6 @@
-import { SpotCategory } from "./spot";
+import { ISpotInfoForMarking, SpotCategory } from "./spot";
 
 export interface ISelectionDetail {
-  // 임시 작성 타입 입니다. 수정하시면 될 것 같습니다.
   title: string;
   description: string;
   category: {
@@ -18,16 +17,8 @@ export interface ISelectionDetail {
     region: string;
   };
   image?: string;
-  hashtag: string[];
+  hashtags: string[];
   created_date?: Date;
   status: string | null;
   spot_list: ISpotInfoForMarking[];
-}
-
-export interface ISpotInfoForMarking {
-  title: string;
-  categoryName: SpotCategory;
-  id: string;
-  lat: number;
-  lng: number;
 }

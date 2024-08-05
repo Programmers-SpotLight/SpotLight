@@ -10,13 +10,15 @@ interface IDrawerProps {
   isSpotDrawerOpen: boolean;
   toggleDrawer: () => void;
   spotClickHandler: (spotId: string) => void;
+  selectedSpotId: string | null;
 }
 const Drawer = ({
   selectionData,
   isSelectionDrawerOpen,
   isSpotDrawerOpen,
   spotClickHandler,
-  toggleDrawer
+  toggleDrawer,
+  selectedSpotId
 }: IDrawerProps) => {
   return (
     <div className={`absolute left-0 top-0 flex z-10`}>
@@ -31,6 +33,7 @@ const Drawer = ({
       <SpotSection
         isSelectionDrawerOpen={isSelectionDrawerOpen}
         isSpotDrawerOpen={isSpotDrawerOpen}
+        selectedSpotId={selectedSpotId}
       />
 
       {/**button */}

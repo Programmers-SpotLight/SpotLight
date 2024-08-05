@@ -27,7 +27,7 @@ const selectionData: ISelectionDetail = {
   },
   image:
     "https://i.namu.wiki/i/O0u4__0DlY6tc9-S505SLruRy-q4ZOJ44-SHzBhGNsHVsUfnx5wE5mOB0XMCY6hloGXzRrfF7WXuu2nmGUNQhA.webp",
-  hashtag: [
+  hashtags: [
     "슬램덩크",
     "슬램덩크 무대탐방",
     "당일치기",
@@ -81,6 +81,7 @@ const SelectionPage = () => {
     useState<boolean>(false);
   const [isSpotDrawerOpen, setIsSpotDrawerOpen] = useState<boolean>(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
 
   const toggleDrawer = () => {
     if (isSpotDrawerOpen) setIsSpotDrawerOpen((prev) => !prev);
@@ -93,6 +94,7 @@ const SelectionPage = () => {
     if (map && lat && lng) {
       map.panTo({ lat, lng });
     }
+    setSelectedSpotId(spotId);
   };
 
   if (!params) {
@@ -118,6 +120,7 @@ const SelectionPage = () => {
         isSpotDrawerOpen={isSpotDrawerOpen}
         toggleDrawer={toggleDrawer}
         spotClickHandler={spotClickHandler}
+        selectedSpotId={selectedSpotId}
       />
     </div>
   );

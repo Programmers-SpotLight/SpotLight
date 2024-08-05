@@ -1,12 +1,14 @@
 import { Tab, Tabs } from "@/components/common/Tabs";
-import React from "react";
-import SpotHeader, { SpotCategory } from "./spot-selection-contents/SpotHeader";
+import React, { useEffect, useState } from "react";
+import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotReview from "./spot-selection-contents/SpotReview";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
+import { SpotCategory } from "@/models/spot";
 
 interface ISpotSectionProps {
   isSelectionDrawerOpen: boolean;
   isSpotDrawerOpen: boolean;
+  selectedSpotId: string | null;
 }
 
 const sampleSpot = {
@@ -25,13 +27,15 @@ const sampleSpot = {
 4. 사진 명소❤️
 가마쿠라코코마에 역은 사진 찍기 좋은 명소로도 유명합니다. 특히 해질녘의 풍경은 환상적이에요. 석양이 바다를 물들이는 순간은 정말 아름답습니다. 이곳에서 찍은 사진은 인스타그램 등 SNS에 올리면 반응이 아주 뜨거울 거예요. 제가 방문했을 때도 많은 사람들이 카메라를 들고 사진을 찍느라 여념이 없더라고요.`,
   address: "일본 〒248-0033 가나가와현 가마쿠라시 고시고에 1 조메1",
-  hashtag: ["슬램덩크", "슬램덩크"]
+  hashtags: ["슬램덩크", "슬램덩크"]
 };
 
 const SpotSection = ({
   isSpotDrawerOpen,
-  isSelectionDrawerOpen
+  isSelectionDrawerOpen,
+  selectedSpotId
 }: ISpotSectionProps) => {
+  //selectedSpotId로 fetch
   const spotTab = [
     {
       title: "스팟 정보",
@@ -61,7 +65,7 @@ border-[0.5px] border-grey2 border-solid overflow-y-scroll w-[375px] scrollbar-h
         categoryName={sampleSpot.spotCategoryName}
         title={sampleSpot.title}
         address={sampleSpot.address}
-        hashtag={sampleSpot.hashtag}
+        hashtags={sampleSpot.hashtags}
       />
 
       <div className="px-4">

@@ -48,7 +48,7 @@ interface ISpotHeaderProps {
   categoryName: SpotCategory;
   title: string;
   address: string;
-  hashtag: string[];
+  hashtags: string[];
 }
 
 const SpotHeader = ({
@@ -56,7 +56,7 @@ const SpotHeader = ({
   categoryName,
   title,
   address,
-  hashtag
+  hashtags
 }: ISpotHeaderProps) => {
   return (
     <>
@@ -98,7 +98,7 @@ const SpotHeader = ({
             {address}
           </div>
           {/**hashtag */}
-          <div className="flex gap-3 flex-wrap">{hashtag.map((h) => h)}</div>
+          <div className="flex gap-3 flex-wrap">{hashtags.map((h) => h)}</div>
         </div>
       </div>
     </>
