@@ -1,46 +1,27 @@
 import React, { useEffect, useRef } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
-import {
-  SpotCategory,
-  SPOTINFOWITHCATEGORY
-} from "../selection-detail/spot-selection-contents/SpotHeader";
+import { SPOTINFOWITHCATEGORY } from "../selection-detail/spot-selection-contents/SpotHeader";
+import { ISpotInfoForMarking } from "@/models/selection";
 
 interface IGoogleMapProps {
   width: string;
   height: string;
   lat: number;
   lng: number;
+  spots: ISpotInfoForMarking[];
+  spotClickHandler: (spotId: string) => void;
+  setMap: React.Dispatch<React.SetStateAction<google.maps.Map | null>>;
 }
 
-const sampleSpots = [
-  {
-    lat: 39,
-    lng: -6,
-    category: "맛집" as SpotCategory
-  },
-  {
-    lat: 39.01,
-    lng: -6,
-    category: "쇼핑" as SpotCategory
-  },
-  {
-    lat: 39.02,
-    lng: -6,
-    category: "카페" as SpotCategory
-  },
-  {
-    lat: 39.03,
-    lng: -6,
-    category: "관광지" as SpotCategory
-  },
-  {
-    lat: 39.04,
-    lng: -6,
-    category: "기타" as SpotCategory
-  }
-];
-
-const GoogleMap = ({ width, height, lat, lng }: IGoogleMapProps) => {
+const GoogleMap = ({
+  width,
+  height,
+  lat,
+  lng,
+  spots,
+  spotClickHandler,
+  setMap
+}: IGoogleMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -71,11 +52,12 @@ const GoogleMap = ({ width, height, lat, lng }: IGoogleMapProps) => {
       };
 
       const map = new Map(mapRef.current as HTMLDivElement, options);
+      setMap(map);
 
       //add marker on map
-      sampleSpots.forEach((spot) => {
+      spots.forEach((spot) => {
         const markerContent = document.createElement("img");
-        markerContent.src = SPOTINFOWITHCATEGORY[spot.category].mapPin;
+        markerContent.src = SPOTINFOWITHCATEGORY[spot.categoryName].mapPin;
         markerContent.style.width = "100px";
         markerContent.style.height = "100px";
 
@@ -91,12 +73,12 @@ const GoogleMap = ({ width, height, lat, lng }: IGoogleMapProps) => {
 
         marker.addListener("click", () => {
           map.panTo({ lat: spot.lat, lng: spot.lng });
-          //setSelectedSpot
+          spotClickHandler(spot.id);
         });
       });
     };
     initializeMap();
-  }, [lat, lng]);
+  }, [lat, lng, spots]);
   return <div ref={mapRef} style={{ width: width, height: height }}></div>;
 };
 

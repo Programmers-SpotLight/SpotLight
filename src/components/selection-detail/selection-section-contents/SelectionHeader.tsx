@@ -1,3 +1,5 @@
+import Hashtag from "@/components/common/Hashtag";
+import { ISelectionDetail } from "@/models/selection";
 import React from "react";
 import { FaBookmark, FaShareAlt } from "react-icons/fa";
 
@@ -20,6 +22,7 @@ const SelectionHeader = ({ selectionDetailData }: SelectionHeaderProps) => {
   };
 
   const bookMarkClickHandler = () => {}; // 북마크 핸들러
+
   return (
     <>
       <img
@@ -49,14 +52,7 @@ const SelectionHeader = ({ selectionDetailData }: SelectionHeaderProps) => {
         </h1>
         <div className="flex flex-wrap gap-[5px] overflow-auto mt-4 mb-[15px]">
           {selectionDetailData.hashtag.map((tag, index) => (
-            <div
-              key={index}
-              className="p-2 bg-white border border-solid border-grey3 rounded-badge text-extraSmall text-grey3 flex justify-center items-center whitespace-nowrap
-                font-medium"
-              style={{ flexShrink: 0 }}
-            >
-              {tag}
-            </div>
+            <Hashtag size="big" name={tag} key={tag} />
           ))}
         </div>
         <div className="flex gap-[5px] justify-end items-center cursor-pointer">

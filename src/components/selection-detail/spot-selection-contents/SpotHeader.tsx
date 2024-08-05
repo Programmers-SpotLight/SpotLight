@@ -1,3 +1,4 @@
+import { SpotCategory } from "@/models/spot";
 import Image from "next/image";
 import React from "react";
 import { LuMapPin } from "react-icons/lu";
@@ -8,8 +9,6 @@ interface ISpot {
   mapPin: string;
   color: string;
 }
-
-export type SpotCategory = "관광지" | "맛집" | "쇼핑" | "카페" | "기타";
 
 export const SPOTINFOWITHCATEGORY: { [key in SpotCategory]: ISpot } = {
   관광지: {
