@@ -5,42 +5,48 @@ import { LuMapPin } from "react-icons/lu";
 interface ISpot {
   name: string;
   icon: string;
+  mapPin: string;
   color: string;
 }
 
-type Spots = ISpot[];
+export type SpotCategory = "관광지" | "맛집" | "쇼핑" | "카페" | "기타";
 
-const spots: Spots = [
-  {
+export const SPOTINFOWITHCATEGORY: { [key in SpotCategory]: ISpot } = {
+  관광지: {
     name: "관광지",
     icon: "/icons/spot/관광지.svg",
+    mapPin: "/icons/map-pin/맵핀-관광지.svg",
     color: "#8CDC29"
   },
-  {
+  맛집: {
     name: "맛집",
     icon: "/icons/spot/맛집.svg",
+    mapPin: "/icons/map-pin/맵핀-맛집.svg",
     color: "#F58E34"
   },
-  {
+  쇼핑: {
     name: "쇼핑",
     icon: "/icons/spot/쇼핑.svg",
+    mapPin: "/icons/map-pin/맵핀-쇼핑.svg",
     color: "#3478F5"
   },
-  {
+  카페: {
     name: "카페",
     icon: "/icons/spot/카페.svg",
+    mapPin: "/icons/map-pin/맵핀-카페.svg",
     color: "#B9781E"
   },
-  {
+  기타: {
     name: "기타",
     icon: "/icons/spot/기타.svg",
-    color: "#F53454"
+    mapPin: "/icons/map-pin/맵핀-기타.svg",
+    color: "#534457"
   }
-];
+};
 
 interface ISpotHeaderProps {
   images: string[];
-  categoryName: string;
+  categoryName: SpotCategory;
   title: string;
   address: string;
   hashtag: string[];
@@ -53,7 +59,6 @@ const SpotHeader = ({
   address,
   hashtag
 }: ISpotHeaderProps) => {
-  const filtered = spots.filter((spot) => spot.name === categoryName)[0];
   return (
     <>
       <div className="w-full h-[194px] relative mb-5">
@@ -75,12 +80,16 @@ const SpotHeader = ({
           {/** spot category */}
           <div
             className={`text-small font-semibold flex items-center gap-2`}
-            style={{ color: filtered.color }}
+            style={{ color: SPOTINFOWITHCATEGORY[categoryName].color }}
           >
             <div className="relative w-4 h-4">
-              <Image src={filtered.icon} alt={filtered.name} fill />
+              <Image
+                src={SPOTINFOWITHCATEGORY[categoryName].icon}
+                alt={SPOTINFOWITHCATEGORY[categoryName].name}
+                fill
+              />
             </div>
-            {filtered.name}
+            {SPOTINFOWITHCATEGORY[categoryName].name}
           </div>
           {/**title */}
           <span className="font-bold text-large">{title}</span>

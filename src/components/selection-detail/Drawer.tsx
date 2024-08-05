@@ -18,40 +18,42 @@ const Drawer = () => {
   };
 
   return (
-    <div className={`fixed flex z-10`}>
-      {/**selection drawer */}
-      <SelectionSection
-        isSelectionDrawerOpen={isSelectionDrawerOpen}
-        spotClickHandler={spotClickHandler}
-      />
+    <div className="relative">
+      <div className={`fixed left-0 top-[74px] flex z-10`}>
+        {/**selection drawer */}
+        <SelectionSection
+          isSelectionDrawerOpen={isSelectionDrawerOpen}
+          spotClickHandler={spotClickHandler}
+        />
 
-      {/**spot drawer */}
-      <SpotSection
-        isSelectionDrawerOpen={isSelectionDrawerOpen}
-        isSpotDrawerOpen={isSpotDrawerOpen}
-      />
+        {/**spot drawer */}
+        <SpotSection
+          isSelectionDrawerOpen={isSelectionDrawerOpen}
+          isSpotDrawerOpen={isSpotDrawerOpen}
+        />
 
-      {/**button */}
-      <div
-        className={`absolute top-1/2 ${
-          isSelectionDrawerOpen && isSpotDrawerOpen
-            ? "left-[750px]"
-            : isSelectionDrawerOpen
-            ? "left-[375px]"
-            : "left-0"
-        } transform -translate-y-1/2 transition-all ease-in-out duration-500`}
-      >
-        <button
-          className={`w-[24px] h-[50px] bg-grey0 border-t border-r border-b border-primary border-solid rounded-sm`}
-          onClick={toggleDrawer}
+        {/**button */}
+        <div
+          className={`absolute top-1/2 ${
+            isSelectionDrawerOpen && isSpotDrawerOpen
+              ? "left-[750px]"
+              : isSelectionDrawerOpen
+              ? "left-[375px]"
+              : "left-0"
+          } transform -translate-y-1/2 transition-all ease-in-out duration-500`}
         >
-          <FaCaretRight
-            className={`text-primary absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
-              isSelectionDrawerOpen ? "rotate-180" : "rotate-0"
-            }`}
-            size={30}
-          />
-        </button>
+          <button
+            className={`w-[24px] h-[50px] bg-grey0 border-t border-r border-b border-primary border-solid rounded-sm`}
+            onClick={toggleDrawer}
+          >
+            <FaCaretRight
+              className={`text-primary absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
+                isSelectionDrawerOpen ? "rotate-180" : "rotate-0"
+              }`}
+              size={30}
+            />
+          </button>
+        </div>
       </div>
     </div>
   );
