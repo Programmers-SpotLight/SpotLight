@@ -76,7 +76,7 @@ const SearchResultSection = () => {
           <ColCard 
             key={item.slt_id}
             thumbnail={item.slt_img}
-            category={item.slt_ctgr_name}
+            category={item.slt_category_name}
             selectionId={item.slt_id}
             hashtags={item.slt_hashtags}
             description={item.slt_description}

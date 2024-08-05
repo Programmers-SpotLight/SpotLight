@@ -19,7 +19,7 @@ const hashtagSize = {
   big: 'px-3 py-1 max-w-[160px] text-sm'
 }
 
-const hashtagCommonClass = ' text-center text-gray-500 rounded-full border-solid border-2 border-grey2  mr-2 flex gap-[5px] items-center bg-white'
+const hashtagCommonClass = ' text-center text-gray-500 rounded-full border-solid border border-grey2 mr-2 flex gap-[5px] items-center bg-white'
 
 const Hashtag: React.FC<IHashtagProps> = ({ 
   size,

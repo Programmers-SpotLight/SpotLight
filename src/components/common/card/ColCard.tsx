@@ -1,8 +1,6 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import React, { ReactNode, use } from "react";
+import React from "react";
 import { GoKebabHorizontal } from "react-icons/go";
 import { IoMdLock } from "react-icons/io";
 import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
@@ -25,7 +23,7 @@ export interface IColCardProps extends IBaseCardProps {
   userImage?: string;
   likes?: number;
   liked?: boolean;
-  hashtags: Ihashtags[]
+  hashtags: Ihashtags[];
   status: TselectionStatus;
   onClick?: () => void;
 }
@@ -62,14 +60,19 @@ const ColCard = ({
       } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-75 bg-white`}
     >
       <div className="relative w-full h-[178px]">
-        <Image
-          src={thumbnail}
-          alt={title}
-          fill
-          priority
-          className="rounded-t-lg object-cover"
-          sizes="width : 100%, height : 178px"
-        />
+        {thumbnail ? (
+          <Image
+            src={thumbnail}
+            alt={title}
+            fill
+            priority
+            className="rounded-t-lg object-cover"
+            sizes="width : 100%, height : 178px"
+          />
+        ) : (
+          <div className="w-full h-full flex justify-center items-center text-white font-bold text-large bg-grey2">spotlight</div>
+        )}
+
         {status === "private" && (
           <IoMdLock
             className="absolute top-2 right-2"
@@ -79,7 +82,7 @@ const ColCard = ({
         )}
       </div>
 
-      <div className="px-2 py-5">
+      <div className="px-2 py-5 flex flex-col flex-grow">
         <div className="flex justify-between items-start">
           <p className="text-grey4 mb-2 text-extraSmall font-semibold">
             {category}
@@ -97,25 +100,32 @@ const ColCard = ({
 
         <p className="font-bold mb-3 text-medium line-clamp-1">{title}</p>
 
-        <div className="mb-5 flex overflow-hidden	">
+        <div className="mb-5 flex overflow-hidden">
           {hashtags.map((tag) => (
-            <li className='list-none' key={tag.htag_id}><Hashtag key={tag.htag_id} name={tag.htag_name} size="small"/></li>
+            <li className="list-none" key={tag.htag_id}>
+              <Hashtag name={tag.htag_name} size="small" />
+            </li>
           ))}
         </div>
-        <p className="text-grey4 line-clamp-3 text-extraSmall font-medium">
+
+        <p className="text-grey4 line-clamp-3 text-extraSmall font-medium h-9  ">
           {description}
         </p>
 
         {userImage && userName && (
-          <div className="flex justify-between items-center text-grey4 mt-7">
+          <div className="flex justify-between items-center text-grey4 mt-auto">
             <div className="flex items-center gap-1">
-              <Image
-                src={userImage}
-                alt={userName}
-                className="rounded-full object-cover"
-                width={16}
-                height={16}
-              />
+              <div className="relative w-[16px] h-[16px]">
+                {userImage ?
+                <Image
+                  src={userImage}
+                  alt={userName}
+                  className="rounded-full object-cover"
+                  fill
+                /> :
+                <div className="w-full h-full flex justify-center items-center font-bold text-large"/>
+              }
+              </div>
               <span className="text-extraSmall font-semibold">{userName}</span>
             </div>
 
@@ -125,7 +135,6 @@ const ColCard = ({
               ) : (
                 <MdOutlineThumbUp size={16} />
               )}
-
               <span className="text-extraSmall font-medium">{likes}</span>
             </div>
           </div>
