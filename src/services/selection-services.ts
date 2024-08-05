@@ -1,5 +1,6 @@
 'use server';
 
+import { dbConnectionPool } from "@/libs/db";
 import { ISelectionCategory, ISelectionCreateFormData, ISelectionLocation, ISelectionSpot } from "@/models/selection.model";
 import { Knex } from "knex";
 
@@ -16,7 +17,7 @@ interface ISelectionLocationQueryResultRow {
   location_option_name: string;
 }
 
-export const getSelectionCategories = async (dbConnectionPool: Knex<any, unknown[]>) => {
+export async function getSelectionCategories (dbConnectionPool: Knex<any, unknown[]>) {
   const queryResult : ISelectionCategoryQueryResultRow[] = await dbConnectionPool
     .column([
       'selection_category.slt_category_id as category_id',
@@ -35,7 +36,7 @@ export const getSelectionCategories = async (dbConnectionPool: Knex<any, unknown
   return categories;
 }
 
-export const getSelectionLocations = async (dbConnectionPool: Knex<any, unknown[]>) => {
+export async function getSelectionLocations(dbConnectionPool: Knex<any, unknown[]>) {
   const queryResult : ISelectionLocationQueryResultRow[] = await dbConnectionPool
     .column([
       'selection_location.slt_location_id as location_id',
@@ -80,7 +81,7 @@ export const getSelectionLocations = async (dbConnectionPool: Knex<any, unknown[
   return locations;
 };
 
-const validateName = (name: string): string | null => {
+export async function validateName(name: string) {
   console.log('Name:', name);
   if (!name) {
     return "Name is required";
@@ -92,19 +93,26 @@ const validateName = (name: string): string | null => {
   return null;
 };
 
-const validateCategory = (category: number | undefined): string | null => {
+export async function validateCategory(category: number | undefined) {
   if (category == null) {
     return "Category is required";
   }
   if (isNaN(category)) {
     return "Invalid category. It should be a value of integer";
   }
+  const queryResult = await dbConnectionPool('selection_category')
+    .where('slt_category_id', category);
+  
+  console.log('Query result:', queryResult);
+  if (queryResult.length === 0) {
+    return "Invalid category. Category does not exist";
+  }
   return null;
 };
 
-const validateLocation = (
+export async function validateLocation(
   location: { location: number; subLocation: number } | undefined
-): string | null => {
+) {
   if (!location) {
     return "Location is required";
   }
@@ -114,17 +122,30 @@ const validateLocation = (
   if (isNaN(location.location) || isNaN(location.subLocation)) {
     return "Invalid location. Location should be an object with location and subLocation properties";
   }
+
+  const queryResult = await dbConnectionPool('selection_location')
+    .where('slt_location_id', location.location);
+  if (queryResult.length === 0) {
+    return "Invalid location. Location does not exist";
+  }
+
+  const queryResult2 = await dbConnectionPool('selection_location_option')
+    .where('slt_location_option_id', location.subLocation)
+    .andWhere('slt_location_id', location.location);
+  if (queryResult2.length === 0) {
+    return "Invalid location. Sub-location does not exist";
+  }
   return null;
 };
 
-const validateDescription = (description: string | undefined): string | null => {
+export async function validateDescription(description: string | undefined) {
   if (!description) {
     return "Description is required";
   }
   return null;
 };
 
-const validateSpots = (spots: ISelectionSpot[] | undefined): string | null => {
+export async function validateSpots(spots: ISelectionSpot[] | undefined) {
   if (!spots) {
     return "Spots are required";
   }
@@ -171,7 +192,7 @@ const validateSpots = (spots: ISelectionSpot[] | undefined): string | null => {
   return null;
 };
 
-const validateHashtags = (hashtags: string[] | undefined): string | null => {
+export async function validateHashtags(hashtags: string[] | undefined) {
   if (!hashtags) {
     return "Hashtags are required";
   }
@@ -189,65 +210,53 @@ const validateHashtags = (hashtags: string[] | undefined): string | null => {
   return null;
 };
 
-export const validateData = (data: ISelectionCreateFormData) => {
-  const nameError = validateName(data.name);
+export async function validateData(data: ISelectionCreateFormData) {
+  const nameError = await validateName(data.name);
   if (nameError) {
-    console.log('Name error:', typeof nameError);
     return nameError;
   }
 
   if (!data.temp) {
-    const categoryError = validateCategory(data.category);
-    console.log('Category error:', categoryError);
+    const categoryError = await validateCategory(data.category);
     if (categoryError) return categoryError;
 
-    const locationError = validateLocation(data.location);
-    console.log('Location error:', locationError);
+    const locationError = await validateLocation(data.location);
     if (locationError) return locationError;
 
-    const descriptionError = validateDescription(data.description);
-    console.log('Description error:', descriptionError);
+    const descriptionError = await validateDescription(data.description);
     if (descriptionError) return descriptionError;
 
-    const spotsError = validateSpots(data.spots);
-    console.log('Spots error:', spotsError);
+    const spotsError = await validateSpots(data.spots);
     if (spotsError) return spotsError;
 
-    const hashtagsError = validateHashtags(data.hashtags);
-    console.log('Hashtags error:', hashtagsError);
+    const hashtagsError = await validateHashtags(data.hashtags);
     if (hashtagsError) return hashtagsError;
   } else {
     if (data.category) {
-      const categoryError = validateCategory(data.category);
-      console.log('Temp category error:', categoryError);
+      const categoryError = await validateCategory(data.category);
       if (categoryError) return categoryError;
     }
 
     if (data.location) {
-      const locationError = validateLocation(data.location);
-      console.log('Temp location error:', locationError);
+      const locationError = await validateLocation(data.location);
       if (locationError) return locationError;
     }
 
     if (data.description) {
-      const descriptionError = validateDescription(data.description);
-      console.log('Temp description error:', descriptionError);
+      const descriptionError = await validateDescription(data.description);
       if (descriptionError) return descriptionError;
     }
 
     if (data.spots) {
-      const spotsError = validateSpots(data.spots);
-      console.log('Temp spots error:', spotsError);
+      const spotsError = await validateSpots(data.spots);
       if (spotsError) return spotsError;
     }
 
     if (data.hashtags) {
-      const hashtagsError = validateHashtags(data.hashtags);
-      console.log('Temp hashtags error:', hashtagsError);
+      const hashtagsError = await validateHashtags(data.hashtags);
       if (hashtagsError) return hashtagsError;
     }
   }
 
-  console.log('Data validated successfully');
   return null;
 };
