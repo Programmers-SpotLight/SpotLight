@@ -17,7 +17,7 @@ export interface IBaseCardProps {
   selectionId: number;
 }
 
-interface IColCardProps extends IBaseCardProps {
+export interface IColCardProps extends IBaseCardProps {
   userName?: string;
   userImage?: string;
   likes?: number;
@@ -56,7 +56,7 @@ const ColCard = ({
       href={`/selection/${selectionId}`}
       className={`flex flex-col w-[248px] ${
         userImage && userName ? "h-[389px]" : "h-[355px]"
-      } rounded-lg shadow-lg border-[0.5px] border-solid border-grey2 hover:brightness-75`}
+      } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-75 bg-white`}
     >
       <div className="relative w-full h-[178px]">
         <Image
@@ -78,7 +78,7 @@ const ColCard = ({
 
       <div className="px-2 py-5">
         <div className="flex justify-between items-start">
-          <p className="text-grey4 mb-3 text-extraSmall font-semibold">
+          <p className="text-grey4 mb-2 text-extraSmall font-semibold">
             {category}
             {region && ` > ${region}`}
           </p>
