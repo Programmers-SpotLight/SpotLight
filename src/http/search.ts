@@ -1,10 +1,11 @@
+import { TsortType } from '@/models/searchResult.model';
 import { requestHandler } from './http';
 
 export const fetchSearchResult = async (
   category?: string,
   region?: string,
   tags?: string[],
-  sort?: string
+  sort?: TsortType
 ) => {
   const url = 'api/selections/search';
 

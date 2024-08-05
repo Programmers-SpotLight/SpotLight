@@ -7,6 +7,9 @@ import { GoKebabHorizontal } from "react-icons/go";
 import { IoMdLock } from "react-icons/io";
 import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import { TselectionStatus } from "@/models/searchResult.model";
+import { Ihashtags } from "@/models/hashtag.model";
+import Hashtag from "../Hashtag";
 
 export interface IBaseCardProps {
   thumbnail: string;
@@ -22,8 +25,8 @@ export interface IColCardProps extends IBaseCardProps {
   userImage?: string;
   likes?: number;
   liked?: boolean;
-  hashtags: ReactNode[];
-  isPublic: boolean;
+  hashtags: Ihashtags[]
+  status: TselectionStatus;
   onClick?: () => void;
 }
 
@@ -39,7 +42,7 @@ const ColCard = ({
   liked,
   hashtags,
   selectionId,
-  isPublic = true,
+  status = "public",
   onClick
 }: IColCardProps) => {
   const handleIconClick = (e: React.MouseEvent) => {
@@ -67,7 +70,7 @@ const ColCard = ({
           className="rounded-t-lg object-cover"
           sizes="width : 100%, height : 178px"
         />
-        {!isPublic && (
+        {status === "private" && (
           <IoMdLock
             className="absolute top-2 right-2"
             fill="#7C7C7C"
@@ -95,8 +98,8 @@ const ColCard = ({
         <p className="font-bold mb-3 text-medium line-clamp-1">{title}</p>
 
         <div className="mb-5 flex overflow-hidden	">
-          {hashtags.map((tag, index) => (
-            <React.Fragment key={index}>{tag}</React.Fragment>
+          {hashtags.map((tag) => (
+            <li className='list-none' key={tag.htag_id}><Hashtag key={tag.htag_id} name={tag.htag_name} size="small"/></li>
           ))}
         </div>
         <p className="text-grey4 line-clamp-3 text-extraSmall font-medium">
