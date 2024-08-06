@@ -3,7 +3,6 @@
 import SelectionCreateForm from "@/components/selection-create/SelectionCreateForm";
 import { useSearchParams } from "next/navigation";
 
-
 export const dynamic = 'force-dynamic';
 
 const SelectionCreatePage = () => {

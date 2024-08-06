@@ -27,14 +27,11 @@ const modalDatas: ImodalDatas[] = [
     component: ModalTemp
   },
   {
-    type: "addSelectionSpot",
+    type: "GoogleMapsAddSelectionSpot",
     title: "스팟 추가",
     size: "large",
-    component: (
-      <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
-        <ModalCreateSelectionSpot />
-      </APIProvider>
-    ),
+    overlayClose: true,
+    component: ModalCreateSelectionSpot
   },
   {
     type: "images",
@@ -47,11 +44,9 @@ const modalDatas: ImodalDatas[] = [
 
 const ModalController = () => {
   const { isOpen, closeModal, modalType, props } = useStore(useModalStore);
-
   if (!isOpen) return null;
 
   const findModal = modalDatas.find((modal) => modal.type === modalType);
-
   if (!findModal) return null;
 
   const { title, size, overlayClose, component: Component } = findModal;
@@ -69,7 +64,14 @@ const ModalController = () => {
     >
       <div className="relative" onClick={(e) => e.stopPropagation()}>
         <Modal title={title} size={size} closeModal={closeModal}>
-          <Component {...props} />
+          {/* 모달의 이름이 googleMaps로 시작한다면 구글맵 APIProvider를 사용 */}
+          {modalType?.startsWith('GoogleMaps') ? (
+            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+              <Component {...props} />
+            </APIProvider>
+          ) : (
+            <Component {...props} />
+          )}
         </Modal>
       </div>
     </div>
