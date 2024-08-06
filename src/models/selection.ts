@@ -1,6 +1,7 @@
-import { ISpotInfoForMarking } from "./spot";
+import { ISpotDetail } from "./spot";
 
 export interface ISelectionDetail {
+  id: number;
   title: string;
   description: string;
   category: {
@@ -18,8 +19,9 @@ export interface ISelectionDetail {
   };
   image?: string;
   hashtags: string[];
-  created_date?: Date;
+  createdAt: Date;
+  updatedAt: Date;
   status: string | null;
-  spot_list: ISpotInfoForMarking[];
+  spot_list: ISpotDetail[];
   booked: boolean;
 }
