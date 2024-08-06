@@ -22,6 +22,7 @@ interface ISelectionCreateStore {
   deleteSpot: (spot: number) => void;
   addTag: (tag: string) => void;
   deleteTag: (tag: string) => void;
+  updateSpot: (index: number, spot: ISelectionSpot) => void;
 }
 
 export const useSelectionCreateStore = create<ISelectionCreateStore>()(
@@ -44,5 +45,6 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
     addTag: (tag: string) => set((state) => ({ tags: [...state.tags, tag] })),
     deleteSpot: (index: number) => set((state) => ({ spots: state.spots.filter((_, i) => i !== index) })),
     deleteTag: (tag: string) => set((state) => ({ tags: state.tags.filter((t) => t !== tag)})),
+    updateSpot: (index: number, spot: ISelectionSpot) => set((state) => ({ spots: state.spots.map((s, i) => i === index ? spot : s) })),
   }))
 );
