@@ -47,7 +47,7 @@ const SelectionSection = ({
       } transition ease-in-out duration-500 border-[0.5px] border-grey2 border-solid overflow-y-scroll scrollbar-hide w-[375px] z-10`}
       style={{ height: "calc(100vh - 74px)" }}
     >
-      <SelectionHeader selectionDetailData={selectionData} />
+      <SelectionHeader selectionData={selectionData} />
       <div className="pl-5 pr-5">
         <Tabs>
           {selectionTabData(spotClickHandler).map((tab) => (

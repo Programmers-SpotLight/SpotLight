@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { SPOTINFOWITHCATEGORY } from "../spot-selection-contents/SpotHeader";
 import Image from "next/image";
 import { ISpotInfoForMarking } from "@/models/spot";

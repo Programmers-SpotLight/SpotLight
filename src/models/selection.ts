@@ -1,4 +1,4 @@
-import { ISpotInfoForMarking, SpotCategory } from "./spot";
+import { ISpotInfoForMarking } from "./spot";
 
 export interface ISelectionDetail {
   title: string;
@@ -21,4 +21,5 @@ export interface ISelectionDetail {
   created_date?: Date;
   status: string | null;
   spot_list: ISpotInfoForMarking[];
+  booked: boolean;
 }

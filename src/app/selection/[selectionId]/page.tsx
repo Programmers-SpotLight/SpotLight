@@ -72,7 +72,8 @@ const selectionData: ISelectionDetail = {
       categoryName: "기타" as SpotCategory,
       title: "쇼난카이 해안공원(카나가와)"
     }
-  ]
+  ],
+  booked: true
 };
 
 const SelectionPage = () => {

@@ -1,5 +1,5 @@
 import { Tab, Tabs } from "@/components/common/Tabs";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotReview from "./spot-selection-contents/SpotReview";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
