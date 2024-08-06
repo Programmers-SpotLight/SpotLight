@@ -7,6 +7,6 @@ export type TmodalType =
   | "editTag"
   | "editInfo"
   | "images"
-  | "addSelectionSpot"
+  | "GoogleMapsAddSelectionSpot"
   | null;
 export type TModalSize = "small" | "medium" | "large" | "full" | null;
