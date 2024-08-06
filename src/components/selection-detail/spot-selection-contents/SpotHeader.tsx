@@ -1,8 +1,10 @@
 import Hashtag from "@/components/common/Hashtag";
 import { SpotCategory } from "@/models/spot";
+import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import React from "react";
 import { LuMapPin } from "react-icons/lu";
+import { useStore } from "zustand";
 
 interface ISpot {
   name: string;
@@ -59,9 +61,13 @@ const SpotHeader = ({
   address,
   hashtags
 }: ISpotHeaderProps) => {
+  const { openModal } = useStore(useModalStore);
   return (
     <>
-      <div className="w-full h-[194px] relative mb-5">
+      <div
+        className="w-full h-[194px] relative mb-5"
+        onClick={() => openModal("images", { images, title })}
+      >
         <Image
           src={images[0]}
           alt="spot image"
