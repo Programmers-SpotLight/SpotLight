@@ -122,6 +122,8 @@ export async function saveSelectionImage(imageFile: File) {
   const buffer = new Uint8Array(arrayBuffer);
 
   try {
+    // check if the directory exists, if not, create it
+    await fs.mkdir(path.join('.', 'public', 'images', 'selections'), { recursive: true });
     const savePath = path.join('.', 'public', 'images', 'selections', filePath);
     // Save the file to the public/images/selections directory for Windows and Linux
     await fs.writeFile(savePath, buffer);
@@ -141,6 +143,8 @@ const saveSelectionSpotPhoto = async (imageFile: File) => {
   const buffer = new Uint8Array(arrayBuffer);
 
   try {
+    // check if the directory exists, if not, create it
+    await fs.mkdir(path.join('.', 'public', 'images', 'selections', 'spots'), { recursive: true });
     // Save the file to the public/images/selections directory for Windows and Linux
     const savePath = path.join('.', 'public', 'images', 'selections', 'spots', filePath);
     await fs.writeFile(savePath, buffer);
