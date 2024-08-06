@@ -13,8 +13,8 @@ interface IuseFetchSearchResult {
 
 const useFetchSearchResult = ({category_id, region_id, tags, sort, page, limit} : IuseFetchSearchResult) : UseQueryResult<IsearchResult> => {
     return useQuery<IsearchResult>({
-        queryKey: ['searchResult', category_id, region_id, tags, sort],
-        queryFn : () => fetchSearchResult(category_id, region_id, tags, sort)
+        queryKey: ['searchResult', category_id, region_id, tags, sort, page, limit],
+        queryFn : () => fetchSearchResult(category_id, region_id, tags, sort, page, limit)
     })
 }
 

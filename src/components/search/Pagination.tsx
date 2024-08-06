@@ -35,7 +35,7 @@ const Pagination = ({ pagination }: IPaginationProps) => {
       pageNumbers.push(
         <li key={i}>
           <div
-            className={`flex cursor-pointer px-2 py-1 ${i === currentPage ? 'bg-primary text-white rounded-full' : 'hover: rounded-full text-grey4 hover:text-white hover:bg-grey3'}`}
+            className={`flex font-medium text-medium cursor-pointer px-2 py-1 ${i === currentPage ? 'bg-primary text-white rounded-full' : 'hover: rounded-full text-grey4 hover:text-white hover:bg-grey3'}`}
             onClick={() => handleClickPage(i)}
           >
             {i}
@@ -61,7 +61,7 @@ const Pagination = ({ pagination }: IPaginationProps) => {
   return (
     <div className="flex items-center justify-center mt-10 mb-10">
       <button
-        className="controllButton p-4 text-grey4 text-extraLarge font-extrabold4"
+        className="controllButton p-4 text-grey4 text-extraLarge font-extrabold4 cursor-pointer"
         onClick={prevPage}
         disabled={currentPage === 1}
       >
@@ -71,7 +71,7 @@ const Pagination = ({ pagination }: IPaginationProps) => {
         {pageButtonRender(pagination.totalPages)}
       </ul>
       <button
-        className="controllButton p-4 text-grey4 text-extraLarge font-extrabold4"
+        className="controllButton p-4 text-grey4 text-extraLarge font-extrabold4 cursor-pointer"
         onClick={nextPage}
         disabled={currentPage >= pagination.totalPages}
       >
