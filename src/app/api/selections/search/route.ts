@@ -1,51 +1,45 @@
 import { dbConnectionPool } from "@/libs/db";
 import { NextRequest, NextResponse } from "next/server";
+import { ErrorResponse, Ipagination, IsearchData, IsearchResult } from "@/models/searchResult.model";
+import { Ihashtags } from "@/models/hashtag.model";
+import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString";
 import { searchQueryBuilder } from "./searchQueryBuilder";
 
-
-interface Selection { // 병합 시 작성 모델 적용
-  slt_id: number;
-  user_id: number;
-  user_nickname: string;
-  user_img: string;
-  slt_category_name: string;
-  slt_hashtags: string;
-}
-
-interface Pagination { // 병합 시 작성 모델 적용
-  currentPage: number;
-  totalPages: number;
-  totalElements: number;
-  limit: number;
-}
-
-interface ResponseData { // 병합 시 작성 모델 적용
-  data: Selection[];
-  pagination: Pagination;
-}
-
-interface ErrorResponse { // 병합 시 작성 모델 적용
-  error: string;
-}
-
-export async function GET(req: NextRequest): Promise<NextResponse<ResponseData | ErrorResponse>> {
+export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult | ErrorResponse>> {
   const url = req.nextUrl;
   const query = url.searchParams;
 
-  const category_id = query.get("category") || "0";
-  const tags = query.getAll("tags") || [];
-  const currentPage = parseInt(query.get("page") || "1", 10);
-  const limit = parseInt(query.get("limit") || "8", 10);
-
+  const category_id = query.get(QUERY_STRING_NAME.category_id) || QUERY_STRING_DEFAULT.category_id;
+  const tags = query.getAll(QUERY_STRING_NAME.tags) || QUERY_STRING_DEFAULT.tags;
+  const currentPage = parseInt(query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page);
+  const limit = parseInt(query.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit);
+  
   try {
     // 전체 결과 수를 계산하는 쿼리
     const countQuery = dbConnectionPool('selection')
-      .countDistinct('selection.slt_id as total_count')
-      .modify(queryBuilder => searchQueryBuilder(queryBuilder, category_id, tags));
+    .select(
+      'selection.*',
+      'user.user_nickname',
+      'user.user_img',
+      'selection_category.slt_category_name',
+      dbConnectionPool.raw('JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags')
+    )
+    .groupBy('selection.slt_id', 'user.user_id')
+    .modify(queryBuilder => searchQueryBuilder(queryBuilder, category_id, tags))
 
     const countResult = await countQuery;
-    const totalElements = countResult[0].total_count;
+    const totalElements = countResult.length > 0 ? parseInt(countResult.length) : 0;
     const totalPages = Math.ceil(totalElements / limit);
+
+    if (totalElements === 0) {
+      const pagination: Ipagination = {
+        currentPage,
+        totalPages,
+        totalElements,
+        limit
+      };
+      return NextResponse.json({ data: [], pagination });
+    }
 
     // 페이지네이션된 결과를 가져오는 쿼리
     const pageQuery = dbConnectionPool('selection')
@@ -61,22 +55,23 @@ export async function GET(req: NextRequest): Promise<NextResponse<ResponseData |
       .limit(limit)
       .offset((currentPage - 1) * limit);
 
-    const pageResult: Selection[] = await pageQuery;
+    const pageResult: IsearchData[] = await pageQuery;
 
     // 해시태그 JSON 파일 타입 변환
-    const finalResults = pageResult.map((item: Selection) => ({
+    const finalResults = pageResult.map((item: IsearchData) => ({
       ...item,
-      slt_hashtags: item.slt_hashtags ? JSON.parse(item.slt_hashtags) : []
+      slt_hashtags: typeof item.slt_hashtags === 'string' ? JSON.parse(item.slt_hashtags) as Ihashtags[] : item.slt_hashtags
     }));
 
-    const pagination: Pagination = {
+    const pagination: Ipagination = {
       currentPage,
       totalPages,
       totalElements,
       limit
     };
-    
-    console.log(pagination);
+
+    console.log(pagination)
+
     return NextResponse.json({ data: finalResults, pagination });
   } catch (error) {
     console.error("Database query error:", error);

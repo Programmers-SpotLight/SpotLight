@@ -29,7 +29,7 @@ const Pagination = ({ pagination }: IPaginationProps) => {
 
   const pageButtonRender = (totalPages: number) => {
     const startPage = (currentPageGroup - 1) * PAGE_GROUP_NUM + 1;
-    const endPage = Math.min(PAGE_GROUP_NUM * currentPageGroup, 20);
+    const endPage = Math.min(PAGE_GROUP_NUM * currentPageGroup, totalPages);
     const pageNumbers = [];
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(

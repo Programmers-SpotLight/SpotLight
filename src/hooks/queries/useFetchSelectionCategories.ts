@@ -1,4 +1,4 @@
-import { fetchSelectionCategories } from "@/http/search"
+import { fetchSelectionCategories } from "@/http/search.api"
 import { ISelectionCategory } from "@/models/selection.model"
 import { useQuery, UseQueryResult } from "@tanstack/react-query"
 

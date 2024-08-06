@@ -1,4 +1,3 @@
-// 공통 쿼리 빌더 함수
 export const searchQueryBuilder = (
   queryBuilder: any,
   category_id: string,
@@ -25,12 +24,10 @@ export const searchQueryBuilder = (
   }
 
   if (tags.length > 0) {
-    queryBuilder.havingRaw(
-      `SUM(CASE WHEN ${tags
-        .map((tag) => `hashtag.htag_name LIKE '%${tag}%'`)
-        .join(" OR ")} THEN 1 ELSE 0 END) > 0`
-    );
+    tags.forEach(tag => {
+      queryBuilder.havingRaw(`SUM(CASE WHEN hashtag.htag_name LIKE '%${tag}%' THEN 1 ELSE 0 END) > 0`);
+    });
   }
 
-  return searchQueryBuilder;
+  return queryBuilder;
 };

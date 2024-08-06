@@ -1,6 +1,6 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { IsearchResult, TsortType } from "@/models/searchResult.model";
-import { fetchSearchResult } from "@/http/search";
+import { fetchSearchResult } from "@/http/search.api";
 
 interface IuseFetchSearchResult {
     category_id? : string,

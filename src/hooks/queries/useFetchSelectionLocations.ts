@@ -1,4 +1,4 @@
-import { fetchSelectionLocations } from "@/http/search"
+import { fetchSelectionLocations } from "@/http/search.api"
 import { ISelectionLocation } from "@/models/selection.model"
 import { useQuery, UseQueryResult } from "@tanstack/react-query"
 

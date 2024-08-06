@@ -1,9 +1,10 @@
 import { TsortType } from '@/models/searchResult.model';
 import { requestHandler } from './http';
+import { QUERY_STRING_NAME } from '@/constants/queryString';
 
 export const fetchSearchResult = async (
-  category?: string,
-  region?: string,
+  category_id?: string,
+  region_id?: string,
   tags?: string[],
   sort?: TsortType,
   page? : string,
@@ -13,12 +14,12 @@ export const fetchSearchResult = async (
 
   const params = new URLSearchParams();
   
-  if (category) params.append('category', category);
-  if (region) params.append('region', region);
-  if (tags) tags.forEach(tag => params.append('tags', tag));
-  if (sort) params.append('sort', sort);
-  if (page) params.append('page', page);
-  if (limit) params.append('limit', limit);
+  if (category_id) params.append(QUERY_STRING_NAME.category_id, category_id);
+  if (region_id) params.append(QUERY_STRING_NAME.region_id, region_id);
+  if (tags) tags.forEach(tag => params.append(QUERY_STRING_NAME.tags, tag));
+  if (sort) params.append(QUERY_STRING_NAME.sort, sort);
+  if (page) params.append(QUERY_STRING_NAME.page, page);
+  if (limit) params.append(QUERY_STRING_NAME.limit, limit);
 
   const finalUrl = `${url}?${params.toString()}`;
 

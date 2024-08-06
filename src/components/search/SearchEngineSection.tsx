@@ -8,19 +8,16 @@ import Hashtag from "../common/Hashtag";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
 import useFetchSelectionCategories from "@/hooks/queries/useFetchSelectionCategories";
 import useFetchSelectionLocations from "@/hooks/queries/useFetchSelectionLocations";
-
-const TAG_QUERY_STRING_NAME = "tags"
+import { QUERY_STRING_NAME } from "@/constants/queryString";
 
 const SearchEngineSection = () => {
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
   const {data : categoryDatas, isError : categoryError, isLoading : categoryLoading} = useFetchSelectionCategories();
   const {data : locationDatas, isError : locationError, isLoading : locationLoading} = useFetchSelectionLocations();
-
-  console.log(categoryDatas, locationDatas)
-
+  
   useEffect(() => { // 초기 컴포넌트 생성 시 세션 스토리지에 저장된 태그 불러오기
-    const storedTags = sessionStorage.getItem(TAG_QUERY_STRING_NAME);
+    const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags);
     if (storedTags) {
       setTagList(JSON.parse(storedTags));
     }
@@ -32,8 +29,8 @@ const SearchEngineSection = () => {
       const addTag = tagValue.replace(/\s+/g, '');
       const updatedTagList = [...tagList, addTag];
       setTagList(updatedTagList);
-      sessionStorage.setItem(TAG_QUERY_STRING_NAME, JSON.stringify(updatedTagList));
-      addQueryString(TAG_QUERY_STRING_NAME,addTag);
+      sessionStorage.setItem(QUERY_STRING_NAME.tags, JSON.stringify(updatedTagList));
+      addQueryString(QUERY_STRING_NAME.tags,addTag);
       setTagValue("");
     }
   };
@@ -41,8 +38,8 @@ const SearchEngineSection = () => {
   const cancelHashtag = (tag : string, index: number) => { // 해시태그 제거시 동작, 세션 스토리지에 해당 태그 제거
     const updatedTagList = tagList.filter((_, i) => i !== index);
     setTagList(updatedTagList);
-    sessionStorage.setItem(TAG_QUERY_STRING_NAME, JSON.stringify(updatedTagList));
-    deleteQueryString(TAG_QUERY_STRING_NAME,tag)
+    sessionStorage.setItem(QUERY_STRING_NAME.tags, JSON.stringify(updatedTagList));
+    deleteQueryString(QUERY_STRING_NAME.tags,tag)
   };
 
   if(!categoryDatas || !locationDatas) return null
@@ -51,8 +48,8 @@ const SearchEngineSection = () => {
   return (
     <div className="px-5">
       <div className="flex gap-5 mb-5 ">
-        <SearchDropdown title="카테고리" query="category_id" contents={categoryDatas} />
-        <SearchDropdown title="지역" query="region_id" contents={locationDatas} />
+        <SearchDropdown title="카테고리" query={QUERY_STRING_NAME.category_id} contents={categoryDatas} />
+        <SearchDropdown title="지역" query={QUERY_STRING_NAME.region_id} contents={locationDatas} />
       </div>
       <form onSubmit={handleSubmit}>
         <TextInput

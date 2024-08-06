@@ -10,6 +10,7 @@ import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
 import { TsortType } from "@/models/searchResult.model";
 import useFetchSearchResult from "@/hooks/queries/useFetchSearchResult";
 import Pagination from "./Pagination";
+import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString";
 
 const sortData: { name: string; type: TsortType }[] = [
   { name: "최신순", type: "latest" },
@@ -23,12 +24,12 @@ const SearchResultSection = () => {
   const [isSortClicked, setIsSortClicked] = useState<boolean>(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
-  const tags = searchParams.getAll('tags'); // 병합시 전부 constants를 통한 디폴트값으로 변경
-  const category_id = searchParams.get('category_id') || '0';
-  const region_id = searchParams.get('region_id') || '0';
-  const sort = (searchParams.get("sort") as TsortType) || 'latest' as TsortType;
-  const page = searchParams.get("page") || "1";
-  const limit = searchParams.get("limit") || "8";
+  const tags = searchParams.getAll(QUERY_STRING_NAME.tags);
+  const category_id = searchParams.get(QUERY_STRING_NAME.category_id) || QUERY_STRING_DEFAULT.category_id;
+  const region_id = searchParams.get(QUERY_STRING_NAME.region_id) || QUERY_STRING_DEFAULT.region_id;
+  const sort = (searchParams.get(QUERY_STRING_NAME.sort) as TsortType) || QUERY_STRING_DEFAULT.sort as TsortType;
+  const page = searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
+  const limit = searchParams.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit;
 
   const { data: results, isError, isLoading } = useFetchSearchResult({category_id, region_id, tags, sort, page, limit});
   useClickOutside(sortRef, setIsSortClicked);
