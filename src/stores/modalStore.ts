@@ -7,7 +7,8 @@ interface IModalStore {
   modalType : TmodalType
   extraData : any;
   setExtraData : (data : any) => void;
-  openModal: (modalType : TmodalType) => void;
+  props?: object | null;
+  openModal: <T extends object>(modalType: TmodalType, props?: T) => void;
   closeModal: () => void;
 }
 
@@ -17,8 +18,9 @@ export const useModalStore = create<IModalStore>()(
     modalType : null,
     extraData : null,
     setExtraData : (data : any) => set({ extraData : data }),
-    openModal: (modalType : TmodalType = null) => 
-      set({ isOpen: true, modalType: modalType }),
-    closeModal: () => set({ isOpen: false, modalType: null})
+    props: null,
+    openModal: <T extends object>(modalType: TmodalType, props?: T) =>
+      set({ isOpen: true, modalType, props: props || null }),
+    closeModal: () => set({ isOpen: false, modalType: null, props: null }),
   }))
 );

@@ -1,19 +1,21 @@
 "use client";
 
 import { useModalStore } from "@/stores/modalStore";
-import React, { ReactNode } from "react";
+import React from "react";
 import { useStore } from "zustand";
 import Modal from "./Modal";
 import ModalTemp from "./modal-contents/ModalTemp";
 import { TModalSize, TmodalType } from "@/models/modal";
 import ModalCreateSelectionSpot from "./modal-contents/ModalCreateSelectionSpot";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
 
 interface ImodalDatas {
   type: TmodalType;
   title: string;
   size: TModalSize;
-  component: ReactNode;
+  overlayClose: boolean;
+  component: React.ComponentType<any>;
 }
 
 const modalDatas: ImodalDatas[] = [
@@ -21,7 +23,8 @@ const modalDatas: ImodalDatas[] = [
     type: "temp",
     title: "모달 테스트",
     size: "medium",
-    component: <ModalTemp />,
+    overlayClose: true,
+    component: ModalTemp
   },
   {
     type: "addSelectionSpot",
@@ -32,11 +35,18 @@ const modalDatas: ImodalDatas[] = [
         <ModalCreateSelectionSpot />
       </APIProvider>
     ),
+  },
+  {
+    type: "images",
+    title: "스팟 이미지",
+    size: "full",
+    overlayClose: true,
+    component: SpotImages
   }
 ];
 
 const ModalController = () => {
-  const { isOpen, closeModal, modalType } = useStore(useModalStore);
+  const { isOpen, closeModal, modalType, props } = useStore(useModalStore);
 
   if (!isOpen) return null;
 
@@ -44,7 +54,7 @@ const ModalController = () => {
 
   if (!findModal) return null;
 
-  const { title, size, component } = findModal;
+  const { title, size, overlayClose, component: Component } = findModal;
 
   const handleOverlayClick = () => {
     closeModal();
@@ -52,15 +62,14 @@ const ModalController = () => {
 
   return (
     <div
-      className="flex justify-center items-center fixed inset-0 bg-black bg-opacity-50 z-20"
-      onClick={handleOverlayClick}
+      className={`flex justify-center items-center fixed inset-0 bg-black ${
+        modalType === "images" ? "bg-opacity-90" : "bg-opacity-50"
+      } z-20`}
+      onClick={overlayClose ? handleOverlayClick : undefined}
     >
-      <div
-        className="relative"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="relative" onClick={(e) => e.stopPropagation()}>
         <Modal title={title} size={size} closeModal={closeModal}>
-          {component}
+          <Component {...props} />
         </Modal>
       </div>
     </div>
