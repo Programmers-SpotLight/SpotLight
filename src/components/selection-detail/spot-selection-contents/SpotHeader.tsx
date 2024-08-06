@@ -1,3 +1,5 @@
+import Hashtag from "@/components/common/Hashtag";
+import { SpotCategory } from "@/models/spot";
 import Image from "next/image";
 import React from "react";
 import { LuMapPin } from "react-icons/lu";
@@ -8,8 +10,6 @@ interface ISpot {
   mapPin: string;
   color: string;
 }
-
-export type SpotCategory = "관광지" | "맛집" | "쇼핑" | "카페" | "기타";
 
 export const SPOTINFOWITHCATEGORY: { [key in SpotCategory]: ISpot } = {
   관광지: {
@@ -49,7 +49,7 @@ interface ISpotHeaderProps {
   categoryName: SpotCategory;
   title: string;
   address: string;
-  hashtag: string[];
+  hashtags: string[];
 }
 
 const SpotHeader = ({
@@ -57,7 +57,7 @@ const SpotHeader = ({
   categoryName,
   title,
   address,
-  hashtag
+  hashtags
 }: ISpotHeaderProps) => {
   return (
     <>
@@ -99,7 +99,11 @@ const SpotHeader = ({
             {address}
           </div>
           {/**hashtag */}
-          <div className="flex gap-3 flex-wrap">{hashtag.map((h) => h)}</div>
+          <div className="flex">
+            {hashtags.map((hashtag) => (
+              <Hashtag size="big" name={hashtag} key={hashtag} />
+            ))}
+          </div>
         </div>
       </div>
     </>
