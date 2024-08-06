@@ -8,13 +8,14 @@ import { MdNavigateNext } from "react-icons/md";
 
 interface SearchDropdownProps {
   title: string;
+  query : string;
   contents: {
     name: string;
     id: number;
   }[];
 }
 
-const SearchDropdown = ({ title, contents }: SearchDropdownProps) => {
+const SearchDropdown = ({ title, contents, query }: SearchDropdownProps) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [currentCategory, setCurrentCategory] = useState<string>(title);
   const dropdownRef = useRef<HTMLDivElement>(null); 
@@ -27,8 +28,8 @@ const SearchDropdown = ({ title, contents }: SearchDropdownProps) => {
   const handleItemClick = (name: string, id: number) => {
     setCurrentCategory(name);
     setIsClicked(false);
-    deleteQueryString(title);
-    addQueryString(title,id.toString());
+    deleteQueryString(query);
+    addQueryString(query,id.toString());
   };
 
 

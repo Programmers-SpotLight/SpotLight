@@ -6,18 +6,23 @@ import TextInput from "../common/input/TextInput";
 import { MdAdd } from "react-icons/md";
 import Hashtag from "../common/Hashtag";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
+import useFetchSelectionCategories from "@/hooks/queries/useFetchSelectionCategories";
+import useFetchSelectionLocations from "@/hooks/queries/useFetchSelectionLocations";
 
 const TAG_QUERY_STRING_NAME = "tags"
 
 const SearchEngineSection = () => {
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
+  const {data : categoryDatas, isError : categoryError, isLoading : categoryLoading} = useFetchSelectionCategories();
+  const {data : locationDatas, isError : locationError, isLoading : locationLoading} = useFetchSelectionLocations();
+
+  console.log(categoryDatas, locationDatas)
 
   useEffect(() => { // 초기 컴포넌트 생성 시 세션 스토리지에 저장된 태그 불러오기
     const storedTags = sessionStorage.getItem(TAG_QUERY_STRING_NAME);
     if (storedTags) {
       setTagList(JSON.parse(storedTags));
-      console.log(setTagList)
     }
   
   }, []);
@@ -41,13 +46,14 @@ const SearchEngineSection = () => {
     deleteQueryString(TAG_QUERY_STRING_NAME,tag)
   };
 
+  if(!categoryDatas || !locationDatas) return null
 
 
   return (
     <div className="px-5">
       <div className="flex gap-5 mb-5 ">
-        <SearchDropdown title="카테고리" contents={CategoryContents} />
-        <SearchDropdown title="지역" contents={RegionContents} />
+        <SearchDropdown title="카테고리" query="category_id" contents={categoryDatas} />
+        {/* <SearchDropdown title="지역" query="region_id" contents={locationDatas} /> */}
       </div>
       <form onSubmit={handleSubmit}>
         <TextInput
@@ -77,16 +83,6 @@ const SearchEngineSection = () => {
     </div>
   );
 };
-
-const CategoryContents = [ // 임시데이터(이후 API를 통해 받을 데이터) 
-  { name: "카테고리 전체", id: 0 },
-  { name: "아이돌", id: 1 },
-  { name: "영화", id: 2 },
-  { name: "드라마", id: 3 },
-  { name: "애니메이션", id: 4 },
-  { name: "책", id: 5 },
-  { name: "종교", id: 6 }
-];
 
 const RegionContents = [ // 임시데이터(이후 API를 통해 받을 데이터) 
   { name: "지역 전체", id: 0 },
