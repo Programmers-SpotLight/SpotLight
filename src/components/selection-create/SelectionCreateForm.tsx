@@ -26,12 +26,12 @@ const SelectionCreateForm = () => {
     location: undefined | {id: number, name: string},
     subLocation: undefined | {id: number, name: string}
   }>({location: undefined, subLocation: undefined});
-  const [thumbnailImage, setThumbnailImage] = useState<File | null>(null);
+  const [thumbnailImage, setThumbnailImage] = useState<File | string | null>(null);
   const [hashtagInputValue, setHashtagInputValue] = useState<string>("");
   const [hashtags, setHashtags] = useState<Array<string>>([]);
 
   const { openModal, setExtraData } = useStore(useModalStore);
-  const { spots, deleteSpot } = useStore(useSelectionCreateStore);
+  const { spots, deleteSpot, updateSpot } = useStore(useSelectionCreateStore);
 
   const handleAddSpotClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -73,7 +73,7 @@ const SelectionCreateForm = () => {
       },
       subLocation: {
         id: 0,
-        name: selectionLocations.find((loc) => loc.id === parseInt(locationValue))?.options[0].name || ""
+        name: "선택하세요"
       }
     });
   };
@@ -142,8 +142,8 @@ const SelectionCreateForm = () => {
       return;
     }
 
-    formData.append('temp', 'true');
-    formData.append('name', title);
+    formData.append('status', 'temp');
+    formData.append('title', title);
 
     if (description) {
       formData.append('description', description);
@@ -161,10 +161,20 @@ const SelectionCreateForm = () => {
     }
 
     if (thumbnailImage) {
-      formData.append('thumbnail', thumbnailImage);
+      formData.append('img', thumbnailImage);
     }
 
+    const spotsPhotos: Array<{placeId: string, photos: Array<File | string>}> = [];
     if (spots.length > 0) {
+      for (let i = 0; i < spots.length; i++) {
+        const images = spots[i].photos;
+        for (let j = 0; j < images.length; j++) {
+          formData.append(`spots[${spots[i].placeId}][photos][${j}]`, images[j]);
+        }
+        spotsPhotos.push({placeId: spots[i].placeId, photos: images});
+        const clone = {...spots[i], photos: []};
+        updateSpot(i, clone);
+      }
       formData.append('spots', JSON.stringify(spots));
     }
 
@@ -172,13 +182,96 @@ const SelectionCreateForm = () => {
       formData.append('hashtags', JSON.stringify(hashtags));
     }
 
-    const response = axios.post('/api/selections', formData, {
+    axios.post('/api/selections', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
+    }).then((res) => res).catch((err) => {
+      alert('제출에 실패했습니다.');
+      for (let i = 0; i < spots.length; i++) {
+        const clone = {...spots[i], photos: spotsPhotos[i].photos};
+        updateSpot(i, clone);
+        console.log(spots[i]);
+      }
     });
+  }
 
-    console.log(response);
+  const handleSelectionSubmitClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    // 제출 로직
+    const formData = new FormData();
+    if (!title) {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+
+    formData.append('title', title);
+    formData.append('status', 'public');
+
+    if (!description) {
+      alert('설명을 입력해주세요.');
+      return;
+    }
+    formData.append('description', description);
+
+    if (!category) {
+      alert('카테고리를 선택해주세요.');
+      return;
+    }
+    formData.append('category', category.id.toString());
+
+    if (!location.location || !location.subLocation) {
+      alert('지역을 선택해주세요.');
+      return;
+    }
+    formData.append('location', JSON.stringify({
+      location: location.location.id,
+      subLocation: location.subLocation
+    }));
+
+    if (thumbnailImage) {
+      formData.append('img', thumbnailImage);
+    }
+
+    if (spots.length === 0) {
+      alert('스팟을 등록해주세요.');
+      return;
+    }
+
+    const spotsPhotos: Array<{placeId: string, photos: Array<File | string>}> = [];
+    if (spots.length > 0) {
+      for (let i = 0; i < spots.length; i++) {
+        const images = spots[i].photos;
+        for (let j = 0; j < images.length; j++) {
+          formData.append(`spots[${spots[i].placeId}][photos][${j}]`, images[j]);
+        }
+        spotsPhotos.push({placeId: spots[i].placeId, photos: images});
+        const clone = {...spots[i], photos: []};
+        updateSpot(i, clone);
+      }
+      formData.append('spots', JSON.stringify(spots));
+    }
+
+    if (hashtags.length === 0) {
+      alert('태그를 등록해주세요.');
+      return;
+    }
+    formData.append('hashtags', JSON.stringify(hashtags));
+
+    axios.post('/api/selections', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then((res) => {
+      alert('셀렉션이 성공적으로 등록되었습니다.');
+    }).catch((err) => {
+      alert('제출에 실패했습니다.');
+      for (let i = 0; i < spots.length; i++) {
+        const clone = {...spots[i], photos: spotsPhotos[i].photos};
+        updateSpot(i, clone);
+        console.log(spots[i]);
+      }
+    })
   }
 
   return (
@@ -238,7 +331,7 @@ const SelectionCreateForm = () => {
               <button className="relative border border-solid border-grey2 w-3/4 h-[190px] rounded-[8px] bg-white flex flex-col items-center justify-center">
                 {thumbnailImage ? (
                   <img 
-                    src={URL.createObjectURL(thumbnailImage)} 
+                    src={thumbnailImage instanceof File ? URL.createObjectURL(thumbnailImage) : thumbnailImage} 
                     className="w-auto h-full object-cover" 
                     alt="thumbnail"
                   />
@@ -290,7 +383,7 @@ const SelectionCreateForm = () => {
                             height={16}
                             alt="location"
                           />
-                          {spot.name}
+                          {spot.title}
                         </div>
                         <button onClick={() => handleSpotDeleteClick(index)}>
                           <Image
@@ -382,9 +475,12 @@ const SelectionCreateForm = () => {
         >
           임시저장
         </button>
-        <Button className="w-[160px] text-center py-2 text-medium font-medium text-white bg-[#02588E]">
+        <button
+          className="w-[160px] text-center py-2 bg-primary text-white text-medium font-medium"
+          onClick={handleSelectionSubmitClick}
+        >
           제출
-        </Button>
+        </button>
       </div>
     </div>
   );

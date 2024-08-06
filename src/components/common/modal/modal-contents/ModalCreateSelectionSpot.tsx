@@ -29,7 +29,7 @@ const ModalCreateSelectionSpot = () => {
     closeModal: () => void, 
     setExtraData: (data: any) => void 
   } = useStore(useModalStore);
-  const { addSpot } = useStore(useSelectionCreateStore);
+  const { addSpot, spots: currentSpots } = useStore(useSelectionCreateStore);
 
   const [currentPinCoords, setCurrentPinCoords] = useState<google.maps.LatLngLiteral>(
     (data?.latitude && data?.longitude) ? 
@@ -37,14 +37,14 @@ const ModalCreateSelectionSpot = () => {
       { lat: 37.5503, lng: 126.9971 }
   );
 
-  const [placeName, setPlaceName] = useState<string>(data?.name || '');
+  const [placeName, setPlaceName] = useState<string>(data?.title || '');
   const [description, setDescription] = useState<string>(data?.description || '');
   const [thumbnailImage, setThumbnailImage] = useState<File | string | null>(data?.photos[0] || null);
   const [thumbnailImage1, setThumbnailImage1] = useState<File | string | null>(data?.photos[1] || null);
   const [thumbnailImage2, setThumbnailImage2] = useState<File | string | null>(data?.photos[2] || null);
   const [thumbnailImage3, setThumbnailImage3] = useState<File | string |null>(data?.photos[3] || null);
   const [tagInputValue, setTagInputValue] = useState<string>('');
-  const [tags, setTags] = useState<string[]>(data?.hashtags || []);
+  const [tags, setTags] = useState<string[]>(data?.hashtags as string[]|| []);
 
   const [selectedLocation, setSelectedLocation] = useState<TPoiWithAddress>(
     (data?.latitude && data?.longitude && data?.placeId && data?.formattedAddress) ?
@@ -220,7 +220,6 @@ const ModalCreateSelectionSpot = () => {
 
   const handleAddSpotClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(selectedLocation);
     if (!placeName) {
       alert('스팟 이름을 입력해주세요.');
       return;
@@ -233,6 +232,13 @@ const ModalCreateSelectionSpot = () => {
       alert('스팟 위치를 설정해주세요.');
       return;
     }
+    const isDuplicated = currentSpots.some(
+      (spot) => spot.placeId === selectedLocation.placeId
+    );
+    if (isDuplicated) {
+      alert('이미 등록된 스팟입니다.');
+      return;
+    }
     if (!selectedLocation.address) {
       alert('스팟 주소를 설정해주세요.');
       return;
@@ -241,14 +247,13 @@ const ModalCreateSelectionSpot = () => {
       alert('태그를 등록해주세요.');
       return;
     }
-
     const photos = [thumbnailImage, thumbnailImage1, thumbnailImage2, thumbnailImage3].filter(
-        (photo) => photo !== null
+      (photo) => photo !== null
     );
 
     const spot: ISelectionSpot = {
       placeId: selectedLocation.placeId,
-      name: placeName,
+      title: placeName,
       description,
       formattedAddress: selectedLocation.address,
       latitude: selectedLocation.location.lat,
