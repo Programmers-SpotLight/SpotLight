@@ -11,6 +11,7 @@ import { Knex } from "knex";
 import { fileTypeFromBlob } from "file-type";
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs/promises';
+import path from "path";
 
 
 interface ISelectionCategoryQueryResultRow {
@@ -121,9 +122,10 @@ export async function saveSelectionImage(imageFile: File) {
   const buffer = new Uint8Array(arrayBuffer);
 
   try {
+    const savePath = path.join('.', 'public', 'images', 'selections', filePath);
     // Save the file to the public/images/selections directory for Windows and Linux
-    await fs.writeFile(`./public/images/selections/${filePath}`, buffer);
-    await fs.access(`./public/images/selections/${filePath}`);
+    await fs.writeFile(savePath, buffer);
+    await fs.access(savePath);
   } catch (error) {
     console.error(error);
     return 'Failed to save the image';
@@ -140,8 +142,9 @@ const saveSelectionSpotPhoto = async (imageFile: File) => {
 
   try {
     // Save the file to the public/images/selections directory for Windows and Linux
-    await fs.writeFile(`./public/images/selections/spots/${filePath}`, buffer);
-    await fs.access(`./public/images/selections/spots/${filePath}`);
+    const savePath = path.join('.', 'public', 'images', 'selections', 'spots', filePath);
+    await fs.writeFile(savePath, buffer);
+    await fs.access(savePath);
   } catch (error) {
     console.error(error);
     return 'Failed to save the image';
@@ -530,13 +533,14 @@ export async function validateSpots(spots: ISelectionSpot[] | undefined) : Promi
       }
       if (typeof spots[i].photos[j] === "string") {
         // if the string contains one or more slashes, reject it
-        const filePath = spots[i].photos[j] as string;
-        if (filePath.includes('/')) {
+        const imageFileName = spots[i].photos[j] as string;
+        if (imageFileName.includes('/')) {
           return `Invalid photo for spot ${i + 1}`;
         }
 
         try {
-          await fs.access(`./public/images/selections/spots/${spots[i].photos[j]}`);
+          const imgPath = path.join('.', 'public', 'images', 'selections', 'spots', imageFileName);
+          await fs.access(imgPath);
         } catch (error) {
           console.error(error);
           return `Invalid photo`;
