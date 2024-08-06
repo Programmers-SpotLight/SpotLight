@@ -10,16 +10,14 @@ interface ISelectionSectionProps {
   isSelectionDrawerOpen: boolean;
   spotClickHandler: (spotId: string) => void;
   selectionData: ISelectionDetail;
-}
-
-interface ISelectionSectionProps {
-  selectionData: ISelectionDetail;
+  selectedSpotId: string | null;
 }
 
 const SelectionSection = ({
   isSelectionDrawerOpen,
   spotClickHandler,
-  selectionData
+  selectionData,
+  selectedSpotId
 }: ISelectionSectionProps) => {
   const selectionTabData = (spotClickHandler: (spotId: string) => void) => [
     {
@@ -32,6 +30,7 @@ const SelectionSection = ({
         <SpotList
           spotClickHandler={spotClickHandler}
           spotList={selectionData.spot_list}
+          selectedSpotId={selectedSpotId}
         />
       )
     },
@@ -45,7 +44,7 @@ const SelectionSection = ({
     <div
       className={`bg-grey0 ${
         isSelectionDrawerOpen ? "translate-x-0" : "-translate-x-full"
-      } transition ease-in-out duration-500 border-[0.5px] border-grey2 border-solid overflow-hidden w-[375px] z-10`}
+      } transition ease-in-out duration-500 border-[0.5px] border-grey2 border-solid overflow-y-scroll scrollbar-hide w-[375px] z-10`}
       style={{ height: "calc(100vh - 74px)" }}
     >
       <SelectionHeader selectionDetailData={selectionData} />

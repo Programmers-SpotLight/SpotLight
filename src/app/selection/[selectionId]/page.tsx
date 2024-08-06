@@ -106,7 +106,7 @@ const SelectionPage = () => {
   return (
     <div className="relative">
       <GoogleMap
-        width="100vw"
+        width="100%"
         height="calc(100vh - 74px)"
         lat={selectionData.spot_list[0].lat}
         lng={selectionData.spot_list[0].lng}

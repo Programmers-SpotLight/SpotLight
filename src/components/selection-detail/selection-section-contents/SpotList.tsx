@@ -6,30 +6,23 @@ import { ISpotInfoForMarking } from "@/models/spot";
 interface ISpotListProps {
   spotClickHandler: (spotId: string, lat: number, lng: number) => void;
   spotList: ISpotInfoForMarking[];
+  selectedSpotId: string | null;
 }
 
-const SpotList = ({ spotClickHandler, spotList }: ISpotListProps) => {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
-  const handleSpotDetail = (
-    index: number,
-    spotId: string,
-    lat: number,
-    lng: number
-  ) => {
-    setSelectedIndex(index);
-    spotClickHandler(spotId, lat, lng);
-  };
-
+const SpotList = ({
+  spotClickHandler,
+  spotList,
+  selectedSpotId
+}: ISpotListProps) => {
   return (
     <ul className="flex flex-col gap-[5px] cursor-pointer">
-      {spotList.map((spot, index) => (
+      {spotList.map((spot) => (
         <li
-          key={index}
+          key={spot.id}
           className={`flex items-center gap-[5px] text-grey4 font-medium text-medium p-[3px] pl-2 pr-2 box-border ${
-            selectedIndex === index ? "bg-grey1" : ""
+            selectedSpotId === spot.id ? "bg-grey1" : ""
           } p-2 rounded-md`}
-          onClick={() => handleSpotDetail(index, spot.id, spot.lat, spot.lng)}
+          onClick={() => spotClickHandler(spot.id, spot.lat, spot.lng)}
         >
           <div className="relative w-4 h-4">
             <Image
@@ -40,7 +33,9 @@ const SpotList = ({ spotClickHandler, spotList }: ISpotListProps) => {
           </div>
           <span
             className={
-              selectedIndex === index ? "text-primary font-bold" : "text-grey4"
+              selectedSpotId === spot.id
+                ? "text-primary font-bold"
+                : "text-grey4"
             }
           >
             {spot.title}

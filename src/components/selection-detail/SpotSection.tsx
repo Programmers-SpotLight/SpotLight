@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotReview from "./spot-selection-contents/SpotReview";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
-import { SpotCategory } from "@/models/spot";
+import { ISpotDetail, SpotCategory } from "@/models/spot";
 
 interface ISpotSectionProps {
   isSelectionDrawerOpen: boolean;
@@ -11,10 +11,13 @@ interface ISpotSectionProps {
   selectedSpotId: string | null;
 }
 
-const sampleSpot = {
-  images: [""],
-  spotCategoryName: "맛집" as SpotCategory,
+const sampleSpot: ISpotDetail = {
   title: "가마쿠라코코마에역",
+  images: [""],
+  category: {
+    id: 1,
+    name: "관광지"
+  },
   description: `1. 위치와 접근성 👍
 가마쿠라코코마에 역은 도쿄에서 남서쪽으로 약 50km 떨어진 가나가와현에 위치해 있어요. 도쿄에서 출발하는 경우, JR 요코스카 선을 타고 요코하마에서 에노시마 전철로 갈아타면 쉽게 도착할 수 있습니다. 여행자들이 많이 이용하는 경로라서 표지판과 안내도 잘 되어 있어요.
 
@@ -25,9 +28,12 @@ const sampleSpot = {
 역 바로 앞에 펼쳐진 바다는 정말 아름다워요. 푸른 바다와 하늘이 맞닿아 있는 풍경은 말로 표현할 수 없을 만큼 멋지죠. 날씨가 좋은 날에는 에노시마 섬도 보입니다. 해변을 따라 산책을 즐기거나, 자전거를 대여해서 주변을 둘러보는 것도 좋은 방법이에요.
 
 4. 사진 명소❤️
+가마쿠라코코마에 역은 사진 찍기 좋은 명소로도 유명합니다. 특히 해질녘의 풍경은 환상적이에요. 석양이 바다를 물들이는 순간은 정말 아름답습니다. 이곳에서 찍은 사진은 인스타그램 등 SNS에 올리면 반응이 아주 뜨거울 거예요. 제가 방문했을 때도 많은 사람들이 카메라를 들고 사진을 찍느라 여념이 없더라고요.
+
+4. 사진 명소❤️
 가마쿠라코코마에 역은 사진 찍기 좋은 명소로도 유명합니다. 특히 해질녘의 풍경은 환상적이에요. 석양이 바다를 물들이는 순간은 정말 아름답습니다. 이곳에서 찍은 사진은 인스타그램 등 SNS에 올리면 반응이 아주 뜨거울 거예요. 제가 방문했을 때도 많은 사람들이 카메라를 들고 사진을 찍느라 여념이 없더라고요.`,
   address: "일본 〒248-0033 가나가와현 가마쿠라시 고시고에 1 조메1",
-  hashtags: ["슬램덩크", "슬램덩크"]
+  hashtags: ["슬램덩크", "슬램덩크2"]
 };
 
 const SpotSection = ({
@@ -36,10 +42,11 @@ const SpotSection = ({
   selectedSpotId
 }: ISpotSectionProps) => {
   //selectedSpotId로 fetch
+
   const spotTab = [
     {
       title: "스팟 정보",
-      component: <SpotInfo />
+      component: <SpotInfo description={sampleSpot.description} />
     },
     {
       title: "유저 리뷰",
@@ -57,12 +64,12 @@ const SpotSection = ({
           : "-translate-x-[200%]"
       }
       transition- ease-in-out duration-500
-border-[0.5px] border-grey2 border-solid overflow-y-scroll w-[375px] scrollbar-hide`}
+border-[0.5px] border-grey2 border-solid w-[375px] overflow-y-scroll scrollbar-hide`}
       style={{ height: "calc(100vh - 74px)" }}
     >
       <SpotHeader
         images={sampleSpot.images}
-        categoryName={sampleSpot.spotCategoryName}
+        categoryName={sampleSpot.category.name as SpotCategory}
         title={sampleSpot.title}
         address={sampleSpot.address}
         hashtags={sampleSpot.hashtags}

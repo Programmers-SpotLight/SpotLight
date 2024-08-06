@@ -27,6 +27,7 @@ const Drawer = ({
         isSelectionDrawerOpen={isSelectionDrawerOpen}
         spotClickHandler={spotClickHandler}
         selectionData={selectionData}
+        selectedSpotId={selectedSpotId}
       />
 
       {/**spot drawer */}

@@ -1,3 +1,4 @@
+import Hashtag from "@/components/common/Hashtag";
 import { SpotCategory } from "@/models/spot";
 import Image from "next/image";
 import React from "react";
@@ -98,7 +99,11 @@ const SpotHeader = ({
             {address}
           </div>
           {/**hashtag */}
-          <div className="flex gap-3 flex-wrap">{hashtags.map((h) => h)}</div>
+          <div className="flex">
+            {hashtags.map((hashtag) => (
+              <Hashtag size="big" name={hashtag} key={hashtag} />
+            ))}
+          </div>
         </div>
       </div>
     </>
