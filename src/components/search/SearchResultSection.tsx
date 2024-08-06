@@ -9,6 +9,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
 import { TsortType } from "@/models/searchResult.model";
 import useFetchSearchResult from "@/hooks/queries/useFetchSearchResult";
+import Pagination from "./Pagination";
 
 const sortData: { name: string; type: TsortType }[] = [
   { name: "최신순", type: "latest" },
@@ -22,13 +23,16 @@ const SearchResultSection = () => {
   const [isSortClicked, setIsSortClicked] = useState<boolean>(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
-  const tags = searchParams.getAll('tags');
+  const tags = searchParams.getAll('tags'); // 병합시 전부 constants를 통한 디폴트값으로 변경
   const category_id = searchParams.get('category_id') || '0';
   const region_id = searchParams.get('region_id') || '0';
-  const sort = searchParams.get("sort") || 'latest';
+  const sort = (searchParams.get("sort") as TsortType) || 'latest' as TsortType;
+  const page = searchParams.get("page") || "1";
+  const limit = searchParams.get("limit") || "8";
 
-  const { data: results, isError, isLoading } = useFetchSearchResult(category_id, region_id, tags, sort as TsortType);
+  const { data: results, isError, isLoading } = useFetchSearchResult({category_id, region_id, tags, sort, page, limit});
   useClickOutside(sortRef, setIsSortClicked);
+
 
   const toggleSortOptions = () => {
     setIsSortClicked((prevState) => !prevState);
@@ -87,6 +91,7 @@ const SearchResultSection = () => {
           />
         ))}
       </div>
+      <Pagination pagination={results.pagination}/>
     </div>
   );
 };

@@ -5,7 +5,9 @@ export const fetchSearchResult = async (
   category?: string,
   region?: string,
   tags?: string[],
-  sort?: TsortType
+  sort?: TsortType,
+  page? : string,
+  limit? : string
 ) => {
   const url = 'api/selections/search';
 
@@ -15,6 +17,8 @@ export const fetchSearchResult = async (
   if (region) params.append('region', region);
   if (tags) tags.forEach(tag => params.append('tags', tag));
   if (sort) params.append('sort', sort);
+  if (page) params.append('page', page);
+  if (limit) params.append('limit', limit);
 
   const finalUrl = `${url}?${params.toString()}`;
 

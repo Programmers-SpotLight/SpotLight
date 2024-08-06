@@ -1,5 +1,4 @@
 import AddBannerSection from "@/components/search/AddBannerSection";
-import Pagination from "@/components/search/Pagination";
 import SearchEngineSection from "@/components/search/SearchEngineSection";
 import SearchResultSection from "@/components/search/SearchResultSection";
 import React from "react";
@@ -11,7 +10,6 @@ const SearchPage = () => {
       <AddBannerSection />
       <SearchEngineSection />
       <SearchResultSection />
-      <Pagination />
     </main>
   );
 };

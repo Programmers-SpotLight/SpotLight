@@ -1,6 +1,6 @@
 import { Ihashtags } from "./hashtag.model"
 
-interface Ipagenation {
+interface Ipagination {
     currentPage: number,
     totalPages: number,
     totalElements: number,
@@ -25,5 +25,5 @@ export interface IsearchResult {
 		user_nickname : string,
 		user_img : string
 	}[],
-    pagenation : Ipagenation
+    pagination : Ipagination
 }

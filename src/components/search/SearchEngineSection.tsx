@@ -16,13 +16,14 @@ const SearchEngineSection = () => {
   const [tagList, setTagList] = useState<string[]>([]);
   const {data : categoryDatas, isError : categoryError, isLoading : categoryLoading} = useFetchSelectionCategories();
   const {data : locationDatas, isError : locationError, isLoading : locationLoading} = useFetchSelectionLocations();
-  
+
+  console.log(categoryDatas, locationDatas)
+
   useEffect(() => { // 초기 컴포넌트 생성 시 세션 스토리지에 저장된 태그 불러오기
     const storedTags = sessionStorage.getItem(TAG_QUERY_STRING_NAME);
     if (storedTags) {
       setTagList(JSON.parse(storedTags));
     }
-  
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => { // 검색창에 태그 작성후 엔터시 동작, 세션 스토리지에 해당 태그 저장
