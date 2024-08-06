@@ -3,7 +3,6 @@
 import Image from "next/image";
 import OneLineInput from "../common/input/OneLineInput";
 import DropdownMenu from "./DropdownMenu";
-import Button from "../common/Button";
 import { useState } from "react";
 import SelectionCreateTitle from "./SelectionCreateTitle";
 import SelectionCreateDescription from "./SelectionCreateDescription";
@@ -35,7 +34,7 @@ const SelectionCreateForm = () => {
 
   const handleAddSpotClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    openModal('addSelectionSpot');
+    openModal('GoogleMapsAddSelectionSpot');
   };
 
   const { 
@@ -186,8 +185,10 @@ const SelectionCreateForm = () => {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
-    }).then((res) => res).catch((err) => {
-      alert('제출에 실패했습니다.');
+    }).then((res) => {
+      alert('셀렉션 미리저장이 성공적으로 되었습니다.');
+    }).catch((err) => {
+      alert('미리저장에 실패했습니다.');
       for (let i = 0; i < spots.length; i++) {
         const clone = {...spots[i], photos: spotsPhotos[i].photos};
         updateSpot(i, clone);
