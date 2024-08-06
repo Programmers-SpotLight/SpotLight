@@ -6,6 +6,8 @@ import { useStore } from "zustand";
 import Modal from "./Modal";
 import ModalTemp from "./modal-contents/ModalTemp";
 import { TModalSize, TmodalType } from "@/models/modal";
+import ModalCreateSelectionSpot from "./modal-contents/ModalCreateSelectionSpot";
+import { APIProvider } from "@vis.gl/react-google-maps";
 import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
 
 interface ImodalDatas {
@@ -23,6 +25,16 @@ const modalDatas: ImodalDatas[] = [
     size: "medium",
     overlayClose: true,
     component: ModalTemp
+  },
+  {
+    type: "addSelectionSpot",
+    title: "스팟 추가",
+    size: "large",
+    component: (
+      <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+        <ModalCreateSelectionSpot />
+      </APIProvider>
+    ),
   },
   {
     type: "images",

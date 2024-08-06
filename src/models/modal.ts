@@ -7,5 +7,6 @@ export type TmodalType =
   | "editTag"
   | "editInfo"
   | "images"
+  | "addSelectionSpot"
   | null;
 export type TModalSize = "small" | "medium" | "large" | "full" | null;
