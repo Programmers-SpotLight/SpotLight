@@ -16,9 +16,7 @@ const SearchEngineSection = () => {
   const [tagList, setTagList] = useState<string[]>([]);
   const {data : categoryDatas, isError : categoryError, isLoading : categoryLoading} = useFetchSelectionCategories();
   const {data : locationDatas, isError : locationError, isLoading : locationLoading} = useFetchSelectionLocations();
-
-  console.log(categoryDatas, locationDatas)
-
+  
   useEffect(() => { // 초기 컴포넌트 생성 시 세션 스토리지에 저장된 태그 불러오기
     const storedTags = sessionStorage.getItem(TAG_QUERY_STRING_NAME);
     if (storedTags) {
@@ -53,7 +51,7 @@ const SearchEngineSection = () => {
     <div className="px-5">
       <div className="flex gap-5 mb-5 ">
         <SearchDropdown title="카테고리" query="category_id" contents={categoryDatas} />
-        {/* <SearchDropdown title="지역" query="region_id" contents={locationDatas} /> */}
+        <SearchDropdown title="지역" query="region_id" contents={locationDatas} />
       </div>
       <form onSubmit={handleSubmit}>
         <TextInput
@@ -83,16 +81,5 @@ const SearchEngineSection = () => {
     </div>
   );
 };
-
-const RegionContents = [ // 임시데이터(이후 API를 통해 받을 데이터) 
-  { name: "지역 전체", id: 0 },
-  { name: "서울", id: 1 },
-  { name: "경기도", id: 2 },
-  { name: "충청도", id: 3 },
-  { name: "강원도", id: 4 },
-  { name: "경상도", id: 5 },
-  { name: "전라도", id: 6 },
-  { name: "제주도", id: 7 }
-];
 
 export default SearchEngineSection;
