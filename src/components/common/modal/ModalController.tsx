@@ -6,6 +6,7 @@ import { useStore } from "zustand";
 import Modal from "./Modal";
 import ModalTemp from "./modal-contents/ModalTemp";
 import { TModalSize, TmodalType } from "@/models/modal";
+import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -21,7 +22,14 @@ const modalDatas: ImodalDatas[] = [
     title: "모달 테스트",
     size: "medium",
     overlayClose: true,
-    component: ModalTemp,
+    component: ModalTemp
+  },
+  {
+    type: "images",
+    title: "스팟 이미지",
+    size: "full",
+    overlayClose: true,
+    component: SpotImages
   }
 ];
 
@@ -42,13 +50,12 @@ const ModalController = () => {
 
   return (
     <div
-      className="flex justify-center items-center fixed inset-0 bg-black bg-opacity-50 z-20"
+      className={`flex justify-center items-center fixed inset-0 bg-black ${
+        modalType === "images" ? "bg-opacity-90" : "bg-opacity-50"
+      } z-20`}
       onClick={overlayClose ? handleOverlayClick : undefined}
     >
-      <div
-        className="relative"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="relative" onClick={(e) => e.stopPropagation()}>
         <Modal title={title} size={size} closeModal={closeModal}>
           <Component {...props} />
         </Modal>

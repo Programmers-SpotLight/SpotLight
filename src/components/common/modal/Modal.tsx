@@ -13,6 +13,7 @@ const MODAL_WIDTH = {
   small: "335px",
   medium: "514px",
   large: "691px",
+  full: "100vw"
 };
 
 const Modal = ({ size, title, children, closeModal }: ModalProps) => {
@@ -24,15 +25,30 @@ const Modal = ({ size, title, children, closeModal }: ModalProps) => {
         return MODAL_WIDTH.medium;
       case "large":
         return MODAL_WIDTH.large;
+      case "full":
+        return MODAL_WIDTH.full;
       default:
         return "auto";
     }
   };
 
+  if (size === "full") {
+    return (
+      <div style={{ width: getModalSize() }}>
+        <IoClose
+          className="top-6 right-10 absolute w-12 h-12 cursor-pointer transition-transform duration-200 hover:scale-110 z-30"
+          fill="white"
+          onClick={closeModal}
+        />
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div
       style={{ width: getModalSize() }}
-      className={`bg-white rounded p-5 relative max-h-[90vh] overflow-y-auto z-20`}
+      className={` bg-white rounded p-5 relative max-h-[90vh] overflow-y-auto z-20`}
     >
       <div className="flex justify-between items-center mb-4">
         {size !== "small" && (
