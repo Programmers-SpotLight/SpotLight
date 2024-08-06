@@ -26,6 +26,7 @@ const SearchResultSection = () => {
   const category_id = searchParams.get('category_id') || '0';
   const region_id = searchParams.get('region_id') || '0';
   const sort = searchParams.get("sort") || 'latest';
+  const page = searchParams.get("page") || "1";
 
   const { data: results, isError, isLoading } = useFetchSearchResult(category_id, region_id, tags, sort as TsortType);
   useClickOutside(sortRef, setIsSortClicked);
