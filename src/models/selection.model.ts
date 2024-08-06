@@ -35,21 +35,22 @@ export interface ISelectionSpotReverseGeolocation {
 
 export interface ISelectionSpot {
   placeId: string;
-  name: string;
+  title: string;
   description: string;
   formattedAddress: string;
   latitude: number;
   longitude: number;
-  hashtags: string[];
+  hashtags: Array<number | string>;
   photos: Array<File | string>;
 }
 
 export interface ISelectionCreateFormData {
-  temp?: boolean;
+  status: string;
   category?: number;
   location?: { location: number, subLocation: number };
-  name: string;
+  img?: File | string;
+  title: string;
   description?: string;
   spots?: ISelectionSpot[];
-  hashtags?: string[];
+  hashtags?: Array<string | number>;
 }
