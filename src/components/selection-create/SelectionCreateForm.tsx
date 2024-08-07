@@ -331,15 +331,24 @@ const SelectionCreateForm = () => {
           <div className="flex items-start gap-6 py-6">
             <div className="flex items-start grow">
               <label htmlFor="title" className="w-1/4 text-medium font-bold">셀렉션 썸네일 등록</label>
-              <button className="relative border border-solid border-grey2 w-3/4 h-[190px] rounded-[8px] bg-white flex flex-col items-center justify-center">
+              <button className="relative border border-solid border-grey2 w-3/4 h-[190px] rounded-[8px] bg-white flex flex-col items-center justify-center overflow-hidden">
                 {thumbnailImage ? (
                   <img 
-                    src={thumbnailImage instanceof File ? URL.createObjectURL(thumbnailImage) : thumbnailImage} 
-                    className="w-auto h-full object-cover" 
+                    src={
+                      thumbnailImage instanceof File ? 
+                        URL.createObjectURL(thumbnailImage) : 
+                        thumbnailImage
+                    } 
+                    className="w-auto h-full object-cover absolute"
                     alt="thumbnail"
                   />
                 ) : (
-                  <Image src="/icons/photo_camera_7C7C7C.svg" width={56} height={56} alt="upload_photo"/>
+                  <Image 
+                    src="/icons/photo_camera_7C7C7C.svg" 
+                    width={56} 
+                    height={56} 
+                    alt="upload_photo"
+                  />
                 )}
                 <input
                   type='file'
