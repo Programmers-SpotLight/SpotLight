@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { SPOTINFOWITHCATEGORY } from "../selection-detail/spot-selection-contents/SpotHeader";
-import { ISpotInfoForMarking } from "@/models/spot";
+import { ISpotInfo } from "@/models/spot";
 
 interface IGoogleMapProps {
   width: string;
   height: string;
   lat: number;
   lng: number;
-  spots: ISpotInfoForMarking[];
-  spotClickHandler: (spotId: string) => void;
+  spots: ISpotInfo[];
+  spotClickHandler: (spotId: number) => void;
   setMap: React.Dispatch<React.SetStateAction<google.maps.Map | null>>;
 }
 
@@ -57,7 +57,7 @@ const GoogleMap = ({
       //add marker on map
       spots.forEach((spot) => {
         const markerContent = document.createElement("img");
-        markerContent.src = SPOTINFOWITHCATEGORY[spot.categoryName].mapPin;
+        markerContent.src = SPOTINFOWITHCATEGORY[spot.category.name].mapPin;
         markerContent.style.width = "100px";
         markerContent.style.height = "100px";
 
@@ -73,7 +73,7 @@ const GoogleMap = ({
 
         marker.addListener("click", () => {
           map.panTo({ lat: spot.lat, lng: spot.lng });
-          spotClickHandler(spot.id);
+          spotClickHandler(parseInt(spot.id, 10));
         });
       });
     };

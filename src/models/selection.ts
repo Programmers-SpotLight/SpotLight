@@ -1,13 +1,20 @@
-import { ISpotDetail } from "./spot";
+import { ISpotInfo } from "./spot";
 
-export interface ISelectionDetail {
+export interface ISelectionDetailInfo {
   id: number;
   title: string;
   description: string;
+  status: string | null;
+  createdAt: Date;
+  updatedAt: Date;
   category: {
     id: number;
     name: string;
   };
+  image?: string;
+}
+
+export interface ISelectionInfo extends ISelectionDetailInfo {
   user: {
     id: number;
     nickname: string;
@@ -17,11 +24,7 @@ export interface ISelectionDetail {
     is_world: boolean;
     region: string;
   };
-  image?: string;
   hashtags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  status: string | null;
-  spot_list: ISpotDetail[];
+  spotList: ISpotInfo[];
   booked: boolean;
 }

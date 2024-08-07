@@ -4,13 +4,13 @@ import SelectionInfo from "./selection-section-contents/SelectionInfo";
 import SelectionReview from "./selection-section-contents/SelectionReview";
 import SpotList from "./selection-section-contents/SpotList";
 import SelectionHeader from "./selection-section-contents/SelectionHeader";
-import { ISelectionDetail } from "@/models/selection";
+import { ISelectionInfo } from "@/models/selection";
 
 interface ISelectionSectionProps {
   isSelectionDrawerOpen: boolean;
-  spotClickHandler: (spotId: string) => void;
-  selectionData: ISelectionDetail;
-  selectedSpotId: string | null;
+  spotClickHandler: (spotId: number) => void;
+  selectionData: ISelectionInfo;
+  selectedSpotId: number | null;
 }
 
 const SelectionSection = ({
@@ -19,7 +19,7 @@ const SelectionSection = ({
   selectionData,
   selectedSpotId
 }: ISelectionSectionProps) => {
-  const selectionTabData = (spotClickHandler: (spotId: string) => void) => [
+  const selectionTabData = (spotClickHandler: (spotId: number) => void) => [
     {
       title: "셀렉션 정보",
       component: <SelectionInfo description={selectionData.description} />
@@ -29,7 +29,7 @@ const SelectionSection = ({
       component: (
         <SpotList
           spotClickHandler={spotClickHandler}
-          spotList={selectionData.spot_list}
+          spotList={selectionData.spotList}
           selectedSpotId={selectedSpotId}
         />
       )

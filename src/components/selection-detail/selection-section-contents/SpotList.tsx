@@ -1,12 +1,12 @@
 import React from "react";
 import { SPOTINFOWITHCATEGORY } from "../spot-selection-contents/SpotHeader";
 import Image from "next/image";
-import { ISpotInfoForMarking } from "@/models/spot";
+import { ISpotInfo } from "@/models/spot";
 
 interface ISpotListProps {
-  spotClickHandler: (spotId: string, lat: number, lng: number) => void;
-  spotList: ISpotInfoForMarking[];
-  selectedSpotId: string | null;
+  spotClickHandler: (spotId: number, lat: number, lng: number) => void;
+  spotList: ISpotInfo[];
+  selectedSpotId: number | null;
 }
 
 const SpotList = ({
@@ -20,20 +20,22 @@ const SpotList = ({
         <li
           key={spot.id}
           className={`flex items-center gap-[5px] text-grey4 font-medium text-medium p-[3px] pl-2 pr-2 box-border ${
-            selectedSpotId === spot.id ? "bg-grey1" : ""
+            selectedSpotId === parseInt(spot.id, 10) ? "bg-grey1" : ""
           } p-2 rounded-md`}
-          onClick={() => spotClickHandler(spot.id, spot.lat, spot.lng)}
+          onClick={() =>
+            spotClickHandler(parseInt(spot.id, 10), spot.lat, spot.lng)
+          }
         >
           <div className="relative w-4 h-4">
             <Image
-              src={SPOTINFOWITHCATEGORY[spot.categoryName].icon}
-              alt={SPOTINFOWITHCATEGORY[spot.categoryName].name}
+              src={SPOTINFOWITHCATEGORY[spot.category.name].icon}
+              alt={SPOTINFOWITHCATEGORY[spot.category.name].name}
               fill
             />
           </div>
           <span
             className={
-              selectedSpotId === spot.id
+              selectedSpotId === parseInt(spot.id, 10)
                 ? "text-primary font-bold"
                 : "text-grey4"
             }

@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaCaretRight } from "react-icons/fa";
 import SpotSection from "./SpotSection";
 import SelectionSection from "./SelectionSection";
-import { ISelectionDetail } from "@/models/selection";
+import { ISelectionInfo } from "@/models/selection";
 
 interface IDrawerProps {
-  selectionData: ISelectionDetail;
+  selectionData: ISelectionInfo;
   isSelectionDrawerOpen: boolean;
   isSpotDrawerOpen: boolean;
   toggleDrawer: () => void;
-  spotClickHandler: (spotId: string) => void;
-  selectedSpotId: string | null;
+  spotClickHandler: (spotId: number) => void;
+  selectedSpotId: number | null;
 }
 const Drawer = ({
   selectionData,
@@ -35,6 +35,11 @@ const Drawer = ({
         isSelectionDrawerOpen={isSelectionDrawerOpen}
         isSpotDrawerOpen={isSpotDrawerOpen}
         selectedSpotId={selectedSpotId}
+        spotData={
+          selectionData.spotList.filter(
+            (spot) => parseInt(spot.id, 10) === selectedSpotId
+          )[0]
+        }
       />
 
       {/**button */}

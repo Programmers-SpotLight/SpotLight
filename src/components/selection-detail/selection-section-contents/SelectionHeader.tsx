@@ -1,10 +1,10 @@
 import Hashtag from "@/components/common/Hashtag";
-import { ISelectionDetail } from "@/models/selection";
+import { ISelectionInfo } from "@/models/selection";
 import React from "react";
 import { FaBookmark, FaRegBookmark, FaShareAlt } from "react-icons/fa";
 
 interface SelectionHeaderProps {
-  selectionData: ISelectionDetail;
+  selectionData: ISelectionInfo;
 }
 
 const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
