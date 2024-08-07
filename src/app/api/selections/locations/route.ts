@@ -1,5 +1,5 @@
 import { ISelectionLocation } from "@/models/selection.model";
-import { getSelectionLocations} from "@/services/selection-services";
+import { getSelectionLocations} from "@/services/selection.services";
 import { NextRequest, NextResponse } from "next/server";
 
 
