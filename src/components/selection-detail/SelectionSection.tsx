@@ -4,12 +4,12 @@ import SelectionReview from "./review/selection-review/SelectionReview";
 import SelectionInfo from "./selection-section-contents/SelectionInfo";
 import SpotList from "./selection-section-contents/SpotList";
 import SelectionHeader from "./selection-section-contents/SelectionHeader";
-import { ISelectionDetail } from "@/models/selection.model";
+import { ISelectionInfo } from "@/models/selection";
 
 interface ISelectionSectionProps {
   isSelectionDrawerOpen: boolean;
   spotClickHandler: (spotId: string) => void;
-  selectionData: ISelectionDetail;
+  selectionData: ISelectionInfo;
   selectedSpotId: string | null;
 }
 
@@ -29,7 +29,7 @@ const SelectionSection = ({
       component: (
         <SpotList
           spotClickHandler={spotClickHandler}
-          spotList={selectionData.spot_list}
+          spotList={selectionData.spotList}
           selectedSpotId={selectedSpotId}
         />
       )

@@ -1,5 +1,5 @@
 import Hashtag from "@/components/common/Hashtag";
-import { SpotCategory } from "@/models/spot";
+import { ISpotImage, SpotCategory } from "@/models/spot";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import React from "react";
@@ -47,7 +47,7 @@ export const SPOTINFOWITHCATEGORY: { [key in SpotCategory]: ISpot } = {
 };
 
 interface ISpotHeaderProps {
-  images: string[];
+  images: ISpotImage[];
   categoryName: SpotCategory;
   title: string;
   address: string;
@@ -62,6 +62,7 @@ const SpotHeader = ({
   hashtags
 }: ISpotHeaderProps) => {
   const { openModal } = useStore(useModalStore);
+
   return (
     <>
       <div
@@ -69,7 +70,7 @@ const SpotHeader = ({
         onClick={() => openModal("images", { images, title })}
       >
         <Image
-          src={images[0]}
+          src={images[0].url}
           alt="spot image"
           fill
           sizes="width:100%, height:194px"

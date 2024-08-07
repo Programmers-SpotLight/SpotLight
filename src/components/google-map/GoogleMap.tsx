@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { SPOTINFOWITHCATEGORY } from "../selection-detail/spot-selection-contents/SpotHeader";
-import { ISpotInfoForMarking } from "@/models/spot";
+import { ISpotInfo, SpotCategory } from "@/models/spot";
 
 interface IGoogleMapProps {
   width: string;
   height: string;
   lat: number;
   lng: number;
-  spots: ISpotInfoForMarking[];
+  spots: ISpotInfo[];
   spotClickHandler: (spotId: string) => void;
   setMap: React.Dispatch<React.SetStateAction<google.maps.Map | null>>;
 }
