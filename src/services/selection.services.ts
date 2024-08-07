@@ -573,8 +573,8 @@ export async function validateSpotImages(
   if (!Array.isArray(photos)) {
     return "Invalid photos. Photos should be an array";
   }
-  if (photos.length === 0) {
-    return "At least one photo is required";
+  if (photos.length > 4) {
+    return "Maximum of 4 photos are allowed";
   }
   for (let i = 0; i < photos.length; i++) {
     if (typeof photos[i] !== "string" && !(photos[i] instanceof File)) {
