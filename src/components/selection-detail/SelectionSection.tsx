@@ -4,7 +4,7 @@ import SelectionReview from "./review/selection-review/SelectionReview";
 import SelectionInfo from "./selection-section-contents/SelectionInfo";
 import SpotList from "./selection-section-contents/SpotList";
 import SelectionHeader from "./selection-section-contents/SelectionHeader";
-import { ISelectionDetail } from "@/models/selection";
+import { ISelectionDetail } from "@/models/selection.model";
 
 interface ISelectionSectionProps {
   isSelectionDrawerOpen: boolean;

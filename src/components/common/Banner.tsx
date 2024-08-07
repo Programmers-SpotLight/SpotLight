@@ -30,7 +30,7 @@ const Banner = ({ img, title, subTitle, button, notOpacity, categoryId}: BannerP
         {button ? (
           <Link href={'/create'} className="mt-4">{button}</Link>
         ) : (
-          <Link href={`/search?카테고리=${categoryId}`} className="font-light underline underline-offset-1 mt-[10px] cursor-pointer">
+          <Link href={`/search?category_id=${categoryId}`} className="font-light underline underline-offset-1 mt-[10px] cursor-pointer">
             바로 확인하러 가기
           </Link>
         )}
