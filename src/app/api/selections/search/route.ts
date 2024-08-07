@@ -1,6 +1,6 @@
 import { dbConnectionPool } from "@/libs/db";
 import { NextRequest, NextResponse } from "next/server";
-import { ErrorResponse, Ipagination, IsearchData, IsearchResult } from "@/models/searchResult.model";
+import { ErrorResponse, Ipagination, IsearchData, IsearchResult, TsortType } from "@/models/searchResult.model";
 import { Ihashtags } from "@/models/hashtag.model";
 import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString";
 import { searchQueryBuilder } from "./searchQueryBuilder";
@@ -13,6 +13,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
   const tags = query.getAll(QUERY_STRING_NAME.tags) || QUERY_STRING_DEFAULT.tags;
   const currentPage = parseInt(query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page);
   const limit = parseInt(query.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit);
+  const sort = query.get(QUERY_STRING_NAME.sort) || QUERY_STRING_DEFAULT.sort;
   
   try {
     // 전체 결과 수를 계산하는 쿼리
@@ -51,7 +52,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
         dbConnectionPool.raw('JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags')
       )
       .groupBy('selection.slt_id', 'user.user_id')
-      .modify(queryBuilder => searchQueryBuilder(queryBuilder, category_id, tags))
+      .modify(queryBuilder => searchQueryBuilder(queryBuilder, category_id, tags, sort as TsortType))
       .limit(limit)
       .offset((currentPage - 1) * limit);
 
@@ -69,9 +70,6 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
       totalElements,
       limit
     };
-
-    console.log(pagination)
-
     return NextResponse.json({ data: finalResults, pagination });
   } catch (error) {
     console.error("Database query error:", error);

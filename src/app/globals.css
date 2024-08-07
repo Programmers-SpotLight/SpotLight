@@ -135,3 +135,21 @@ table {
 body {
   font-family: 'Pretendard', sans-serif;
 }
+
+.spinner {
+  border: 4px solid #d1d5db;
+  border-top: 4px solid #02588E;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -11,6 +11,8 @@ import { TsortType } from "@/models/searchResult.model";
 import useFetchSearchResult from "@/hooks/queries/useFetchSearchResult";
 import Pagination from "./Pagination";
 import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString";
+import SearchLoading from "./SearchLoading";
+import SearchEmptyResults from "./SearchEmptyResults";
 
 const sortData: { name: string; type: TsortType }[] = [
   { name: "최신순", type: "latest" },
@@ -34,7 +36,10 @@ const SearchResultSection = () => {
   const { data: results, isError, isLoading } = useFetchSearchResult({category_id, region_id, tags, sort, page, limit});
   useClickOutside(sortRef, setIsSortClicked);
 
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [page]);
+  
   const toggleSortOptions = () => {
     setIsSortClicked((prevState) => !prevState);
   };
@@ -47,10 +52,10 @@ const SearchResultSection = () => {
     addQueryString("sort", type);
   };
 
-  // Todo : 페칭 상태 UI 처리
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <SearchLoading/>
   if (isError) return <div>Error loading results.</div>;
   if (!results) return null;
+  if (results.data.length === 0) return <SearchEmptyResults/>
 
   return (
     <div className="px-5">

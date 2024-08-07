@@ -1,5 +1,6 @@
 "use client";
 
+import { QUERY_STRING_NAME } from "@/constants/queryString";
 import useClickOutside from "@/hooks/useClickOutside";
 import {
   ISelectionCategory,
@@ -53,6 +54,7 @@ const SearchDropdown = ({ title, contents, query }: SearchDropdownProps) => {
       setCurrentCategory(name);
       setIsClicked(false);
       deleteQueryString(query);
+      deleteQueryString(QUERY_STRING_NAME.page);
       addQueryString(query, id.toString());
       setSubOptions(null);
     }
@@ -62,6 +64,7 @@ const SearchDropdown = ({ title, contents, query }: SearchDropdownProps) => {
     setCurrentCategory(name);
     setIsClicked(false);
     deleteQueryString(query);
+    deleteQueryString(QUERY_STRING_NAME.page);
     addQueryString(query, id.toString());
     setSubOptions(null);
   };

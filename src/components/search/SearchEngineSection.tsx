@@ -19,7 +19,11 @@ const SearchEngineSection = () => {
   useEffect(() => { // 초기 컴포넌트 생성 시 세션 스토리지에 저장된 태그 불러오기
     const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags);
     if (storedTags) {
-      setTagList(JSON.parse(storedTags));
+      const parseStoredTags = JSON.parse(storedTags)
+      setTagList(parseStoredTags);
+      parseStoredTags.forEach((tag : string) => {
+        addQueryString(QUERY_STRING_NAME.tags, tag)
+      });
     }
   }, []);
 

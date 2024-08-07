@@ -1,7 +1,10 @@
+import { TsortType } from "@/models/searchResult.model";
+
 export const searchQueryBuilder = (
   queryBuilder: any,
   category_id: string,
-  tags: string[]
+  tags: string[],
+  sort? : TsortType
 ) => {
   queryBuilder
     .join("user", "selection.user_id", "=", "user.user_id")
@@ -29,5 +32,14 @@ export const searchQueryBuilder = (
     });
   }
 
+  if (sort) {
+    if (sort === "latest") {
+      queryBuilder.orderBy("selection.slt_created_date", "desc");
+    } else if (sort === "asc") {
+      queryBuilder.orderBy("selection.slt_title", "asc");
+    } else if (sort === "popular") {
+      // Todo : 인기 순 정렬, 인기 순 기준을 어떻게할지
+    }
+  }
   return queryBuilder;
 };

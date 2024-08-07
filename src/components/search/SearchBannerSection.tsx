@@ -10,7 +10,7 @@ const AddBannerData = {
     button : <BannerButton>지금 셀렉션 만들기</BannerButton>
 }
 
-const AddBannerSection = () => {
+const SearchBannerSection = () => {
   return (
     <div>
         <Banner {...AddBannerData}/>
@@ -18,4 +18,4 @@ const AddBannerSection = () => {
   )
 }
 
-export default AddBannerSection
+export default SearchBannerSection
