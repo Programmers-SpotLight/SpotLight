@@ -16,70 +16,81 @@ import fs from 'fs/promises';
 import path from "path";
 import { checkIfDirectoryOrFileExists, createDirectory, saveFile } from "@/utils/fileStorage";
 import { SELECTION_STATUS } from "@/constants/selection.constants";
+import { createSpots } from "./spot.services";
 
 
 export async function getSelectionCategories() : Promise<ISelectionCategory[]> {
-  const queryResult : ISelectionCategoryQueryResultRow[] = await dbConnectionPool
-    .column([
-      'selection_category.slt_category_id as category_id',
-      'selection_category.slt_category_name as category_name',
-    ])
-    .select()
-    .from('selection_category');
+  try {
+    const queryResult : ISelectionCategoryQueryResultRow[] = await dbConnectionPool
+      .column([
+        'selection_category.slt_category_id as category_id',
+        'selection_category.slt_category_name as category_name',
+      ])
+      .select()
+      .from('selection_category');
 
-  const categories : ISelectionCategory[] = queryResult.map((row) => {
-    return {
-      id: row.category_id,
-      name: row.category_name
-    };
-  });
+    const categories : ISelectionCategory[] = queryResult.map((row) => {
+      return {
+        id: row.category_id,
+        name: row.category_name
+      };
+    });
 
-  return categories;
+    return categories;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to get the selection categories');
+  }
 }
 
 export async function getSelectionLocations() : Promise<ISelectionLocation[]> {
-  const queryResult : ISelectionLocationQueryResultRow[] = await dbConnectionPool
-    .column([
-      'selection_location.slt_location_id as location_id',
-      'selection_location.slt_location_name as location_name',
-      'selection_location_option.slt_location_option_id as location_option_id',
-      'selection_location_option.slt_location_option_name as location_option_name'
-    ])
-    .select()
-    .from('selection_location')
-    .join(
-      'selection_location_option', 
-      'selection_location.slt_location_id', 
-      'selection_location_option.slt_location_id'
-    )
-    .orderBy('selection_location.slt_location_id', 'asc')
+  try {
+    const queryResult : ISelectionLocationQueryResultRow[] = await dbConnectionPool
+      .column([
+        'selection_location.slt_location_id as location_id',
+        'selection_location.slt_location_name as location_name',
+        'selection_location_option.slt_location_option_id as location_option_id',
+        'selection_location_option.slt_location_option_name as location_option_name'
+      ])
+      .select()
+      .from('selection_location')
+      .join(
+        'selection_location_option', 
+        'selection_location.slt_location_id', 
+        'selection_location_option.slt_location_id'
+      )
+      .orderBy('selection_location.slt_location_id', 'asc')
 
-  const locations : Array<ISelectionLocation> = [];
-  queryResult.forEach((row: ISelectionLocationQueryResultRow) => {
-    const locationId = row.location_id;
-    const locationName = row.location_name;
-    const locationOptionId = row.location_option_id;
-    const locationOptionName = row.location_option_name;
-  
-    const location = locations.find((location) => location.id === locationId);
-    if (location) {
-      location.options.push({
-        id: locationOptionId,
-        name: locationOptionName
-      });
-    } else {
-      locations.push({
-        id: locationId,
-        name: locationName,
-        options: [{
+    const locations : Array<ISelectionLocation> = [];
+    queryResult.forEach((row: ISelectionLocationQueryResultRow) => {
+      const locationId = row.location_id;
+      const locationName = row.location_name;
+      const locationOptionId = row.location_option_id;
+      const locationOptionName = row.location_option_name;
+    
+      const location = locations.find((location) => location.id === locationId);
+      if (location) {
+        location.options.push({
           id: locationOptionId,
           name: locationOptionName
-        }]
-      });
-    }
-  });
+        });
+      } else {
+        locations.push({
+          id: locationId,
+          name: locationName,
+          options: [{
+            id: locationOptionId,
+            name: locationOptionName
+          }]
+        });
+      }
+    });
 
-  return locations;
+    return locations;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to get the selection locations');
+  }
 };
 
 export async function createHashtags(
@@ -129,26 +140,6 @@ export async function saveSelectionImage(imageFile: File) : Promise<string> {
   return filePath;
 }
 
-const saveSelectionSpotPhoto : (imageFile: File) => Promise<string> = async (imageFile: File) => {
-  const newFileName : string = `${Date.now()}-${uuidv4()}`;
-  const fileType : FileTypeResult | undefined = await fileTypeFromBlob(imageFile);
-  const filePath : string = `${newFileName}.${fileType?.mime.split('/')[1]}`;
-
-  try {
-    // 디렉토리가 존재하지 않으면 생성
-    const directoryPath : string = path.join('.', 'public', 'images', 'selections', 'spots');
-    await createDirectory(directoryPath);
-
-    // 파일을 public/images/selections/spots 디렉토리에 저장
-    const savePath : string = path.join('.', 'public', 'images', 'selections', 'spots', filePath);
-    await saveFile(savePath, imageFile);
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to save the image');
-  }
-  return filePath;
-}
-
 export async function createSelection(
   transaction: Knex.Transaction<any, any[]>,
   formData: ISelectionCreateFormData
@@ -173,7 +164,7 @@ export async function createSelection(
       );
     }
     if (formData.spots) {
-      await createSelectionSpots(
+      await createSpots(
         transaction, 
         selectionId, 
         formData.spots
@@ -205,123 +196,6 @@ async function createSelectionHashtags(
       console.error(error);
       throw new Error('Failed to create the selection hashtags');
     }
-  }
-}
-
-async function createSelectionSpots(
-  transaction: Knex.Transaction<any, any[]>,
-  selectionId: number,
-  spots: ISelectionSpot[]
-) : Promise<void> {
-  const spotsIdsPhotos: Array<{id: string, photos: Array<string | File>}> = [];
-  const spotsIdsHashtags: Array<{id: string, hashtags: number[]}> = [];
-
-  // 각 spot에 대해 spot_id를 생성하고, spot_hashtag, spot_image 테이블에 데이터 삽입
-  const spotsToInsert = spots.map((spot) => {
-    const spotId = uuidv4();
-    spotsIdsPhotos.push({
-      id: spotId,
-      photos: spot.photos
-    });
-    spotsIdsHashtags.push({
-      id: spotId,
-      hashtags: spot.hashtags as number[]
-    });
-
-    return {
-      spot_id: transaction.fn.uuidToBin(spotId),
-      slt_id: selectionId,
-      spot_title: spot.title,
-      spot_description: spot.description,
-      spot_gmap_id: spot.placeId,
-      spot_gmap_address: spot.formattedAddress,
-      spot_gmap_latitude: spot.latitude,
-      spot_gmap_longitude: spot.longitude
-    };
-  });
-
-  try {
-    await transaction('spot')
-      .insert(spotsToInsert);
-
-    // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
-    for (let i = 0; i < spotsIdsPhotos.length; i++) {
-      for (let j = 0; j < spotsIdsPhotos[i].photos.length; j++) {
-        if (spotsIdsPhotos[i].photos[j] instanceof File) {
-          const filePath : string = await saveSelectionSpotPhoto(spotsIdsPhotos[i].photos[j] as File);
-          spotsIdsPhotos[i].photos[j] = filePath;
-        }
-      }
-    }
-
-    for (let i = 0; i < spotsIdsHashtags.length; i++) {
-      await createSelectionSpotHashtags(
-        transaction, 
-        spotsIdsHashtags[i].id, 
-        spotsIdsHashtags[i].hashtags
-      );
-    }
-    for (let i = 0; i < spotsIdsPhotos.length; i++) {
-      if (spotsIdsPhotos[i].photos.length > 0) {
-        await createSelectionSpotImages(
-          transaction, 
-          spotsIdsPhotos[i].id, 
-          spotsIdsPhotos[i].photos as string[]
-        );
-      }
-    }  
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to create the selection spots');
-  }
-}
-
-async function createSelectionSpotHashtags(
-  transaction: Knex.Transaction<any, any[]>,
-  spotId: string,
-  hashtags: number[]
-) : Promise<void> {
-  const insertData = hashtags.map((hashtag) => {
-    return {
-      spot_htag_id: transaction.fn.uuidToBin(uuidv4()),
-      spot_id: transaction.fn.uuidToBin(spotId),
-      htag_id: hashtag
-    };
-  });
-
-  try {
-    await transaction('spot_hashtag')
-      .insert(insertData)
-      .onConflict(['spot_id', 'htag_id'])
-      .ignore();
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to create the selection spot hashtags');
-  }
-}
-
-export async function createSelectionSpotImages(
-  transaction: Knex.Transaction<any, any[]>,
-  spotId: string,
-  photos: Array<string>
-) : Promise<void> {
-  const insertData = photos.map((photo, index) => {
-    return {
-      spot_img_id: transaction.fn.uuidToBin(uuidv4()),
-      spot_id: transaction.fn.uuidToBin(spotId),
-      spot_img_url: photo,
-      spot_img_order: index+1
-    };
-  });
-
-  try {
-    await transaction('spot_image')
-      .insert(insertData)
-      .onConflict(['spot_id', 'spot_photo_url'])
-      .ignore();
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to create the selection spot photos');
   }
 }
 
@@ -522,6 +396,7 @@ export async function validateSpots(
   if (!spots) {
     return "Spots are required";
   }
+
   if (!Array.isArray(spots)) {
     return "Invalid spots. Spots should be an array";
   }
@@ -530,29 +405,45 @@ export async function validateSpots(
     if (!spots[i].title) {
       return `Name is required for spot ${i + 1}`;
     }
+
     if (!spots[i].description) {
       return `Description is required for spot ${i + 1}`;
     }
+
     if (!spots[i].formattedAddress) {
       return `Address is required for spot ${i + 1}`;
     }
+
+    if (!spots[i].category) {
+      return `Category is required for spot ${i + 1}`;
+    }
+    const categoryError : string | null = await validateSpotCategory(spots[i].category);
+    if (categoryError) {
+      return categoryError;
+    }
+
     if (spots[i].hashtags.length === 0) {
       return `At least one hashtag is required for spot ${i + 1}`;
     }
+
     if (!spots[i].latitude || !spots[i].longitude) {
       return `Location is required for spot ${i + 1}`;
     }
+
     if (spots[i].latitude < -90 || spots[i].latitude > 90) {
       return `Invalid latitude for spot ${i + 1}`;
     }
+
     if (spots[i].longitude < -180 || spots[i].longitude > 180) {
       return `Invalid longitude for spot ${i + 1}`;
     }
+
     for (let j = 0; j < spots[i].hashtags.length; j++) {
       if (typeof spots[i].hashtags[j] !== "string") {
         return `Invalid hashtag for spot ${i + 1}`;
       }
     }
+
     if (spots[i].photos.length > 4) {
       return `Maximum of 4 photos are allowed for spot ${i + 1}`;
     }
@@ -563,6 +454,26 @@ export async function validateSpots(
   }
   return null;
 };
+
+export async function validateSpotCategory(
+  category: number | undefined
+) : Promise<string | null> {
+  if (!category) {
+    return "Category is required";
+  }
+
+  if (isNaN(category)) {
+    return "Invalid category. It should be a value of integer";
+  }
+
+  const queryResult = await dbConnectionPool('spot_category')
+    .where('spot_category_id', category);
+  
+  if (queryResult.length === 0) {
+    return "Invalid category. Category does not exist";
+  }
+  return null;
+}
 
 export async function validateSpotImages(
   photos: Array<string | File> | undefined
