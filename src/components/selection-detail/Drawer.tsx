@@ -2,33 +2,39 @@ import React, { useState } from "react";
 import { FaCaretRight } from "react-icons/fa";
 import SpotSection from "./SpotSection";
 import SelectionSection from "./SelectionSection";
+import { ISelectionDetail } from "@/models/selection";
 
-const Drawer = () => {
-  const [isSelectionDrawerOpen, setIsSelectionDrawerOpen] =
-    useState<boolean>(false);
-  const [isSpotDrawerOpen, setIsSpotDrawerOpen] = useState<boolean>(false);
-
-  const toggleDrawer = () => {
-    if (isSpotDrawerOpen) setIsSpotDrawerOpen((prev) => !prev);
-    else if (!isSpotDrawerOpen) setIsSelectionDrawerOpen((prev) => !prev);
-  };
-
-  const spotClickHandler = () => {
-    setIsSpotDrawerOpen(true);
-  };
-
+interface IDrawerProps {
+  selectionData: ISelectionDetail;
+  isSelectionDrawerOpen: boolean;
+  isSpotDrawerOpen: boolean;
+  toggleDrawer: () => void;
+  spotClickHandler: (spotId: string) => void;
+  selectedSpotId: string | null;
+}
+const Drawer = ({
+  selectionData,
+  isSelectionDrawerOpen,
+  isSpotDrawerOpen,
+  spotClickHandler,
+  toggleDrawer,
+  selectedSpotId
+}: IDrawerProps) => {
   return (
-    <div className={`fixed flex z-10`}>
+    <div className={`absolute left-0 top-0 flex z-10`}>
       {/**selection drawer */}
       <SelectionSection
         isSelectionDrawerOpen={isSelectionDrawerOpen}
         spotClickHandler={spotClickHandler}
+        selectionData={selectionData}
+        selectedSpotId={selectedSpotId}
       />
 
       {/**spot drawer */}
       <SpotSection
         isSelectionDrawerOpen={isSelectionDrawerOpen}
         isSpotDrawerOpen={isSpotDrawerOpen}
+        selectedSpotId={selectedSpotId}
       />
 
       {/**button */}

@@ -58,7 +58,7 @@ const Header = () => {
       <div className="relative w-[640px]">
         <form onSubmit={onSubmithandler}>
           <input
-            className="w-full h-[50px] border-[0.5px] border-solid border-grey2 rounded-3xl px-12 text-center placeholder:text-grey4 "
+            className="w-full h-[50px] border-[0.5px] border-solid border-grey2 rounded-3xl px-12 text-center placeholder:text-grey4 font-bold"
             placeholder={`혹시 찾으시는 셀렉션이 있으신가요?`}
             value={searchTerm}
             onChange={onChangeHandler}

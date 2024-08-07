@@ -97,7 +97,6 @@ const ReviewModal = () => {
   const handlePictureRemove = (index: number) => {
     setPictures((prevPictures) => {
       const newPictures = prevPictures.filter((_, i) => i !== index);
-      console.log(newPictures);
       return newPictures.map((pic, i) => ({ ...pic, reviewImageOrder: i }));
     });
   };
@@ -124,7 +123,6 @@ const ReviewModal = () => {
     isButtonDisabled = rating <= 0 || reviewText.length < 10;
   }
 
-  console.log(pictures);
   return (
     <div
       className="w-screen h-screen flex justify-center items-center fixed inset-0 bg-black bg-opacity-50 z-20"

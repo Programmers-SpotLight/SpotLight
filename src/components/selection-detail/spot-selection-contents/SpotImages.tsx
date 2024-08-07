@@ -1,42 +1,44 @@
 "use client";
 import React, { useState } from "react";
-import { LiaArrowAltCircleLeft, LiaArrowAltCircleRight } from "react-icons/lia";
+import { IoIosArrowBack } from "react-icons/io";
 
 interface ISpotImages {
-  imgs: string[];
+  images: string[];
+  title: string;
 }
 
-const SpotImages = ({ imgs }: ISpotImages) => {
+const SpotImages = ({ images, title }: ISpotImages) => {
   const [imgIndex, setImgIndex] = useState(0);
 
   const nextBtnClickHandler = () => {
-    if (imgIndex + 1 === imgs.length) setImgIndex(0);
+    if (imgIndex + 1 === images.length) setImgIndex(0);
     else setImgIndex((prev) => prev + 1);
   };
 
   const prevBtnClickHandler = () => {
-    if (imgIndex - 1 < 0) setImgIndex(imgs.length - 1);
+    if (imgIndex - 1 < 0) setImgIndex(images.length - 1);
     else setImgIndex((prev) => prev - 1);
   };
   return (
-    <div
-      className="relative flex items-center justify-center"
-      style={{ height: "calc(100vh - 74px)" }}
-    >
+    <div className="relative flex items-center justify-center h-[100vh]">
       <button
-        className="absolute top-1/2 left-3 transform -translate-y-1/2"
-        onClick={nextBtnClickHandler}
-      >
-        <LiaArrowAltCircleLeft size={50} />
-      </button>
-
-      <img src={imgs[imgIndex]} alt="spot image" />
-
-      <button
-        className="absolute top-1/2 right-3 transform -translate-y-1/2"
+        className="absolute top-1/2 left-10 transform -translate-y-1/2 hover:scale-110 transition-transform duration-200"
         onClick={prevBtnClickHandler}
       >
-        <LiaArrowAltCircleRight size={50} />
+        <IoIosArrowBack size={50} fill="white" />
+      </button>
+      <p className="text-white absolute top-10 text-extraLarge">{title}</p>
+
+      <p className="text-white absolute top-10 left-10 text-extraLarge">
+        {imgIndex + 1}/{images.length}
+      </p>
+      <img src={images[imgIndex]} alt="spot image" />
+
+      <button
+        className="absolute top-1/2 right-10 transform -translate-y-1/2 hover:scale-110 transition-transform duration-200"
+        onClick={nextBtnClickHandler}
+      >
+        <IoIosArrowBack size={50} fill="white" className="rotate-180" />
       </button>
     </div>
   );
