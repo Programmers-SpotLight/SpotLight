@@ -11,8 +11,8 @@ import { TsortType } from "@/models/searchResult.model";
 import useFetchSearchResult from "@/hooks/queries/useFetchSearchResult";
 import Pagination from "./Pagination";
 import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString";
-import SearchLoading from "./SearchLoading";
-import SearchEmptyResults from "./SearchEmptyResults";
+import SearchLoading from "./search-contents/SearchLoading";
+import SearchEmptyResults from "./search-contents/SearchEmptyResults";
 
 const sortData: { name: string; type: TsortType }[] = [
   { name: "최신순", type: "latest" },
