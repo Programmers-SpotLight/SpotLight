@@ -6,6 +6,7 @@ export const useSelection = async (selectionId: string | string[]) => {
       "get",
       `/api/selections/${selectionId}`
     );
+    console.log(response);
     return response;
   } catch (error) {
     console.error("Failed to fetch selection:", error);

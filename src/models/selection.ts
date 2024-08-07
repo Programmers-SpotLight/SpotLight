@@ -22,10 +22,7 @@ export interface ISelectionInfo extends ISelectionDetailInfo {
     nickname: string;
     image?: string;
   };
-  location: {
-    is_world: boolean;
-    region: string;
-  };
+  location: string;
   hashtags: string[];
   spotList: ISpotInfo[];
   booked: boolean;

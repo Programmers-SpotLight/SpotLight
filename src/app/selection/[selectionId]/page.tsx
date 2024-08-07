@@ -22,10 +22,7 @@ const selectionData: ISelectionInfo = {
     image:
       "https://ilyo.co.kr/contents/article/images/2023/1102/1698901514791536.jpg"
   },
-  location: {
-    is_world: true,
-    region: "아시아"
-  },
+  location: "아시아",
   image:
     "https://i.namu.wiki/i/O0u4__0DlY6tc9-S505SLruRy-q4ZOJ44-SHzBhGNsHVsUfnx5wE5mOB0XMCY6hloGXzRrfF7WXuu2nmGUNQhA.webp",
   hashtags: [

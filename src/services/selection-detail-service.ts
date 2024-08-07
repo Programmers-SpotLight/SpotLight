@@ -12,6 +12,11 @@ export const getSelectionDetailInfo = async (selectionId: number) => {
         "selection.slt_category_id",
         "selection_category.slt_category_id"
       )
+      .leftJoin(
+        "selection_location_option",
+        "selection.slt_location_option_id",
+        "selection_location_option.slt_location_option_id"
+      )
       .select(
         "selection.slt_id as id",
         "selection.slt_title as title",
@@ -21,11 +26,12 @@ export const getSelectionDetailInfo = async (selectionId: number) => {
         "selection.slt_created_date as createdAt",
         "selection.slt_updated_date as updatedAt",
         dbConnectionPool.raw(`
-          JSON_OBJECT(
-            'id', selection_category.slt_category_id,
-            'name', selection_category.slt_category_name
-          ) AS category
-        `)
+        JSON_OBJECT(
+          'id', selection_category.slt_category_id,
+          'name', selection_category.slt_category_name
+        ) AS category
+      `),
+        "selection_location_option.slt_location_option_name as location"
       )
       .where("selection.slt_id", selectionId)
       .first();
