@@ -3,7 +3,7 @@
 import Image from "next/image";
 import OneLineInput from "../common/input/OneLineInput";
 import DropdownMenu from "./DropdownMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SelectionCreateTitle from "./SelectionCreateTitle";
 import SelectionCreateDescription from "./SelectionCreateDescription";
 import { ISelectionCategory } from "@/models/selection.model";
@@ -13,8 +13,9 @@ import SelectionCreateCategory from "./SelectionCreateCategory";
 import SelectionCreateLocation from "./SelectionCreateLocation";
 import { useModalStore } from "@/stores/modalStore";
 import { useStore } from "zustand";
-import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
+import { useSelectionCreateSpotCategoryStore, useSelectionCreateStore } from "@/stores/selectionCreateStore";
 import axios from "axios";
+import useSpotCategories from "@/hooks/useSpotCategories";
 
 
 const SelectionCreateForm = () => {
@@ -31,11 +32,18 @@ const SelectionCreateForm = () => {
 
   const { openModal, setExtraData } = useStore(useModalStore);
   const { spots, deleteSpot, updateSpot } = useStore(useSelectionCreateStore);
+  const { setSpotCategories } = useStore(useSelectionCreateSpotCategoryStore);
 
   const handleAddSpotClick = (e: React.MouseEvent) => {
     e.preventDefault();
     openModal('GoogleMapsAddSelectionSpot');
   };
+  
+  const {
+    spotCategories, 
+    isLoading: isSpotCategoriesLoading, 
+    error: spotCategoriesError
+  } = useSpotCategories();
 
   const { 
     selectedCategories, 
@@ -276,6 +284,12 @@ const SelectionCreateForm = () => {
       }
     })
   }
+
+  useEffect(() => {
+    if (spotCategories.length > 0) {
+      setSpotCategories(spotCategories);
+    }
+  }, [spotCategories]);
 
   return (
     <div>

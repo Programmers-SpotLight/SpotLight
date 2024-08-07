@@ -1,6 +1,7 @@
 import { 
   ISelectionCategory, 
   ISelectionLocation, 
+  ISelectionSpotCategory, 
   ISelectionSpotGeolocation, 
   ISelectionSpotReverseGeolocation, 
   ISelectionSpotSearchResult 
@@ -28,6 +29,14 @@ export const fetchSelectionSpotSearch : (query: string) => Promise<ISelectionSpo
   const response = await axios.get(`/api/selections/spots/search?query=${query}`);
   if (response.status !== 200) {
     throw new Error('Failed to fetch selection spot search');
+  }
+  return response.data;
+};
+
+export const fetchSelectionSpotCategories : () => Promise<ISelectionSpotCategory[]> = async () => {
+  const response = await axios.get('/api/selections/spots/categories');
+  if (response.status !== 200) {
+    throw new Error('Failed to fetch selection spot categories');
   }
   return response.data;
 };
