@@ -19,7 +19,7 @@ const TextAreaInput = ({
 
   const widthSize = {
     small: "w-72", /* 288px */
-    medium: "w-96", /* 384px */
+    medium: "w-[475px]", /* 384px */
     large: "w-[660px]",
     xlarge: "w-[800px]"
   };
