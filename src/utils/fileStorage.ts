@@ -1,6 +1,5 @@
 'use server';
 
-import { AllowedFileTypes } from '@/models/file.model';
 import fs from 'fs/promises';
 
 
@@ -21,9 +20,12 @@ export const createDirectory = async (dirPath: string) => {
   }
 }
 
-export const saveFile = async (filePath: string, file: AllowedFileTypes) => {
+export const saveFile = async (filePath: string, file: File) => {
+  const arrayBuffer : ArrayBuffer = await file.arrayBuffer();
+  const buffer = new Uint8Array(arrayBuffer);
+
   try {
-    await fs.writeFile(filePath, file);
+    await fs.writeFile(filePath, buffer);
     await checkIfDirectoryOrFileExists(filePath);
   } catch (error) {
     throw new Error(`Error: ${error}`);
