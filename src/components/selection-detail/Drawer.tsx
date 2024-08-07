@@ -9,8 +9,8 @@ interface IDrawerProps {
   isSelectionDrawerOpen: boolean;
   isSpotDrawerOpen: boolean;
   toggleDrawer: () => void;
-  spotClickHandler: (spotId: number) => void;
-  selectedSpotId: number | null;
+  spotClickHandler: (spotId: string) => void;
+  selectedSpotId: string | null;
 }
 const Drawer = ({
   selectionData,
@@ -36,9 +36,7 @@ const Drawer = ({
         isSpotDrawerOpen={isSpotDrawerOpen}
         selectedSpotId={selectedSpotId}
         spotData={
-          selectionData.spotList.filter(
-            (spot) => parseInt(spot.id, 10) === selectedSpotId
-          )[0]
+          selectionData.spotList.filter((spot) => spot.id === selectedSpotId)[0]
         }
       />
 

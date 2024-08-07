@@ -7,12 +7,8 @@ export interface ISelectionDetailInfo {
   status: string | null;
   createdAt: Date;
   updatedAt: Date;
-  category:
-    | string
-    | {
-        id: number;
-        name: string;
-      };
+  categoryId: number;
+  categoryName: string;
   image?: string;
 }
 

@@ -3,6 +3,7 @@ import "./globals.css";
 import ModalController from "@/components/common/modal/ModalController";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
+import QueryProvider from "./QueryProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,10 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ModalController/>
-        <Header />
-        {children}
-        <Footer/>
+        <QueryProvider>
+          <ModalController />
+          <Header />
+          {children}
+          <Footer />
+        </QueryProvider>
       </body>
     </html>
   );

@@ -62,6 +62,7 @@ const SpotHeader = ({
   hashtags
 }: ISpotHeaderProps) => {
   const { openModal } = useStore(useModalStore);
+
   return (
     <>
       <div

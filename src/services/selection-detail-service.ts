@@ -25,12 +25,8 @@ export const getSelectionDetailInfo = async (selectionId: number) => {
         "selection.slt_status as status",
         "selection.slt_created_date as createdAt",
         "selection.slt_updated_date as updatedAt",
-        dbConnectionPool.raw(`
-        JSON_OBJECT(
-          'id', selection_category.slt_category_id,
-          'name', selection_category.slt_category_name
-        ) AS category
-      `),
+        "selection_category.slt_category_id as categoryId",
+        "selection_category.slt_category_Name as categoryName",
         "selection_location_option.slt_location_option_name as location"
       )
       .where("selection.slt_id", selectionId)
@@ -82,12 +78,8 @@ export const getSpotDetailInfo = async (selectionId: number) => {
         "spot_updated_date as updatedDate",
         "spot_created_date as createdDate",
         "spot_gmap_id as gmapId",
-        dbConnectionPool.raw(`
-          JSON_OBJECT(
-            'id', spot_category.spot_category_id,
-            'name', spot_category.spot_category_name
-          ) AS category
-        `)
+        "spot_category.spot_category_id as categoryId",
+        "spot_category.spot_category_name as categoryName"
       )
       .where("spot.slt_id", selectionId);
 

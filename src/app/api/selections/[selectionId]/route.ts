@@ -34,11 +34,11 @@ export async function GET(
     );
   }
 
-  if (selecitonDetailInfo.category) {
-    selecitonDetailInfo.category = JSON.parse(
-      selecitonDetailInfo.category as string
-    );
-  }
+  // if (selecitonDetailInfo.category) {
+  //   selecitonDetailInfo.category = JSON.parse(
+  //     selecitonDetailInfo.category as string
+  //   );
+  // }
 
   const hashtags: string[] = await getSelectionHashTags(selectionId);
   if (hashtags.length === 0) {
@@ -67,9 +67,9 @@ export async function GET(
     const spotHashtags: string[] = await getSpotHashTags(spotDetailInfo[i].id);
     if (spotHashtags.length) spotDetailInfo[i].hashtags = spotHashtags;
 
-    spotDetailInfo[i].category = JSON.parse(
-      spotDetailInfo[i].category as string
-    );
+    // spotDetailInfo[i].category = JSON.parse(
+    //   spotDetailInfo[i].category as string
+    // );
   }
 
   selectionData = {

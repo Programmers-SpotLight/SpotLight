@@ -17,10 +17,6 @@ export interface ISpotInfo {
   gmapId: string;
   images: ISpotImage[];
   hashtags: string[];
-  category:
-    | string
-    | {
-        id: number;
-        name: string;
-      };
+  categoryId: number;
+  categoryName: SpotCategory;
 }

@@ -1,15 +1,15 @@
-import { requestHandler } from "@/http/http";
+import { useQuery } from "@tanstack/react-query";
+import { fetchSelectionDetailInfo } from "./queries/selectionDetail.query";
 
-export const useSelection = async (selectionId: string | string[]) => {
-  try {
-    const response = await requestHandler(
-      "get",
-      `/api/selections/${selectionId}`
-    );
-    console.log(response);
-    return response;
-  } catch (error) {
-    console.error("Failed to fetch selection:", error);
-    return null;
-  }
+export const useSelection = (selectionId: string | string[]) => {
+  const {
+    data: selectionData,
+    isPending,
+    isError
+  } = useQuery({
+    queryKey: ["selection", selectionId],
+    queryFn: () => fetchSelectionDetailInfo(selectionId)
+  });
+
+  return { selectionData, isPending, isError };
 };

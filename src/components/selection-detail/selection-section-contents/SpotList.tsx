@@ -4,9 +4,9 @@ import Image from "next/image";
 import { ISpotInfo } from "@/models/spot";
 
 interface ISpotListProps {
-  spotClickHandler: (spotId: number, lat: number, lng: number) => void;
+  spotClickHandler: (spotId: string, lat: number, lng: number) => void;
   spotList: ISpotInfo[];
-  selectedSpotId: number | null;
+  selectedSpotId: string | null;
 }
 
 const SpotList = ({
@@ -20,22 +20,20 @@ const SpotList = ({
         <li
           key={spot.id}
           className={`flex items-center gap-[5px] text-grey4 font-medium text-medium p-[3px] pl-2 pr-2 box-border ${
-            selectedSpotId === parseInt(spot.id, 10) ? "bg-grey1" : ""
+            selectedSpotId === spot.id ? "bg-grey1" : ""
           } p-2 rounded-md`}
-          onClick={() =>
-            spotClickHandler(parseInt(spot.id, 10), spot.lat, spot.lng)
-          }
+          onClick={() => spotClickHandler(spot.id, spot.lat, spot.lng)}
         >
           <div className="relative w-4 h-4">
             <Image
-              src={SPOTINFOWITHCATEGORY[spot.category.name].icon}
-              alt={SPOTINFOWITHCATEGORY[spot.category.name].name}
+              src={SPOTINFOWITHCATEGORY[spot.categoryName].icon}
+              alt={SPOTINFOWITHCATEGORY[spot.categoryName].name}
               fill
             />
           </div>
           <span
             className={
-              selectedSpotId === parseInt(spot.id, 10)
+              selectedSpotId === spot.id
                 ? "text-primary font-bold"
                 : "text-grey4"
             }

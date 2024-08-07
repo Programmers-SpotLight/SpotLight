@@ -1,10 +1,10 @@
 import React from "react";
 
-interface ISpotInfo {
+interface ISpotInfoProps {
   description: string;
 }
 
-const SpotInfo = ({ description }: ISpotInfo) => {
+const SpotInfo = ({ description }: ISpotInfoProps) => {
   return <div className="whitespace-pre-wrap">{description}</div>;
 };
 

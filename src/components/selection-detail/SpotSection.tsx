@@ -8,7 +8,7 @@ import { ISpotInfo, SpotCategory } from "@/models/spot";
 interface ISpotSectionProps {
   isSelectionDrawerOpen: boolean;
   isSpotDrawerOpen: boolean;
-  selectedSpotId: number | null;
+  selectedSpotId: string | null;
   spotData: ISpotInfo;
 }
 
@@ -43,7 +43,7 @@ border-[0.5px] border-grey2 border-solid w-[375px] overflow-y-scroll scrollbar-h
     >
       <SpotHeader
         images={spotData.images}
-        categoryName={spotData.category.name as SpotCategory}
+        categoryName={spotData.categoryName}
         title={spotData.title}
         address={spotData.address}
         hashtags={spotData.hashtags}
