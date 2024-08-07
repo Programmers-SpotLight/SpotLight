@@ -1,6 +1,11 @@
 export type SpotCategory = "관광지" | "맛집" | "쇼핑" | "카페" | "기타";
 
-export interface ISpotDetail {
+export interface ISpotImage {
+  url: string;
+  order: number;
+}
+
+export interface ISpotInfo {
   id: string;
   title: string;
   description: string;
@@ -12,17 +17,10 @@ export interface ISpotDetail {
   gmapId: string;
   images: ISpotImage[];
   hashtags: string[];
-}
-
-export interface ISpotImage {
-  url: string;
-  order: number;
-}
-
-export interface ISpotInfo extends ISpotDetail {
-  category: {
-    id: number;
-    name: SpotCategory;
-  };
-  hashtags: string[];
+  category:
+    | string
+    | {
+        id: number;
+        name: string;
+      };
 }

@@ -1,6 +1,6 @@
 import { dbConnectionPool } from "@/libs/db";
 import { ISelectionDetailInfo } from "@/models/selection";
-import { ISpotDetail } from "@/models/spot";
+import { ISpotInfo } from "@/models/spot";
 
 export const getSelectionDetailInfo = async (selectionId: number) => {
   try {
@@ -60,7 +60,12 @@ export const getSelectionHashTags = async (selectionId: number) => {
 
 export const getSpotDetailInfo = async (selectionId: number) => {
   try {
-    const spotData: ISpotDetail[] = await dbConnectionPool("spot")
+    const spotData: ISpotInfo[] = await dbConnectionPool("spot")
+      .leftJoin(
+        "spot_category",
+        "spot.spot_category_id",
+        "spot_category.spot_category_id"
+      )
       .select(
         "spot_id as id",
         "spot_title as title",
@@ -70,12 +75,17 @@ export const getSpotDetailInfo = async (selectionId: number) => {
         "spot_gmap_longitude as lng",
         "spot_updated_date as updatedDate",
         "spot_created_date as createdDate",
-        "spot_gmap_id as gmapId"
+        "spot_gmap_id as gmapId",
+        dbConnectionPool.raw(`
+          JSON_OBJECT(
+            'id', spot_category.spot_category_id,
+            'name', spot_category.spot_category_name
+          ) AS category
+        `)
       )
       .where("spot.slt_id", selectionId);
 
-    if (!spotData.length) return [];
-    else return spotData;
+    return spotData;
   } catch (error) {
     throw new Error(`Failed to fetch selection ${selectionId}'s spots`);
   }
@@ -116,4 +126,8 @@ export const getSpotImages = async (spotId: string) => {
   }
 };
 
-export const getSpotCategories = async (spotIds: string[]) => {};
+export const getSpotCategories = async (spotId: string) => {
+  try {
+    const SpotCategory = await dbConnectionPool();
+  } catch (error) {}
+};

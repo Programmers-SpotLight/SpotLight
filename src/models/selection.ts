@@ -7,10 +7,12 @@ export interface ISelectionDetailInfo {
   status: string | null;
   createdAt: Date;
   updatedAt: Date;
-  category: {
-    id: number;
-    name: string;
-  };
+  category:
+    | string
+    | {
+        id: number;
+        name: string;
+      };
   image?: string;
 }
 
