@@ -37,11 +37,17 @@ export interface ISelectionSpot {
   placeId: string;
   title: string;
   description: string;
+  category: number;
   formattedAddress: string;
   latitude: number;
   longitude: number;
   hashtags: Array<number | string>;
   photos: Array<File | string>;
+}
+
+export interface ISelectionSpotCategory {
+  id: number;
+  name: string;
 }
 
 export interface ISelectionCreateFormData {
