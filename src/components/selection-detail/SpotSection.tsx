@@ -50,7 +50,7 @@ const SpotSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SpotReview />
+      component: <SpotReview sltOrSpotId={101}/>
     }
   ];
 

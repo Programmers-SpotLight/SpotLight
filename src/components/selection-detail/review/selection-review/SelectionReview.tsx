@@ -6,7 +6,7 @@ import ReviewOrderButton from "../ReviewOrderButton";
 import { useModalStore } from "@/stores/modalStore";
 import ReviewEmpty from "../ReviewEmpty";
 
-interface ISelectionReviewsProps {
+interface IReviewsProps {
   sltOrSpotId: number;
 };
 
@@ -107,13 +107,13 @@ const testList: IReview[] = [
   }
 ];
 
-const testData: IReviews = {
+export const testData: IReviews = {
   reviewAvg: 4.5,
   reviewCount: 5,
   reviewList: testList
 };
 
-const SelectionReview = ({ sltOrSpotId } : ISelectionReviewsProps) => {
+const SelectionReview = ({ sltOrSpotId } : IReviewsProps) => {
   const reviewData = testData;
 
   const { openModal } = useModalStore();
