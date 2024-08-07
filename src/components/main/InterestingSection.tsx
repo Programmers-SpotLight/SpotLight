@@ -17,8 +17,8 @@ const tempData: IColCardProps[] = [
     selectionId: 1,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [<div className="box-border p-[5px] flex justify-center items-center w-[53px] border border-solid border-grey3 text-grey3 text-[10px] rounded-badge">해시태그</div>]
+    status: "public",
+    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
   },
   {
     thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
@@ -29,8 +29,8 @@ const tempData: IColCardProps[] = [
     selectionId: 2,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [<div className="box-border p-[5px] flex justify-center items-center w-[53px] border border-solid border-grey3 text-grey3 text-[10px] rounded-badge">해시태그</div>]
+    status: "public",
+    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
   },
   {
     thumbnail: "https://file.mk.co.kr/meet/neds/2023/11/image_readtop_2023_846577_16989928215689644.jpg",
@@ -41,8 +41,8 @@ const tempData: IColCardProps[] = [
     selectionId: 3,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [<div className="box-border p-[5px] flex justify-center items-center w-[53px] border border-solid border-grey3 text-grey3 text-[10px] rounded-badge">해시태그</div>]
+    status: "public",
+    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
   },
   {
     thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
@@ -53,8 +53,8 @@ const tempData: IColCardProps[] = [
     selectionId: 4,
     userName: "이창우",
     userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    isPublic: true,
-    hashtags: [<div className="box-border p-[5px] flex justify-center items-center w-[53px] border border-solid border-grey3 text-grey3 text-[10px] rounded-badge">해시태그</div>]
+    status: "public",
+    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
   }
 ];
 

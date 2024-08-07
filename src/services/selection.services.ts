@@ -3,30 +3,22 @@
 import { dbConnectionPool } from "@/libs/db";
 import { 
   ISelectionCategory, 
+  ISelectionCategoryQueryResultRow, 
   ISelectionCreateFormData, 
   ISelectionLocation, 
+  ISelectionLocationQueryResultRow, 
   ISelectionSpot 
 } from "@/models/selection.model";
 import { Knex } from "knex";
-import { fileTypeFromBlob } from "file-type";
+import { fileTypeFromBlob, FileTypeResult } from "file-type";
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs/promises';
 import path from "path";
+import { checkIfDirectoryOrFileExists, createDirectory, saveFile } from "@/utils/fileStorage";
+import { SELECTION_STATUS } from "@/constants/selection.constants";
 
 
-interface ISelectionCategoryQueryResultRow {
-  category_id: number;
-  category_name: string;
-}
-
-interface ISelectionLocationQueryResultRow {
-  location_id: number;
-  location_name: string;
-  location_option_id: number;
-  location_option_name: string;
-}
-
-export async function getSelectionCategories () {
+export async function getSelectionCategories() : Promise<ISelectionCategory[]> {
   const queryResult : ISelectionCategoryQueryResultRow[] = await dbConnectionPool
     .column([
       'selection_category.slt_category_id as category_id',
@@ -45,7 +37,7 @@ export async function getSelectionCategories () {
   return categories;
 }
 
-export async function getSelectionLocations() {
+export async function getSelectionLocations() : Promise<ISelectionLocation[]> {
   const queryResult : ISelectionLocationQueryResultRow[] = await dbConnectionPool
     .column([
       'selection_location.slt_location_id as location_id',
@@ -90,7 +82,10 @@ export async function getSelectionLocations() {
   return locations;
 };
 
-export async function createHashtags(transaction: Knex.Transaction<any, any[]>, hashtags: string[]) {
+export async function createHashtags(
+  transaction: Knex.Transaction<any, any[]>, 
+  hashtags: string[]
+) : Promise<number[]> {
   const hashtagsToInsert = hashtags.map((hashtag) => {
     return {
       htag_name: hashtag
@@ -114,44 +109,42 @@ export async function createHashtags(transaction: Knex.Transaction<any, any[]>, 
   }
 }
 
-export async function saveSelectionImage(imageFile: File) {
-  const newFileName = `${Date.now()}-${uuidv4()}`;
-  const fileType = await fileTypeFromBlob(imageFile);
-  const filePath = `${newFileName}.${fileType?.mime.split('/')[1]}`;
-  const arrayBuffer = await imageFile.arrayBuffer();
-  const buffer = new Uint8Array(arrayBuffer);
+export async function saveSelectionImage(imageFile: File) : Promise<string> {
+  const newFileName : string = `${Date.now()}-${uuidv4()}`;
+  const fileType : FileTypeResult | undefined = await fileTypeFromBlob(imageFile);
+  const filePath : string = `${newFileName}.${fileType?.mime.split('/')[1]}`;
 
   try {
-    // check if the directory exists, if not, create it
-    await fs.mkdir(path.join('.', 'public', 'images', 'selections'), { recursive: true });
-    const savePath = path.join('.', 'public', 'images', 'selections', filePath);
-    // Save the file to the public/images/selections directory for Windows and Linux
-    await fs.writeFile(savePath, buffer);
-    await fs.access(savePath);
+    // 디렉토리가 존재하지 않으면 생성
+    const directoryPath : string = path.join('.', 'public', 'images', 'selections');
+    await createDirectory(directoryPath);
+
+    // 파일을 public/images/selections 디렉토리에 저파
+    const savePath : string = path.join('.', 'public', 'images', 'selections', filePath);
+    await saveFile(savePath, imageFile);
   } catch (error) {
     console.error(error);
-    return 'Failed to save the image';
+    throw new Error('Failed to save the image');
   }
   return filePath;
 }
 
-const saveSelectionSpotPhoto = async (imageFile: File) => {
-  const newFileName = `${Date.now()}-${uuidv4()}`;
-  const fileType = await fileTypeFromBlob(imageFile);
-  const filePath = `${newFileName}.${fileType?.mime.split('/')[1]}`;
-  const arrayBuffer = await imageFile.arrayBuffer();
-  const buffer = new Uint8Array(arrayBuffer);
+const saveSelectionSpotPhoto : (imageFile: File) => Promise<string> = async (imageFile: File) => {
+  const newFileName : string = `${Date.now()}-${uuidv4()}`;
+  const fileType : FileTypeResult | undefined = await fileTypeFromBlob(imageFile);
+  const filePath : string = `${newFileName}.${fileType?.mime.split('/')[1]}`;
 
   try {
-    // check if the directory exists, if not, create it
-    await fs.mkdir(path.join('.', 'public', 'images', 'selections', 'spots'), { recursive: true });
-    // Save the file to the public/images/selections directory for Windows and Linux
-    const savePath = path.join('.', 'public', 'images', 'selections', 'spots', filePath);
-    await fs.writeFile(savePath, buffer);
-    await fs.access(savePath);
+    // 디렉토리가 존재하지 않으면 생성
+    const directoryPath : string = path.join('.', 'public', 'images', 'selections', 'spots');
+    await createDirectory(directoryPath);
+
+    // 파일을 public/images/selections/spots 디렉토리에 저장
+    const savePath : string = path.join('.', 'public', 'images', 'selections', 'spots', filePath);
+    await saveFile(savePath, imageFile);
   } catch (error) {
     console.error(error);
-    return 'Failed to save the image';
+    throw new Error('Failed to save the image');
   }
   return filePath;
 }
@@ -159,7 +152,7 @@ const saveSelectionSpotPhoto = async (imageFile: File) => {
 export async function createSelection(
   transaction: Knex.Transaction<any, any[]>,
   formData: ISelectionCreateFormData
-) {
+) : Promise<void> {
   try {
     const queryResult = await transaction('selection')
       .insert({
@@ -171,12 +164,20 @@ export async function createSelection(
         slt_img: formData.img ?? null,
       }, ['slt_id']);
 
-    const selectionId = queryResult[0];
+    const selectionId : number = queryResult[0];
     if (formData.hashtags) {
-      await createSelectionHashtags(transaction, selectionId, formData.hashtags as number[]);
+      await createSelectionHashtags(
+        transaction, 
+        selectionId, 
+        formData.hashtags as number[]
+      );
     }
     if (formData.spots) {
-      await createSelectionSpots(transaction, selectionId, formData.spots);
+      await createSelectionSpots(
+        transaction, 
+        selectionId, 
+        formData.spots
+      );
     }
 
   } catch (error : any) {
@@ -189,7 +190,7 @@ async function createSelectionHashtags(
   transaction: Knex.Transaction<any, any[]>,
   selectionId: number,
   hashtags: number[]
-) {
+) : Promise<void> {
   for (let i = 0; i < hashtags.length; i++) {
     try {
       await transaction('selection_hashtag')
@@ -211,9 +212,11 @@ async function createSelectionSpots(
   transaction: Knex.Transaction<any, any[]>,
   selectionId: number,
   spots: ISelectionSpot[]
-) {
+) : Promise<void> {
   const spotsIdsPhotos: Array<{id: string, photos: Array<string | File>}> = [];
   const spotsIdsHashtags: Array<{id: string, hashtags: number[]}> = [];
+
+  // 각 spot에 대해 spot_id를 생성하고, spot_hashtag, spot_image 테이블에 데이터 삽입
   const spotsToInsert = spots.map((spot) => {
     const spotId = uuidv4();
     spotsIdsPhotos.push({
@@ -241,6 +244,7 @@ async function createSelectionSpots(
     await transaction('spot')
       .insert(spotsToInsert);
 
+    // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
     for (let i = 0; i < spotsIdsPhotos.length; i++) {
       for (let j = 0; j < spotsIdsPhotos[i].photos.length; j++) {
         if (spotsIdsPhotos[i].photos[j] instanceof File) {
@@ -276,7 +280,7 @@ async function createSelectionSpotHashtags(
   transaction: Knex.Transaction<any, any[]>,
   spotId: string,
   hashtags: number[]
-) {
+) : Promise<void> {
   const insertData = hashtags.map((hashtag) => {
     return {
       spot_htag_id: transaction.fn.uuidToBin(uuidv4()),
@@ -300,7 +304,7 @@ export async function createSelectionSpotImages(
   transaction: Knex.Transaction<any, any[]>,
   spotId: string,
   photos: Array<string>
-) {
+) : Promise<void> {
   const insertData = photos.map((photo, index) => {
     return {
       spot_img_id: transaction.fn.uuidToBin(uuidv4()),
@@ -321,7 +325,9 @@ export async function createSelectionSpotImages(
   }
 }
 
-export async function prepareSelectionCreateFormData(formData: FormData) : Promise<ISelectionCreateFormData> {
+export async function prepareSelectionCreateFormData(
+  formData: FormData
+) : Promise<ISelectionCreateFormData> {
   let data: ISelectionCreateFormData = {
     title: String(formData.get("title")),
     status: String(formData.get("status"))
@@ -351,7 +357,7 @@ export async function prepareSelectionCreateFormData(formData: FormData) : Promi
       ...data,
       spots: JSON.parse(String(formData.get("spots")))
     };
-    if (data.spots) {
+    if (data.spots?.length) {
       const spots = data.spots;
       for (let i=0; i < spots.length; i++) {
         const keys : string[] = Array.from(formData.keys());
@@ -387,7 +393,11 @@ export async function prepareSelectionCreateFormData(formData: FormData) : Promi
     }
   }
   if (formData.get("location")) {
-    const location: { location: number, subLocation: {id: number, name: string} } = JSON.parse(String(formData.get("location")));
+    const location: { 
+      location: number, 
+      subLocation: {id: number, name: string} 
+    } = JSON.parse(String(formData.get("location")));
+
     if (!isNaN(location.location) && !isNaN(location.subLocation.id)) {
       data = {
         ...data,
@@ -412,7 +422,9 @@ export async function validateTitle(title: string) : Promise<string | null> {
   return null;
 };
 
-export async function validateCategory(category: number | undefined) : Promise<string | null> {
+export async function validateCategory(
+  category: number | undefined
+) : Promise<string | null> {
   if (category == null) {
     return "Category is required";
   }
@@ -450,14 +462,18 @@ export async function validateLocation(
   return null;
 };
 
-export async function validateDescription(description: string | undefined) : Promise<string | null> {
+export async function validateDescription(
+  description: string | undefined
+) : Promise<string | null> {
   if (!description) {
     return "Description is required";
   }
   return null;
 };
 
-export async function validateImg(img: File | string | undefined) : Promise<string | null> {
+export async function validateImg(
+  img: File | string | undefined
+) : Promise<string | null> {
   if (!img) {
     return "Image is required";
   }
@@ -482,10 +498,17 @@ export async function validateImg(img: File | string | undefined) : Promise<stri
     }
   // if the image is a string (URL), check if it exists in the database
   } else {
-    const queryResult = await dbConnectionPool('selection')
-      .where('slt_img', img)
-      .select();
+    try {
+      const imgPath : string = path.join('.', 'public', 'images', 'selections', img);
+      await fs.access(imgPath);
+    } catch (error) {
+      console.error(error);
+      return "Invalid image. Image does not exist";
+    }
 
+    const queryResult = await dbConnectionPool('selection')
+      .where('slt_img', img);
+    
     if (queryResult.length === 0) {
       return "Invalid image. Image does not exist";
     }
@@ -493,15 +516,14 @@ export async function validateImg(img: File | string | undefined) : Promise<stri
   return null;
 }
 
-export async function validateSpots(spots: ISelectionSpot[] | undefined) : Promise<string | null> {
+export async function validateSpots(
+  spots: ISelectionSpot[] | undefined
+) : Promise<string | null> {
   if (!spots) {
     return "Spots are required";
   }
   if (!Array.isArray(spots)) {
     return "Invalid spots. Spots should be an array";
-  }
-  if (spots.length === 0) {
-    return "At least one spot is required";
   }
 
   for (let i = 0; i < spots.length; i++) {
@@ -531,31 +553,66 @@ export async function validateSpots(spots: ISelectionSpot[] | undefined) : Promi
         return `Invalid hashtag for spot ${i + 1}`;
       }
     }
-    for (let j = 0; j < spots[i].photos.length; j++) {
-      if (typeof spots[i].photos[j] !== "string" && !(spots[i].photos[j] instanceof File)) {
-        return `Invalid photo for spot ${i + 1}`;
-      }
-      if (typeof spots[i].photos[j] === "string") {
-        // if the string contains one or more slashes, reject it
-        const imageFileName = spots[i].photos[j] as string;
-        if (imageFileName.includes('/')) {
-          return `Invalid photo for spot ${i + 1}`;
-        }
-
-        try {
-          const imgPath = path.join('.', 'public', 'images', 'selections', 'spots', imageFileName);
-          await fs.access(imgPath);
-        } catch (error) {
-          console.error(error);
-          return `Invalid photo`;
-        }
-      }
+    if (spots[i].photos.length > 4) {
+      return `Maximum of 4 photos are allowed for spot ${i + 1}`;
+    }
+    const photosError : string | null = await validateSpotImages(spots[i].photos);
+    if (photosError) {
+      return photosError;
     }
   }
   return null;
 };
 
-export async function validateHashtags(hashtags: string[] | undefined) : Promise<string | null> {
+export async function validateSpotImages(
+  photos: Array<string | File> | undefined
+) : Promise<string | null> {
+  if (!photos) {
+    return "Photos are required";
+  }
+  if (!Array.isArray(photos)) {
+    return "Invalid photos. Photos should be an array";
+  }
+  if (photos.length > 4) {
+    return "Maximum of 4 photos are allowed";
+  }
+  for (let i = 0; i < photos.length; i++) {
+    if (typeof photos[i] !== "string" && !(photos[i] instanceof File)) {
+      return `Invalid photo ${i + 1}`;
+    }
+    if (photos[i] instanceof File) {
+      const validationResult : string | null = await validateImg(photos[i] as File);
+      if (validationResult) {
+        return validationResult;
+      }
+    } else {
+      // check for invalid characters in the file name
+      const imageFileName = photos[i] as string;
+      if (imageFileName.includes('/')) {
+        return `The file name contains invalid characters for photo ${i + 1}`;
+      }
+      if (imageFileName.includes('..')) {
+        return `The file name contains invalid characters for photo ${i + 1}`;
+      }
+      if (imageFileName.includes('\\')) {
+        return `The file name contains invalid characters for photo ${i + 1}`;
+      }
+
+      try {
+        const imgPath : string = path.join('.', 'public', 'images', 'selections', 'spots', imageFileName);
+        await checkIfDirectoryOrFileExists(imgPath);
+      } catch (error) {
+        console.error(error);
+        return `Invalid photo`;
+      }
+    }
+  }
+  return null;
+}
+
+export async function validateHashtags(
+  hashtags: string[] | undefined
+) : Promise<string | null> {
   if (!hashtags) {
     return "Hashtags are required";
   }
@@ -577,8 +634,7 @@ export async function validateHashtags(hashtags: string[] | undefined) : Promise
 };
 
 export async function validateStatus(selectionStatus: string) : Promise<string | null> {
-  const validStatuses = ["temp", "public", "private"];
-  if (!validStatuses.includes(selectionStatus)) {
+  if (!SELECTION_STATUS.includes(selectionStatus)) {
     return "Invalid status";
   }
   return null;

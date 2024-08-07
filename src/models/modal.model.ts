@@ -3,9 +3,11 @@ export type TmodalType =
   | "login"
   | "register"
   | "review"
+  | "review-delete"
   | "info"
   | "editTag"
   | "editInfo"
+  | "image"
   | "images"
   | "GoogleMapsAddSelectionSpot"
   | null;

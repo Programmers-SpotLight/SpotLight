@@ -54,3 +54,15 @@ export interface ISelectionCreateFormData {
   spots?: ISelectionSpot[];
   hashtags?: Array<string | number>;
 }
+
+export interface ISelectionCategoryQueryResultRow {
+  category_id: number;
+  category_name: string;
+}
+
+export interface ISelectionLocationQueryResultRow {
+  location_id: number;
+  location_name: string;
+  location_option_id: number;
+  location_option_name: string;
+}
