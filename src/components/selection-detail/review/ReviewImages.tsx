@@ -29,11 +29,11 @@ const NextArrow = (props: any) => {
   );
 };
 
-interface IReveiewImage {
-  images: string[];
+interface IReveiewImageProps {
+  images: IReviewImage[];
 }
 
-const ReviewImages = ({ images }: IReveiewImage) => {
+const ReviewImages = ({ images }: IReveiewImageProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { openModal } = useModalStore();
 
@@ -65,18 +65,18 @@ const ReviewImages = ({ images }: IReveiewImage) => {
           <div className="px-1 cursor-pointer" onClick={() => openReviewImageModal(0)}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={images[0]}
+              src={images[0].reviewImgSrc}
               alt={"Image 1"}
               className={"w-[160px] h-[160px] object-cover rounded-lg"}
             />
           </div>
           :
           <Slider {...settings}> 
-            {images.map((url, index) => (
+            {images.map((img, index) => (
               <div key={index} className="px-1 cursor-pointer" onClick={() => openReviewImageModal(index)}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={url}
+                  src={img.reviewImgSrc}
                   alt={`Image ${index + 1}`}
                   className={`w-[160px] h-[160px] object-cover 
                   ${

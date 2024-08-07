@@ -19,22 +19,3 @@ interface ISelectionDetail { // 임시 작성 타입 입니다. 수정하시면 
     hashtag : string[];
     status : string | null;
 }
-
-interface IUser {
-  userId: number;
-  userNickname: string;
-  userImage: string | null;
-  isLiked: boolean;
-}
-
-interface ISelectionReview {
-  sltReviewId: number;
-  sltId: number;
-  sltReviewImg: string[] | null;
-  stlReviewDescription: string;
-  sltReviewScore: number;
-  sltCreatedDate: string;
-  sltUpdatedDate: string;
-  user: IUser;
-  likeCount: number;
-}

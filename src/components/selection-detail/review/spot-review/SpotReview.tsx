@@ -1,7 +1,7 @@
 import React from "react";
 import ReviewAvg from "../ReviewAvg";
 import ReviewCount from "../ReviewCount";
-import SelectionReviewList from "../selection-review/SelectionReviewList";
+import SelectionReviewList from "../ReviewList";
 import Button from "@/components/common/button/Button";
 import ReviewOrderButton from "../ReviewOrderButton";
 

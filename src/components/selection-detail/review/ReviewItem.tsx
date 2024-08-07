@@ -1,17 +1,22 @@
 import { useState } from "react";
 import { AiFillLike } from "react-icons/ai";
-import { FaStar, FaTrash } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp, IoMdTrash } from "react-icons/io";
 import { IoPersonSharp } from "react-icons/io5";
 import ReviewImages from "./ReviewImages";
 import { MdEdit } from "react-icons/md";
 import { useModalStore } from "@/stores/modalStore";
 
-interface IReview {
-  review: ISelectionReview;
+interface IReviewProps {
+  sltOrSpotId: number;
+  review: IReview;
 }
 
-const ReviewItem = ({ review }: IReview) => {
+const user = {
+  userId: 201
+}
+
+const ReviewItem = ({ sltOrSpotId, review }: IReviewProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModalStore();
   
@@ -21,13 +26,17 @@ const ReviewItem = ({ review }: IReview) => {
 
   const renderText = () => {
     if (isExpanded) {
-      return review.stlReviewDescription;
+      return review.reviewDescription;
     }
-    return review.stlReviewDescription.length > 90 ? review.stlReviewDescription.slice(0, 90) + "..." : review.stlReviewDescription;
+    return review.reviewDescription.length > 90 ? review.reviewDescription.slice(0, 90) + "..." : review.reviewDescription;
   };
 
-  const openReviewAddModal = () => {
-    openModal('review'); 
+  const openReviewEditModal = () => {
+    openModal('review', { review, sltOrSpotId }); 
+  };
+
+  const openReviewDeleteModal = () => {
+    openModal('review-delete');
   };
 
   return (
@@ -48,7 +57,7 @@ const ReviewItem = ({ review }: IReview) => {
           
           <div className="space-y-1 text-small w-[80px] ml-2">
             <div>{review.user.userNickname}</div>
-            <div className="text-grey3">{review.sltUpdatedDate}</div>
+            <div className="text-grey3">{review.updatedDate}</div>
           </div>
         </div>
         <div className={`${review.user.isLiked ? "text-primary" : "text-grey3"} flex items-center space-x-1 text-bold left-0 `}>
@@ -63,22 +72,26 @@ const ReviewItem = ({ review }: IReview) => {
             <FaStar
             key={index}
             className={`text-medium ${
-              index < review.sltReviewScore ? "text-yellow-400" : "text-grey2"
+              index < review.reviewScore ? "text-yellow-400" : "text-grey2"
             }`}
             />
           ))}
         </div>
-        <div className="flex">
-          <MdEdit className="cursor-pointer mr-1" onClick={openReviewAddModal} />
-          <IoMdTrash className="cursor-pointer" />
-        </div>
+        
+        {
+          user.userId === review.user.userId &&
+          <div className="flex text-grey4">
+            <MdEdit className="cursor-pointer mr-1" onClick={openReviewEditModal} />
+            <IoMdTrash className="cursor-pointer" onClick={openReviewDeleteModal}/>
+          </div>
+        }
       </div>
 
-      {review.sltReviewImg && <ReviewImages images={review.sltReviewImg} />}
+      {review.reviewImg && <ReviewImages images={review.reviewImg} />}
       
       <div className="text-grey4 text-small">
         {renderText()}
-        {review.stlReviewDescription.length > 90 && (
+        {review.reviewDescription.length > 90 && (
           <button
             onClick={toggleExpand}
           >

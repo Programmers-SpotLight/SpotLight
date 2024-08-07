@@ -32,7 +32,7 @@ const NextArrow = (props: any) => {
 };
 
 interface IImageModalProps {
-  images: string[];
+  images: IReviewImage[];
   currentIndex: number;
 }
 
@@ -93,11 +93,11 @@ const ReviewImageModal = () => {
       >
         <div className="slider-container relative w-[50vh] h-full">
           <Slider {...settings}>
-            {images.map((url, index) => (
+            {images.map((img, index) => (
               <div key={index} className="flex items-center justify-center w-full h-full">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={url}
+                  src={img.reviewImgSrc}
                   alt={`Image ${index + 1}`}
                   className="max-w-full max-h-full object-contain"
                 />

@@ -21,7 +21,7 @@ const selectionTabData = (spotClickHandler: () => void) => [
   },
   {
     title: "유저 리뷰",
-    component: <SelectionReview selectionId={101} />
+    component: <SelectionReview sltOrSpotId={101} />
   }
 ];
 
