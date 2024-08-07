@@ -3,7 +3,10 @@
 import fs from 'fs/promises';
 
 
-export const checkIfDirectoryOrFileExists = async (dirPath: string) => {
+// 디렉토리 또는 파일이 존재하는지 확인
+export const checkIfDirectoryOrFileExists : (dirPath: string) => Promise<void> = async (
+  dirPath: string
+) => {
   try {
     await fs.access(dirPath);
   } catch (error) {
@@ -11,7 +14,10 @@ export const checkIfDirectoryOrFileExists = async (dirPath: string) => {
   }
 }
 
-export const createDirectory = async (dirPath: string) => {
+// 디렉토리 생성
+export const createDirectory : (dirPath: string) => Promise<void> = async (
+  dirPath: string
+) => {
   try {
     await fs.mkdir(dirPath, { recursive: true });
     await checkIfDirectoryOrFileExists(dirPath);
@@ -20,7 +26,10 @@ export const createDirectory = async (dirPath: string) => {
   }
 }
 
-export const saveFile = async (filePath: string, file: File) => {
+export const saveFile : (filePath: string, file: File) => Promise<void> = async (
+  filePath: string, 
+  file: File
+) => {
   const arrayBuffer : ArrayBuffer = await file.arrayBuffer();
   const buffer = new Uint8Array(arrayBuffer);
 
