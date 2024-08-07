@@ -15,6 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs/promises';
 import path from "path";
 import { checkIfDirectoryOrFileExists, createDirectory, saveFile } from "@/utils/fileStorage";
+import { SELECTION_STATUS } from "@/constants/selection.constants";
 
 
 export async function getSelectionCategories() : Promise<ISelectionCategory[]> {
@@ -115,7 +116,7 @@ export async function saveSelectionImage(imageFile: File) : Promise<string> {
 
   try {
     // 디렉토리가 존재하지 않으면 생성
-    const directoryPath = path.join('.', 'public', 'images', 'selections');
+    const directoryPath : string = path.join('.', 'public', 'images', 'selections');
     await createDirectory(directoryPath);
 
     // 파일을 public/images/selections 디렉토리에 저파
@@ -135,11 +136,11 @@ const saveSelectionSpotPhoto : (imageFile: File) => Promise<string> = async (ima
 
   try {
     // 디렉토리가 존재하지 않으면 생성
-    const directoryPath = path.join('.', 'public', 'images', 'selections', 'spots');
+    const directoryPath : string = path.join('.', 'public', 'images', 'selections', 'spots');
     await createDirectory(directoryPath);
 
     // 파일을 public/images/selections/spots 디렉토리에 저장
-    const savePath = path.join('.', 'public', 'images', 'selections', 'spots', filePath);
+    const savePath : string = path.join('.', 'public', 'images', 'selections', 'spots', filePath);
     await saveFile(savePath, imageFile);
   } catch (error) {
     console.error(error);
@@ -163,7 +164,7 @@ export async function createSelection(
         slt_img: formData.img ?? null,
       }, ['slt_id']);
 
-    const selectionId = queryResult[0];
+    const selectionId : number = queryResult[0];
     if (formData.hashtags) {
       await createSelectionHashtags(
         transaction, 
@@ -498,7 +499,7 @@ export async function validateImg(
   // if the image is a string (URL), check if it exists in the database
   } else {
     try {
-      const imgPath = path.join('.', 'public', 'images', 'selections', img);
+      const imgPath : string = path.join('.', 'public', 'images', 'selections', img);
       await fs.access(imgPath);
     } catch (error) {
       console.error(error);
@@ -555,7 +556,6 @@ export async function validateSpots(
     if (spots[i].photos.length > 4) {
       return `Maximum of 4 photos are allowed for spot ${i + 1}`;
     }
-    console.log(spots[i].photos);
     const photosError : string | null = await validateSpotImages(spots[i].photos);
     if (photosError) {
       return photosError;
@@ -634,8 +634,7 @@ export async function validateHashtags(
 };
 
 export async function validateStatus(selectionStatus: string) : Promise<string | null> {
-  const validStatuses = ["temp", "public", "private"];
-  if (!validStatuses.includes(selectionStatus)) {
+  if (!SELECTION_STATUS.includes(selectionStatus)) {
     return "Invalid status";
   }
   return null;

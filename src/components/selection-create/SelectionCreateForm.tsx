@@ -241,6 +241,8 @@ const SelectionCreateForm = () => {
 
     const spotsPhotos: Array<{placeId: string, photos: Array<File | string>}> = [];
     if (spots.length > 0) {
+      // 스팟 이미지를 formData에 추가
+      // JSON.stringify에 이미지 파일을 추가하면 에러가 발생하기 때문에
       for (let i = 0; i < spots.length; i++) {
         const images = spots[i].photos;
         for (let j = 0; j < images.length; j++) {
@@ -386,7 +388,10 @@ const SelectionCreateForm = () => {
                           />
                           {spot.title}
                         </div>
-                        <button onClick={() => handleSpotDeleteClick(index)}>
+                        <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                          e.preventDefault();
+                          handleSpotDeleteClick(index)
+                        }}>
                           <Image
                             src={"/icons/clear_7C7C7C.svg"}
                             width={16}
