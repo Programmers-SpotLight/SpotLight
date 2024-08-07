@@ -2,6 +2,9 @@
 
 import GoogleMap from "@/components/google-map/GoogleMap";
 import Drawer from "@/components/selection-detail/Drawer";
+import ReviewModal from "@/components/selection-detail/review/ReviewModal";
+import ReviewDeleteModal from "@/components/selection-detail/review/ReviewDeleteModal";
+import ReviewImageModal from "@/components/selection-detail/review/ReviewImageModal";
 import { ISelectionDetail } from "@/models/selection";
 import { SpotCategory } from "@/models/spot";
 import { useParams } from "next/navigation";
@@ -123,6 +126,9 @@ const SelectionPage = () => {
         spotClickHandler={spotClickHandler}
         selectedSpotId={selectedSpotId}
       />
+      <ReviewModal />
+      <ReviewDeleteModal />
+      <ReviewImageModal />
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import { Tab, Tabs } from "@/components/common/Tabs";
 import React from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
-import SpotReview from "./spot-selection-contents/SpotReview";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
+import SpotReview from "./review/spot-review/SpotReview";
 import { ISpotDetail, SpotCategory } from "@/models/spot";
 
 interface ISpotSectionProps {
@@ -50,7 +50,7 @@ const SpotSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SpotReview />
+      component: <SpotReview sltOrSpotId={101}/>
     }
   ];
 
