@@ -65,6 +65,7 @@ const ReviewModal = () => {
     if (review) {
       setRating(review.reviewScore);
       setReviewText(review.reviewDescription || '');
+      setPictures(review.reviewImg || []);
     }
   }, [review]);
 
