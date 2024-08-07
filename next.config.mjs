@@ -6,6 +6,9 @@ const nextConfig = {
       experimental: {
         serverComponentsExternalPackages: ['knex'],
       },
+      experimental: {
+        serverComponentsExternalPackages: ['knex'],
+      },
 };
 
 export default nextConfig;

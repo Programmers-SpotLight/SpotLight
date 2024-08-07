@@ -1,7 +1,11 @@
 import React from "react";
 
-const SpotInfo = () => {
-  return <div>SpotInfo</div>;
+interface ISpotInfo {
+  description: string;
+}
+
+const SpotInfo = ({ description }: ISpotInfo) => {
+  return <div className="whitespace-pre-wrap">{description}</div>;
 };
 
 export default SpotInfo;

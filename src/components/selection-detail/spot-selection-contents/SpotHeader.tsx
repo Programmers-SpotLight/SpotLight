@@ -1,6 +1,10 @@
+import Hashtag from "@/components/common/Hashtag";
+import { SpotCategory } from "@/models/spot";
+import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import React from "react";
 import { LuMapPin } from "react-icons/lu";
+import { useStore } from "zustand";
 
 interface ISpot {
   name: string;
@@ -8,8 +12,6 @@ interface ISpot {
   mapPin: string;
   color: string;
 }
-
-export type SpotCategory = "관광지" | "맛집" | "쇼핑" | "카페" | "기타";
 
 export const SPOTINFOWITHCATEGORY: { [key in SpotCategory]: ISpot } = {
   관광지: {
@@ -49,7 +51,7 @@ interface ISpotHeaderProps {
   categoryName: SpotCategory;
   title: string;
   address: string;
-  hashtag: string[];
+  hashtags: string[];
 }
 
 const SpotHeader = ({
@@ -57,11 +59,15 @@ const SpotHeader = ({
   categoryName,
   title,
   address,
-  hashtag
+  hashtags
 }: ISpotHeaderProps) => {
+  const { openModal } = useStore(useModalStore);
   return (
     <>
-      <div className="w-full h-[194px] relative mb-5">
+      <div
+        className="w-full h-[194px] relative mb-5"
+        onClick={() => openModal("images", { images, title })}
+      >
         <Image
           src={images[0]}
           alt="spot image"
@@ -99,7 +105,11 @@ const SpotHeader = ({
             {address}
           </div>
           {/**hashtag */}
-          <div className="flex gap-3 flex-wrap">{hashtag.map((h) => h)}</div>
+          <div className="flex">
+            {hashtags.map((hashtag) => (
+              <Hashtag size="big" name={hashtag} key={hashtag} />
+            ))}
+          </div>
         </div>
       </div>
     </>

@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaCamera } from "react-icons/fa";
 
 interface IPictureInputProps {
   inputSize: "small" | "large";
+  imgSrc?: string;
+  onPictureChange?: (image: string, index: number) => void;
+  index?: number;
 }
 
-const PictureInput = ({ inputSize }: IPictureInputProps) => {
-  const [image, setImage] = useState<string | ArrayBuffer | null>(null);
+const PictureInput = ({ 
+  inputSize, 
+  imgSrc, 
+  onPictureChange ,
+  index = -1 
+}: IPictureInputProps) => {
+  const [image, setImage] = useState<string | ArrayBuffer | null>(imgSrc || null);
+
+  useEffect(() => {
+    setImage(imgSrc || null);
+  }, [imgSrc]);
+
   const sizeStyles = {
     small: "w-[155px] h-[123px]",
     large: "w-[328px] h-[187px]"
@@ -17,7 +30,12 @@ const PictureInput = ({ inputSize }: IPictureInputProps) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result);
+        const result = reader.result as string;
+        if (onPictureChange) {
+          onPictureChange(result, index);
+        } else {
+          setImage(result);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -25,7 +43,6 @@ const PictureInput = ({ inputSize }: IPictureInputProps) => {
 
   return (
     <div className={`${sizeStyles[inputSize]} relative border border-solid border-grey2 text-grey4 text-large rounded-lg flex flex-col items-center justify-center`}>
-      {/* <FaCamera /> */}
       {image ? (
         <img src={image as string} alt="Uploaded" className="w-full h-full object-fill rounded-lg" />
       ) : (
