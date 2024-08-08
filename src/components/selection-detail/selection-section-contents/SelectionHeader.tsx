@@ -29,7 +29,7 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
     <>
       <div className="w-full h-[218px] border border-grey2 relative">
         {selectionData.image ? (
-          <Image src={selectionData.image} alt="SelectionImg" fill />
+          <Image src={`/${selectionData.image}`} alt="SelectionImg" fill />
         ) : (
           <div className="w-full h-full flex justify-center items-center text-white font-bold text-large bg-grey2">
             spotlight
