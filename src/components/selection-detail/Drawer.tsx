@@ -21,34 +21,30 @@ const Drawer = ({
   selectedSpotId
 }: IDrawerProps) => {
   return (
-    <div className={`absolute left-0 top-0 flex z-10`}>
-      {/**selection drawer */}
-      <SelectionSection
-        isSelectionDrawerOpen={isSelectionDrawerOpen}
-        spotClickHandler={spotClickHandler}
-        selectionData={selectionData}
-        selectedSpotId={selectedSpotId}
-      />
-
-      {/**spot drawer */}
-      <SpotSection
-        isSelectionDrawerOpen={isSelectionDrawerOpen}
-        isSpotDrawerOpen={isSpotDrawerOpen}
-        selectedSpotId={selectedSpotId}
-        spotData={
-          selectionData.spotList.filter((spot) => spot.id === selectedSpotId)[0]
-        }
-      />
-
+    <>
+      <div className={`absolute -left-[375px] top-0 z-10`}>
+        {/**selection drawer */}
+        <SelectionSection
+          isSelectionDrawerOpen={isSelectionDrawerOpen}
+          spotClickHandler={spotClickHandler}
+          selectionData={selectionData}
+          selectedSpotId={selectedSpotId}
+        />
+      </div>
+      <div className={`absolute -left-[375px] top-0`}>
+        {/**spot drawer */}
+        <SpotSection
+          isSelectionDrawerOpen={isSelectionDrawerOpen}
+          isSpotDrawerOpen={isSpotDrawerOpen}
+          selectedSpotId={selectedSpotId}
+          spotData={
+            selectionData.spotList.filter((spot) => spot.id === selectedSpotId)[0]
+          }
+        />
+      </div>
       {/**button */}
       <div
-        className={`absolute top-1/2 ${
-          isSelectionDrawerOpen && isSpotDrawerOpen
-            ? "left-[750px]"
-            : isSelectionDrawerOpen
-            ? "left-[375px]"
-            : "left-0"
-        } transform -translate-y-1/2 transition-all ease-in-out duration-500`}
+        className={`absolute top-1/2 ${isSelectionDrawerOpen && isSpotDrawerOpen ? "left-[750px]" : isSelectionDrawerOpen ? "left-[375px]" : "left-0"} transform -translate-y-1/2 transition-all ease-in-out duration-500`}
       >
         <button
           className={`w-[24px] h-[50px] bg-grey0 border-t border-r border-b border-primary border-solid rounded-sm`}
@@ -62,7 +58,8 @@ const Drawer = ({
           />
         </button>
       </div>
-    </div>
+    </>
+    
   );
 };
 
