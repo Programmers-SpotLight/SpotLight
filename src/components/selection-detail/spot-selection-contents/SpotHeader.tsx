@@ -1,5 +1,5 @@
 import Hashtag from "@/components/common/Hashtag";
-import { SpotCategory } from "@/models/spot";
+import { ISpotImage, SpotCategory } from "@/models/spot";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import React from "react";
@@ -47,7 +47,7 @@ export const SPOTINFOWITHCATEGORY: { [key in SpotCategory]: ISpot } = {
 };
 
 interface ISpotHeaderProps {
-  images: string[];
+  images: ISpotImage[];
   categoryName: SpotCategory;
   title: string;
   address: string;
@@ -62,20 +62,28 @@ const SpotHeader = ({
   hashtags
 }: ISpotHeaderProps) => {
   const { openModal } = useStore(useModalStore);
+
   return (
     <>
       <div
         className="w-full h-[194px] relative mb-5"
         onClick={() => openModal("images", { images, title })}
       >
-        <Image
-          src={images[0]}
-          alt="spot image"
-          fill
-          sizes="width:100%, height:194px"
-          className="cursor-pointer"
-          style={{ objectFit: "cover" }}
-        />
+        {images[0].url ? (
+          <Image
+            src={`/${images[0].url}`}
+            alt="spot image"
+            fill
+            sizes="width:100%, height:194px"
+            className="cursor-pointer"
+            style={{ objectFit: "cover" }}
+          />
+        ) : (
+          <div className="w-full h-full flex justify-center items-center text-white font-bold text-large bg-grey2">
+            spotlight
+          </div>
+        )}
+
         <div className="absolute bottom-0 right-0 rounded-tl-md bg-black w-11 h-7 text-white flex items-center justify-center text-medium font-bold">
           + {images.length - 1}
         </div>

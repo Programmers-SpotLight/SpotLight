@@ -1,4 +1,4 @@
-import { TmodalType } from "@/models/modal";
+import { TmodalType } from "@/models/modal.model";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 

@@ -65,8 +65,10 @@ const ModalController = () => {
       <div className="relative" onClick={(e) => e.stopPropagation()}>
         <Modal title={title} size={size} closeModal={closeModal}>
           {/* 모달의 이름이 googleMaps로 시작한다면 구글맵 APIProvider를 사용 */}
-          {modalType?.startsWith('GoogleMaps') ? (
-            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+          {modalType?.startsWith("GoogleMaps") ? (
+            <APIProvider
+              apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+            >
               <Component {...props} />
             </APIProvider>
           ) : (

@@ -1,4 +1,4 @@
-import { ISelectionSpot } from "@/models/selection.model";
+import { ISelectionSpot, ISelectionSpotCategory } from "@/models/selection.model";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -25,6 +25,11 @@ interface ISelectionCreateStore {
   updateSpot: (index: number, spot: ISelectionSpot) => void;
 }
 
+interface ISelectionCreateSpotCategoryStore {
+  spotCategories: ISelectionSpotCategory[];
+  setSpotCategories: (categories: ISelectionSpotCategory[]) => void;
+}
+
 export const useSelectionCreateStore = create<ISelectionCreateStore>()(
   devtools((set) => ({
     title: "",
@@ -46,5 +51,12 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
     deleteSpot: (index: number) => set((state) => ({ spots: state.spots.filter((_, i) => i !== index) })),
     deleteTag: (tag: string) => set((state) => ({ tags: state.tags.filter((t) => t !== tag)})),
     updateSpot: (index: number, spot: ISelectionSpot) => set((state) => ({ spots: state.spots.map((s, i) => i === index ? spot : s) })),
+  }))
+);
+
+export const useSelectionCreateSpotCategoryStore = create<ISelectionCreateSpotCategoryStore>()(
+  devtools((set) => ({
+    spotCategories: [],
+    setSpotCategories: (categories: ISelectionSpotCategory[]) => set({ spotCategories: categories }),
   }))
 );

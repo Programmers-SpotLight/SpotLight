@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { SPOTINFOWITHCATEGORY } from "../selection-detail/spot-selection-contents/SpotHeader";
-import { ISpotInfoForMarking } from "@/models/spot";
+import { ISpotInfo, SpotCategory } from "@/models/spot";
 
 interface IGoogleMapProps {
   width: string;
   height: string;
   lat: number;
   lng: number;
-  spots: ISpotInfoForMarking[];
+  spots: ISpotInfo[];
   spotClickHandler: (spotId: string) => void;
   setMap: React.Dispatch<React.SetStateAction<google.maps.Map | null>>;
 }
@@ -27,7 +27,7 @@ const GoogleMap = ({
   useEffect(() => {
     const initializeMap = async () => {
       const loader = new Loader({
-        apiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY as string,
+        apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
         version: "weekly"
       });
 
@@ -48,7 +48,7 @@ const GoogleMap = ({
       const options: google.maps.MapOptions = {
         center: locationMap,
         zoom: 15,
-        mapId: process.env.NEXT_PUBLIC_MAPS_ID
+        mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID
       };
 
       const map = new Map(mapRef.current as HTMLDivElement, options);

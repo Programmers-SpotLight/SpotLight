@@ -1,5 +1,5 @@
 import { ISelectionCategory } from "@/models/selection.model";
-import { getSelectionCategories } from "@/services/selection-services";
+import { getSelectionCategories } from "@/services/selection.services";
 import { NextRequest } from "next/server";
 
 

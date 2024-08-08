@@ -3,7 +3,7 @@
 import Image from "next/image";
 import OneLineInput from "../common/input/OneLineInput";
 import DropdownMenu from "./DropdownMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SelectionCreateTitle from "./SelectionCreateTitle";
 import SelectionCreateDescription from "./SelectionCreateDescription";
 import { ISelectionCategory } from "@/models/selection.model";
@@ -13,8 +13,9 @@ import SelectionCreateCategory from "./SelectionCreateCategory";
 import SelectionCreateLocation from "./SelectionCreateLocation";
 import { useModalStore } from "@/stores/modalStore";
 import { useStore } from "zustand";
-import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
+import { useSelectionCreateSpotCategoryStore, useSelectionCreateStore } from "@/stores/selectionCreateStore";
 import axios from "axios";
+import useSpotCategories from "@/hooks/useSpotCategories";
 
 
 const SelectionCreateForm = () => {
@@ -31,11 +32,18 @@ const SelectionCreateForm = () => {
 
   const { openModal, setExtraData } = useStore(useModalStore);
   const { spots, deleteSpot, updateSpot } = useStore(useSelectionCreateStore);
+  const { setSpotCategories } = useStore(useSelectionCreateSpotCategoryStore);
 
   const handleAddSpotClick = (e: React.MouseEvent) => {
     e.preventDefault();
     openModal('GoogleMapsAddSelectionSpot');
   };
+  
+  const {
+    spotCategories, 
+    isLoading: isSpotCategoriesLoading, 
+    error: spotCategoriesError
+  } = useSpotCategories();
 
   const { 
     selectedCategories, 
@@ -241,6 +249,8 @@ const SelectionCreateForm = () => {
 
     const spotsPhotos: Array<{placeId: string, photos: Array<File | string>}> = [];
     if (spots.length > 0) {
+      // 스팟 이미지를 formData에 추가
+      // JSON.stringify에 이미지 파일을 추가하면 에러가 발생하기 때문에
       for (let i = 0; i < spots.length; i++) {
         const images = spots[i].photos;
         for (let j = 0; j < images.length; j++) {
@@ -274,6 +284,12 @@ const SelectionCreateForm = () => {
       }
     })
   }
+
+  useEffect(() => {
+    if (spotCategories.length > 0) {
+      setSpotCategories(spotCategories);
+    }
+  }, [spotCategories]);
 
   return (
     <div>
@@ -329,15 +345,24 @@ const SelectionCreateForm = () => {
           <div className="flex items-start gap-6 py-6">
             <div className="flex items-start grow">
               <label htmlFor="title" className="w-1/4 text-medium font-bold">셀렉션 썸네일 등록</label>
-              <button className="relative border border-solid border-grey2 w-3/4 h-[190px] rounded-[8px] bg-white flex flex-col items-center justify-center">
+              <button className="relative border border-solid border-grey2 w-3/4 h-[190px] rounded-[8px] bg-white flex flex-col items-center justify-center overflow-hidden">
                 {thumbnailImage ? (
                   <img 
-                    src={thumbnailImage instanceof File ? URL.createObjectURL(thumbnailImage) : thumbnailImage} 
-                    className="w-auto h-full object-cover" 
+                    src={
+                      thumbnailImage instanceof File ? 
+                        URL.createObjectURL(thumbnailImage) : 
+                        thumbnailImage
+                    } 
+                    className="w-auto h-full object-cover absolute"
                     alt="thumbnail"
                   />
                 ) : (
-                  <Image src="/icons/photo_camera_7C7C7C.svg" width={56} height={56} alt="upload_photo"/>
+                  <Image 
+                    src="/icons/photo_camera_7C7C7C.svg" 
+                    width={56} 
+                    height={56} 
+                    alt="upload_photo"
+                  />
                 )}
                 <input
                   type='file'
@@ -386,7 +411,10 @@ const SelectionCreateForm = () => {
                           />
                           {spot.title}
                         </div>
-                        <button onClick={() => handleSpotDeleteClick(index)}>
+                        <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                          e.preventDefault();
+                          handleSpotDeleteClick(index)
+                        }}>
                           <Image
                             src={"/icons/clear_7C7C7C.svg"}
                             width={16}

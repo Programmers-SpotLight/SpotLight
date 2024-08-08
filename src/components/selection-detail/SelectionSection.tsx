@@ -4,12 +4,12 @@ import SelectionReview from "./review/selection-review/SelectionReview";
 import SelectionInfo from "./selection-section-contents/SelectionInfo";
 import SpotList from "./selection-section-contents/SpotList";
 import SelectionHeader from "./selection-section-contents/SelectionHeader";
-import { ISelectionDetail } from "@/models/selection.model";
+import { ISelectionInfo } from "@/models/selection";
 
 interface ISelectionSectionProps {
   isSelectionDrawerOpen: boolean;
   spotClickHandler: (spotId: string) => void;
-  selectionData: ISelectionDetail;
+  selectionData: ISelectionInfo;
   selectedSpotId: string | null;
 }
 
@@ -29,7 +29,7 @@ const SelectionSection = ({
       component: (
         <SpotList
           spotClickHandler={spotClickHandler}
-          spotList={selectionData.spot_list}
+          spotList={selectionData.spotList}
           selectedSpotId={selectedSpotId}
         />
       )
@@ -43,8 +43,8 @@ const SelectionSection = ({
   return (
     <div
       className={`bg-grey0 ${
-        isSelectionDrawerOpen ? "translate-x-0" : "-translate-x-full"
-      } transition ease-in-out duration-500 border-[0.5px] border-grey2 border-solid overflow-y-scroll scrollbar-hide w-[375px] z-10`}
+        isSelectionDrawerOpen ? "translate-x-full" : "translate-x-0"
+      } transition ease-in-out duration-500 border-[0.5px] border-grey2 border-solid overflow-y-scroll scrollbar-hide w-[375px]`}
       style={{ height: "calc(100vh - 74px)" }}
     >
       <SelectionHeader selectionData={selectionData} />
