@@ -20,7 +20,6 @@ export const fetchSearchResult = async (
   if (sort) params.append(QUERY_STRING_NAME.sort, sort);
   if (page) params.append(QUERY_STRING_NAME.page, page);
   if (limit) params.append(QUERY_STRING_NAME.limit, limit);
-
   const finalUrl = `${url}?${params.toString()}`;
 
   return await requestHandler('get', finalUrl);
@@ -35,3 +34,13 @@ export const fetchSelectionLocations = async () => {
   const url ="api/selections/locations"
   return await requestHandler('get', url)
 };
+
+export const fetchSearchAutocompletion = async (
+  tagValue? : string
+) => {
+  const url ="api/selections/search/auto-completion"
+  const params = new URLSearchParams();
+  if (tagValue)  params.append(QUERY_STRING_NAME.tagValue, tagValue);
+  const finalUrl = `${url}?${params.toString()}`;
+  return await requestHandler('get', finalUrl)
+}

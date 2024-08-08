@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SearchDropdown from "./search-contents/SearchDropdown";
 import TextInput from "../common/input/TextInput";
 import { MdAdd } from "react-icons/md";
@@ -14,6 +14,9 @@ import AutoCompletion from "./search-contents/AutoCompletion";
 const SearchEngineSection = () => {
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
+  const [visibleAutoCompletion, setVisibleAutoCompletion] = useState<boolean>(false);
+  const tagValueRef = useRef<HTMLInputElement>(null);
+
   const {
     data: categoryDatas,
     isError: categoryError,
@@ -38,7 +41,6 @@ const SearchEngineSection = () => {
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // 검색창에 태그 작성후 엔터시 동작, 세션 스토리지에 해당 태그 저장
     e.preventDefault();
     if (tagValue.trim()) {
       const addTag = tagValue.replace(/\s+/g, "");
@@ -49,12 +51,12 @@ const SearchEngineSection = () => {
         JSON.stringify(updatedTagList)
       );
       addQueryString(QUERY_STRING_NAME.tags, addTag);
+      setVisibleAutoCompletion(false)
       setTagValue("");
     }
   };
 
   const cancelHashtag = (tag: string, index: number) => {
-    // 해시태그 제거시 동작, 세션 스토리지에 해당 태그 제거
     const updatedTagList = tagList.filter((_, i) => i !== index);
     setTagList(updatedTagList);
     sessionStorage.setItem(
@@ -88,9 +90,13 @@ const SearchEngineSection = () => {
           icon={<MdAdd className="w-6 h-6 fill-grey4" />}
           iconPosition="right"
           value={tagValue}
-          onChange={(e) => setTagValue(e.target.value)}
+          ref={tagValueRef}
+          onChange={(e) => {setTagValue(e.target.value)
+          setVisibleAutoCompletion(true)
+          }
+          }
         />
-        <AutoCompletion tagValue={tagValue} setTagValue={setTagValue} />
+        {visibleAutoCompletion && <AutoCompletion tagValue={tagValueRef.current? tagValueRef.current.value : null} setTagValue={setTagValue} setVisibleAutoCompletion={setVisibleAutoCompletion} />}
       </form>
       <div className="flex gap-[5px] flex-wrap mt-[20px]">
         {tagList.length === 0 ? (
