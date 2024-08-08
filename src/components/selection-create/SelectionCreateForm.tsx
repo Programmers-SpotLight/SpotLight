@@ -12,13 +12,14 @@ import { useStore } from "zustand";
 import { 
   useSelectionCreateStore 
 } from "@/stores/selectionCreateStore";
-import axios from "axios";
 import useSpotCategories from "@/hooks/useSpotCategories";
 import SelectionCreateThumbnailImage from "./SelectionCreateThumbnailImage";
 import SelectionCreateSpot from "./SelectionCreateSpot";
 import SelectionCreateHashtags from "./SelectionCreateHashtags";
 import SelectionCreateSubmit from "./SelectionCreateSubmit";
 import SelectionCreateFormLoadingSpinner from "./SelectionCreateFormLoadingSpinner";
+import { submitSelection } from "@/http/selectionCreate.api";
+import { ISelectionSpot } from "@/models/selection.model";
 
 
 const SelectionCreateForm = () => {
@@ -175,37 +176,22 @@ const SelectionCreateForm = () => {
       formData.append('img', thumbnailImage);
     }
 
-    const spotsPhotos: Array<{placeId: string, photos: Array<File | string>}> = [];
-    if (spots.length > 0) {
-      for (let i = 0; i < spots.length; i++) {
-        const images = spots[i].photos;
-        for (let j = 0; j < images.length; j++) {
-          formData.append(`spots[${spots[i].placeId}][photos][${j}]`, images[j]);
-        }
-        spotsPhotos.push({placeId: spots[i].placeId, photos: images});
-        const clone = {...spots[i], photos: []};
-        updateSpot(i, clone);
-      }
-      formData.append('spots', JSON.stringify(spots));
-    }
+    const spotsPhotos: Array<{
+      placeId: string, 
+      photos: Array<File | string>
+    }> = separateSpotPhotos(spots, formData);
 
     if (hashtags.length > 0) {
       formData.append('hashtags', JSON.stringify(hashtags));
     }
 
-    axios.post('/api/selections', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).then((res) => {
+    submitSelection(
+      formData,
+    ).then((res) => {
       alert('셀렉션 미리저장이 성공적으로 되었습니다.');
     }).catch((err) => {
       alert('미리저장에 실패했습니다.');
-      for (let i = 0; i < spots.length; i++) {
-        const clone = {...spots[i], photos: spotsPhotos[i].photos};
-        updateSpot(i, clone);
-        console.log(spots[i]);
-      }
+      restoreSpotPhotos(spots, spotsPhotos);
     });
   }
 
@@ -251,13 +237,36 @@ const SelectionCreateForm = () => {
       return;
     }
 
+    const spotsPhotos: Array<{
+      placeId: string, 
+      photos: Array<File | string>
+    }> = separateSpotPhotos(spots, formData);
+
+    if (hashtags.length === 0) {
+      alert('태그를 등록해주세요.');
+      restoreSpotPhotos(spots, spotsPhotos);
+      return;
+    }
+    formData.append('hashtags', JSON.stringify(hashtags));
+
+    submitSelection(
+      formData, 
+    ).then((res) => {
+      alert('셀렉션이 성공적으로 등록되었습니다.');
+    }).catch((err) => {
+      alert('제출에 실패했습니다.');
+      restoreSpotPhotos(spots, spotsPhotos);
+    });
+  }
+
+  // 바이너리인 사진 파일을 FormData에 추가하고, spots 배열에서 사진을 제거하는 함수
+  const separateSpotPhotos = (spots: ISelectionSpot[], formData: FormData) => {
     const spotsPhotos: Array<{placeId: string, photos: Array<File | string>}> = [];
     if (spots.length > 0) {
-      // 스팟 이미지를 formData에 추가
-      // JSON.stringify에 이미지 파일을 추가하면 에러가 발생하기 때문에
       for (let i = 0; i < spots.length; i++) {
         const images = spots[i].photos;
         for (let j = 0; j < images.length; j++) {
+          console.log("Found image:", images[j]);
           formData.append(`spots[${spots[i].placeId}][photos][${j}]`, images[j]);
         }
         spotsPhotos.push({placeId: spots[i].placeId, photos: images});
@@ -266,30 +275,24 @@ const SelectionCreateForm = () => {
       }
       formData.append('spots', JSON.stringify(spots));
     }
-
-    if (hashtags.length === 0) {
-      alert('태그를 등록해주세요.');
-      return;
-    }
-    formData.append('hashtags', JSON.stringify(hashtags));
-
-    axios.post('/api/selections', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).then((res) => {
-      alert('셀렉션이 성공적으로 등록되었습니다.');
-    }).catch((err) => {
-      alert('제출에 실패했습니다.');
-      for (let i = 0; i < spots.length; i++) {
-        const clone = {...spots[i], photos: spotsPhotos[i].photos};
-        updateSpot(i, clone);
-        console.log(spots[i]);
-      }
-    })
+    console.log(spotsPhotos);
+    return spotsPhotos;
   }
 
+  // 서브미션 실패시 FormData로 분리한 사진을 다시 spots 배열에 복원하는 함수
+  const restoreSpotPhotos = (
+    spots: ISelectionSpot[], 
+    spotsPhotos: Array<{placeId: string, photos: Array<File | string>}>
+  ) => {
+    console.log(spotsPhotos);
+    for (let i = 0; i < spots.length; i++) {
+      const clone = {...spots[i], photos: spotsPhotos[i].photos};
+      updateSpot(i, clone);
+    }
+  }
 
+  // 기존에 선택된 카테고리, 지역, 스팟 카테고리가 모두 로드되면 페이지를 렌더링.
+  // 하나라도 불러오기 실패하면 에러 메시지를 렌더링.
   useEffect(() => {
     if (
       (selectedCategories.length > 0 && selectionLocations.length > 0 && spotCategories.length > 0) ||
