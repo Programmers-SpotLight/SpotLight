@@ -7,14 +7,16 @@ interface IAutoCompletionProps {
   tagValue: string | null;
   setTagValue: React.Dispatch<React.SetStateAction<string>>;
   setVisibleAutoCompletion: React.Dispatch<React.SetStateAction<boolean>>;
+  tagACRef : React.RefObject<HTMLDivElement>
+  tagInputRef : React.RefObject<HTMLInputElement>
+
 }
 
-const AutoCompletion: React.FC<IAutoCompletionProps> = ({ tagValue, setTagValue, setVisibleAutoCompletion }) => {
+const AutoCompletion: React.FC<IAutoCompletionProps> = ({ tagValue, setTagValue, setVisibleAutoCompletion, tagACRef, tagInputRef}) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const { data: results, isError, isLoading } = useFetchSearchAutoCompletion(tagValue);
-  const acRef = useRef<HTMLDivElement>(null);
   
-  useClickOutside(acRef, () => {
+  useClickOutside(tagACRef, () => {
     setVisibleAutoCompletion(false);
   });
 
@@ -36,6 +38,7 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({ tagValue, setTagValue,
       if (selectedIndex >= 0 && results?.data) {
         setTagValue(results.data[selectedIndex].htag_name);
         setVisibleAutoCompletion(false);
+        if(tagInputRef.current) tagInputRef.current.focus()
       }
     }
   };
@@ -74,12 +77,13 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({ tagValue, setTagValue,
     <>
       {results.data.length > 0 && (
         <div
-          className="flex absolute z-10 w-full bg-white border border-solid border-grey2 rounded-md mt-1 max-h-[300px] overflow-auto"
+          className="flex absolute z-10 w-full bg-white border border-solid border-grey2 rounded-md mt-1 max-h-[300px] overflow-auto focus:border-primary"
           tabIndex={0}
           onKeyDown={handleKeyDown}
-          ref={acRef}
+          ref={tagACRef}
         >
-          <ul id="auto-complete-list" className="flex-[0.6] p-5 pb-[15px] box-border max-h-[300px] overflow-auto">
+          <ul id="auto-complete-list" className="flex-[0.6] p-5 pb-[15px] box-border max-h-[300px] overflow-auto"
+          >
             {results.data.map((item: { htag_name: string }, index: number) => (
               <li
                 key={index}

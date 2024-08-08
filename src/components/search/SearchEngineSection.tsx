@@ -15,7 +15,8 @@ const SearchEngineSection = () => {
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
   const [visibleAutoCompletion, setVisibleAutoCompletion] = useState<boolean>(false);
-  const tagValueRef = useRef<HTMLInputElement>(null);
+  const tagInputRef = useRef<HTMLInputElement>(null);
+  const tagACRef = useRef<HTMLDivElement>(null);
 
   const {
     data: categoryDatas,
@@ -56,6 +57,14 @@ const SearchEngineSection = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown" && visibleAutoCompletion && tagACRef.current) {
+      e.preventDefault();
+      tagACRef.current.focus()
+    }
+  };
+
+
   const cancelHashtag = (tag: string, index: number) => {
     const updatedTagList = tagList.filter((_, i) => i !== index);
     setTagList(updatedTagList);
@@ -90,13 +99,19 @@ const SearchEngineSection = () => {
           icon={<MdAdd className="w-6 h-6 fill-grey4" />}
           iconPosition="right"
           value={tagValue}
-          ref={tagValueRef}
+          ref={tagInputRef}
           onChange={(e) => {setTagValue(e.target.value)
-          setVisibleAutoCompletion(true)
-          }
-          }
+          setVisibleAutoCompletion(true)}}
+          onKeyDown={handleKeyDown}
         />
-        {visibleAutoCompletion && <AutoCompletion tagValue={tagValueRef.current? tagValueRef.current.value : null} setTagValue={setTagValue} setVisibleAutoCompletion={setVisibleAutoCompletion} />}
+        {visibleAutoCompletion && <AutoCompletion 
+          tagValue={tagInputRef.current? 
+            tagInputRef.current.value : null} 
+          setTagValue={setTagValue} 
+          tagACRef={tagACRef}
+          tagInputRef={tagInputRef}
+          setVisibleAutoCompletion={setVisibleAutoCompletion} 
+          />}
       </form>
       <div className="flex gap-[5px] flex-wrap mt-[20px]">
         {tagList.length === 0 ? (
