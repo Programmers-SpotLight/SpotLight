@@ -5,10 +5,10 @@ import React from "react";
 import { useStore } from "zustand";
 import Modal from "./Modal";
 import ModalTemp from "./modal-contents/ModalTemp";
-import { TModalSize, TmodalType } from "@/models/modal";
 import ModalCreateSelectionSpot from "./modal-contents/ModalCreateSelectionSpot";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
+import { TModalSize, TmodalType } from "@/models/modal.model";
 
 interface ImodalDatas {
   type: TmodalType;

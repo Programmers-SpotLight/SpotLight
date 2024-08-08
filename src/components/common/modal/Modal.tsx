@@ -1,4 +1,4 @@
-import { TModalSize } from "@/models/modal";
+import { TModalSize } from "@/models/modal.model";
 import React, { ReactNode } from "react";
 import { IoClose } from "react-icons/io5";
 
