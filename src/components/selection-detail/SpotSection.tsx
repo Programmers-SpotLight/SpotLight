@@ -24,13 +24,19 @@ const SpotSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SpotReview sltOrSpotId={101}/>
+      component: <SpotReview sltOrSpotId={101} />
     }
   ];
 
   return (
     <div
-      className={`bg-grey0 ${isSelectionDrawerOpen && isSpotDrawerOpen ? "translate-x-[750px]" : isSelectionDrawerOpen ? "translate-x-[375px]" : "translate-x-0"}
+      className={`bg-grey0 ${
+        isSelectionDrawerOpen && isSpotDrawerOpen
+          ? "translate-x-[750px]"
+          : isSelectionDrawerOpen
+          ? "translate-x-[375px]"
+          : "translate-x-0"
+      }
       transition- ease-in-out duration-500
 border-[0.5px] border-grey2 border-solid w-[375px] overflow-y-scroll scrollbar-hide`}
       style={{ height: "calc(100vh - 74px)" }}

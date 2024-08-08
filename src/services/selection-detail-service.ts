@@ -114,7 +114,7 @@ export const getSpotHashTags = async (spotId: string) => {
 export const getSpotImages = async (spotId: string) => {
   try {
     const spotImages = await dbConnectionPool("spot_image")
-      .select("spot_img_url as image", "spot_img_order as order")
+      .select("spot_img_url as url", "spot_img_order as order")
       .where("spot_id", spotId);
 
     if (!spotImages) return [];

@@ -24,7 +24,6 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
 
   const bookMarkClickHandler = () => {}; // 북마크 핸들러
 
-  console.log(selectionData);
   return (
     <>
       <div className="w-full h-[218px] border border-grey2 relative">

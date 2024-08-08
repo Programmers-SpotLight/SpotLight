@@ -9,7 +9,6 @@ interface ISpotImagesProps {
 }
 
 const SpotImages = ({ images, title }: ISpotImagesProps) => {
-  console.log(images);
   const [imgIndex, setImgIndex] = useState(0);
 
   const nextBtnClickHandler = () => {
