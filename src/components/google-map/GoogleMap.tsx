@@ -27,7 +27,7 @@ const GoogleMap = ({
   useEffect(() => {
     const initializeMap = async () => {
       const loader = new Loader({
-        apiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY as string,
+        apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
         version: "weekly"
       });
 
@@ -48,7 +48,7 @@ const GoogleMap = ({
       const options: google.maps.MapOptions = {
         center: locationMap,
         zoom: 15,
-        mapId: process.env.NEXT_PUBLIC_MAPS_ID
+        mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID
       };
 
       const map = new Map(mapRef.current as HTMLDivElement, options);

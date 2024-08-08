@@ -24,7 +24,7 @@ const SpotSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SpotReview sltOrSpotId={101}/>
+      component: <SpotReview sltOrSpotId={101} />
     }
   ];
 
@@ -32,10 +32,10 @@ const SpotSection = ({
     <div
       className={`bg-grey0 ${
         isSelectionDrawerOpen && isSpotDrawerOpen
-          ? "translate-x-0"
+          ? "translate-x-[750px]"
           : isSelectionDrawerOpen
-          ? "-translate-x-full"
-          : "-translate-x-[200%]"
+          ? "translate-x-[375px]"
+          : "translate-x-0"
       }
       transition- ease-in-out duration-500
 border-[0.5px] border-grey2 border-solid w-[375px] overflow-y-scroll scrollbar-hide`}
