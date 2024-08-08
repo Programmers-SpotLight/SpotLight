@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, ReactNode } from 'react';
+import React, { InputHTMLAttributes, ReactNode, forwardRef } from 'react';
 
 interface ITextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
@@ -8,14 +8,14 @@ interface ITextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   iconPosition?: "left" | "right";
 }
 
-const TextInput = ({ 
-  error, 
+const TextInput = forwardRef<HTMLInputElement, ITextInputProps>(({
+  error,
   width = "medium",
   height = "small",
   icon,
   iconPosition = "left",
   ...props
-}: ITextInputProps) => {
+}, ref) => {
   const baseStyles = "border rounded-lg text-medium p-3 focus:outline-none focus:border-2";
   const borderStyle = error ? "border-danger" : "border-grey2";
   const iconPadding = icon ? (iconPosition === "left" ? 'left-0 pl-3' : 'right-0 pr-3') : '';
@@ -26,12 +26,12 @@ const TextInput = ({
     medium: "w-96", /* 384px */
     large: "w-[660px]",
     xlarge: "w-[800px]",
-    full : "w-[full]"
+    full: "w-full"
   };
 
   const heightSize = {
     small: "h-9", /* 36px */
-    smallPlus : "[50px]",
+    smallPlus: "h-[50px]",
     medium: "h-20", /* 80px */
     large: "h-36", /* 144px */
   };
@@ -46,14 +46,17 @@ const TextInput = ({
         </div>
       )}
       <input
+        ref={ref}
         {...props}
-        className={inputClass} 
+        className={inputClass}
       />
       {error && (
         <span className="text-danger mt-1">{error}</span>
       )}
     </div>
   );
-};
+});
+
+TextInput.displayName = 'TextInput'; // This line is required for better debugging and should be added
 
 export default TextInput;
