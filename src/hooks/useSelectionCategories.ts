@@ -1,6 +1,6 @@
 import { ISelectionCategory } from "@/models/selection.model";
 import { useEffect, useState } from "react";
-import { fetchSelectionCategories } from "./queries/selectionCreate.query";
+import { fetchSelectionCategories } from "@/http/selectionCreate.api";
 
 
 const useSelectionCategories = () => {

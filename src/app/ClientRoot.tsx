@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 
+
 export default function ClientRoot({
   children
 }: Readonly<{
@@ -15,13 +16,18 @@ export default function ClientRoot({
   const queryClient = useMemo(() => new QueryClient(), []);
   const pathname = usePathname();
   const showFooter = !/^\/selection\/\d+$/.test(pathname);
+  const shouldBeFlex = /\/selection\/create$/.test(pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
       <ModalController />
-      <Header />
-      {children}
-      {showFooter && <Footer />}
+      <div className="flex flex-col items-stretch min-h-screen">
+        <Header />
+        <div className={shouldBeFlex ? "grow flex flex-col" : "grow"}>
+          {children}
+        </div>
+        {showFooter && <Footer />}
+      </div>
     </QueryClientProvider>
   );
 }

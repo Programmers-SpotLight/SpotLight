@@ -10,7 +10,7 @@ import useGeocoding from '@/hooks/useGeocoding';
 import { useStore } from 'zustand';
 import { useModalStore } from '@/stores/modalStore';
 import { ISelectionSpot } from '@/models/selection.model';
-import { useSelectionCreateSpotCategoryStore, useSelectionCreateStore } from '@/stores/selectionCreateStore';
+import { useSelectionCreateStore } from '@/stores/selectionCreateStore';
 import DropdownMenu from '@/components/selection-create/DropdownMenu';
 
 
@@ -26,37 +26,35 @@ const ModalCreateSelectionSpot = () => {
     closeModal,
     setExtraData
   } : { 
-    extraData: ISelectionSpot, 
+    extraData: {spotCategories: {id: number, name: string}[], spot?: ISelectionSpot} | null,
     closeModal: () => void, 
     setExtraData: (data: any) => void 
   } = useStore(useModalStore);
   const { addSpot, spots: currentSpots } = useStore(useSelectionCreateStore);
 
   const [currentPinCoords, setCurrentPinCoords] = useState<google.maps.LatLngLiteral>(
-    (data?.latitude && data?.longitude) ? 
-      { lat: data.latitude, lng: data.longitude } : 
+    (data?.spot?.latitude && data?.spot?.longitude) ? 
+      { lat: data.spot.latitude, lng: data.spot.longitude } : 
       { lat: 37.5503, lng: 126.9971 }
   );
 
-  const { spotCategories } = useStore(useSelectionCreateSpotCategoryStore);
-
-  const [placeName, setPlaceName] = useState<string>(data?.title || '');
-  const [description, setDescription] = useState<string>(data?.description || '');
+  const [placeName, setPlaceName] = useState<string>(data?.spot?.title || '');
+  const [description, setDescription] = useState<string>(data?.spot?.description || '');
   const [category, setCategory] = useState<undefined | {id: number, name: string}>(undefined);
-  const [thumbnailImage, setThumbnailImage] = useState<File | string | null>(data?.photos[0] || null);
-  const [thumbnailImage1, setThumbnailImage1] = useState<File | string | null>(data?.photos[1] || null);
-  const [thumbnailImage2, setThumbnailImage2] = useState<File | string | null>(data?.photos[2] || null);
-  const [thumbnailImage3, setThumbnailImage3] = useState<File | string |null>(data?.photos[3] || null);
+  const [thumbnailImage, setThumbnailImage] = useState<File | string | null>(data?.spot?.photos[0] || null);
+  const [thumbnailImage1, setThumbnailImage1] = useState<File | string | null>(data?.spot?.photos[1] || null);
+  const [thumbnailImage2, setThumbnailImage2] = useState<File | string | null>(data?.spot?.photos[2] || null);
+  const [thumbnailImage3, setThumbnailImage3] = useState<File | string |null>(data?.spot?.photos[3] || null);
   const [tagInputValue, setTagInputValue] = useState<string>('');
-  const [tags, setTags] = useState<string[]>(data?.hashtags as string[]|| []);
+  const [tags, setTags] = useState<string[]>(data?.spot?.hashtags as string[]|| []);
 
   const [selectedLocation, setSelectedLocation] = useState<TPoiWithAddress>(
-    (data?.latitude && data?.longitude && data?.placeId && data?.formattedAddress) ?
+    (data?.spot?.latitude && data?.spot?.longitude && data?.spot?.placeId && data?.spot?.formattedAddress) ?
     {
       key: 'userSelectedSpot',
-      address: data.formattedAddress,
-      placeId: data.placeId,
-      location: { lat: data.latitude, lng: data.longitude }
+      address: data.spot?.formattedAddress,
+      placeId: data.spot?.placeId,
+      location: { lat: data.spot?.latitude, lng: data.spot?.longitude }
     } :
     {
       key: 'userSelectedSpot',
@@ -128,7 +126,7 @@ const ModalCreateSelectionSpot = () => {
   const handleCategoryChange = (value: string) => {
     setCategory({
       id: parseInt(value),
-      name: spotCategories.find((category) => category.id === parseInt(value))?.name || ''
+      name: data?.spotCategories.find((category) => category.id === parseInt(value))?.name || ''
     });
   };
 
@@ -450,19 +448,21 @@ const ModalCreateSelectionSpot = () => {
           onChange={handleDescriptionChange}
         />
       </div>
-      <p className="text-medium font-bold mt-8 mb-4">스팟 카테고리</p>
-      {(spotCategories.length > 0) && (
-        <DropdownMenu 
-          options={
-            spotCategories.map((category) => ({
-              value: category.id,
-              label: category.name
-            }))
-          }
-          onChange={handleCategoryChange}
-          currentChoice={category?.name || '선택하세요'}
-        />
-      )}
+      <div className='text-medium font-bold mt-8 mb-4 flex'>
+        <p className='w-1/4'>스팟 카테고리</p>
+        {(data?.spotCategories && data.spotCategories.length > 0) && (
+          <DropdownMenu 
+            options={
+              data.spotCategories.map((category) => ({
+                value: category.id,
+                label: category.name
+              }))
+            }
+            onChange={handleCategoryChange}
+            currentChoice={category?.name || '선택하세요'}
+          />
+        )}
+      </div>
       <p className='mt-8 font-bold text-medium mb-4'>이미지 등록 (선택)</p>
       <div className='flex gap-2'>
         <button className="relative border border-solid border-grey2 w-3/4 h-[155px] rounded-[8px] bg-white flex flex-col items-center justify-center">

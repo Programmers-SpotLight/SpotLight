@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchReverseGeocodingData } from "./queries/selectionCreate.query";
+import { fetchReverseGeocodingData } from "@/http/selectionCreate.api";
 
 
 const useReverseGeocoding = () => {
