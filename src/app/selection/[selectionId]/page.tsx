@@ -9,6 +9,7 @@ import ReviewDeleteModal from "@/components/selection-detail/review/ReviewDelete
 import ReviewImageModal from "@/components/selection-detail/review/ReviewImageModal";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import MapLoading from "@/components/google-map/MapLoading";
 
 // const selectionData: ISelectionInfo = {
 //   id: 1,
@@ -137,7 +138,7 @@ const SelectionPage = () => {
 
   useEffect(() => {
     if (selectionData && selectionData.spotList.length > 0) {
-      setSelectedSpotId(selectionData.spotList[0].id); 
+      setSelectedSpotId(selectionData.spotList[0].id);
     }
   }, [selectionData]);
 
@@ -155,7 +156,18 @@ const SelectionPage = () => {
     setSelectedSpotId(spotId);
   };
 
-  if (isPending) return <div>로딩 중...</div>;
+  if (isPending)
+    return (
+      <div
+        className="flex flex-col items-center justify-center gap-6"
+        style={{ height: "calc(100vh - 74px)" }}
+      >
+        <MapLoading />
+        <span className="text-lg font-bold text-grey4">
+          셀렉션 정보를 불러오는 중입니다. 잠시만 기다려주세요.
+        </span>
+      </div>
+    );
   if (isError) return <div>에러 발생</div>;
 
   return (
@@ -169,14 +181,16 @@ const SelectionPage = () => {
         spotClickHandler={spotClickHandler}
         setMap={setMap}
       />
-      {selectedSpotId && <Drawer
-        selectionData={selectionData}
-        isSelectionDrawerOpen={isSelectionDrawerOpen}
-        isSpotDrawerOpen={isSpotDrawerOpen}
-        toggleDrawer={toggleDrawer}
-        spotClickHandler={spotClickHandler}
-        selectedSpotId={selectedSpotId}
-      />}
+      {selectedSpotId && (
+        <Drawer
+          selectionData={selectionData}
+          isSelectionDrawerOpen={isSelectionDrawerOpen}
+          isSpotDrawerOpen={isSpotDrawerOpen}
+          toggleDrawer={toggleDrawer}
+          spotClickHandler={spotClickHandler}
+          selectedSpotId={selectedSpotId}
+        />
+      )}
       <ReviewModal />
       <ReviewDeleteModal />
       <ReviewImageModal />
