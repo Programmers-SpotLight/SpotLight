@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchSelectionDetailInfo } from "./queries/selectionDetail.query";
+import { fetchSelectionDetailInfo } from "../../http/selectionDetail.api";
 
-export const useSelection = (selectionId: string | string[]) => {
+export const useSelectionDetail = (selectionId: string | string[]) => {
   const {
     data: selectionData,
     isPending,
