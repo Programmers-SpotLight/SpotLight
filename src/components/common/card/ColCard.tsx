@@ -86,7 +86,7 @@ const ColCard = ({
         <div className="flex justify-between items-start">
           <p className="text-grey4 mb-2 text-extraSmall font-semibold">
             {category}
-            {region && ` > ${region}`}
+            {region && ` / ${region}`}
           </p>
           {pathname === "/mypage" && (
             <GoKebabHorizontal
