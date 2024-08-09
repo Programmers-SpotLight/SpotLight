@@ -225,7 +225,7 @@ const SelectionCreateForm = () => {
     }
     formData.append('location', JSON.stringify({
       location: location.location.id,
-      subLocation: location.subLocation
+      subLocation: location.subLocation.id
     }));
 
     if (thumbnailImage) {
