@@ -1,12 +1,13 @@
-import { ISelectionDetailInfo } from "@/models/selection";
-import { ISpotInfo, ISpotImage } from "@/models/spot";
+import { ISelectionDetailInfo } from "@/models/selection.model";
+import { ISpotImage, ISpotInfo } from "@/models/spot.model";
 import {
   getSelectionDetailInfo,
   getSelectionHashTags,
   getSpotDetailInfo,
   getSpotHashTags,
   getSpotImages
-} from "@/services/selection-detail-service";
+} from "@/services/selectionDetail.services";
+
 import { NextResponse } from "next/server";
 
 export async function GET(

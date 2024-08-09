@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { SPOTINFOWITHCATEGORY } from "../selection-detail/spot-selection-contents/SpotHeader";
-import { ISpotInfo, SpotCategory } from "@/models/spot";
+import { ISpotInfo } from "@/models/spot.model";
 
 interface IGoogleMapProps {
   width: string;
