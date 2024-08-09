@@ -97,64 +97,6 @@ export async function getSelectionLocations() : Promise<ISelectionLocation[]> {
   }
 };
 
-export async function createHashtags(
-  transaction: Knex.Transaction<any, any[]>, 
-  hashtags: string[]
-) : Promise<number[]> {
-  const hashtagsToInsert : {htag_name: string}[] = hashtags.map((hashtag) => {
-    return {
-      htag_name: hashtag
-    };
-  });
-
-  try {
-    await transaction('hashtag')
-      .insert(hashtagsToInsert)
-      .onConflict('htag_name')
-      .merge();
-
-    const querySelectResult = await transaction('hashtag')
-      .select('htag_id')
-      .whereIn('htag_name', hashtags);
-    
-    return querySelectResult.map((row) => row.htag_id);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('해시태그 생성에 실패했습니다');
-  }
-}
-
-export async function saveSelectionImage(imageFile: File) : Promise<string> {
-  const newFileName : string = `${Date.now()}-${uuidv4()}`;
-  const fileType : FileTypeResult | undefined = await fileTypeFromBlob(imageFile);
-  const filePath : string = `${newFileName}.${fileType?.mime.split('/')[1]}`;
-
-  try {
-    // 디렉토리가 존재하지 않으면 생성
-    const directoryPath : string = path.join(
-      '.', 
-      'public', 
-      'images', 
-      'selections'
-    );
-    await createDirectory(directoryPath);
-
-    // 파일을 public/images/selections 디렉토리에 저장
-    const savePath : string = path.join(
-      '.', 
-      'public', 
-      'images', 
-      'selections', 
-      filePath
-    );
-    await saveFile(savePath, imageFile);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('셀렉션 이미지 저장에 실패했습니다');
-  }
-  return filePath;
-}
-
 export async function createSelection(
   transaction: Knex.Transaction<any, any[]>,
   formData: ISelectionCreateFormData
@@ -218,6 +160,64 @@ export async function createSelection(
       formData.spots
     );
   }
+}
+
+export async function createHashtags(
+  transaction: Knex.Transaction<any, any[]>, 
+  hashtags: string[]
+) : Promise<number[]> {
+  const hashtagsToInsert : {htag_name: string}[] = hashtags.map((hashtag) => {
+    return {
+      htag_name: hashtag
+    };
+  });
+
+  try {
+    await transaction('hashtag')
+      .insert(hashtagsToInsert)
+      .onConflict('htag_name')
+      .merge();
+
+    const querySelectResult = await transaction('hashtag')
+      .select('htag_id')
+      .whereIn('htag_name', hashtags);
+    
+    return querySelectResult.map((row) => row.htag_id);
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('해시태그 생성에 실패했습니다');
+  }
+}
+
+export async function saveSelectionImage(imageFile: File) : Promise<string> {
+  const newFileName : string = `${Date.now()}-${uuidv4()}`;
+  const fileType : FileTypeResult | undefined = await fileTypeFromBlob(imageFile);
+  const filePath : string = `${newFileName}.${fileType?.mime.split('/')[1]}`;
+
+  try {
+    // 디렉토리가 존재하지 않으면 생성
+    const directoryPath : string = path.join(
+      '.', 
+      'public', 
+      'images', 
+      'selections'
+    );
+    await createDirectory(directoryPath);
+
+    // 파일을 public/images/selections 디렉토리에 저장
+    const savePath : string = path.join(
+      '.', 
+      'public', 
+      'images', 
+      'selections', 
+      filePath
+    );
+    await saveFile(savePath, imageFile);
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('셀렉션 이미지 저장에 실패했습니다');
+  }
+  return filePath;
 }
 
 async function createSelectionHashtags(
