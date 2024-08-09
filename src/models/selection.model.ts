@@ -1,3 +1,5 @@
+import { ISpotInfo } from "./spot.model";
+
 export interface ISelectionCategory {
   id: number;
   name: string;
@@ -53,7 +55,7 @@ export interface ISelectionSpotCategory {
 export interface ISelectionCreateFormData {
   status: string;
   category?: number;
-  location?: { location: number, subLocation: number };
+  location?: { location: number; subLocation: number };
   img?: File | string;
   title: string;
   description?: string;
@@ -71,4 +73,28 @@ export interface ISelectionLocationQueryResultRow {
   location_name: string;
   location_option_id: number;
   location_option_name: string;
+}
+
+export interface ISelectionDetailInfo {
+  id: number;
+  title: string;
+  description: string;
+  status: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  categoryId: number;
+  categoryName: string;
+  image?: string;
+}
+
+export interface ISelectionInfo extends ISelectionDetailInfo {
+  user: {
+    id: number;
+    nickname: string;
+    image?: string;
+  };
+  location: string;
+  hashtags: string[];
+  spotList: ISpotInfo[];
+  booked: boolean;
 }

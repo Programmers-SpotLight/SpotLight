@@ -18,7 +18,7 @@ const SpotList = ({
     <ul className="flex flex-col gap-[5px] cursor-pointer">
       {spotList.map((spot) => (
         <li
-          key={spot.id}
+          key={spot.lat}
           className={`flex items-center gap-[5px] text-grey4 font-medium text-medium p-[3px] pl-2 pr-2 box-border ${
             selectedSpotId === spot.id ? "bg-grey1" : ""
           } p-2 rounded-md`}
