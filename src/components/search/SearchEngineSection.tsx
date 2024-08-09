@@ -11,13 +11,13 @@ import useFetchSelectionLocations from "@/hooks/queries/useFetchSelectionLocatio
 import { QUERY_STRING_NAME } from "@/constants/queryString";
 import AutoCompletion from "./search-contents/AutoCompletion";
 import { useSearchParams } from "next/navigation";
-import useSearch from "@/hooks/useSearch";
+import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 
 const SearchEngineSection = () => {
   const searchParams = useSearchParams();
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
-  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearch();
+  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearchAutoComplete();
 
   const {
     data: categoryDatas,

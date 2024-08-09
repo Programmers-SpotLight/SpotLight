@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-const useSearch = () => {
+const useSearchAutoComplete = () => {
   const tagInputRef = useRef<HTMLInputElement>(null);
   const tagACRef = useRef<HTMLDivElement>(null);
   const [visibleAutoCompletion, setVisibleAutoCompletion] =
@@ -16,4 +16,4 @@ const useSearch = () => {
     return {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion};
 }
 
-export default useSearch;
+export default useSearchAutoComplete;

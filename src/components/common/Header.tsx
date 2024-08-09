@@ -2,32 +2,23 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { IoPersonSharp, IoSearchOutline } from "react-icons/io5";
 import AutoCompletion from "../search/search-contents/AutoCompletion";
-import useSearch from "@/hooks/useSearch";
+import useClickOutside from "@/hooks/useClickOutside";
+import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 
 const Header = () => {
+  const router = useRouter();
   const [tagValue, setTagValue] = useState<string>("");
   const [isDropDownVisible, setIsDropDownVisible] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLImageElement>(null);
-  const router = useRouter();
-  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearch();
-  
+  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearchAutoComplete();
+  useClickOutside(dropdownRef, () => setIsDropDownVisible(false))
+
   const onClickHandler = () => {
     setIsDropDownVisible((prev) => !prev);
-  };
-
-  const clickOutSideHandler = (e: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(e.target as Node) &&
-      profileRef.current &&
-      !profileRef.current.contains(e.target as Node)
-    ) {
-      setIsDropDownVisible(false);
-    }
   };
 
   const onSubmithandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,11 +27,6 @@ const Header = () => {
     router.push(`/search?tags=${tagValue}`);
     setTagValue("");
   };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", clickOutSideHandler);
-    return () => document.removeEventListener("mousedown", clickOutSideHandler);
-  }, []);
 
   return (
     <div className="w-full h-[74px] bg-grey0 shadow-md px-6 flex items-center justify-between">
