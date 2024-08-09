@@ -1,14 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  IoPerson,
-  IoPersonCircle,
-  IoPersonCircleOutline,
-  IoPersonOutline,
   IoPersonSharp,
   IoSearchOutline
 } from "react-icons/io5";
@@ -41,7 +36,8 @@ const Header = () => {
 
   const onSubmithandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push(`/search?searchTerm=${searchTerm}`);
+    router.push(`/search?tags=${searchTerm}`);
+    setSearchTerm('');
   };
 
   useEffect(() => {
