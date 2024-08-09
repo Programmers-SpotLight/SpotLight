@@ -478,9 +478,21 @@ export async function validateSpots(
     throw new BadRequestError("유효하지 않은 스팟입니다. 스팟은 배열이어야 합니다");
   }
 
+  // 스팟의 placeId는 고유해야 스팟을 식별할 수 있음
+  const placeIds: string[] = [];
+
   for (let i = 0; i < spots.length; i++) {
     await validateTitle(spots[i].title);
     await validateDescription(spots[i].description);
+
+    if (!spots[i].placeId) {
+      throw new BadRequestError(`스팟 ${spots[i].title}의 placeId는 필수입니다`);
+    }
+    if (placeIds.includes(spots[i].placeId)) {
+      throw new BadRequestError(`스팟 ${spots[i].title}의 placeId는 고유해야 합니다`);
+    }
+    placeIds.push(spots[i].placeId);
+
 
     if (!spots[i].formattedAddress) {
       throw new BadRequestError(`스팟 ${spots[i].title}의 주소가 누락되었습니다`);
