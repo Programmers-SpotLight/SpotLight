@@ -4,6 +4,7 @@ import { TsortType } from "@/models/searchResult.model";
 const searchQueryBuilder = (
   queryBuilder: any,
   category_id: string,
+  region_id: string,
   tags: string[],
   sort? : TsortType
 ) => {
@@ -21,10 +22,15 @@ const searchQueryBuilder = (
       "=",
       "selection_category.slt_category_id"
     )
+    .join("selection_location_option", "selection.slt_location_option_id", "=", "selection_location_option.slt_location_option_id")
     .join("hashtag", "selection_hashtag.htag_id", "=", "hashtag.htag_id");
 
   if (category_id !== "0") {
     queryBuilder.where("selection.slt_category_id", category_id);
+  }
+
+  if (region_id !== "0") {
+    queryBuilder.where("selection.slt_location_option_id", region_id)
   }
 
   if (tags.length > 0) {
@@ -47,6 +53,7 @@ const searchQueryBuilder = (
 
 export const getSearchResultCount = async (
     category_id : string,
+    region_id : string,
     tags : string[],
     sort : TsortType
 ) => {
@@ -57,10 +64,11 @@ export const getSearchResultCount = async (
           'user.user_nickname',
           'user.user_img',
           'selection_category.slt_category_name',
+          'selection_location_option.slt_location_option_name',
           dbConnectionPool.raw('JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags')
         )
         .groupBy('selection.slt_id', 'user.user_id')
-        .modify(queryBuilder => searchQueryBuilder(queryBuilder, category_id, tags, sort))
+        .modify(queryBuilder => searchQueryBuilder(queryBuilder, category_id, region_id, tags, sort))
 
         return countQuery
     } catch (error) {
@@ -70,6 +78,7 @@ export const getSearchResultCount = async (
 
 export const getSearchResult = async (
     category_id : string,
+    region_id : string,
     tags : string[],
     sort : TsortType,
     limit : number,
@@ -82,10 +91,11 @@ export const getSearchResult = async (
           'user.user_nickname',
           'user.user_img',
           'selection_category.slt_category_name',
+          'selection_location_option.slt_location_option_name',
           dbConnectionPool.raw('JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags')
         )
         .groupBy('selection.slt_id', 'user.user_id')
-        .modify(queryBuilder => searchQueryBuilder(queryBuilder, category_id, tags, sort as TsortType))
+        .modify(queryBuilder => searchQueryBuilder(queryBuilder, category_id, region_id, tags, sort as TsortType))
         .limit(limit)
         .offset((currentPage - 1) * limit);
         return resultQuery

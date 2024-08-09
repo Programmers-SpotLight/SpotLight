@@ -87,6 +87,7 @@ const SearchResultSection = () => {
             key={item.slt_id}
             thumbnail={item.slt_img}
             category={item.slt_category_name}
+            region={item.slt_location_option_name}
             selectionId={item.slt_id}
             hashtags={item.slt_hashtags}
             description={item.slt_description}

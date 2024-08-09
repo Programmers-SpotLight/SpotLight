@@ -9,13 +9,14 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
   const query = url.searchParams;
 
   const category_id = query.get(QUERY_STRING_NAME.category_id) || QUERY_STRING_DEFAULT.category_id;
+  const region_id = query.get(QUERY_STRING_NAME.region_id) || QUERY_STRING_NAME.region_id;
   const tags = query.getAll(QUERY_STRING_NAME.tags) || QUERY_STRING_DEFAULT.tags;
   const currentPage = parseInt(query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page);
   const limit = parseInt(query.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit);
   const sort = query.get(QUERY_STRING_NAME.sort) || QUERY_STRING_DEFAULT.sort;
   
   try {
-    const countResult = await getSearchResultCount(category_id, tags, sort as TsortType);
+    const countResult = await getSearchResultCount(category_id, region_id, tags, sort as TsortType);
     const totalElements = countResult.length > 0 ? parseInt(countResult.length) : 0;
     const totalPages = Math.ceil(totalElements / limit);
 
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
       return NextResponse.json({ data: [], pagination });
     }
 
-    const pageResult: IsearchData[] = await getSearchResult(category_id, tags, sort  as TsortType, limit, currentPage);
+    const pageResult: IsearchData[] = await getSearchResult(category_id, region_id, tags, sort  as TsortType, limit, currentPage);
 
     // 해시태그 JSON 파일 타입 변환
     const finalResults = pageResult.map((item: IsearchData) => ({
