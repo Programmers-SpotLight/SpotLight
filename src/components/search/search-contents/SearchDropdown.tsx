@@ -1,6 +1,4 @@
 "use client";
-
-import { ISelectionCreateLocationState } from "@/components/selection-create/SelectionCreateLocation";
 import { QUERY_STRING_NAME } from "@/constants/queryString";
 import useClickOutside from "@/hooks/useClickOutside";
 import {
@@ -8,7 +6,7 @@ import {
   ISelectionLocation
 } from "@/models/selection.model";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdNavigateNext } from "react-icons/md";
 
@@ -19,9 +17,16 @@ interface SearchDropdownProps {
   setCategory?: React.Dispatch<
     React.SetStateAction<ISelectionCategory | undefined>
   >;
-  setLocation?: React.Dispatch<
-    React.SetStateAction<ISelectionCreateLocationState>
-  >;
+  setLocation?: Dispatch<SetStateAction<{
+    location: undefined | {
+        id: number;
+        name: string;
+    };
+    subLocation: undefined | {
+        id: number;
+        name: string;
+    };
+}>>
 }
 
 const SearchDropdown = ({
@@ -32,7 +37,7 @@ const SearchDropdown = ({
   setLocation
 }: SearchDropdownProps) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
-  const [searchContents, setSearchContents] = useState<
+  const [categoryList, setCategoryList] = useState<
     ISelectionLocation[] | ISelectionCategory[]
   >([]);
   const [currentCategory, setCurrentCategory] = useState<string>(title);
@@ -48,13 +53,13 @@ const SearchDropdown = ({
   });
 
   useEffect(() => {
-    console.log(contents);
     if (query) {
-      const allOption = { id: 0, name: `${title} 전체` };
-      setSearchContents([allOption, ...contents]);
+      const addOption = { id: 0, name: `${title} 전체` };
+      setCategoryList([addOption, ...contents]);
+    } else {
+      setCategoryList([...contents]);
     }
-    setSearchContents([...contents]);
-  }, [contents, title]);
+  }, []);
 
   const handleDropdownToggle = () => {
     setIsClicked((prev) => !prev);
@@ -66,31 +71,27 @@ const SearchDropdown = ({
     options?: { id: number; name: string }[]
   ) => {
     if (options && options.length > 0) {
-      console.log('옵션')
       setSubOptions(options);
       if (setLocation && name) { // 셀렉션 생성에서 subOption 접근, => 지역 카테고리 접근값 반환
         setLocation((prevState) => ({
           ...prevState,
           location: { id, name }
         }));
-      } else {
-        console.log('옵션x')
-        setCurrentCategory(name); 
-        if (setCategory && name) setCategory({ id, name }); // 셀렉션 생성에서 접근, => 셀렉션 카테고리 접근값 반환
-        if (query) { // 쿼리가 있는 경우, 검색창에서 접근, => 쿼리스트링 추가 
-          deleteQueryString(query);
-          deleteQueryString(QUERY_STRING_NAME.page);
-          addQueryString(query, id.toString());
-        }
-        setIsClicked(false);
-        setSubOptions(null);
       }
+    } else {
+      setCurrentCategory(name); 
+      if (setCategory && name) setCategory({ id, name }); // 셀렉션 생성에서 접근, => 셀렉션 카테고리 접근값 반환
+      if (query) { // 쿼리가 있는 경우, 검색창에서 접근, => 쿼리스트링 추가 
+        deleteQueryString(query);
+        deleteQueryString(QUERY_STRING_NAME.page);
+        addQueryString(query, id.toString());
+      }
+      setIsClicked(false);
+      setSubOptions(null);
     }
   };
 
-  const handleSubItemClick = (name: string, id: number) => {
-    console.log('옵션2')
-    
+  const handleSubItemClick = (name: string, id: number) => {    
     if (setLocation && name) { // 셀렉션 생성에서 subOption 접근, => 지역 카테고리 접근값 반환
       setLocation((prevState) => ({
         ...prevState,
@@ -136,7 +137,7 @@ const SearchDropdown = ({
             <h1 className="text-large font-extrabold">{title}</h1>
             <hr className="mt-5 mb-[10px] border-grey2" />
             <ul className="list-none p-2 min-h-[200px] overflow-y-auto">
-              {searchContents.map((content) => (
+              {categoryList.map((content) => (
                 <li
                   key={content.id}
                   className="p-2 hover:bg-grey1 flex justify-between rounded-lg text-grey4 cursor-pointer"

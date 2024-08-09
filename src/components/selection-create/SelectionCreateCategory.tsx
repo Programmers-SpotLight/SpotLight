@@ -1,21 +1,15 @@
 import useFetchSelectionCategories from '@/hooks/queries/useFetchSelectionCategories';
 import React, { Dispatch, SetStateAction } from 'react';
 import SearchDropdown from '../search/search-contents/SearchDropdown';
-import { ISelectionCategory } from '@/models/selection.model';
+import { ISelectionCategory, ISelectionSpotCategory } from '@/models/selection.model';
 
 interface ISelectionCreateCategoryProps {
+  selectedCategories : ISelectionSpotCategory[]
   setCategory : Dispatch<SetStateAction<ISelectionCategory | undefined>>
 }
 
-const SelectionCreateCategory = ({setCategory
+const SelectionCreateCategory = ({selectedCategories, setCategory
 } : ISelectionCreateCategoryProps) => {
-  const {
-    data: categoryDatas,
-    isError: categoryError,
-    isLoading: categoryLoading
-  } = useFetchSelectionCategories();
-
-  if(!categoryDatas) return null
 
   return (
     <div className="flex items-start gap-6 py-6">
@@ -23,7 +17,7 @@ const SelectionCreateCategory = ({setCategory
         <label htmlFor="category" className="w-1/4 text-medium font-bold">카테고리 설정</label>
         <SearchDropdown
       title='카테고리'
-      contents={categoryDatas}
+      contents={selectedCategories}
       setCategory={setCategory}
       />
       </div>

@@ -38,9 +38,6 @@ const SelectionCreateForm = () => {
   const { openModal, setExtraData } = useStore(useModalStore);
   const { spots, deleteSpot, updateSpot } = useStore(useSelectionCreateStore);
 
-  console.log(category)
-  console.log(location)
-
   const {
     spotCategories, 
     error: spotCategoriesError
@@ -310,8 +307,10 @@ const SelectionCreateForm = () => {
             onChange={handleDescriptionChange} 
           />
           <SelectionCreateCategory 
+          selectedCategories={selectedCategories}
           setCategory={setCategory}/>
           <SelectionCreateLocation
+          selectionLocations={selectionLocations}
           setLocation={setLocation}
           />
           <SelectionCreateThumbnailImage

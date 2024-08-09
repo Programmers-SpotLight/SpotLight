@@ -23,7 +23,7 @@ const SelectionCreateThumbnailImage : React.FC<ISelectionCreateThumbnailImagePro
                 URL.createObjectURL(thumbnailImage) : 
                 thumbnailImage
             } 
-            className="w-auto h-full object-cover absolute"
+            className="object-fill absolute"
             alt="thumbnail"
           />
         ) : (

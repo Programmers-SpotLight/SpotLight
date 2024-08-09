@@ -1,28 +1,22 @@
 import useFetchSelectionLocations from "@/hooks/queries/useFetchSelectionLocations";
 import React, { Dispatch, SetStateAction } from "react";
 import SearchDropdown from "../search/search-contents/SearchDropdown";
-
-interface ILocation {
-  id: number;
-  name: string;
-}
-export interface ISelectionCreateLocationState {
-  location: ILocation | undefined;
-  subLocation: ILocation | undefined;
-}
+import { ISelectionLocation } from "@/models/selection.model";
 
 interface ISelectionCreateLocation {
-  setLocation: Dispatch<SetStateAction<ISelectionCreateLocationState>>;
+  selectionLocations : ISelectionLocation[]
+  setLocation: Dispatch<SetStateAction<{
+    location: undefined | {
+        id: number;
+        name: string;
+    };
+    subLocation: undefined | {
+        id: number;
+        name: string;
+    };
+}>>
 }
-const SelectionCreateLocation = ({setLocation} : ISelectionCreateLocation) => {
-  const {
-    data: locationDatas,
-    isError: locationError,
-    isLoading: locationLoading
-  } = useFetchSelectionLocations();
-
-  if (!locationDatas) return null;
-
+const SelectionCreateLocation = ({selectionLocations, setLocation} : ISelectionCreateLocation) => {
   return (
     <div className="flex items-start gap-6 py-6">
       <div className="flex items-center grow">
@@ -30,7 +24,7 @@ const SelectionCreateLocation = ({setLocation} : ISelectionCreateLocation) => {
           지역 설정
         </label>
         <SearchDropdown title="지역" 
-        contents={locationDatas}
+        contents={selectionLocations}
         setLocation={setLocation} />
       </div>
       <p className="text-grey4 text-small w-1/3">
