@@ -4,7 +4,7 @@ import SelectionReview from "./review/selection-review/SelectionReview";
 import SelectionInfo from "./selection-section-contents/SelectionInfo";
 import SpotList from "./selection-section-contents/SpotList";
 import SelectionHeader from "./selection-section-contents/SelectionHeader";
-import { ISelectionDetail } from "@/models/selection.model";
+import { ISelectionDetail } from "@/models/selection";
 
 interface ISelectionSectionProps {
   isSelectionDrawerOpen: boolean;
@@ -36,7 +36,7 @@ const SelectionSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SelectionReview sltOrSpotId={101} />
+      component: <SelectionReview sltOrSpotId={1} />
     }
   ];
 

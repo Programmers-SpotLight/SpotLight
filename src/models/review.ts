@@ -6,26 +6,25 @@ interface IUser {
 }
 
 interface IReviewImage {
-  reviewImageOrder: number;
+  reviewImgId: string;
   reviewImgSrc: string;
+  reviewImageOrder: number;
 }
 
 interface IReview {
-  reviewId: number;
+  reviewId: string;
   sltOrSpotId: number;
   reviewImg: IReviewImage[] | null;
   reviewDescription: string;
   reviewScore: number;
-  createdDate: string;
   updatedDate: string;
   user: IUser;
   likeCount: number;
 }
 
-interface IReviews {
+interface IReviewsInfo {
   reviewAvg : number;
   reviewCount : number;
-  reviewList : IReview[];
 };
 
 interface IReviewFormData {
