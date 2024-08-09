@@ -1,53 +1,32 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  IoPerson,
-  IoPersonCircle,
-  IoPersonCircleOutline,
-  IoPersonOutline,
-  IoPersonSharp,
-  IoSearchOutline
-} from "react-icons/io5";
+import React, { useRef, useState } from "react";
+import { IoPersonSharp, IoSearchOutline } from "react-icons/io5";
+import AutoCompletion from "../search/search-contents/AutoCompletion";
+import useClickOutside from "@/hooks/useClickOutside";
+import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 
 const Header = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const router = useRouter();
+  const [tagValue, setTagValue] = useState<string>("");
   const [isDropDownVisible, setIsDropDownVisible] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLImageElement>(null);
-  const router = useRouter();
-
-  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
+  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearchAutoComplete();
+  useClickOutside(dropdownRef, () => setIsDropDownVisible(false))
 
   const onClickHandler = () => {
     setIsDropDownVisible((prev) => !prev);
   };
 
-  const clickOutSideHandler = (e: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(e.target as Node) &&
-      profileRef.current &&
-      !profileRef.current.contains(e.target as Node)
-    ) {
-      setIsDropDownVisible(false);
-    }
-  };
-
   const onSubmithandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push(`/search?searchTerm=${searchTerm}`);
+    setVisibleAutoCompletion(false)
+    router.push(`/search?tags=${tagValue}`);
+    setTagValue("");
   };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", clickOutSideHandler);
-    return () => document.removeEventListener("mousedown", clickOutSideHandler);
-  }, []);
 
   return (
     <div className="w-full h-[74px] bg-grey0 shadow-md px-6 flex items-center justify-between">
@@ -60,15 +39,28 @@ const Header = () => {
           <input
             className="w-full h-[50px] border-[0.5px] border-solid border-grey2 rounded-3xl px-12 text-center placeholder:text-grey4 font-bold"
             placeholder={`혹시 찾으시는 셀렉션이 있으신가요?`}
-            value={searchTerm}
-            onChange={onChangeHandler}
+            value={tagValue}
+            onChange={(e)=>{
+              setTagValue(e.target.value)
+              setVisibleAutoCompletion(true);
+            }}
+            ref={tagInputRef}
+            onKeyDown={handleKeyDown}
           />
         </form>
-
         <IoSearchOutline
           className="absolute left-4 top-1/2 transform -translate-y-1/2 text-grey4"
           size={24}
         />
+        {visibleAutoCompletion && (
+          <AutoCompletion
+            tagValue={tagInputRef.current ? tagInputRef.current.value : null}
+            setTagValue={setTagValue}
+            tagACRef={tagACRef}
+            tagInputRef={tagInputRef}
+            setVisibleAutoCompletion={setVisibleAutoCompletion}
+          />
+        )}
       </div>
 
       {/**로그인 X */}
