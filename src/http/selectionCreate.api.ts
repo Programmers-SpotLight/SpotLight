@@ -1,31 +1,12 @@
 import { requestHandler } from "@/http/http";
 import { 
-  ISelectionCategory, 
-  ISelectionLocation, 
-  ISelectionSpotCategory, 
   ISelectionSpotGeolocation, 
   ISelectionSpotReverseGeolocation, 
   ISelectionSpotSearchResult 
 } from "@/models/selection.model";
 
-
-export const fetchSelectionCategories : () => Promise<ISelectionCategory[]> = async () => {
-  const response = await requestHandler('get', '/api/selections/categories');
-  return response;
-};
-
-export const fetchSelectionLocations : () => Promise<ISelectionLocation[]> = async () => {
-  const response = await requestHandler('get', '/api/selections/locations');
-  return response;
-};
-
 export const fetchSelectionSpotSearch : (query: string) => Promise<ISelectionSpotSearchResult[]> = async (query) => {
   const response = await requestHandler('get', `/api/selections/spots/search?query=${query}`);
-  return response;
-};
-
-export const fetchSelectionSpotCategories : () => Promise<ISelectionSpotCategory[]> = async () => {
-  const response = await requestHandler('get', '/api/selections/spots/categories');
   return response;
 };
 

@@ -4,14 +4,14 @@ import OneLineInput from '../../input/OneLineInput';
 import Image from 'next/image';
 import { TPoiWithAddress } from '@/components/selection-create/PoiMarkers';
 import useSpotSearch from '@/hooks/useSpotSearch';
-import useOutsideClick from '@/hooks/useOutsideClick';
 import useReverseGeocoding from '@/hooks/useReverseGeocoding';
 import useGeocoding from '@/hooks/useGeocoding';
 import { useStore } from 'zustand';
 import { useModalStore } from '@/stores/modalStore';
-import { ISelectionSpot } from '@/models/selection.model';
+import { ISelectionCategory, ISelectionSpot } from '@/models/selection.model';
 import { useSelectionCreateStore } from '@/stores/selectionCreateStore';
-import DropdownMenu from '@/components/selection-create/DropdownMenu';
+import useClickOutside from '@/hooks/useClickOutside';
+import SearchDropdown from '@/components/search/search-contents/SearchDropdown';
 
 
 const ModalCreateSelectionSpot = () => {
@@ -40,7 +40,7 @@ const ModalCreateSelectionSpot = () => {
 
   const [placeName, setPlaceName] = useState<string>(data?.spot?.title || '');
   const [description, setDescription] = useState<string>(data?.spot?.description || '');
-  const [category, setCategory] = useState<undefined | {id: number, name: string}>(undefined);
+  const [category, setCategory] = useState<undefined | ISelectionCategory>(undefined);
   const [thumbnailImage, setThumbnailImage] = useState<File | string | null>(data?.spot?.photos[0] || null);
   const [thumbnailImage1, setThumbnailImage1] = useState<File | string | null>(data?.spot?.photos[1] || null);
   const [thumbnailImage2, setThumbnailImage2] = useState<File | string | null>(data?.spot?.photos[2] || null);
@@ -94,11 +94,7 @@ const ModalCreateSelectionSpot = () => {
   const [isSpotSearchResultOpen, setIsSpotSearchResultOpen] = useState<boolean>(false);
 
   // 스팟 검색 결과 창을 닫는 이벤트 핸들러
-  useOutsideClick({
-    ref: spotSearchResultRef,
-    isVisible: isSpotSearchResultOpen,
-    onClose: () => setIsSpotSearchResultOpen(false)
-  });
+  useClickOutside(spotSearchResultRef, () => setIsSpotSearchResultOpen(false))
 
   const handleSearchInputFocus = () => {
     setIsSpotSearchResultOpen(true);
@@ -122,14 +118,6 @@ const ModalCreateSelectionSpot = () => {
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
   };
-
-  const handleCategoryChange = (value: string) => {
-    setCategory({
-      id: parseInt(value),
-      name: data?.spotCategories.find((category) => category.id === parseInt(value))?.name || ''
-    });
-  };
-
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
@@ -448,20 +436,13 @@ const ModalCreateSelectionSpot = () => {
           onChange={handleDescriptionChange}
         />
       </div>
-      <div className='text-medium font-bold mt-8 mb-4 flex'>
-        <p className='w-1/4'>스팟 카테고리</p>
-        {(data?.spotCategories && data.spotCategories.length > 0) && (
-          <DropdownMenu 
-            options={
-              data.spotCategories.map((category) => ({
-                value: category.id,
-                label: category.name
-              }))
-            }
-            onChange={handleCategoryChange}
-            currentChoice={category?.name || '선택하세요'}
-          />
-        )}
+      <div className=' mt-8 mb-4 flex'>
+        <p className='w-1/4 text-medium font-bold'>스팟 카테고리</p>
+        <SearchDropdown
+        contents={data?.spotCategories}
+        setCategory={setCategory}
+        title='스팟 카테고리'
+        />
       </div>
       <p className='mt-8 font-bold text-medium mb-4'>이미지 등록 (선택)</p>
       <div className='flex gap-2'>

@@ -1,6 +1,6 @@
+import { fetchSelectionLocations } from "@/http/selectionCategory.api";
 import { ISelectionLocation } from "@/models/selection.model";
 import { useEffect, useState } from "react";
-import { fetchSelectionLocations } from "@/http/selectionCreate.api";
 
 
 const useSelectionLocations = () => {

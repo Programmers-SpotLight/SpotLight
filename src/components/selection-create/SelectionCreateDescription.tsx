@@ -23,7 +23,7 @@ const SelectionCreateDescription : React.FC<ISelectionCreateDescriptionProps> = 
           onChange={onChange}
         />
       </div>
-      <p className="text-grey4 text-small w-1/3">셀렉션에서 사용자에게 표시될 내용입니다. 이목을 끌어주세요!</p>
+      <p className="text-grey4 text-small w-1/3">셀렉션에서 사용자에게 설명될 내용입니다. 셀렉션를 통해 느꼈던 감정을 솔직하게 표현해주세요!</p>
     </div>
   )
 };

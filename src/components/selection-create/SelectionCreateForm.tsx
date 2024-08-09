@@ -19,15 +19,14 @@ import SelectionCreateHashtags from "./SelectionCreateHashtags";
 import SelectionCreateSubmit from "./SelectionCreateSubmit";
 import SelectionCreateFormLoadingSpinner from "./SelectionCreateFormLoadingSpinner";
 import { submitSelection } from "@/http/selectionCreate.api";
-import { ISelectionSpot } from "@/models/selection.model";
+import { ISelectionCategory, ISelectionSpot } from "@/models/selection.model";
 
 
 const SelectionCreateForm = () => {
   const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
-
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [category, setCategory] = useState<undefined | {id: number, name: string}>(undefined);
+  const [category, setCategory] = useState<ISelectionCategory | undefined>(undefined);
   const [location, setLocation] = useState<{
     location: undefined | {id: number, name: string},
     subLocation: undefined | {id: number, name: string}
@@ -60,37 +59,6 @@ const SelectionCreateForm = () => {
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
-  };
-
-  const handleCategoryChange = (categoryValue: string) => {
-    setCategory({
-      id: parseInt(categoryValue),
-      name: selectedCategories.find((cat) => cat.id === parseInt(categoryValue))?.name || ""
-    });
-  }
-
-  const handleLocationChange = (locationValue: string) => {
-    setLocation({
-      location: {
-        id: parseInt(locationValue), 
-        name: selectionLocations.find((loc) => loc.id === parseInt(locationValue))?.name || ""
-      },
-      subLocation: {
-        id: 0,
-        name: "선택하세요"
-      }
-    });
-  };
-
-  const handleSubLocationChange = (subLocationValue: string) => {
-    setLocation({
-      ...location,
-      subLocation: {
-        id: parseInt(subLocationValue),
-        name: selectionLocations.find((loc) => loc.id === location.location?.id)?.options.find(
-          (subLoc) => subLoc.id === parseInt(subLocationValue))?.name || ""
-      }
-    });
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -326,7 +294,7 @@ const SelectionCreateForm = () => {
 
   return (
     <div className="grow">
-      <div className="mt-8 w-[90%] z-10">
+      <div className="mt-8 max-w-[1086px] z-10">
         <form className="divide-y-[1px] divide-solid divide-grey2">
           <SelectionCreateTitle 
             title={title} 
@@ -337,15 +305,11 @@ const SelectionCreateForm = () => {
             onChange={handleDescriptionChange} 
           />
           <SelectionCreateCategory 
-            category={category}
-            onCategoryChange={handleCategoryChange}
-            options={selectedCategories}
-          />
-          <SelectionCreateLocation 
-            onLocationChange={handleLocationChange}
-            onSubLocationChange={handleSubLocationChange}
-            locationOptions={selectionLocations}
-            location={location}
+          selectedCategories={selectedCategories}
+          setCategory={setCategory}/>
+          <SelectionCreateLocation
+          selectionLocations={selectionLocations}
+          setLocation={setLocation}
           />
           <SelectionCreateThumbnailImage
             thumbnailImage={thumbnailImage}
