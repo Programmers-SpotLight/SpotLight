@@ -36,7 +36,7 @@ const SelectionSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SelectionReview sltOrSpotId={101} />
+      component: <SelectionReview sltOrSpotId={101} reviewType="selection" />
     }
   ];
 

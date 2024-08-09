@@ -8,16 +8,29 @@ import ReviewEmpty from "../ReviewEmpty";
 
 interface IReviewsProps {
   sltOrSpotId: number;
-};
+  reviewType: ReviewType;
+}
 
 const testList: IReview[] = [
   {
     reviewId: 1,
     sltOrSpotId: 101,
     reviewImg: [
-      { reviewImageOrder: 0, reviewImgSrc: "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg" },
-      { reviewImageOrder: 1, reviewImgSrc: "https://res.klook.com/image/upload/q_85/c_fill,w_750/v1617101647/blog/edlhmuf96dpqcnodl9qf.jpg" },
-      { reviewImageOrder: 2, reviewImgSrc: "https://res.klook.com/image/upload/q_85/c_fill,w_750/v1617101647/blog/edlhmuf96dpqcnodl9qf.jpg" }
+      {
+        reviewImageOrder: 0,
+        reviewImgSrc:
+          "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg"
+      },
+      {
+        reviewImageOrder: 1,
+        reviewImgSrc:
+          "https://res.klook.com/image/upload/q_85/c_fill,w_750/v1617101647/blog/edlhmuf96dpqcnodl9qf.jpg"
+      },
+      {
+        reviewImageOrder: 2,
+        reviewImgSrc:
+          "https://res.klook.com/image/upload/q_85/c_fill,w_750/v1617101647/blog/edlhmuf96dpqcnodl9qf.jpg"
+      }
     ],
     reviewDescription: `컬렉션 엄청 깔끔합니다! 일본 여행 혼자와서 엄청 심심했는데 덕분에 1박2일 아주 재밌게 보냈습니다. 기억도 새록새록 나네요. 특히 정대만이 강백호와 싸웠던 그 장면을 생각하니까 가슴이 웅장해집니다.
 
@@ -31,7 +44,8 @@ const testList: IReview[] = [
     user: {
       userId: 201,
       userNickname: "User1",
-      userImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cGVvcGxlfGVufDB8fDB8fHww",
+      userImage:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cGVvcGxlfGVufDB8fDB8fHww",
       isLiked: true
     },
     likeCount: 10
@@ -40,17 +54,27 @@ const testList: IReview[] = [
     reviewId: 2,
     sltOrSpotId: 101,
     reviewImg: [
-      { reviewImageOrder: 0, reviewImgSrc: "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg" },
-      { reviewImageOrder: 1, reviewImgSrc: "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg" }
+      {
+        reviewImageOrder: 0,
+        reviewImgSrc:
+          "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg"
+      },
+      {
+        reviewImageOrder: 1,
+        reviewImgSrc:
+          "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg"
+      }
     ],
-    reviewDescription: "Not bad, but could be better.Not bad, but could be better.Not bad, but could be better.Not bad, but could be better.",
+    reviewDescription:
+      "Not bad, but could be better.Not bad, but could be better.Not bad, but could be better.Not bad, but could be better.",
     reviewScore: 3,
     createdDate: "2024-01-03",
     updatedDate: "2024-01-04",
     user: {
       userId: 202,
       userNickname: "User2",
-      userImage: "https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D",
+      userImage:
+        "https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D",
       isLiked: false
     },
     likeCount: 5
@@ -59,9 +83,14 @@ const testList: IReview[] = [
     reviewId: 3,
     sltOrSpotId: 101,
     reviewImg: [
-      { reviewImageOrder: 0, reviewImgSrc: "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg" }
+      {
+        reviewImageOrder: 0,
+        reviewImgSrc:
+          "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg"
+      }
     ],
-    reviewDescription: "이윽고, 당신은 책방에서 슬램덩크의 원작 만화를 한 권 사서 휴대폰 번역 앱을 이용해 읽기 시작했습니다. 익숙한 장면들이 일본어로 펼쳐지는 것을 보며, ",
+    reviewDescription:
+      "이윽고, 당신은 책방에서 슬램덩크의 원작 만화를 한 권 사서 휴대폰 번역 앱을 이용해 읽기 시작했습니다. 익숙한 장면들이 일본어로 펼쳐지는 것을 보며, ",
     reviewScore: 1,
     createdDate: "2024-01-05",
     updatedDate: "2024-01-06",
@@ -84,7 +113,8 @@ const testList: IReview[] = [
     user: {
       userId: 203,
       userNickname: "User3",
-      userImage: "https://images.unsplash.com/photo-1495837174058-628aafc7d610?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D",
+      userImage:
+        "https://images.unsplash.com/photo-1495837174058-628aafc7d610?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D",
       isLiked: true
     },
     likeCount: 8
@@ -113,39 +143,43 @@ export const testData: IReviews = {
   reviewList: testList
 };
 
-const SelectionReview = ({ sltOrSpotId } : IReviewsProps) => {
+const SelectionReview = ({ sltOrSpotId, reviewType }: IReviewsProps) => {
   const reviewData = testData;
 
   const { openModal } = useModalStore();
 
   const openReviewAddModal = () => {
-    openModal('review'); 
+    openModal("review");
   };
 
   return (
     <div>
-      {
-        reviewData 
-        ?
-          <div className="relative flex-grow overflow-x-visible space-y-3">
-            <div className="flex-grow flex items-center justify-center">
-              <div className="bg-white border border-solid border-grey2 rounded-lg w-[335px] h-[62px] flex items-center justify-center space-x-16">
-                <ReviewAvg avg={reviewData.reviewAvg} />
-                <ReviewCount count={reviewData.reviewCount} />
-              </div>
-            </div>
-
-            <ReviewOrderButton />
-
-            <ReviewList sltOrSpotId={sltOrSpotId} reviews={reviewData.reviewList} />
-
-            <div className="absolute sticky bottom-4 w-full flex justify-center z-10">
-              <Button type="button" onClick={openReviewAddModal}>리뷰 등록하기 +</Button>
+      {reviewData ? (
+        <div className="relative flex-grow overflow-x-visible space-y-3">
+          <div className="flex-grow flex items-center justify-center">
+            <div className="bg-white border border-solid border-grey2 rounded-lg w-[335px] h-[62px] flex items-center justify-center space-x-16">
+              <ReviewAvg avg={reviewData.reviewAvg} />
+              <ReviewCount count={reviewData.reviewCount} />
             </div>
           </div>
-        :
-          <ReviewEmpty />
-      }
+
+          <ReviewOrderButton />
+
+          <ReviewList
+            sltOrSpotId={sltOrSpotId}
+            reviews={reviewData.reviewList}
+            reviewType={reviewType}
+          />
+
+          <div className="absolute sticky bottom-4 w-full flex justify-center z-10">
+            <Button type="button" onClick={openReviewAddModal}>
+              리뷰 등록하기 +
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <ReviewEmpty />
+      )}
     </div>
   );
 };
