@@ -63,30 +63,36 @@ const SpotHeader = ({
 }: ISpotHeaderProps) => {
   const { openModal } = useStore(useModalStore);
 
+  const imageClickHandler = () => {
+    if (!images) return;
+    openModal("images", { images, title });
+  };
+
   return (
     <>
       <div
         className="w-full h-[194px] relative mb-5"
-        onClick={() => openModal("images", { images, title })}
+        onClick={imageClickHandler}
       >
-        {images[0].url ? (
-          <Image
-            src={`/${images[0].url}`}
-            alt="spot image"
-            fill
-            sizes="width:100%, height:194px"
-            className="cursor-pointer"
-            style={{ objectFit: "cover" }}
-          />
+        {images ? (
+          <>
+            <Image
+              src={`/${images[0].url}`}
+              alt="spot image"
+              fill
+              sizes="width:100%, height:194px"
+              className="cursor-pointer"
+              style={{ objectFit: "cover" }}
+            />
+            <div className="absolute bottom-0 right-0 rounded-tl-md bg-black w-11 h-7 text-white flex items-center justify-center text-medium font-bold">
+              + {images.length - 1}
+            </div>
+          </>
         ) : (
           <div className="w-full h-full flex justify-center items-center text-white font-bold text-large bg-grey2">
             spotlight
           </div>
         )}
-
-        <div className="absolute bottom-0 right-0 rounded-tl-md bg-black w-11 h-7 text-white flex items-center justify-center text-medium font-bold">
-          + {images.length - 1}
-        </div>
       </div>
 
       <div className="px-4">
