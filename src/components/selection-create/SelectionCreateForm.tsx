@@ -266,7 +266,6 @@ const SelectionCreateForm = () => {
       for (let i = 0; i < spots.length; i++) {
         const images = spots[i].photos;
         for (let j = 0; j < images.length; j++) {
-          console.log("Found image:", images[j]);
           formData.append(`spots[${spots[i].placeId}][photos][${j}]`, images[j]);
         }
         spotsPhotos.push({placeId: spots[i].placeId, photos: images});
@@ -275,7 +274,7 @@ const SelectionCreateForm = () => {
       }
       formData.append('spots', JSON.stringify(spots));
     }
-    console.log(spotsPhotos);
+
     return spotsPhotos;
   }
 
@@ -284,7 +283,6 @@ const SelectionCreateForm = () => {
     spots: ISelectionSpot[], 
     spotsPhotos: Array<{placeId: string, photos: Array<File | string>}>
   ) => {
-    console.log(spotsPhotos);
     for (let i = 0; i < spots.length; i++) {
       const clone = {...spots[i], photos: spotsPhotos[i].photos};
       updateSpot(i, clone);
@@ -319,9 +317,9 @@ const SelectionCreateForm = () => {
 
   if (categoriesError || locationsError || spotCategoriesError) {
     return (
-      <div className="flex flex-col justify-center items-center grow gap-[30px]">
-        <h1 className="text-extraLarge font-bold">페이지를 불러오는 중 에러가 발생했습니다.</h1>
-        <h2 className="text-large font-bold">잠시 후 다시 시도해주세요.</h2>
+      <div className='w-full h-[600px] flex flex-col justify-center items-center gap-[10px]'>
+        <h1 className='text-grey3 text-large font-semibold'>셀렉션을 생성할 수 없습니다</h1>
+        <h2 className='text-grey3 text-medium'>다시 시도해주세요</h2>
       </div>
     )
   }
