@@ -4,14 +4,14 @@ import OneLineInput from '../../input/OneLineInput';
 import Image from 'next/image';
 import { TPoiWithAddress } from '@/components/selection-create/PoiMarkers';
 import useSpotSearch from '@/hooks/useSpotSearch';
-import useOutsideClick from '@/hooks/useOutsideClick';
 import useReverseGeocoding from '@/hooks/useReverseGeocoding';
 import useGeocoding from '@/hooks/useGeocoding';
 import { useStore } from 'zustand';
 import { useModalStore } from '@/stores/modalStore';
 import { ISelectionSpot } from '@/models/selection.model';
 import { useSelectionCreateStore } from '@/stores/selectionCreateStore';
-import DropdownMenu from '@/components/selection-create/DropdownMenu';
+import useClickOutside from '@/hooks/useClickOutside';
+import SearchDropdown from '@/components/search/search-contents/SearchDropdown';
 
 
 const ModalCreateSelectionSpot = () => {
@@ -94,11 +94,7 @@ const ModalCreateSelectionSpot = () => {
   const [isSpotSearchResultOpen, setIsSpotSearchResultOpen] = useState<boolean>(false);
 
   // 스팟 검색 결과 창을 닫는 이벤트 핸들러
-  useOutsideClick({
-    ref: spotSearchResultRef,
-    isVisible: isSpotSearchResultOpen,
-    onClose: () => setIsSpotSearchResultOpen(false)
-  });
+  useClickOutside(spotSearchResultRef, () => setIsSpotSearchResultOpen(false))
 
   const handleSearchInputFocus = () => {
     setIsSpotSearchResultOpen(true);
@@ -450,18 +446,10 @@ const ModalCreateSelectionSpot = () => {
       </div>
       <div className='text-medium font-bold mt-8 mb-4 flex'>
         <p className='w-1/4'>스팟 카테고리</p>
-        {(data?.spotCategories && data.spotCategories.length > 0) && (
-          <DropdownMenu 
-            options={
-              data.spotCategories.map((category) => ({
-                value: category.id,
-                label: category.name
-              }))
-            }
-            onChange={handleCategoryChange}
-            currentChoice={category?.name || '선택하세요'}
-          />
-        )}
+        <SearchDropdown
+        contents={data?.spotCategories}
+        title='스팟 카테고리'
+        />
       </div>
       <p className='mt-8 font-bold text-medium mb-4'>이미지 등록 (선택)</p>
       <div className='flex gap-2'>

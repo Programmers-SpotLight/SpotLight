@@ -25,16 +25,6 @@ export const fetchSearchResult = async (
   return await requestHandler('get', finalUrl);
 };
 
-export const fetchSelectionCategories  = async () => {
-  const url = "api/selections/categories";
-  return await requestHandler('get', url)
-}
-
-export const fetchSelectionLocations = async () => {
-  const url ="api/selections/locations"
-  return await requestHandler('get', url)
-};
-
 export const fetchSearchAutocompletion = async (
   tagValue? : string
 ) => {

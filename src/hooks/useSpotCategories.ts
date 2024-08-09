@@ -1,6 +1,6 @@
+import { fetchSelectionSpotCategories } from "@/http/selectionCategory.api";
 import { ISelectionSpotCategory } from "@/models/selection.model";
 import { useEffect, useState } from "react";
-import { fetchSelectionSpotCategories } from "@/http/selectionCreate.api";
 
 
 const useSpotCategories = () => {

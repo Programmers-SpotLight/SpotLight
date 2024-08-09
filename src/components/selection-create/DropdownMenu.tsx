@@ -1,6 +1,6 @@
 'use client';
 
-import useOutsideClick from "@/hooks/useOutsideClick";
+import useClickOutside from "@/hooks/useClickOutside";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -25,11 +25,7 @@ const DropdownMenu : React.FC<IDropdownMenuProps> = ({
   const categoryMenuElement = useRef<HTMLDivElement>(null);
 
   // 만약에 바깥을 클릭하면 닫히게 하기
-  useOutsideClick({
-    ref: categoryMenuElement,
-    isVisible: isOpen,
-    onClose: () => setIsOpen(false)
-  });
+  useClickOutside(categoryMenuElement, () => setIsOpen(false))
 
   const toggleDropdown = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
-import { fetchSearchAutocompletion } from "@/http/search.api";
 import { useQuery } from "@tanstack/react-query";
 import useDebounce from "../useDeboune";
+import { fetchSearchAutocompletion } from "@/http/selectionSearch.api";
 
 const useFetchSearchAutoCompletion = (tagValue: string | null) => {
 const debouncedSearch = useDebounce(tagValue, 300);
