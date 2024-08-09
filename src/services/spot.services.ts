@@ -2,6 +2,7 @@
 
 import { dbConnectionPool } from "@/libs/db";
 import { ISelectionSpot, ISelectionSpotCategory } from "@/models/selection.model";
+import { InternalServerError } from "@/utils/errors";
 import { createDirectory, saveFile } from "@/utils/fileStorage";
 import { fileTypeFromBlob, FileTypeResult } from "file-type";
 import { Knex } from "knex";
@@ -22,7 +23,7 @@ export const getSpotCategories : () => Promise<ISelectionSpotCategory[]> = async
     return spotCategories;
   } catch (error) {
     console.error(error);
-    throw new Error('Failed to get the spot categories');
+    throw new InternalServerError('스팟 카테고리를 가져오는데 실패했습니다');
   }
 }
 
@@ -63,37 +64,38 @@ export async function createSpots(
   try {
     await transaction('spot')
       .insert(spotsToInsert);
-
-    // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
-    for (let i = 0; i < spotsIdsPhotos.length; i++) {
-      for (let j = 0; j < spotsIdsPhotos[i].photos.length; j++) {
-        if (spotsIdsPhotos[i].photos[j] instanceof File) {
-          const filePath : string = await saveSpotPhoto(spotsIdsPhotos[i].photos[j] as File);
-          spotsIdsPhotos[i].photos[j] = filePath;
-        }
-      }
-    }
-
-    for (let i = 0; i < spotsIdsHashtags.length; i++) {
-      await createSpotHashtags(
-        transaction, 
-        spotsIdsHashtags[i].id, 
-        spotsIdsHashtags[i].hashtags
-      );
-    }
-    for (let i = 0; i < spotsIdsPhotos.length; i++) {
-      if (spotsIdsPhotos[i].photos.length > 0) {
-        await createSpotImages(
-          transaction, 
-          spotsIdsPhotos[i].id, 
-          spotsIdsPhotos[i].photos as string[]
-        );
-      }
-    }  
   } catch (error) {
     console.error(error);
-    throw new Error('Failed to create the selection spots');
+    throw new InternalServerError('스팟을 생성하는데 실패했습니다');
   }
+
+  // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
+  for (let i = 0; i < spotsIdsPhotos.length; i++) {
+    for (let j = 0; j < spotsIdsPhotos[i].photos.length; j++) {
+      if (spotsIdsPhotos[i].photos[j] instanceof File) {
+        const filePath : string = await saveSpotPhoto(spotsIdsPhotos[i].photos[j] as File);
+        spotsIdsPhotos[i].photos[j] = filePath;
+      }
+    }
+  }
+
+  for (let i = 0; i < spotsIdsHashtags.length; i++) {
+    await createSpotHashtags(
+      transaction, 
+      spotsIdsHashtags[i].id, 
+      spotsIdsHashtags[i].hashtags
+    );
+  }
+
+  for (let i = 0; i < spotsIdsPhotos.length; i++) {
+    if (spotsIdsPhotos[i].photos.length > 0) {
+      await createSpotImages(
+        transaction, 
+        spotsIdsPhotos[i].id, 
+        spotsIdsPhotos[i].photos as string[]
+      );
+    }
+  }  
 }
 
 const saveSpotPhoto : (imageFile: File) => Promise<string> = async (imageFile: File) => {
@@ -111,7 +113,7 @@ const saveSpotPhoto : (imageFile: File) => Promise<string> = async (imageFile: F
     await saveFile(savePath, imageFile);
   } catch (error) {
     console.error(error);
-    throw new Error('Failed to save the image');
+    throw new InternalServerError('스팟 이미지를 저장하는데 실패했습니다');
   }
   return filePath;
 }
@@ -137,7 +139,7 @@ export async function createSpotHashtags(
       .ignore();
   } catch (error) {
     console.error(error);
-    throw new Error('Failed to create the selection spot hashtags');
+    throw new InternalServerError('스팟 해시태그를 생성하는데 실패했습니다');
   }
 }
 
@@ -162,6 +164,6 @@ export async function createSpotImages(
       .ignore();
   } catch (error) {
     console.error(error);
-    throw new Error('Failed to create the selection spot photos');
+    throw new InternalServerError('스팟 이미지를 생성하는데 실패했습니다');
   }
 }
