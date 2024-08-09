@@ -11,14 +11,13 @@ import useFetchSelectionLocations from "@/hooks/queries/useFetchSelectionLocatio
 import { QUERY_STRING_NAME } from "@/constants/queryString";
 import AutoCompletion from "./search-contents/AutoCompletion";
 import { useSearchParams } from "next/navigation";
+import useSearch from "@/hooks/useSearch";
 
 const SearchEngineSection = () => {
   const searchParams = useSearchParams();
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
-  const [visibleAutoCompletion, setVisibleAutoCompletion] = useState<boolean>(false);
-  const tagInputRef = useRef<HTMLInputElement>(null);
-  const tagACRef = useRef<HTMLDivElement>(null);
+  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearch();
 
   const {
     data: categoryDatas,
@@ -32,29 +31,26 @@ const SearchEngineSection = () => {
   } = useFetchSelectionLocations();
 
   useEffect(() => {
-    // 초기 컴포넌트 생성 시 세션 스토리지에 저장된 태그 불러오기
-    if(tagInputRef.current) tagInputRef.current?.focus()
-    const addtagList = []
-    const HeaderSearchTag = searchParams.get(QUERY_STRING_NAME.tags) // 검색을 통해 접근하는 경우 태그 불러오기
+    if (tagInputRef.current) tagInputRef.current?.focus();
+    const addtagList = [];
+    const HeaderSearchTag = searchParams.get(QUERY_STRING_NAME.tags); // 검색을 통해 접근하는 경우 태그 불러오기
     if (HeaderSearchTag) {
-      addtagList.push(HeaderSearchTag)
+      addtagList.push(HeaderSearchTag);
     }
-
-    const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags);
+    const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags); // 세션 스토리지에 저장된 태그 불러오기
     if (storedTags) {
       const parseStoredTags = JSON.parse(storedTags);
       parseStoredTags.forEach((tag: string) => {
-        addtagList.push(tag)
+        addtagList.push(tag);
       });
 
-      if(addtagList.length > 0) {
-        addtagList.forEach((tag : string) => {
+    if (addtagList.length > 0) {
+        addtagList.forEach((tag: string) => {
           addQueryString(QUERY_STRING_NAME.tags, tag);
-        })
-        setTagList(addtagList)
-      }
+      });
+      setTagList(addtagList);
     }
-    console.log(addtagList)
+    }
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -68,18 +64,10 @@ const SearchEngineSection = () => {
         JSON.stringify(updatedTagList)
       );
       addQueryString(QUERY_STRING_NAME.tags, addTag);
-      setVisibleAutoCompletion(false)
+      setVisibleAutoCompletion(false);
       setTagValue("");
     }
   };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "ArrowDown" && visibleAutoCompletion && tagACRef.current) {
-      e.preventDefault();
-      tagACRef.current.focus()
-    }
-  };
-
 
   const cancelHashtag = (tag: string, index: number) => {
     const updatedTagList = tagList.filter((_, i) => i !== index);
@@ -116,18 +104,21 @@ const SearchEngineSection = () => {
           iconPosition="right"
           value={tagValue}
           ref={tagInputRef}
-          onChange={(e) => {setTagValue(e.target.value)
-          setVisibleAutoCompletion(true)}}
+          onChange={(e) => {
+            setTagValue(e.target.value);
+            setVisibleAutoCompletion(true);
+          }}
           onKeyDown={handleKeyDown}
         />
-        {visibleAutoCompletion && <AutoCompletion 
-          tagValue={tagInputRef.current? 
-            tagInputRef.current.value : null} 
-          setTagValue={setTagValue} 
-          tagACRef={tagACRef}
-          tagInputRef={tagInputRef}
-          setVisibleAutoCompletion={setVisibleAutoCompletion} 
-          />}
+        {visibleAutoCompletion && (
+          <AutoCompletion
+            tagValue={tagInputRef.current ? tagInputRef.current.value : null}
+            setTagValue={setTagValue}
+            tagACRef={tagACRef}
+            tagInputRef={tagInputRef}
+            setVisibleAutoCompletion={setVisibleAutoCompletion}
+          />
+        )}
       </form>
       <div className="flex gap-[5px] flex-wrap mt-[20px]">
         {tagList.length === 0 ? (

@@ -3,22 +3,18 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  IoPersonSharp,
-  IoSearchOutline
-} from "react-icons/io5";
+import { IoPersonSharp, IoSearchOutline } from "react-icons/io5";
+import AutoCompletion from "../search/search-contents/AutoCompletion";
+import useSearch from "@/hooks/useSearch";
 
 const Header = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [tagValue, setTagValue] = useState<string>("");
   const [isDropDownVisible, setIsDropDownVisible] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
-
-  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
+  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearch();
+  
   const onClickHandler = () => {
     setIsDropDownVisible((prev) => !prev);
   };
@@ -36,8 +32,9 @@ const Header = () => {
 
   const onSubmithandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push(`/search?tags=${searchTerm}`);
-    setSearchTerm('');
+    setVisibleAutoCompletion(false)
+    router.push(`/search?tags=${tagValue}`);
+    setTagValue("");
   };
 
   useEffect(() => {
@@ -56,15 +53,28 @@ const Header = () => {
           <input
             className="w-full h-[50px] border-[0.5px] border-solid border-grey2 rounded-3xl px-12 text-center placeholder:text-grey4 font-bold"
             placeholder={`혹시 찾으시는 셀렉션이 있으신가요?`}
-            value={searchTerm}
-            onChange={onChangeHandler}
+            value={tagValue}
+            onChange={(e)=>{
+              setTagValue(e.target.value)
+              setVisibleAutoCompletion(true);
+            }}
+            ref={tagInputRef}
+            onKeyDown={handleKeyDown}
           />
         </form>
-
         <IoSearchOutline
           className="absolute left-4 top-1/2 transform -translate-y-1/2 text-grey4"
           size={24}
         />
+        {visibleAutoCompletion && (
+          <AutoCompletion
+            tagValue={tagInputRef.current ? tagInputRef.current.value : null}
+            setTagValue={setTagValue}
+            tagACRef={tagACRef}
+            tagInputRef={tagInputRef}
+            setVisibleAutoCompletion={setVisibleAutoCompletion}
+          />
+        )}
       </div>
 
       {/**로그인 X */}

@@ -15,7 +15,7 @@ interface IAutoCompletionProps {
 const AutoCompletion: React.FC<IAutoCompletionProps> = ({ tagValue, setTagValue, setVisibleAutoCompletion, tagACRef, tagInputRef}) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const { data: results, isError, isLoading } = useFetchSearchAutoCompletion(tagValue);
-  
+
   useClickOutside(tagACRef, () => {
     setVisibleAutoCompletion(false);
   });
