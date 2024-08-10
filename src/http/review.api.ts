@@ -1,3 +1,4 @@
+import axios from "axios";
 import { requestHandler } from "./http";
 
 export const addReviewLike = async (
@@ -7,21 +8,17 @@ export const addReviewLike = async (
   userId: number
 ) => {
   try {
-    if (spotId) {
-      await requestHandler(
-        "post",
-        `/api/selections/${selectionId}/spots/${spotId}/reviews/${reviewId}/likes`,
-        { reviewId, reviewType: "spot", userId }
-      );
-    } else {
-      await requestHandler(
-        "post",
-        `/api/selections/${selectionId}/reviews/${reviewId}/likes`,
-        { reviewId, reviewType: "selection", userId }
-      );
-    }
+    const url = spotId
+      ? `/api/selections/${selectionId}/spots/${spotId}/reviews/${reviewId}/likes`
+      : `/api/selections/${selectionId}/reviews/${reviewId}/likes`;
+
+    await requestHandler("post", url, {
+      reviewId,
+      reviewType: spotId ? "spot" : "selection",
+      userId
+    });
   } catch (error) {
-    console.error("Failed to add review like:", error);
+    throw new Error("Failed to add review like");
   }
 };
 
@@ -32,20 +29,18 @@ export const removeReviewLike = async (
   userId: number
 ) => {
   try {
-    if (spotId) {
-      await requestHandler(
-        "delete",
-        `/api/selections/${selectionId}/spots/${spotId}/reviews/${reviewId}/likes`,
-        { reviewId, reviewType: "spot", userId }
-      );
-    } else {
-      await requestHandler(
-        "delete",
-        `/api/selections/${selectionId}/reviews/${reviewId}/likes`,
-        { reviewId, reviewType: "selection", userId }
-      );
-    }
+    const url = spotId
+      ? `/api/selections/${selectionId}/spots/${spotId}/reviews/${reviewId}/likes`
+      : `/api/selections/${selectionId}/reviews/${reviewId}/likes`;
+
+    await axios.delete(url, {
+      data: {
+        reviewId,
+        reviewType: spotId ? "spot" : "selection",
+        userId
+      }
+    });
   } catch (error) {
-    console.error("Failed to remove review like:", error);
+    throw new Error("Failed to remove review like");
   }
 };

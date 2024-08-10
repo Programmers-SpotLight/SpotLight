@@ -29,7 +29,6 @@ export const addLike = async (
       });
     }
   } catch (error) {
-    console.error("Failed to add review like", error);
     throw new Error("Failed to add review like");
   }
 };
@@ -58,7 +57,6 @@ export const removeLike = async (
         .del();
     }
   } catch (error) {
-    console.error("Failed to remove review like", error);
     throw new Error("Failed to remove review like");
   }
 };

@@ -25,7 +25,8 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
 
   const { addLikeMutate, removeLikeMutate } = useReviewsLikes(
     sltOrSpotId,
-    10, // review.reviewId,
+    // 10, // review.reviewId, selection test
+    1, //review.reviewId, spot test
     reviewType,
     1 //user.userId
   );
