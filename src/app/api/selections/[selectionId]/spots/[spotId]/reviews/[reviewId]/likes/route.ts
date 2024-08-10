@@ -3,6 +3,14 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { reviewId, reviewType, userId } = await req.json();
+
+  if (!reviewId || !reviewType || !userId) {
+    return NextResponse.json(
+      { message: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
   try {
     addLike(reviewId, reviewType, userId);
     return NextResponse.json(
