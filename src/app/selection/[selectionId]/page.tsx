@@ -57,9 +57,15 @@ const SelectionPage = () => {
   if (isError) return <div>에러 발생</div>;
 
   return (
-    <div className="relative">
+    <div className={`relative h-[calc(100vh-74px)]`}>
       <GoogleMap
-        width="100%"
+        width={
+          isSelectionDrawerOpen && isSpotDrawerOpen
+            ? "calc(100% - 750px)"
+            : isSelectionDrawerOpen
+            ? "calc(100% - 375px)"
+            : "100%"
+        }
         height="calc(100vh - 74px)"
         lat={selectionData.spotList[0].lat}
         lng={selectionData.spotList[0].lng}
