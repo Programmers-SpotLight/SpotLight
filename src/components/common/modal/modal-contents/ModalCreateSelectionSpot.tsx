@@ -11,7 +11,7 @@ import { useModalStore } from '@/stores/modalStore';
 import { ISelectionCategory, ISelectionSpot } from '@/models/selection.model';
 import { useSelectionCreateStore } from '@/stores/selectionCreateStore';
 import useClickOutside from '@/hooks/useClickOutside';
-import SearchDropdown from '@/components/search/search-contents/SearchDropdown';
+import Dropdown from '../../Dropdown';
 
 
 const ModalCreateSelectionSpot = () => {
@@ -438,7 +438,7 @@ const ModalCreateSelectionSpot = () => {
       </div>
       <div className=' mt-8 mb-4 flex'>
         <p className='w-1/4 text-medium font-bold'>스팟 카테고리</p>
-        <SearchDropdown
+        <Dropdown
         contents={data?.spotCategories}
         setCategory={setCategory}
         title='스팟 카테고리'

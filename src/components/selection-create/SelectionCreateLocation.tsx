@@ -1,7 +1,7 @@
 import useFetchSelectionLocations from "@/hooks/queries/useFetchSelectionLocations";
 import React, { Dispatch, SetStateAction } from "react";
-import SearchDropdown from "../search/search-contents/SearchDropdown";
 import { ISelectionLocation } from "@/models/selection.model";
+import Dropdown from "../common/Dropdown";
 
 interface ISelectionCreateLocation {
   selectionLocations : ISelectionLocation[]
@@ -23,7 +23,7 @@ const SelectionCreateLocation = ({selectionLocations, setLocation} : ISelectionC
         <label htmlFor="location" className="w-1/4 text-medium font-bold">
           지역 설정
         </label>
-        <SearchDropdown title="지역" 
+        <Dropdown title="지역" 
         contents={selectionLocations}
         setLocation={setLocation} />
       </div>

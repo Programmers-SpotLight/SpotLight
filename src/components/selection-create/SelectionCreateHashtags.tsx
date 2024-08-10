@@ -46,7 +46,6 @@ const SelectionCreateHashtags : React.FC<ISelectionCreateHashtagsProps> = ({
             </button>
           </div>
           {
-            /*
             <div className="text-small">
                 <p className="text-grey4">이런 태그는 어떠세요?</p>
                 <div className="flex gap-2 mt-4 text-[#02588E] overflow-x-auto flex-wrap">
@@ -57,10 +56,9 @@ const SelectionCreateHashtags : React.FC<ISelectionCreateHashtagsProps> = ({
                 <p className="px-6 py-2 w-fit border border-solid border-[#02588E] rounded-full">해시태그</p>
                 </div>
             </div>
-            */
           }
           <div className="text-small">
-            <p className="text-grey4">해시태그는 총 8개까지 등록 가능합니다</p>
+            <p className="text-grey3">해시태그는 총 8개까지 등록 가능합니다</p>
             <div className="flex gap-2 mt-4 text-grey3 overflow-x-auto flex-wrap">
               {hashtags.map((tag, index) => (
                 <div key={index} className="px-5 py-2 w-fit border border-solid border-grey3 rounded-full flex items-center gap-3">
