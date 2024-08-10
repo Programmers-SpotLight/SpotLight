@@ -28,7 +28,7 @@ const Banner = ({ img, title, subTitle, button, notOpacity, categoryId}: BannerP
         <h2 className="text-extraLarge font-light">{subTitle}</h2>
         <h1 className="text-[32px] font-bold">{title}</h1>
         {button ? (
-          <Link href={'/create'} className="mt-4">{button}</Link>
+          <Link href={'/selection/create'} className="mt-4">{button}</Link>
         ) : (
           <Link href={`/search?category_id=${categoryId}`} className="font-light underline underline-offset-1 mt-[10px] cursor-pointer">
             바로 확인하러 가기

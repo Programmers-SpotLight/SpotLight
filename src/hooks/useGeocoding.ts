@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchGeocodingData as fetchGeo } from "./queries/selectionCreate.query";
+import { fetchGeocodingData as fetchGeo } from "@/http/selectionCreate.api";
 
 
 const useGeocoding = () => {

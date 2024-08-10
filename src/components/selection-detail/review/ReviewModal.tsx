@@ -21,10 +21,17 @@ const modalDatas: ImodalDatas[] = [
   }
 ];
 
+interface ImodalProps {
+  review: IReview | null;
+  sltOrSpotId: number;
+  onSubmit: (data: IReviewFormData) => void;
+}
+
 const ReviewModal = () => {
   const { isOpen, closeModal, modalType, props } = useStore(useModalStore);
-  const reviewProps = props as { review: IReview | null, sltOrSpotId: number };
+  const reviewProps = props as ImodalProps;
   const review = reviewProps?.review || null;
+  const onSubmit = reviewProps?.onSubmit;
 
   if (!isOpen) return null;
 
@@ -38,9 +45,26 @@ const ReviewModal = () => {
     closeModal();
   }
 
-  const handleSubmit = (rating: number, reviewText: string, pictures: IReviewImage[]) => {
+  const handleSubmit = (data: IReviewFormData) => {
+    const submissionData = review 
+    ?
+      {
+        reviewScore: data.reviewScore,
+        reviewDescription: data.reviewDescription,
+        reviewImg: data.reviewImg,
+        reviewId: review ? review.reviewId : undefined
+      }
+    :
+      {
+        reviewScore: data.reviewScore,
+        reviewDescription: data.reviewDescription,
+        reviewImg: data.reviewImg,
+      };
+
+    onSubmit(submissionData);
     handleCloseModal();
   };
+  
 
   return (
     <div

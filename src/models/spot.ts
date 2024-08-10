@@ -1,21 +1,22 @@
 export type SpotCategory = "관광지" | "맛집" | "쇼핑" | "카페" | "기타";
 
-export interface ISpotInfoForMarking {
-  title: string;
-  categoryName: SpotCategory;
-  id: string;
-  lat: number;
-  lng: number;
+export interface ISpotImage {
+  url: string;
+  order: number;
 }
 
-export interface ISpotDetail {
+export interface ISpotInfo {
+  id: { type: string; data: number[] };
   title: string;
   description: string;
-  category: {
-    id: number;
-    name: string;
-  };
   address: string;
+  lat: number;
+  lng: number;
+  createdAt: Date;
+  updatedAt: Date;
+  gmapId: string;
+  images: ISpotImage[];
   hashtags: string[];
-  images: string[];
+  categoryId: number;
+  categoryName: SpotCategory;
 }

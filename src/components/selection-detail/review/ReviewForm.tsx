@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 interface IReviewFormProps {
   review: IReview | null;
-  onSubmit: (rating: number, reviewText: string, pictures: IReviewImage[]) => void;
+  onSubmit: (data: IReviewFormData | IReviewUpdateFormData) => void;
   onCancel: () => void;
 }
 
@@ -19,6 +19,7 @@ const ReviewForm = ({
   const [rating, setRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>('');
   const [pictures, setPictures] = useState<IReviewImage[]>([]);
+  const formattedReviewImg = pictures.length > 0 ? pictures : null;
 
   useEffect(() => {
     if (review) {
@@ -47,17 +48,26 @@ const ReviewForm = ({
 
   let isButtonDisabled = false;
   if (review) {
-    isButtonDisabled = review.reviewScore === rating 
-                    && review.reviewDescription === reviewText
-                    && review.reviewImg === pictures;
+    isButtonDisabled = !(
+      (review.reviewScore !== rating ||
+       review.reviewDescription !== reviewText ||
+       review.reviewImg !== formattedReviewImg) &&
+      reviewText.length >= 10
+    );
   } else {
     isButtonDisabled = rating <= 0 || reviewText.length < 10;
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const submissionData: IReviewFormData = {
+      reviewScore: rating,
+      reviewDescription: reviewText,
+      reviewImg: formattedReviewImg,
+    };
+  
     if (!isButtonDisabled) {
-      onSubmit(rating, reviewText, pictures);
+      onSubmit(submissionData);
     }
   };
 

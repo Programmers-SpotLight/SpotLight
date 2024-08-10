@@ -5,10 +5,10 @@ import React from "react";
 import { useStore } from "zustand";
 import Modal from "./Modal";
 import ModalTemp from "./modal-contents/ModalTemp";
-import { TModalSize, TmodalType } from "@/models/modal";
 import ModalCreateSelectionSpot from "./modal-contents/ModalCreateSelectionSpot";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
+import { TModalSize, TmodalType } from "@/models/modal.model";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -65,8 +65,10 @@ const ModalController = () => {
       <div className="relative" onClick={(e) => e.stopPropagation()}>
         <Modal title={title} size={size} closeModal={closeModal}>
           {/* 모달의 이름이 googleMaps로 시작한다면 구글맵 APIProvider를 사용 */}
-          {modalType?.startsWith('GoogleMaps') ? (
-            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}>
+          {modalType?.startsWith("GoogleMaps") ? (
+            <APIProvider
+              apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+            >
               <Component {...props} />
             </APIProvider>
           ) : (

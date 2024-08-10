@@ -1,25 +1,25 @@
-import { ISpotInfoForMarking } from "./spot";
+import { ISpotInfo } from "./spot";
 
-export interface ISelectionDetail {
+export interface ISelectionDetailInfo {
+  id: number;
   title: string;
   description: string;
-  category: {
-    id: number;
-    name: string;
-  };
+  status: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  categoryId: number;
+  categoryName: string;
+  image?: string;
+}
+
+export interface ISelectionInfo extends ISelectionDetailInfo {
   user: {
     id: number;
     nickname: string;
     image?: string;
   };
-  location: {
-    is_world: boolean;
-    region: string;
-  };
-  image?: string;
+  location: string;
   hashtags: string[];
-  created_date?: Date;
-  status: string | null;
-  spot_list: ISpotInfoForMarking[];
+  spotList: ISpotInfo[];
   booked: boolean;
 }

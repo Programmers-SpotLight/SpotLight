@@ -17,6 +17,7 @@ export interface IsearchData {
 	slt_status : TselectionStatus,
 	slt_cr_date : Date,
 	slt_description : string,
+	slt_location_option_name : string,
 	slt_category_name : string,
 	slt_hashtags : Ihashtags[],
 	user_id: number,

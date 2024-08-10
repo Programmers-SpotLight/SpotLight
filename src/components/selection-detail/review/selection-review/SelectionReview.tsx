@@ -9,14 +9,14 @@ import { useEffect, useRef, useState } from "react";
 import useReview from "@/hooks/queries/useReview";
 import ReveiwError from "../ReveiwError";
 import Spinner from "@/components/common/Spinner";
-import useReviewInfo from "@/hooks/useReviewInfo";
+import useReviewInfo from "@/hooks/queries/useReviewInfo";
 
 interface IReviewsProps {
-  sltOrSpotId: number;
+  reviewType: "selection" | "spot";
+  sltOrSpotId: number | string;
 };
 
-const SelectionReview = ({ sltOrSpotId } : IReviewsProps) => {
-  const reviewType: "selection" | "spot" = "selection"; 
+const SelectionReview = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
   const [sort, setSort] = useState<string>("like");
   const pageEnd = useRef<HTMLDivElement | null>(null);
 
@@ -33,7 +33,10 @@ const SelectionReview = ({ sltOrSpotId } : IReviewsProps) => {
     isError,
     fetchNextPage,
     hasNextPage,
-    isFetching
+    isFetching,
+    addReview,
+    updateReview,
+    deleteReview
   } = useReview({ reviewType, sltOrSpotId, sort });
 
   useEffect(() => {
@@ -52,7 +55,7 @@ const SelectionReview = ({ sltOrSpotId } : IReviewsProps) => {
   const { openModal } = useModalStore();
 
   const openReviewAddModal = () => {
-    openModal('review'); 
+    openModal('review', { onSubmit: addReview }); 
   };
 
   const handleSortChange = (newSort: string) => {
@@ -66,7 +69,7 @@ const SelectionReview = ({ sltOrSpotId } : IReviewsProps) => {
       ) : isError ? (
         <ReveiwError />
       ) : (
-        reviews ? (
+        reviews && reviews.length !== 0 ? (
           <div className="relative flex-grow overflow-x-visible space-y-3">
             <div className="flex-grow flex items-center justify-center">
               <div className="bg-white border border-solid border-grey2 rounded-lg w-[335px] h-[62px] flex items-center justify-center space-x-16">
@@ -77,7 +80,7 @@ const SelectionReview = ({ sltOrSpotId } : IReviewsProps) => {
 
             <ReviewOrderButton sort={sort} onSortChange={handleSortChange} />
 
-            <ReviewList sltOrSpotId={sltOrSpotId} reviews={reviews} />
+            <ReviewList sltOrSpotId={sltOrSpotId} reviews={reviews} updateReview={updateReview} deleteReview={deleteReview} />
 
             <div className="p-3" ref={pageEnd}>
               {isFetching && <Spinner size="small" />}
@@ -88,7 +91,7 @@ const SelectionReview = ({ sltOrSpotId } : IReviewsProps) => {
             </div>
           </div>
         ) : (
-          <ReviewEmpty />
+          <ReviewEmpty openModal={openReviewAddModal} />
         )
       )}
     </div>

@@ -8,15 +8,17 @@ import { MdEdit } from "react-icons/md";
 import { useModalStore } from "@/stores/modalStore";
 
 interface IReviewProps {
-  sltOrSpotId: number;
+  sltOrSpotId: number | string;
   review: IReview;
+  updateReview: (data: IReviewUpdateFormData) => void;
+  deleteReview: (reviewId: string) => void; 
 }
 
 const user = {
-  userId: 201
+  userId: 1
 }
 
-const ReviewItem = ({ sltOrSpotId, review }: IReviewProps) => {
+const ReviewItem = ({ sltOrSpotId, review, updateReview, deleteReview }: IReviewProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModalStore();
   
@@ -32,11 +34,11 @@ const ReviewItem = ({ sltOrSpotId, review }: IReviewProps) => {
   };
 
   const openReviewEditModal = () => {
-    openModal('review', { review, sltOrSpotId }); 
+    openModal('review', { review, sltOrSpotId, onSubmit: updateReview }); 
   };
 
   const openReviewDeleteModal = () => {
-    openModal('review-delete');
+    openModal('review-delete', { reviewId: review.reviewId , onSubmit: deleteReview });
   };
 
   return (
@@ -57,7 +59,7 @@ const ReviewItem = ({ sltOrSpotId, review }: IReviewProps) => {
           
           <div className="space-y-1 text-small w-[80px] ml-2">
             <div>{review.user.userNickname}</div>
-            <div className="text-grey3">{review.updatedDate}</div>
+            <div className="text-grey3">{review.createdDate}</div>
           </div>
         </div>
         <div className={`${review.user.isLiked ? "text-primary" : "text-grey3"} flex items-center space-x-1 text-bold left-0 `}>

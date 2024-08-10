@@ -1,10 +1,11 @@
 import Hashtag from "@/components/common/Hashtag";
-import { ISelectionDetail } from "@/models/selection";
+import { ISelectionInfo } from "@/models/selection";
+import Image from "next/image";
 import React from "react";
 import { FaBookmark, FaRegBookmark, FaShareAlt } from "react-icons/fa";
 
 interface SelectionHeaderProps {
-  selectionData: ISelectionDetail;
+  selectionData: ISelectionInfo;
 }
 
 const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
@@ -25,15 +26,20 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
 
   return (
     <>
-      <img
-        src={selectionData.image}
-        className="w-full h-[218px] object-cover border border-grey2"
-        alt="SelectionImg"
-      />
+      <div className="w-full h-[218px] border border-grey2 relative">
+        {selectionData.image ? (
+          <Image src={`/${selectionData.image}`} alt="SelectionImg" fill />
+        ) : (
+          <div className="w-full h-full flex justify-center items-center text-white font-bold text-large bg-grey2">
+            spotlight
+          </div>
+        )}
+      </div>
+
       <div className="relative flex flex-col gap-[5px] p-5">
         <div className="flex justify-between ">
           <h2 className="text-small text-grey4 font-medium">
-            {selectionData.category.name}
+            {selectionData.categoryName}
           </h2>
           <p className="flex gap-[5px]">
             <FaShareAlt
@@ -62,16 +68,21 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
             <Hashtag size="big" name={tag} key={tag} />
           ))}
         </div>
-        <div className="flex gap-[5px] justify-end items-center cursor-pointer">
-          <img
-            src={selectionData.user.image}
-            className="object-cover border-none w-5 h-5 bg-grey1 rounded-full"
-            alt="userImg"
-          />
-          <h3 className="font-medium text-small text-grey4">
-            {selectionData.user.nickname}
-          </h3>
-        </div>
+
+        {selectionData.user && (
+          <div className="flex gap-[5px] justify-end items-center cursor-pointer">
+            <img
+              src={selectionData.user.image}
+              className="object-cover border-none w-5 h-5 bg-grey1 rounded-full"
+              alt="userImg"
+            />
+
+            <h3 className="font-medium text-small text-grey4">
+              {selectionData.user.nickname}
+            </h3>
+          </div>
+        )}
+
         <hr className="mt-5" />
       </div>
     </>

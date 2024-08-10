@@ -1,6 +1,6 @@
 import { ISelectionSpotSearchResult } from "@/models/selection.model";
 import { useState } from "react";
-import { fetchSelectionSpotSearch } from "./queries/selectionCreate.query";
+import { fetchSelectionSpotSearch } from "@/http/selectionCreate.api";
 
 
 const useSpotSearch = () => {

@@ -11,6 +11,7 @@ import { useStore } from 'zustand';
 import { useModalStore } from '@/stores/modalStore';
 import { ISelectionSpot } from '@/models/selection.model';
 import { useSelectionCreateStore } from '@/stores/selectionCreateStore';
+import DropdownMenu from '@/components/selection-create/DropdownMenu';
 
 
 const ModalCreateSelectionSpot = () => {
@@ -25,34 +26,35 @@ const ModalCreateSelectionSpot = () => {
     closeModal,
     setExtraData
   } : { 
-    extraData: ISelectionSpot, 
+    extraData: {spotCategories: {id: number, name: string}[], spot?: ISelectionSpot} | null,
     closeModal: () => void, 
     setExtraData: (data: any) => void 
   } = useStore(useModalStore);
   const { addSpot, spots: currentSpots } = useStore(useSelectionCreateStore);
 
   const [currentPinCoords, setCurrentPinCoords] = useState<google.maps.LatLngLiteral>(
-    (data?.latitude && data?.longitude) ? 
-      { lat: data.latitude, lng: data.longitude } : 
+    (data?.spot?.latitude && data?.spot?.longitude) ? 
+      { lat: data.spot.latitude, lng: data.spot.longitude } : 
       { lat: 37.5503, lng: 126.9971 }
   );
 
-  const [placeName, setPlaceName] = useState<string>(data?.title || '');
-  const [description, setDescription] = useState<string>(data?.description || '');
-  const [thumbnailImage, setThumbnailImage] = useState<File | string | null>(data?.photos[0] || null);
-  const [thumbnailImage1, setThumbnailImage1] = useState<File | string | null>(data?.photos[1] || null);
-  const [thumbnailImage2, setThumbnailImage2] = useState<File | string | null>(data?.photos[2] || null);
-  const [thumbnailImage3, setThumbnailImage3] = useState<File | string |null>(data?.photos[3] || null);
+  const [placeName, setPlaceName] = useState<string>(data?.spot?.title || '');
+  const [description, setDescription] = useState<string>(data?.spot?.description || '');
+  const [category, setCategory] = useState<undefined | {id: number, name: string}>(undefined);
+  const [thumbnailImage, setThumbnailImage] = useState<File | string | null>(data?.spot?.photos[0] || null);
+  const [thumbnailImage1, setThumbnailImage1] = useState<File | string | null>(data?.spot?.photos[1] || null);
+  const [thumbnailImage2, setThumbnailImage2] = useState<File | string | null>(data?.spot?.photos[2] || null);
+  const [thumbnailImage3, setThumbnailImage3] = useState<File | string |null>(data?.spot?.photos[3] || null);
   const [tagInputValue, setTagInputValue] = useState<string>('');
-  const [tags, setTags] = useState<string[]>(data?.hashtags as string[]|| []);
+  const [tags, setTags] = useState<string[]>(data?.spot?.hashtags as string[]|| []);
 
   const [selectedLocation, setSelectedLocation] = useState<TPoiWithAddress>(
-    (data?.latitude && data?.longitude && data?.placeId && data?.formattedAddress) ?
+    (data?.spot?.latitude && data?.spot?.longitude && data?.spot?.placeId && data?.spot?.formattedAddress) ?
     {
       key: 'userSelectedSpot',
-      address: data.formattedAddress,
-      placeId: data.placeId,
-      location: { lat: data.latitude, lng: data.longitude }
+      address: data.spot?.formattedAddress,
+      placeId: data.spot?.placeId,
+      location: { lat: data.spot?.latitude, lng: data.spot?.longitude }
     } :
     {
       key: 'userSelectedSpot',
@@ -121,6 +123,13 @@ const ModalCreateSelectionSpot = () => {
     setDescription(e.target.value);
   };
 
+  const handleCategoryChange = (value: string) => {
+    setCategory({
+      id: parseInt(value),
+      name: data?.spotCategories.find((category) => category.id === parseInt(value))?.name || ''
+    });
+  };
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
@@ -137,7 +146,7 @@ const ModalCreateSelectionSpot = () => {
     } else {
       alert('png, jpg, jpeg 파일만 업로드 가능합니다.');
     }
-  }
+  };
 
   const handleImageChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -146,7 +155,7 @@ const ModalCreateSelectionSpot = () => {
     } else {
       alert('png, jpg, jpeg 파일만 업로드 가능합니다.');
     }
-  }
+  };
 
   const handleImageChange3 = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -155,11 +164,11 @@ const ModalCreateSelectionSpot = () => {
     } else {
       alert('png, jpg, jpeg 파일만 업로드 가능합니다.');
     }
-  }
+  };
 
   const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTagInputValue(e.target.value);
-  }
+  };
 
   const handleAddTagClick = () => {
     if (tags.length >= 8) {
@@ -180,7 +189,7 @@ const ModalCreateSelectionSpot = () => {
     // 태그 추가
     setTags([...tags, tagInputValue]);
     setTagInputValue('');
-  }
+  };
 
   const handleDeleteTagClick = (index: number) => {
     const newTags = tags.filter((_, i) => i !== index);
@@ -203,7 +212,7 @@ const ModalCreateSelectionSpot = () => {
     fetchGeocodingData(
       placeId
     );
-  }
+  };
 
   const handleReverseGeocodingClick = () => {
     if (
@@ -216,7 +225,7 @@ const ModalCreateSelectionSpot = () => {
         currentPinCoords.lng
       );
     }
-  }
+  };
 
   const handleAddSpotClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -239,6 +248,10 @@ const ModalCreateSelectionSpot = () => {
       alert('이미 등록된 스팟입니다.');
       return;
     }
+    if (!category) {
+      alert('카테고리를 설정해주세요.');
+      return;
+    }
     if (!selectedLocation.address) {
       alert('스팟 주소를 설정해주세요.');
       return;
@@ -254,6 +267,7 @@ const ModalCreateSelectionSpot = () => {
     const spot: ISelectionSpot = {
       placeId: selectedLocation.placeId,
       title: placeName,
+      category: category.id,
       description,
       formattedAddress: selectedLocation.address,
       latitude: selectedLocation.location.lat,
@@ -265,7 +279,7 @@ const ModalCreateSelectionSpot = () => {
     addSpot(spot);
     setExtraData(null); 
     closeModal();
-  }
+  };
 
   // 모달 창의 높이를 동적으로 조절
   useEffect(() => {
@@ -433,6 +447,21 @@ const ModalCreateSelectionSpot = () => {
           value={description}
           onChange={handleDescriptionChange}
         />
+      </div>
+      <div className='text-medium font-bold mt-8 mb-4 flex'>
+        <p className='w-1/4'>스팟 카테고리</p>
+        {(data?.spotCategories && data.spotCategories.length > 0) && (
+          <DropdownMenu 
+            options={
+              data.spotCategories.map((category) => ({
+                value: category.id,
+                label: category.name
+              }))
+            }
+            onChange={handleCategoryChange}
+            currentChoice={category?.name || '선택하세요'}
+          />
+        )}
       </div>
       <p className='mt-8 font-bold text-medium mb-4'>이미지 등록 (선택)</p>
       <div className='flex gap-2'>
