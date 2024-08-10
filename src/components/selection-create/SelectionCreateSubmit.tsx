@@ -21,7 +21,8 @@ const SelectionCreateSubmit : React.FC = () => {
     selectionPhoto, 
     hashtags, 
     spots, 
-    updateSpot 
+    updateSpot,
+    reset
   } = useStore(useSelectionCreateStore);
 
   // 임시저장 버튼 클릭시 제출 로직
@@ -70,6 +71,7 @@ const SelectionCreateSubmit : React.FC = () => {
     ).then((res) => {
       alert('셀렉션 미리저장이 성공적으로 되었습니다.');
       router.push('/');
+      reset();
     }).catch((err) => {
       alert('미리저장에 실패했습니다.');
       setIsSubmitting(false);
@@ -135,6 +137,7 @@ const SelectionCreateSubmit : React.FC = () => {
     ).then((res) => {
       alert('셀렉션이 성공적으로 등록되었습니다.');
       router.push('/');
+      reset();
     }).catch((err) => {
       alert('제출에 실패했습니다.');
       setIsSubmitting(false);
