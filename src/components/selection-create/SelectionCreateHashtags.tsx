@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import OneLineInput from "../common/input/OneLineInput";
-import Image from "next/image";
 import Hashtag from "../common/Hashtag";
+import { MdAdd } from "react-icons/md";
 
 interface ISelectionCreateHashtagsProps {
   hashtags: string[];
@@ -69,18 +69,13 @@ const SelectionCreateHashtags: React.FC<ISelectionCreateHashtagsProps> = ({
               width="w-full"
               value={hashtagInputValue}
               onChange={handleHashtagInputValueChange}
-              onKeyDown={handleHashtagInput} // 수정된 부분
+              onKeyDown={handleHashtagInput}
             />
             <button
               className="absolute top-[50%] right-[1%] transform -translate-y-1/2"
-              onClick={handleHashtagInput} // 수정된 부분
+              onClick={handleHashtagInput}
             >
-              <Image
-                src="/icons/add_7C7C7C.svg"
-                width={32}
-                height={32}
-                alt="add-spot"
-              />
+            <MdAdd className="w-6 h-6 fill-grey4" />
             </button>
           </div>
           <div className="text-small">
