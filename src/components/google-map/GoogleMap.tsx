@@ -79,7 +79,13 @@ const GoogleMap = ({
     };
     initializeMap();
   }, [lat, lng, spots]);
-  return <div ref={mapRef} style={{ width: width, height: height }}></div>;
+  return (
+    <div
+      ref={mapRef}
+      style={{ width: width, height: height }}
+      className="absolute right-0 transition-width ease-in-out duration-500"
+    ></div>
+  );
 };
 
 export default GoogleMap;

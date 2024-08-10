@@ -2,7 +2,7 @@ import React from "react";
 import { FaCaretRight } from "react-icons/fa";
 import SpotSection from "./SpotSection";
 import SelectionSection from "./SelectionSection";
-import { ISelectionInfo } from "@/models/selection";
+import { ISelectionInfo } from "@/models/selection.model";
 
 interface IDrawerProps {
   selectionData: ISelectionInfo;
@@ -38,13 +38,21 @@ const Drawer = ({
           isSpotDrawerOpen={isSpotDrawerOpen}
           selectedSpotId={selectedSpotId}
           spotData={
-            selectionData.spotList.filter((spot) => spot.id === selectedSpotId)[0]
+            selectionData.spotList.filter(
+              (spot) => spot.id === selectedSpotId
+            )[0]
           }
         />
       </div>
       {/**button */}
       <div
-        className={`absolute top-1/2 ${isSelectionDrawerOpen && isSpotDrawerOpen ? "left-[750px]" : isSelectionDrawerOpen ? "left-[375px]" : "left-0"} transform -translate-y-1/2 transition-all ease-in-out duration-500`}
+        className={`absolute top-1/2 ${
+          isSelectionDrawerOpen && isSpotDrawerOpen
+            ? "left-[750px]"
+            : isSelectionDrawerOpen
+            ? "left-[375px]"
+            : "left-0"
+        } transform -translate-y-1/2 transition-all ease-in-out duration-500`}
       >
         <button
           className={`w-[24px] h-[50px] bg-grey0 border-t border-r border-b border-primary border-solid rounded-sm`}
@@ -59,7 +67,6 @@ const Drawer = ({
         </button>
       </div>
     </>
-    
   );
 };
 

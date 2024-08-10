@@ -1,5 +1,5 @@
 import Hashtag from "@/components/common/Hashtag";
-import { ISelectionInfo } from "@/models/selection";
+import { ISelectionInfo } from "@/models/selection.model";
 import Image from "next/image";
 import React from "react";
 import { FaBookmark, FaRegBookmark, FaShareAlt } from "react-icons/fa";
