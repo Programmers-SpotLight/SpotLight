@@ -37,8 +37,6 @@ const SearchEngineSection = () => {
       addtagList.push(HeaderSearchTag);
     }
     const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags); // 세션 스토리지에 저장된 태그 불러오기
-    console.log(addtagList+'비포어')
-
     if (storedTags) { // 세션에 저장된 데이터가 있는 경우 태그리스트에 추가
       const parseStoredTags = JSON.parse(storedTags);
       parseStoredTags.forEach((tag: string) => {

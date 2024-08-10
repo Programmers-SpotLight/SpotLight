@@ -19,39 +19,33 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
   tagInputRef,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const [cachedResults, setCachedResults] = useState<any[]>([]);
-  const { data: apiResults, isError } = useFetchSearchAutoCompletion(tagValue);
+  const { data: results, isError, isLoading } = useFetchSearchAutoCompletion(tagValue);
   
   useClickOutside(tagACRef, () => {
     setVisibleAutoCompletion(false);
   });
 
-  useEffect(() => {
-    if (apiResults?.data.length > 0) {
-      setCachedResults(apiResults.data);
-    }
-    if (tagValue?.length === 0) setCachedResults([]);
-  }, [apiResults]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setSelectedIndex((prevIndex) =>
-        Math.min(prevIndex + 1, (cachedResults.length || 0) - 1)
-      );
+      setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, (results?.data.length || 0) - 1));
+
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
       setSelectedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
     } else if (event.key === "Enter") {
       event.preventDefault();
-      if (selectedIndex >= 0 && cachedResults.length > 0) {
-        setTagValue(cachedResults[selectedIndex].htag_name);
+      if (selectedIndex >= 0 && results?.data) {
+        setTagValue(results.data[selectedIndex].htag_name);
         setVisibleAutoCompletion(false);
-        if (tagInputRef.current) tagInputRef.current.focus();
+        if(tagInputRef.current) tagInputRef.current.focus()
       }
     } else {
       if (tagInputRef.current) {
-        tagInputRef.current.focus();
+        setTimeout(() => {
+          if(tagInputRef.current) tagInputRef.current.focus(); // 2중 조건
+        }, 10); // 100ms 딜레이 추가
       }
     }
   };
@@ -62,7 +56,7 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
   ) => {
     event.preventDefault();
     setSelectedIndex(index);
-    setTagValue(cachedResults[index].htag_name);
+    setTagValue(results.data[index].htag_name);
     setVisibleAutoCompletion(false);
   };
 
@@ -81,11 +75,11 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
     );
   };
 
-  if (!cachedResults.length && !tagValue) return null;
+  if (!results || isLoading) return null;
 
   return (
     <>
-      {cachedResults.length > 0 && (
+      {results.data.length > 0 && (
         <div
           className="flex absolute z-10 w-full bg-white border border-solid border-grey2 rounded-md mt-1 max-h-[300px] overflow-auto focus:border-primary"
           tabIndex={0}
@@ -96,7 +90,7 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
             id="auto-complete-list"
             className="flex-[0.6] p-5 pb-[15px] box-border max-h-[300px] overflow-auto"
           >
-            {cachedResults.map((item: { htag_name: string }, index: number) => (
+            {results.data.map((item: { htag_name: string }, index: number) => (
               <li
                 key={index}
                 className={`flex p-2 text-grey4 gap-[10px] justify-between hover:bg-grey1 rounded-lg cursor-pointer ${
