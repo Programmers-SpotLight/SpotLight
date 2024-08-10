@@ -1,19 +1,33 @@
-import { ISelectionSpot } from "@/models/selection.model";
+import { ISelectionSpotCategory } from "@/models/selection.model";
+import { useModalStore } from "@/stores/modalStore";
+import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 import Image from "next/image";
 import React from "react";
+import { useStore } from "zustand";
 
 
 interface ISelectionCreateSpotProps {
-  spots: ISelectionSpot[];
-  onAddSpotClick: (e: React.MouseEvent) => void;
-  onDeleteSpotClick: (index: number) => void;
+  spotCategories: ISelectionSpotCategory[];
 }
 
 const SelectionCreateSpot : React.FC<ISelectionCreateSpotProps> = ({
-  spots,
-  onAddSpotClick,
-  onDeleteSpotClick
+  spotCategories
 }) => {
+  const { spots, deleteSpot } = useStore(useSelectionCreateStore);
+  const { setExtraData, openModal } = useStore(useModalStore);
+
+  const handleAddSpotClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setExtraData({
+      spotCategories
+    });
+    openModal('GoogleMapsAddSelectionSpot');
+  }
+
+  const handleDeleteSpotClick = (index: number) => {
+    deleteSpot(index);
+  }
+
   return (
     <div className="flex items-start gap-6 py-6">
       <div className="flex items-start grow">
@@ -21,7 +35,7 @@ const SelectionCreateSpot : React.FC<ISelectionCreateSpotProps> = ({
         <div className="w-3/4 relative">
           <button 
             className="w-[50px] h-[50px] top-[50%] right-[-35px] absolute p-5 translate-y-[-50%] rounded-full border border-solid border-grey2 bg-white"
-            onClick={onAddSpotClick}
+            onClick={handleAddSpotClick}
           >
             <Image
               src="/icons/add_7C7C7C.svg" 
@@ -52,10 +66,14 @@ const SelectionCreateSpot : React.FC<ISelectionCreateSpotProps> = ({
                   />
                   {spot.title}
                 </div>
-                <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                  e.preventDefault();
-                  onDeleteSpotClick(index);
-                }}>
+                <button 
+                  onClick={
+                    (e: React.MouseEvent<HTMLButtonElement>) => {
+                      e.preventDefault();
+                      handleDeleteSpotClick(index);
+                    }
+                  }
+                >
                   <Image
                     src={"/icons/clear_7C7C7C.svg"}
                     width={16}

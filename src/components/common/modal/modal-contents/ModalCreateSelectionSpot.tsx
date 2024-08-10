@@ -15,6 +15,12 @@ import Dropdown from '../../Dropdown';
 import Hashtag from '../../Hashtag';
 
 
+interface IModalCreateSelectionExtraData {
+  spotCategories: {id: number, name: string}[]
+  spot?: ISelectionSpot
+};
+
+
 const ModalCreateSelectionSpot = () => {
   const modalElementRef = useRef<HTMLDivElement>(null);
   const spotSearchResultRef = useRef<HTMLDivElement>(null);
@@ -27,7 +33,7 @@ const ModalCreateSelectionSpot = () => {
     closeModal,
     setExtraData
   } : { 
-    extraData: {spotCategories: {id: number, name: string}[], spot?: ISelectionSpot} | null,
+    extraData: IModalCreateSelectionExtraData | null,
     closeModal: () => void, 
     setExtraData: (data: any) => void 
   } = useStore(useModalStore);
@@ -50,7 +56,12 @@ const ModalCreateSelectionSpot = () => {
   const [tags, setTags] = useState<string[]>(data?.spot?.hashtags as string[]|| []);
 
   const [selectedLocation, setSelectedLocation] = useState<TPoiWithAddress>(
-    (data?.spot?.latitude && data?.spot?.longitude && data?.spot?.placeId && data?.spot?.formattedAddress) ?
+    (
+      data?.spot?.latitude && 
+      data?.spot?.longitude && 
+      data?.spot?.placeId && 
+      data?.spot?.formattedAddress
+    ) ?
     {
       key: 'userSelectedSpot',
       address: data.spot?.formattedAddress,
@@ -119,6 +130,7 @@ const ModalCreateSelectionSpot = () => {
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
   };
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
@@ -211,8 +223,8 @@ const ModalCreateSelectionSpot = () => {
   const handleReverseGeocodingClick = () => {
     if (
       selectedLocation.location.lat != currentPinCoords.lat || 
-      selectedLocation.location.lng != currentPinCoords.lng) 
-    {
+      selectedLocation.location.lng != currentPinCoords.lng
+    ) {
       reverseGeocodingRequested.current = true;
       fetchAddress(
         currentPinCoords.lat,
@@ -227,14 +239,18 @@ const ModalCreateSelectionSpot = () => {
       alert('스팟 이름을 입력해주세요.');
       return;
     }
+
     if (!description) {
       alert('스팟 설명을 입력해주세요.');
       return;
     }
+
     if (!selectedLocation.placeId) {
       alert('스팟 위치를 설정해주세요.');
       return;
     }
+
+    // 중복된 스팟인지 확인
     const isDuplicated = currentSpots.some(
       (spot) => spot.placeId === selectedLocation.placeId
     );
@@ -242,18 +258,22 @@ const ModalCreateSelectionSpot = () => {
       alert('이미 등록된 스팟입니다.');
       return;
     }
+
     if (!category) {
       alert('카테고리를 설정해주세요.');
       return;
     }
+
     if (!selectedLocation.address) {
       alert('스팟 주소를 설정해주세요.');
       return;
     }
+
     if (tags.length === 0) {
       alert('태그를 등록해주세요.');
       return;
     }
+
     const photos = [thumbnailImage, thumbnailImage1, thumbnailImage2, thumbnailImage3].filter(
       (photo) => photo !== null
     );
@@ -290,6 +310,7 @@ const ModalCreateSelectionSpot = () => {
 
   // 역지오코딩 결과 처리
   useEffect(() => {
+    // 처음 렌더링 시 실행되지 않도록
     if (!reverseGeocodingRequested.current) {
       return
     }
@@ -315,6 +336,7 @@ const ModalCreateSelectionSpot = () => {
 
   // 지오코딩 결과 처리
   useEffect(() => {
+    // 처음 렌더링 시 실행되지 않도록
     if (!geocodingRequested.current) {
       return;
     }
@@ -330,6 +352,7 @@ const ModalCreateSelectionSpot = () => {
       address: geocodingAddress || '',
     });
 
+    // 사용자가 선택한 위치로 마커 배치 후 중앙으로 설정
     setCurrentPinCoords(geocodingCoordinates || { lat: 0, lng: 0 });
     map?.setCenter(geocodingCoordinates || { lat: 0, lng: 0 });
   }, [

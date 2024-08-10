@@ -1,4 +1,4 @@
-import { ISelectionSpot, ISelectionSpotCategory } from "@/models/selection.model";
+import { ISelectionCategory, ISelectionSpot } from "@/models/selection.model";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -6,28 +6,28 @@ import { devtools } from "zustand/middleware";
 interface ISelectionCreateStore {
   title: string;
   description: string;
-  category: number | undefined;
-  location: number | undefined;
-  subLocation: number | undefined;
+  category: ISelectionCategory | undefined;
+  location: ISelectionCreateStoreLocation | undefined;
+  subLocation: ISelectionCreateStoreLocation | undefined;
   selectionPhoto: File | string | null;
   spots: Array<ISelectionSpot>;
-  tags: string[];
+  hashtags: string[];
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  setCategory: (category: number) => void;
-  setLocation: (location: number) => void;
-  setSubLocation: (subLocation: number) => void;
-  setSelectionPhoto: (selectionPhoto: File) => void;
+  setCategory: (category: ISelectionCategory) => void;
+  setLocation: (location: ISelectionCreateStoreLocation) => void;
+  setSubLocation: (subLocation: ISelectionCreateStoreLocation) => void;
+  setSelectionPhoto: (selectionPhoto: File | string) => void;
   addSpot: (spot: ISelectionSpot) => void;
   deleteSpot: (spot: number) => void;
-  addTag: (tag: string) => void;
-  deleteTag: (tag: string) => void;
+  addHashtag: (tag: string) => void;
+  deleteHashtag: (tag: string) => void;
   updateSpot: (index: number, spot: ISelectionSpot) => void;
 }
 
-interface ISelectionCreateSpotCategoryStore {
-  spotCategories: ISelectionSpotCategory[];
-  setSpotCategories: (categories: ISelectionSpotCategory[]) => void;
+interface ISelectionCreateStoreLocation {
+  id : number;
+  name: string;
 }
 
 export const useSelectionCreateStore = create<ISelectionCreateStore>()(
@@ -39,24 +39,31 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
     subLocation: undefined,
     selectionPhoto: null,
     spots: [],
-    tags: [],
+    hashtags: [],
     setTitle: (title: string) => set({ title }),
     setDescription: (description: string) => set({ description }),
-    setCategory: (category: number) => set({ category }),
-    setLocation: (location: number) => set({ location }),
-    setSubLocation: (subLocation: number) => set({ subLocation }),
-    setSelectionPhoto: (selectionPhoto: File) => set({ selectionPhoto }),
+    setCategory: (category: ISelectionCategory) => set({ category }),
+    setLocation: (location: ISelectionCreateStoreLocation) => set({ location }),
+    setSubLocation: (subLocation: ISelectionCreateStoreLocation) => set({ subLocation }),
+    setSelectionPhoto: (selectionPhoto: File | string) => set({ selectionPhoto }),
     addSpot: (spot: ISelectionSpot) => set((state) => ({ spots: [...state.spots, spot] })),
-    addTag: (tag: string) => set((state) => ({ tags: [...state.tags, tag] })),
-    deleteSpot: (index: number) => set((state) => ({ spots: state.spots.filter((_, i) => i !== index) })),
-    deleteTag: (tag: string) => set((state) => ({ tags: state.tags.filter((t) => t !== tag)})),
-    updateSpot: (index: number, spot: ISelectionSpot) => set((state) => ({ spots: state.spots.map((s, i) => i === index ? spot : s) })),
-  }))
-);
-
-export const useSelectionCreateSpotCategoryStore = create<ISelectionCreateSpotCategoryStore>()(
-  devtools((set) => ({
-    spotCategories: [],
-    setSpotCategories: (categories: ISelectionSpotCategory[]) => set({ spotCategories: categories }),
+    addHashtag: (hashtag: string) => {
+      if (typeof hashtag !== "string") return;
+      set(
+        (state) => ({ hashtags: [...state.hashtags, hashtag] })
+      )
+    },
+    deleteSpot: (index: number) => set(
+      (state) => ({ spots: state.spots.filter((_, i) => i !== index) })
+    ),
+    deleteHashtag: (hashtag: string) => {
+      if (typeof hashtag !== "string") return;
+      set(
+        (state) => ({ hashtags: state.hashtags.filter((t) => t !== hashtag)})
+      )
+    },
+    updateSpot: (index: number, spot: ISelectionSpot) => set(
+      (state) => ({ spots: state.spots.map((s, i) => i === index ? spot : s) })
+    ),
   }))
 );
