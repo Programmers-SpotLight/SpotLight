@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ErrorResponse, Ipagination, IsearchData, IsearchResult, TsortType } from "@/models/searchResult.model";
 import { Ihashtags } from "@/models/hashtag.model";
-import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString";
 import { getSearchResult, getSearchResultCount } from "@/services/selectionSearch.services";
+import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
 
 export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult | ErrorResponse>> {
   const url = req.nextUrl;

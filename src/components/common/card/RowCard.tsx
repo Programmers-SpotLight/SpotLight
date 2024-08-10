@@ -32,14 +32,20 @@ const RowCard = ({
       href={`/selection/${selectionId}`}
       className="flex w-[512px] h-[150px] rounded-lg relative border-[0.5px] border-solid border-grey2 hover:brightness-75 bg-white"
     >
-      <Image
-        src={thumbnail}
-        priority
-        width={242}
-        height={150}
-        alt="title"
-        className="rounded-bl-lg rounded-tl-lg object-cover"
-      />
+      {thumbnail ? (
+        <Image
+          src={thumbnail}
+          priority
+          width={242}
+          height={150}
+          alt="title"
+          className="rounded-bl-lg rounded-tl-lg object-cover"
+        />
+      ) : (
+        <div className="w-[242px] h-full flex justify-center items-center text-white font-bold text-large bg-grey2">
+          spotlight
+        </div>
+      )}
       <div className="absolute w-[30px] h-[23px] bg-black rounded-tl-lg top-0 left-0 text-white flex items-center justify-center text-small font-bold">
         {ranking}
       </div>
@@ -51,32 +57,37 @@ const RowCard = ({
           {region && ` > ${region}`}
         </p>
 
-        <p className="text-grey4 line-clamp-2 text-extraSmall font-medium">
+        <p className="text-grey4 line-clamp-2 text-extraSmall font-medium h-6 mb-6">
           {description}
         </p>
 
-        <div className="flex justify-between items-center text-grey4 mt-5">
-          <div className="flex items-center gap-1">
-            <Image
-              src={userImage}
-              alt={userName}
-              className="rounded-full object-cover"
-              width={16}
-              height={16}
-            />
-            <span className="text-extraSmall font-semibold">{userName}</span>
-          </div>
+        {userImage && userName && (
+          <div className="flex justify-between items-center text-grey4 mt-auto">
+            <div className="flex items-center gap-1">
+              <div className="relative w-[16px] h-[16px]">
+                {userImage ?
+                <Image
+                  src={userImage}
+                  alt={userName}
+                  className="rounded-full object-cover"
+                  fill
+                /> :
+                <div className="w-full h-full flex justify-center items-center font-bold text-large"/>
+              }
+              </div>
+              <span className="text-extraSmall font-semibold">{userName}</span>
+            </div>
 
-          <div className="flex items-center gap-1">
-            {liked ? (
-              <MdThumbUp size={16} fill="#7C7C7C" />
-            ) : (
-              <MdOutlineThumbUp size={16} />
-            )}
-
-            <span className="text-extraSmall font-medium">{likes}</span>
+            <div className="flex items-center gap-1">
+              {liked ? (
+                <MdThumbUp size={16} fill="#7C7C7C" />
+              ) : (
+                <MdOutlineThumbUp size={16} />
+              )}
+              <span className="text-extraSmall font-medium">{likes}</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </Link>
   );

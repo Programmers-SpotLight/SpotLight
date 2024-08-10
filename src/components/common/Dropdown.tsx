@@ -1,6 +1,6 @@
 "use client";
 
-import { QUERY_STRING_NAME } from "@/constants/queryString";
+import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import useClickOutside from "@/hooks/useClickOutside";
 import {
   ISelectionCategory,

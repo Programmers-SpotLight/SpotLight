@@ -5,29 +5,23 @@ import TextInput from "../common/input/TextInput";
 import { MdAdd } from "react-icons/md";
 import Hashtag from "../common/Hashtag";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
-import useFetchSelectionCategories from "@/hooks/queries/useFetchSelectionCategories";
-import useFetchSelectionLocations from "@/hooks/queries/useFetchSelectionLocations";
-import { QUERY_STRING_NAME } from "@/constants/queryString";
 import AutoCompletion from "./search-contents/AutoCompletion";
 import { useSearchParams } from "next/navigation";
 import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 import Dropdown from "../common/Dropdown";
+import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
+import { ISelectionCategory, ISelectionLocation } from "@/models/selection.model";
 
-const SearchEngineSection = () => {
+interface ISearchEngineSectionProps {
+  selectionCategories :ISelectionCategory[]
+  regionCategories : ISelectionLocation[]
+}
+
+const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEngineSectionProps) => {
   const searchParams = useSearchParams();
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
   const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearchAutoComplete();
-  const {
-    data: categoryDatas,
-    isError: categoryError,
-    isLoading: categoryLoading
-  } = useFetchSelectionCategories();
-  const {
-    data: locationDatas,
-    isError: locationError,
-    isLoading: locationLoading
-  } = useFetchSelectionLocations();
 
   useEffect(() => {
     if (tagInputRef.current) tagInputRef.current?.focus();
@@ -78,20 +72,18 @@ const SearchEngineSection = () => {
     deleteQueryString(QUERY_STRING_NAME.tags, tag);
   };
 
-  if (!categoryDatas || !locationDatas) return null;
-
   return (
     <div className="px-5">
       <div className="flex gap-5 mb-5 ">
         <Dropdown
           title="카테고리"
           query={QUERY_STRING_NAME.category_id}
-          contents={categoryDatas}
+          contents={selectionCategories}
         />
         <Dropdown
           title="지역"
           query={QUERY_STRING_NAME.region_id}
-          contents={locationDatas}
+          contents={regionCategories}
         />
       </div>
       <form onSubmit={handleSubmit} className="relative">
