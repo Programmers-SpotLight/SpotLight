@@ -11,7 +11,8 @@ import { useModalStore } from '@/stores/modalStore';
 import { ISelectionCategory, ISelectionSpot } from '@/models/selection.model';
 import { useSelectionCreateStore } from '@/stores/selectionCreateStore';
 import useClickOutside from '@/hooks/useClickOutside';
-import SearchDropdown from '@/components/search/search-contents/SearchDropdown';
+import Dropdown from '../../Dropdown';
+import Hashtag from '../../Hashtag';
 
 
 const ModalCreateSelectionSpot = () => {
@@ -157,31 +158,36 @@ const ModalCreateSelectionSpot = () => {
   const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTagInputValue(e.target.value);
   };
-
-  const handleAddTagClick = () => {
-    if (tags.length >= 8) {
-      alert('태그는 최대 8개까지 등록 가능합니다.');
-      return;
+  const handleHashtagInput = (
+    e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>
+  ) => {
+    if (e.type === "click" || (e as React.KeyboardEvent).key === "Enter") {
+      e.preventDefault();
+      if (tags.length >= 8) {
+        alert("태그는 최대 8개까지 등록 가능합니다.");
+        return;
+      }
+      if (tagInputValue === "") {
+        alert("태그명을 입력해주세요.");
+        return;
+      }
+      if (tags.includes(tagInputValue)) {
+        alert("이미 등록된 태그입니다.");
+        return;
+      }
+      setTags([...tags, tagInputValue]);
+      setTagInputValue("");
     }
-
-    if (!tagInputValue) {
-      alert('태그를 입력해주세요.');
-      return;
-    }
-
-    if (tags.includes(tagInputValue)) {
-      alert('이미 등록된 태그입니다.');
-      return;
-    }
-
-    // 태그 추가
-    setTags([...tags, tagInputValue]);
-    setTagInputValue('');
   };
 
-  const handleDeleteTagClick = (index: number) => {
-    const newTags = tags.filter((_, i) => i !== index);
-    setTags(newTags);
+  const handleDeleteHashtagClick = (
+    e: React.MouseEvent
+  ) => {
+    e.preventDefault();
+    const tag = e.currentTarget.parentElement?.textContent;
+    if (tag) {
+      setTags(tags.filter((t) => t !== tag));
+    }
   };
 
   const handleGeocodingClick = (placeId: string) => {
@@ -438,7 +444,7 @@ const ModalCreateSelectionSpot = () => {
       </div>
       <div className=' mt-8 mb-4 flex'>
         <p className='w-1/4 text-medium font-bold'>스팟 카테고리</p>
-        <SearchDropdown
+        <Dropdown
         contents={data?.spotCategories}
         setCategory={setCategory}
         title='스팟 카테고리'
@@ -562,10 +568,11 @@ const ModalCreateSelectionSpot = () => {
             width='w-full'
             value={tagInputValue}
             onChange={handleTagInputChange}
+            onKeyDown={handleHashtagInput}
           />
           <button 
             className='absolute top-[50%] right-[1%] transform -translate-y-1/2'
-            onClick={handleAddTagClick}
+            onClick={handleHashtagInput}
           >
             <Image 
               src="/icons/add_7C7C7C.svg" 
@@ -578,19 +585,11 @@ const ModalCreateSelectionSpot = () => {
         <div className="text-small">
           <p className="text-grey4">해시태그는 총 8개까지 등록 가능합니다</p>
           <div className="flex gap-2 mt-4 text-grey3 overflow-x-auto flex-wrap">
-            {tags.map((tag, index) => (
-              <div key={index} className="px-5 py-2 w-fit border border-solid border-grey3 rounded-full flex items-center gap-3">
-                {tag}
-                <button onClick={() => handleDeleteTagClick(index)}>
-                  <Image
-                    src={"/icons/clear_7C7C7C.svg"}
-                    width={16}
-                    height={16}
-                    alt="clear"
-                  />
-                </button>
-              </div>
-            ))}
+          {tags.map((tag, index) => (
+                <li key={index} className="list-none">
+                  <Hashtag size="big" name={tag} cancelHashtag={handleDeleteHashtagClick} />
+                </li>
+              ))}
           </div>
         </div>
       </div>

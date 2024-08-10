@@ -1,7 +1,6 @@
-import useFetchSelectionCategories from '@/hooks/queries/useFetchSelectionCategories';
 import React, { Dispatch, SetStateAction } from 'react';
-import SearchDropdown from '../search/search-contents/SearchDropdown';
 import { ISelectionCategory, ISelectionSpotCategory } from '@/models/selection.model';
+import Dropdown from '../common/Dropdown';
 
 interface ISelectionCreateCategoryProps {
   selectedCategories : ISelectionSpotCategory[]
@@ -15,7 +14,7 @@ const SelectionCreateCategory = ({selectedCategories, setCategory
     <div className="flex items-start gap-6 py-6">
       <div className="flex items-center grow">
         <label htmlFor="category" className="w-1/4 text-medium font-bold">카테고리 설정</label>
-        <SearchDropdown
+        <Dropdown
       title='카테고리'
       contents={selectedCategories}
       setCategory={setCategory}

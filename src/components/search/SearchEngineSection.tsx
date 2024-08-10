@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import SearchDropdown from "./search-contents/SearchDropdown";
 import TextInput from "../common/input/TextInput";
 import { MdAdd } from "react-icons/md";
 import Hashtag from "../common/Hashtag";
@@ -12,6 +11,7 @@ import { QUERY_STRING_NAME } from "@/constants/queryString";
 import AutoCompletion from "./search-contents/AutoCompletion";
 import { useSearchParams } from "next/navigation";
 import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
+import Dropdown from "../common/Dropdown";
 
 const SearchEngineSection = () => {
   const searchParams = useSearchParams();
@@ -84,12 +84,12 @@ const SearchEngineSection = () => {
   return (
     <div className="px-5">
       <div className="flex gap-5 mb-5 ">
-        <SearchDropdown
+        <Dropdown
           title="카테고리"
           query={QUERY_STRING_NAME.category_id}
           contents={categoryDatas}
         />
-        <SearchDropdown
+        <Dropdown
           title="지역"
           query={QUERY_STRING_NAME.region_id}
           contents={locationDatas}

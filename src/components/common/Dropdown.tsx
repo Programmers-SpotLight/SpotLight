@@ -10,7 +10,7 @@ import React, { useState, useRef, useEffect, Dispatch, SetStateAction } from "re
 import { FaCaretDown } from "react-icons/fa";
 import { MdNavigateNext } from "react-icons/md";
 
-interface SearchDropdownProps {
+interface DropdownProps {
   title: string;
   query?: string;
   contents: ISelectionCategory[] | ISelectionLocation[] | any;
@@ -29,13 +29,13 @@ interface SearchDropdownProps {
 }>>
 }
 
-const SearchDropdown = ({
+const Dropdown = ({
   title,
   contents,
   query,
   setCategory,
   setLocation
-}: SearchDropdownProps) => {
+}: DropdownProps) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [categoryList, setCategoryList] = useState<
     ISelectionLocation[] | ISelectionCategory[]
@@ -183,4 +183,4 @@ const SearchDropdown = ({
   );
 };
 
-export default SearchDropdown;
+export default Dropdown;
