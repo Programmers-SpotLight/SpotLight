@@ -7,29 +7,30 @@ interface IAutoCompletionProps {
   tagValue: string | null;
   setTagValue: React.Dispatch<React.SetStateAction<string>>;
   setVisibleAutoCompletion: React.Dispatch<React.SetStateAction<boolean>>;
-  tagACRef : React.RefObject<HTMLDivElement>
-  tagInputRef : React.RefObject<HTMLInputElement>
-
+  tagACRef: React.RefObject<HTMLDivElement>;
+  tagInputRef: React.RefObject<HTMLInputElement>;
 }
 
-const AutoCompletion: React.FC<IAutoCompletionProps> = ({ tagValue, setTagValue, setVisibleAutoCompletion, tagACRef, tagInputRef}) => {
+const AutoCompletion: React.FC<IAutoCompletionProps> = ({
+  tagValue,
+  setTagValue,
+  setVisibleAutoCompletion,
+  tagACRef,
+  tagInputRef,
+}) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const { data: results, isError, isLoading } = useFetchSearchAutoCompletion(tagValue);
-
+  
   useClickOutside(tagACRef, () => {
     setVisibleAutoCompletion(false);
   });
 
-  useEffect(() => {
-    if (selectedIndex >= 0) {
-      scrollToIndex(selectedIndex);
-    }
-  }, [selectedIndex]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
       setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, (results?.data.length || 0) - 1));
+
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
       setSelectedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
@@ -40,34 +41,37 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({ tagValue, setTagValue,
         setVisibleAutoCompletion(false);
         if(tagInputRef.current) tagInputRef.current.focus()
       }
+    } else {
+      if (tagInputRef.current) {
+        setTimeout(() => {
+          if(tagInputRef.current) tagInputRef.current.focus(); // 2중 조건
+        }, 10); // 100ms 딜레이 추가
+      }
     }
   };
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
+  const handleMouseDown = (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    index: number
+  ) => {
     event.preventDefault();
     setSelectedIndex(index);
     setTagValue(results.data[index].htag_name);
     setVisibleAutoCompletion(false);
   };
 
-  const scrollToIndex = (index: number) => {
-    const listElement = document.getElementById("auto-complete-list");
-    if (listElement) {
-      const itemElement = listElement.children[index] as HTMLElement;
-      if (itemElement) {
-        listElement.scrollTop = itemElement.offsetTop - (listElement.clientHeight / 2) + (itemElement.clientHeight / 2);
-      }
-    }
-  };
-
   const highlightMatch = (text: string, query: string) => {
     if (!query) return text;
-    const regex = new RegExp(`(${query})`, 'gi');
+    const regex = new RegExp(`(${query})`, "gi");
     const parts = text.split(regex);
-    return parts.map((part, index) => 
-      part.toLowerCase() === query.toLowerCase()
-        ? <div className='font-bold' key={index}>{part}</div> 
-        : part
+    return parts.map((part, index) =>
+      part.toLowerCase() === query.toLowerCase() ? (
+        <div className="font-bold" key={index}>
+          {part}
+        </div>
+      ) : (
+        part
+      )
     );
   };
 
@@ -82,7 +86,9 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({ tagValue, setTagValue,
           onKeyDown={handleKeyDown}
           ref={tagACRef}
         >
-          <ul id="auto-complete-list" className="flex-[0.6] p-5 pb-[15px] box-border max-h-[300px] overflow-auto"
+          <ul
+            id="auto-complete-list"
+            className="flex-[0.6] p-5 pb-[15px] box-border max-h-[300px] overflow-auto"
           >
             {results.data.map((item: { htag_name: string }, index: number) => (
               <li
@@ -95,7 +101,9 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({ tagValue, setTagValue,
               >
                 <div className="flex gap-[10px] items-center">
                   <IoAdd className="fill-grey4 w-[15px] h-[20px] text-grey4" />
-                  <h2 className="text-medium text-grey4 flex">{highlightMatch(item.htag_name, tagValue || '')}</h2>
+                  <h2 className="text-medium text-grey4 flex">
+                    {highlightMatch(item.htag_name, tagValue || "")}
+                  </h2>
                 </div>
               </li>
             ))}

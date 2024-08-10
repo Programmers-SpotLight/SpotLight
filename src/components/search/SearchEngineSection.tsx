@@ -18,7 +18,6 @@ const SearchEngineSection = () => {
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
   const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearchAutoComplete();
-
   const {
     data: categoryDatas,
     isError: categoryError,
@@ -38,19 +37,19 @@ const SearchEngineSection = () => {
       addtagList.push(HeaderSearchTag);
     }
     const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags); // 세션 스토리지에 저장된 태그 불러오기
-    if (storedTags) {
+    if (storedTags) { // 세션에 저장된 데이터가 있는 경우 태그리스트에 추가
       const parseStoredTags = JSON.parse(storedTags);
       parseStoredTags.forEach((tag: string) => {
         addtagList.push(tag);
       });
+    }
 
-    if (addtagList.length > 0) {
-        addtagList.forEach((tag: string) => {
-          addQueryString(QUERY_STRING_NAME.tags, tag);
-      });
-      setTagList(addtagList);
-    }
-    }
+    if (addtagList.length > 0) { // 태그리스트에 값이 있는 경우 쿼리스트링에 추가
+      addtagList.forEach((tag: string) => {
+        addQueryString(QUERY_STRING_NAME.tags, tag);
+    });
+    setTagList(addtagList);
+  }
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
