@@ -1,4 +1,5 @@
 "use client";
+
 import { QUERY_STRING_NAME } from "@/constants/queryString";
 import useClickOutside from "@/hooks/useClickOutside";
 import {
@@ -59,7 +60,7 @@ const Dropdown = ({
     } else {
       setCategoryList([...contents]);
     }
-  }, []);
+  }, [contents, query, title]);
 
   const handleDropdownToggle = () => {
     setIsClicked((prev) => !prev);
