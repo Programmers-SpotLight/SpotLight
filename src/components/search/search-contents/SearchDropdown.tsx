@@ -16,7 +16,7 @@ interface SearchDropdownProps {
   contents: ISelectionCategory[] | ISelectionLocation[] | any;
   setCategory?: React.Dispatch<
     React.SetStateAction<ISelectionCategory | undefined>
-  >;
+  > | ((category: ISelectionCategory) => void);
   setLocation?: Dispatch<SetStateAction<{
     location: undefined | {
         id: number;
@@ -26,7 +26,7 @@ interface SearchDropdownProps {
         id: number;
         name: string;
     };
-}>>
+  }>>
 }
 
 const SearchDropdown = ({

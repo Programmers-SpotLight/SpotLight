@@ -1,15 +1,16 @@
+import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 import OneLineInput from "../common/input/OneLineInput";
+import { useStore } from "zustand";
 
 
-interface ISelectionCreateTitleProps {
-  title: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
 
-const SelectionCreateTitle : React.FC<ISelectionCreateTitleProps> = ({
-  title,
-  onChange
-}) => {
+const SelectionCreateTitle : React.FC = () => {
+  const { title, setTitle } = useStore(useSelectionCreateStore);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
   return (
     <div className="flex items-center gap-6 pb-6">
       <div className="flex items-center grow">
@@ -18,7 +19,7 @@ const SelectionCreateTitle : React.FC<ISelectionCreateTitleProps> = ({
           placeholder="셀렉션 제목을 입력해주세요." 
           id="title" 
           name="title" 
-          onChange={onChange}
+          onChange={handleChange}
           value={title}
           isError={false} 
           flexGrow={true}

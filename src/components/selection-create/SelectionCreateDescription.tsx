@@ -1,15 +1,15 @@
+import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 import React from "react";
+import { useStore } from "zustand";
 
 
-interface ISelectionCreateDescriptionProps {
-  description: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-}
+const SelectionCreateDescription : React.FC = () => {
+  const { description, setDescription } = useStore(useSelectionCreateStore);
 
-const SelectionCreateDescription : React.FC<ISelectionCreateDescriptionProps> = ({
-  description,
-  onChange
-}) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(e.target.value);
+  }
+
   return (
     <div className="flex items-start gap-6 py-6">
       <div className="flex items-start grow">
@@ -20,7 +20,7 @@ const SelectionCreateDescription : React.FC<ISelectionCreateDescriptionProps> = 
           id="description" 
           name="description" 
           value={description}
-          onChange={onChange}
+          onChange={handleChange}
         />
       </div>
       <p className="text-grey4 text-small w-1/3">셀렉션에서 사용자에게 설명될 내용입니다. 셀렉션를 통해 느꼈던 감정을 솔직하게 표현해주세요!</p>
