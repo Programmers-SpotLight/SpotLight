@@ -42,7 +42,7 @@ const Hashtag: React.FC<IHashtagProps> = ({
       <div className='truncate'>{name}</div>
       { !!cancelHashtag ? 
         (
-          <div onClick={handleCancelHashtag}><MdCancel/></div>
+          <div onClick={handleCancelHashtag} className='cursor-pointer'><MdCancel/></div>
         ) : null
       }
     </div>
