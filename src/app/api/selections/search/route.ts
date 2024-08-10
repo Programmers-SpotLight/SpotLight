@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ErrorResponse, Ipagination, IsearchData, IsearchResult, TsortType } from "@/models/searchResult.model";
 import { Ihashtags } from "@/models/hashtag.model";
 import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString";
-import { getSearchResult, getSearchResultCount } from "@/services/selection-search.services";
+import { getSearchResult, getSearchResultCount } from "@/services/selectionSearch.services";
 
 export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult | ErrorResponse>> {
   const url = req.nextUrl;
@@ -32,8 +32,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
 
     const pageResult: IsearchData[] = await getSearchResult(category_id, region_id, tags, sort  as TsortType, limit, currentPage);
 
-    // 해시태그 JSON 파일 타입 변환
-    const finalResults = pageResult.map((item: IsearchData) => ({
+    const finalResults = pageResult.map((item: IsearchData) => ({ // 해시태그 JSON 파일 타입 변환
       ...item,
       slt_hashtags: typeof item.slt_hashtags === 'string' ? JSON.parse(item.slt_hashtags) as Ihashtags[] : item.slt_hashtags
     }));
@@ -46,7 +45,6 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
     };
     return NextResponse.json({ data: finalResults, pagination });
   } catch (error) {
-    console.error("Database query error:", error);
-    return NextResponse.json({ error: "데이터 조회 중 오류 발생" }, { status: 500 });
+    return NextResponse.json({ error: "데이터 조회 중 오류 발생" }, { status: 500 }); // Todo : 에러 처리
   }
 }

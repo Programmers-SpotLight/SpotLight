@@ -20,7 +20,7 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [cachedResults, setCachedResults] = useState<any[]>([]);
-  const { data: apiResults, isError, isLoading } = useFetchSearchAutoCompletion(tagValue);
+  const { data: apiResults, isError } = useFetchSearchAutoCompletion(tagValue);
   
   useClickOutside(tagACRef, () => {
     setVisibleAutoCompletion(false);
