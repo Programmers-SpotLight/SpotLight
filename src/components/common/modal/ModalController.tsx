@@ -5,7 +5,7 @@ import React from "react";
 import { useStore } from "zustand";
 import Modal from "./Modal";
 import ModalTemp from "./modal-contents/ModalTemp";
-import ModalCreateSelectionSpot from "./modal-contents/ModalCreateSelectionSpot";
+import ModalCreateSelectionSpot from "./modal-contents/ModelCreateSelectionSpot/ModalCreateSelectionSpot";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
 import { TModalSize, TmodalType } from "@/models/modal.model";

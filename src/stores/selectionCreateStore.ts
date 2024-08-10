@@ -1,3 +1,4 @@
+import { TPoiWithAddress } from "@/components/selection-create/PoiMarkers";
 import { ISelectionCategory, ISelectionSpot } from "@/models/selection.model";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
@@ -23,6 +24,37 @@ interface ISelectionCreateStore {
   addHashtag: (tag: string) => void;
   deleteHashtag: (tag: string) => void;
   updateSpot: (index: number, spot: ISelectionSpot) => void;
+  reset: () => void;
+}
+
+interface ISelectionSpotCreateStore {
+  placeName: string;
+  address: string;
+  currentCoordinate: google.maps.LatLngLiteral;
+  title: string;
+  description: string;
+  category: ISelectionCategory | null;
+  selectedLocation: TPoiWithAddress;
+  spotPhoto: File | string | null;
+  spotPhoto1: File | string | null;
+  spotPhoto2: File | string | null;
+  spotPhoto3: File | string | null;
+  hashtags: string[];
+  setPlaceName: (placeName: string) => void;
+  setAddress: (address: string) => void;
+  setCurrentCoordinate: (currentCoordinate: google.maps.LatLngLiteral) => void;
+  setTitle: (title: string) => void;
+  setDescription: (description: string) => void;
+  setCategory: (category: ISelectionCategory) => void;
+  setSelectedLocation: (selectedLocation: TPoiWithAddress) => void;
+  setSpotDescription: (description: string) => void;
+  setSpotPhoto: (spotPhoto: File | string) => void;
+  setSpotPhoto1: (spotPhoto1: File | string) => void;
+  setSpotPhoto2: (spotPhoto2: File | string) => void;
+  setSpotPhoto3: (spotPhoto3: File | string) => void;
+  addHashtag: (tag: string) => void;
+  deleteHashtag: (tag: string) => void;
+  reset: () => void;
 }
 
 interface ISelectionCreateStoreLocation {
@@ -65,5 +97,74 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
     updateSpot: (index: number, spot: ISelectionSpot) => set(
       (state) => ({ spots: state.spots.map((s, i) => i === index ? spot : s) })
     ),
+    reset: () => set({
+      title: "",
+      description: "",
+      category: undefined,
+      location: undefined,
+      subLocation: undefined,
+      selectionPhoto: null,
+      spots: [],
+      hashtags: []
+    })
+  }))
+);
+
+export const useSelectionSpotCreateStore = create<ISelectionSpotCreateStore>()(
+  devtools((set) => ({
+    placeName: "",
+    address: "",
+    currentCoordinate: { lat: 37.5503, lng: 126.9971 },
+    title: "",
+    description: "",
+    category: null,
+    selectedLocation: {
+      key: "User's current location",
+      location: { lat: 37.5503, lng: 126.9971 },
+      address: "",
+      placeId: "",
+    },
+    spotPhoto: null,
+    spotPhoto1: null,
+    spotPhoto2: null,
+    spotPhoto3: null,
+    hashtags: [],
+    setPlaceName: (placeName: string) => set({ placeName }),
+    setAddress: (address: string) => set({ address }),
+    setCurrentCoordinate: (currentCoordinate: google.maps.LatLngLiteral) => set({ currentCoordinate }),
+    setTitle: (title: string) => set({ title }),
+    setDescription: (description: string) => set({ description }),
+    setCategory: (category: ISelectionCategory) => set({ category }),
+    setSelectedLocation: (selectedLocation: TPoiWithAddress) => set({ selectedLocation }),
+    setSpotDescription: (description: string) => set({ description }),
+    setSpotPhoto: (spotPhoto: File | string) => set({ spotPhoto }),
+    setSpotPhoto1: (spotPhoto1: File | string) => set({ spotPhoto1 }),
+    setSpotPhoto2: (spotPhoto2: File | string) => set({ spotPhoto2 }),
+    setSpotPhoto3: (spotPhoto3: File | string) => set({ spotPhoto3 }),
+    addHashtag: (hashtag: string) => {
+      if (typeof hashtag !== "string") return;
+      set(
+        (state) => ({ hashtags: [...state.hashtags, hashtag] })
+      )
+    },
+    deleteHashtag: (hashtag: string) => {
+      if (typeof hashtag !== "string") return;
+      set(
+        (state) => ({ hashtags: state.hashtags.filter((t) => t !== hashtag)})
+      )
+    },
+    reset: () => set({
+      placeName: "",
+      address: "",
+      currentCoordinate: { lat: 37.5503, lng: 126.9971 },
+      title: "",
+      description: "",
+      selectedLocation: undefined,
+      spotPhoto: null,
+      spotPhoto1: null,
+      spotPhoto2: null,
+      spotPhoto3: null,
+      hashtags: []
+    })
   }))
 );
