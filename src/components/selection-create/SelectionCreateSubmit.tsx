@@ -1,6 +1,7 @@
 import { submitSelection } from "@/http/selectionCreate.api";
 import { ISelectionSpot } from "@/models/selection.model";
 import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useStore } from "zustand";
 
@@ -8,6 +9,9 @@ import { useStore } from "zustand";
 type TTemporarySpotPhotoStorage = Array<Array<File | string>>;
 
 const SelectionCreateSubmit : React.FC = () => {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   const { 
     title, 
     description, 
@@ -60,12 +64,15 @@ const SelectionCreateSubmit : React.FC = () => {
     const spotsPhotos: TTemporarySpotPhotoStorage = separateSpotPhotos(spots, formData);
     formData.append('spots', JSON.stringify(spots));
 
+    setIsSubmitting(true);
     submitSelection(
       formData,
     ).then((res) => {
       alert('셀렉션 미리저장이 성공적으로 되었습니다.');
+      router.push('/');
     }).catch((err) => {
       alert('미리저장에 실패했습니다.');
+      setIsSubmitting(false);
       restoreSpotPhotos(spots, spotsPhotos);
     });
   }
@@ -122,12 +129,15 @@ const SelectionCreateSubmit : React.FC = () => {
     const spotsPhotos: TTemporarySpotPhotoStorage = separateSpotPhotos(spots, formData);
     formData.append('spots', JSON.stringify(spots));
 
+    setIsSubmitting(true);
     submitSelection(
       formData, 
     ).then((res) => {
       alert('셀렉션이 성공적으로 등록되었습니다.');
+      router.push('/');
     }).catch((err) => {
       alert('제출에 실패했습니다.');
+      setIsSubmitting(false);
       restoreSpotPhotos(spots, spotsPhotos);
     });
   }
@@ -170,12 +180,14 @@ const SelectionCreateSubmit : React.FC = () => {
       <button
         className="w-[160px] text-center py-2 border border-solid border-grey2 bg-white text-medium font-medium hover:bg-grey1 hover:border-grey3"
         onClick={handleTempSubmitClick}
+        disabled={isSubmitting}
       >
         임시저장
       </button>
       <button
         className="w-[160px] text-center py-2 bg-primary text-white text-medium font-medium"
         onClick={handleSelectionSubmitClick}
+        disabled={isSubmitting}
       >
         제출
       </button>
