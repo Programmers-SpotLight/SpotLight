@@ -49,6 +49,10 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
         setVisibleAutoCompletion(false);
         if (tagInputRef.current) tagInputRef.current.focus();
       }
+    } else {
+      if (tagInputRef.current) {
+        tagInputRef.current.focus();
+      }
     }
   };
 
