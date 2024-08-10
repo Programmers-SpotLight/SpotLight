@@ -1,6 +1,6 @@
 import { TsortType } from '@/models/searchResult.model';
 import { requestHandler } from './http';
-import { QUERY_STRING_NAME } from '@/constants/queryString';
+import { QUERY_STRING_NAME } from '@/constants/queryString.constants';
 
 export const fetchSearchResult = async (
   category_id?: string,

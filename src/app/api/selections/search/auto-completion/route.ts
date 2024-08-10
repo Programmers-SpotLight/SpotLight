@@ -1,4 +1,4 @@
-import { QUERY_STRING_NAME } from "@/constants/queryString";
+import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import { getAutoCompleteResult } from "@/services/selectionSearch.services";
 import { NextRequest, NextResponse } from "next/server";
 
