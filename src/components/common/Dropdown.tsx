@@ -1,4 +1,5 @@
 "use client";
+
 import { QUERY_STRING_NAME } from "@/constants/queryString";
 import useClickOutside from "@/hooks/useClickOutside";
 import {
@@ -16,7 +17,7 @@ interface DropdownProps {
   contents: ISelectionCategory[] | ISelectionLocation[] | any;
   setCategory?: React.Dispatch<
     React.SetStateAction<ISelectionCategory | undefined>
-  >;
+  > | ((category: ISelectionCategory) => void);
   setLocation?: Dispatch<SetStateAction<{
     location: undefined | {
         id: number;
@@ -26,7 +27,7 @@ interface DropdownProps {
         id: number;
         name: string;
     };
-}>>
+  }>>
 }
 
 const Dropdown = ({
@@ -59,7 +60,7 @@ const Dropdown = ({
     } else {
       setCategoryList([...contents]);
     }
-  }, []);
+  }, [contents, query, title]);
 
   const handleDropdownToggle = () => {
     setIsClicked((prev) => !prev);

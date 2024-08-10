@@ -1,27 +1,32 @@
+import { useSelectionCreateStore } from '@/stores/selectionCreateStore';
 import Image from 'next/image';
 import React from 'react';
+import { useStore } from 'zustand';
 
 
-interface ISelectionCreateThumbnailImageProps {
-  thumbnailImage: string | File | null;
-  onThumbnailImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+const SelectionCreateThumbnailImage : React.FC = () => {
+  const { selectionPhoto, setSelectionPhoto } = useStore(useSelectionCreateStore);
 
-const SelectionCreateThumbnailImage : React.FC<ISelectionCreateThumbnailImageProps> = ({
-  thumbnailImage,
-  onThumbnailImageChange
-}) => {
+  const handleThumbnailImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+      setSelectionPhoto(file);
+    } else {
+      alert('png, jpg, jpeg 파일만 업로드 가능합니다.');
+    }
+  }
+
   return (
     <div className="flex items-start gap-6 py-6">
       <div className="flex items-start grow">
         <label htmlFor="title" className="w-1/4 text-medium font-bold">셀렉션 썸네일 등록</label>
         <button className="relative border border-solid border-grey2 w-3/4 h-[190px] rounded-[8px] bg-white flex flex-col items-center justify-center overflow-hidden">
-        {thumbnailImage ? (
+        {selectionPhoto ? (
           <img 
             src={
-              thumbnailImage instanceof File ? 
-                URL.createObjectURL(thumbnailImage) : 
-                thumbnailImage
+              selectionPhoto instanceof File ? 
+                URL.createObjectURL(selectionPhoto) : 
+                selectionPhoto
             } 
             className="object-fill absolute"
             alt="thumbnail"
@@ -37,7 +42,7 @@ const SelectionCreateThumbnailImage : React.FC<ISelectionCreateThumbnailImagePro
           <input
             type='file'
             accept='.png, .jpg, .jpeg'
-            onChange={onThumbnailImageChange}
+            onChange={handleThumbnailImageChange}
             className='absolute inset-0 bg-red-500 cursor-pointer top-0 left-0 w-full h-full opacity-0'
           />
         </button>
