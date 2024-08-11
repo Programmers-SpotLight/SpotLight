@@ -23,6 +23,16 @@ export const fetchGeocodingData : (googleMapsPlaceId: string) => Promise<ISelect
   return response;
 };
 
+export const fetchHashtagSuggestions : (formData: FormData) => Promise<string[]> = async (formData) => {
+  const response = await requestHandler(
+    'post', 
+    '/api/selections/suggest-hashtags', 
+    formData,
+    {headers: {'Content-Type': 'multipart/form-data'}} 
+  );
+  return response;
+}
+
 export const submitSelection : (selectionData: FormData) => Promise<any> = async (selectionData) => {
   const response = await requestHandler<FormData>(
     'post', 
