@@ -23,13 +23,15 @@ interface IReview {
 }
 
 interface IReviews {
-  reviewAvg : number;
-  reviewCount : number;
-  reviewList : IReview[];
-};
+  reviewAvg: number;
+  reviewCount: number;
+  reviewList: IReview[];
+}
 
 interface IReviewFormData {
   reviewScore: number;
   reviewDescription: string;
   reviewImg: IReviewImage[] | null;
 }
+
+type ReviewType = "selection" | "spot";

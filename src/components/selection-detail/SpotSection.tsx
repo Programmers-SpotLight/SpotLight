@@ -24,7 +24,7 @@ const SpotSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SpotReview sltOrSpotId={101} />
+      component: <SpotReview sltOrSpotId={101} reviewType={"spot"} />
     }
   ];
 
