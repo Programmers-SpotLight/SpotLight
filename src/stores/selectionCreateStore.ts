@@ -13,6 +13,7 @@ interface ISelectionCreateStore {
   selectionPhoto: File | string | null;
   spots: Array<ISelectionSpot>;
   hashtags: string[];
+  spotCategories: { id: number; name: string }[];
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
   setCategory: (category: ISelectionCategory) => void;
@@ -21,9 +22,11 @@ interface ISelectionCreateStore {
   setSelectionPhoto: (selectionPhoto: File | string) => void;
   addSpot: (spot: ISelectionSpot) => void;
   deleteSpot: (spot: number) => void;
+  setSpots: (spots: ISelectionSpot[]) => void;
   addHashtag: (tag: string) => void;
   deleteHashtag: (tag: string) => void;
   updateSpot: (index: number, spot: ISelectionSpot) => void;
+  setSpotCategories: (spotCategories: { id: number; name: string }[]) => void;
   reset: () => void;
 }
 
@@ -72,6 +75,7 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
     selectionPhoto: null,
     spots: [],
     hashtags: [],
+    spotCategories: [],
     setTitle: (title: string) => set({ title }),
     setDescription: (description: string) => set({ description }),
     setCategory: (category: ISelectionCategory) => set({ category }),
@@ -88,6 +92,7 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
     deleteSpot: (index: number) => set(
       (state) => ({ spots: state.spots.filter((_, i) => i !== index) })
     ),
+    setSpots: (spots: ISelectionSpot[]) => set({ spots }),
     deleteHashtag: (hashtag: string) => {
       if (typeof hashtag !== "string") return;
       set(
@@ -97,6 +102,7 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
     updateSpot: (index: number, spot: ISelectionSpot) => set(
       (state) => ({ spots: state.spots.map((s, i) => i === index ? spot : s) })
     ),
+    setSpotCategories: (spotCategories: { id: number; name: string }[]) => set({ spotCategories }),
     reset: () => set({
       title: "",
       description: "",
