@@ -1,9 +1,15 @@
 import SelectionCreateHashtagsSuggestionListItem from "./SelectionCreateHashtagsSuggestionListItem";
 import useHashtagSuggestion from "@/hooks/useHashtagSuggestion";
 import SelectionCreateHashtagsSuggestionListSpinner from "./SelectionCreateHashtagsSuggestionListSpinner";
+import { useStore } from "zustand";
+import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 
 
 const SelectionCreateHashtagsSuggestionList = () => {
+  const {
+    title
+  } = useStore(useSelectionCreateStore);
+
   const {
     hashtags,
     isLoading,
@@ -11,11 +17,11 @@ const SelectionCreateHashtagsSuggestionList = () => {
     error,
     suggestHashtags,
     deleteHashtag,
-  } = useHashtagSuggestion('text');
+  } = useHashtagSuggestion();
 
   const handleSuggestHashtagsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    suggestHashtags();
+    suggestHashtags(title);
   };
 
   /* 사용자가 추천 받은 해시태그를 모두 선택한 경우, 추천 받기 버튼을 렌더링하지 않는다. */

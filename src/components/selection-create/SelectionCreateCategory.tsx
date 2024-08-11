@@ -24,7 +24,7 @@ const SelectionCreateCategory : React.FC<SelectionCreateCategoryProps> = ({
           setCategory={setCategory}
         />
       </div>
-      <p className="text-grey4 text-small w-1/3">셀렉션을 구분할 수 있는 카테고리입니다</p>
+      <p className="text-grey4 text-small w-1/3 break-keep">셀렉션을 구분할 수 있는 카테고리입니다</p>
     </div>
   )
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import OneLineInput from "../common/input/OneLineInput";
 import Image from "next/image";
 import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
@@ -13,33 +13,62 @@ const SelectionCreateHashtags : React.FC = () => {
   const { hashtags, addHashtag } = useStore(useSelectionCreateStore);
 
   const handleHashtagInputValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     setHashtagInputValue(e.target.value);
   };
 
-  const handleAddHashtagClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const validateHashtag = (hashtag: string) => {
+    if (hashtag.length > 40) {
+      alert('태그명은 40자 이내로 입력해주세요.');
+      return false;
+    }
+
+    if (hashtag === "") {
+      alert('태그명을 입력해주세요.');
+      return false;
+    }
+
+    if (hashtag.includes(" ")) {
+      alert('태그명에 공백이 포함되어 있습니다.');
+      return false;
+    }
+
     if (hashtags.length >= 8) {
       alert('태그는 최대 8개까지 등록 가능합니다.');
-      return;
+      return false;
     }
 
-    if (hashtagInputValue === "") {
-      alert('태그명을 입력해주세요.');
-      return;
-    }
-
-    if (hashtags.includes(hashtagInputValue)) {
+    if (hashtags.includes(hashtag)) {
       alert('이미 등록된 태그입니다.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleAddHashtagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // 두 번 입력되는 것을 방지
+    if (e.nativeEvent.isComposing) {
       return;
     }
 
-    if (hashtagInputValue.includes(" ")) {
-      alert('태그명에 공백이 포함되어 있습니다.');
-      return;
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (validateHashtag(hashtagInputValue)) {
+        addHashtag(hashtagInputValue);
+        setHashtagInputValue("");
+      }
     }
+  };
 
-    addHashtag(hashtagInputValue);
-    setHashtagInputValue("");
+  const handleAddHashtagClick = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    if (validateHashtag(hashtagInputValue)) {
+      addHashtag(hashtagInputValue);
+      setHashtagInputValue("");
+    }
   };
 
   return (
@@ -56,6 +85,7 @@ const SelectionCreateHashtags : React.FC = () => {
               width="w-full"
               value={hashtagInputValue}
               onChange={handleHashtagInputValueChange}
+              onKeyDown={handleAddHashtagKeyDown}
             />
             <button 
               className='absolute top-[50%] right-[1%] transform -translate-y-1/2'
@@ -80,7 +110,7 @@ const SelectionCreateHashtags : React.FC = () => {
           </SelectionCreateHashtagsList>
         </div>
       </div>
-      <p className="text-grey4 text-small w-1/3 mt-2">
+      <p className="text-grey4 text-small w-1/3 mt-2 break-keep">
         해시태그를 등록하면 다른 사용자가 키워드 검색을 통해 쉽게 내 셀렉션을
         발견할 수 있어요!
       </p>

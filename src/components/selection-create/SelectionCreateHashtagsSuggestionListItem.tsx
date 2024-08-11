@@ -1,6 +1,7 @@
 import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 import { useStore } from "zustand";
 
+
 interface ISelectionCreateHashtagsSuggestionListItemProps {
   hashtag: string;
   onHashtagDeleteClick: (hashtag: string) => void;
@@ -12,6 +13,7 @@ const SelectionCreateHashtagsSuggestionListItem = (
   const { addHashtag, hashtags } = useStore(useSelectionCreateStore);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (hashtags.includes(hashtag)) {
       alert('이미 추가된 해시태그입니다.');
       onHashtagDeleteClick(hashtag);
@@ -24,7 +26,7 @@ const SelectionCreateHashtagsSuggestionListItem = (
 
   return (
     <button 
-      className="px-6 py-2 w-fit border border-solid border-[#02588E] rounded-full cursor-pointer" 
+      className="px-6 py-2 w-fit border border-solid border-[#02588E] rounded-full cursor-pointer hover:bg-primary hover:text-white" 
       onClick={handleClick}
     >
       {hashtag}
