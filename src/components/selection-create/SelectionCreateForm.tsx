@@ -13,10 +13,13 @@ import SelectionCreateSpot from "./SelectionCreateSpot";
 import SelectionCreateHashtags from "./SelectionCreateHashtags";
 import SelectionCreateSubmit from "./SelectionCreateSubmit";
 import SelectionCreateFormLoadingSpinner from "./SelectionCreateFormLoadingSpinner";
+import { useStore } from "zustand";
+import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 
 
 const SelectionCreateForm = () => {
   const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
+  const { setSpotCategories } = useStore(useSelectionCreateStore);
 
   const {
     spotCategories,
@@ -46,6 +49,12 @@ const SelectionCreateForm = () => {
       setIsPageLoaded(true);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (spotCategories.length > 0) {
+      setSpotCategories(spotCategories);
+    }
+  }, [spotCategories]);
 
   /* 로딩 중일 때 */
   if (!isPageLoaded) {

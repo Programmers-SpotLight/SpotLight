@@ -16,7 +16,7 @@ const SelectionCreateHashtagsSuggestionList = () => {
     success,
     error,
     suggestHashtags,
-    deleteHashtag,
+    deleteHashtag
   } = useHashtagSuggestion();
 
   const handleSuggestHashtagsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -52,7 +52,7 @@ const SelectionCreateHashtagsSuggestionList = () => {
             <SelectionCreateHashtagsSuggestionListItem
               key={index}
               hashtag={hashtag}
-              onHashtagDeleteClick={() => deleteHashtag(hashtag)}
+              deleteHashtag={deleteHashtag}
             />
           ))}
         </div>
