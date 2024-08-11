@@ -1,4 +1,4 @@
-import axios from "axios";
+import { requestReverseGeocoding } from "@/services/selection.services";
 import { NextRequest } from "next/server";
 
 
@@ -8,25 +8,19 @@ export const GET = async (request: NextRequest) => {
   const longitude : string | null = searchParams.get("longitude");
 
   if (!latitude || !longitude) {
-    return new Response("Please provide latitude and longitude", { status: 400 });
+    return new Response("경도인 longitude와 위도인 latitude를 입력해주세요", { status: 400 });
   }
 
   if (isNaN(Number(latitude)) || isNaN(Number(longitude))) {
-    return new Response("Latitude and longitude must be numbers", { status: 400 });
+    return new Response("latitude와 longitude는 숫자여야 합니다", { status: 400 });
   }
 
-  const API_URL_PART1 = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}`;
-  const API_URL_PART2 = `&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&language=ko&result_type=street_address`;
 
-  const response = await axios.get(API_URL_PART1 + API_URL_PART2);
-  if (response.status !== 200) {
-    return new Response("Failed to fetch reverse geocoding data", { status: 500 });
+  try {
+    const geoData = await requestReverseGeocoding(latitude, longitude);
+    return new Response(JSON.stringify(geoData), { status: 200 });
+  } catch (error: any) {
+    const status = error.statusCode || 500;
+    return new Response(error.message, { status }); 
   }
-
-  const newResponse : {formatted_address: string, place_id: string} = {
-    formatted_address: response.data.results[0].formatted_address,
-    place_id: response.data.results[0].place_id
-  };
-
-  return new Response(JSON.stringify(newResponse), { status: 200 });
 }
