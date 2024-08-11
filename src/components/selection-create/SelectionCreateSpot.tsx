@@ -1,11 +1,8 @@
-import { IModalCreateSelectionSpotExtraData, ISelectionSpotCategory } from "@/models/selection.model";
-import { useModalStore } from "@/stores/modalStore";
-import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
+import { ISelectionSpotCategory } from "@/models/selection.model";
 import Image from "next/image";
 import React from "react";
-import { useStore } from "zustand";
-import SelectionCreateSpotItem from "./SelectionCreateSpotItem";
-import useModalExtraData from "@/hooks/useModalExtraData";
+import useOpenSelectionSpotAddModal from "@/hooks/useOpenSelectionSpotAddModal";
+import SelectionCreateSpotDragAndDrop from "./SelectionCreateSpotDragAndDrop";
 
 
 interface ISelectionCreateSpotProps {
@@ -15,16 +12,11 @@ interface ISelectionCreateSpotProps {
 const SelectionCreateSpot : React.FC<ISelectionCreateSpotProps> = ({
   spotCategories
 }) => {
-  const { spots } = useStore(useSelectionCreateStore);
-  const { openModal } = useStore(useModalStore);
-  const { setExtraData } = useModalExtraData<IModalCreateSelectionSpotExtraData>();
+  const openSpotAddModal = useOpenSelectionSpotAddModal();
 
   const handleAddSpotClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setExtraData({
-      spotCategories,
-    });
-    openModal('GoogleMapsAddSelectionSpot');
+    openSpotAddModal(spotCategories);
   }
 
   return (
@@ -44,17 +36,7 @@ const SelectionCreateSpot : React.FC<ISelectionCreateSpotProps> = ({
               className="absolute w-1/2 h-1/2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             />
           </button>
-          <div className="border border-solid border-grey2 w-full h-[190px] rounded-[8px] bg-white flex flex-col items-start gap-6 p-4 overflow-y-auto">
-            {/* 스팟 리스트 */}
-            {spots.map((spot, index) => (
-              <SelectionCreateSpotItem
-                key={index}
-                index={index}
-                spot={spot}
-                spotCategories={spotCategories}
-              />
-            ))}
-          </div>
+          <SelectionCreateSpotDragAndDrop />
         </div>
       </div>
       <div className="flex flex-col justify-between h-[190px] w-1/3">

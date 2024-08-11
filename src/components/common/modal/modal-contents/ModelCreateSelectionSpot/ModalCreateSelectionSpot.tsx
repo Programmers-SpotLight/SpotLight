@@ -9,6 +9,7 @@ import ModalCreateSelectionSpotHashtags from './ModalCreateSelectionSpotHashtags
 import ModalCreateSelectionSpotAddButton from './ModalCreateSelectionSpotAddButton';
 import { IModalCreateSelectionSpotExtraData } from '@/models/selection.model';
 import { useSelectionSpotCreateStore } from '@/stores/selectionCreateStore';
+import useModalExtraData from '@/hooks/useModalExtraData';
 
 
 const ModalCreateSelectionSpot = () => {
@@ -17,11 +18,7 @@ const ModalCreateSelectionSpot = () => {
   const { closeModal } = useStore(useModalStore);
   const { reset } = useStore(useSelectionSpotCreateStore);
 
-  const { 
-    extraData : data, 
-  } : { 
-    extraData: IModalCreateSelectionSpotExtraData | null,
-  } = useStore(useModalStore);
+  const {extraData: data} = useModalExtraData<IModalCreateSelectionSpotExtraData>();
 
   // 모달 창의 높이를 동적으로 조절
   useEffect(() => {
@@ -51,10 +48,12 @@ const ModalCreateSelectionSpot = () => {
     }
   }, []);
 
+  // 구글 맵 API 키가 없을 때는 렌더링하지 않음
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
     return null;
   }
 
+  // 스팟 카테고리가 없을 때는 렌더링하지 않음
   if (!data?.spotCategories || data?.spotCategories.length === 0) {
     return null;
   }

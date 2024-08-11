@@ -4,24 +4,27 @@ import { useStore } from "zustand";
 
 interface ISelectionCreateHashtagsSuggestionListItemProps {
   hashtag: string;
-  onHashtagDeleteClick: (hashtag: string) => void;
+  deleteHashtag: (hashtag: string) => void;
 }
 
 const SelectionCreateHashtagsSuggestionListItem = (
-  { hashtag, onHashtagDeleteClick }: ISelectionCreateHashtagsSuggestionListItemProps
+  { hashtag, deleteHashtag }: ISelectionCreateHashtagsSuggestionListItemProps
 ) => {
-  const { addHashtag, hashtags } = useStore(useSelectionCreateStore);
+  const { 
+    addHashtag, 
+    hashtags 
+  } = useStore(useSelectionCreateStore);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (hashtags.includes(hashtag)) {
       alert('이미 추가된 해시태그입니다.');
-      onHashtagDeleteClick(hashtag);
+      deleteHashtag(hashtag);
       return;
     }
 
     addHashtag(hashtag);
-    onHashtagDeleteClick(hashtag);
+    deleteHashtag(hashtag);
   };
 
   return (

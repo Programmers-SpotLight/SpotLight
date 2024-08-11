@@ -15,9 +15,14 @@ const useModalExtraData = <T>() => {
     setExtraData(data);
   };
 
+  const resetExtraDataHandler = () => {
+    setExtraData(null);
+  };
+
   return {
     extraData,
     setExtraData: setExtraDataHandler,
+    resetExtraData: resetExtraDataHandler,
   };
 };
 
