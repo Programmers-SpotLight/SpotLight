@@ -1,67 +1,55 @@
-import React from "react";
-import DropdownMenu from "./DropdownMenu";
+import React, { useEffect, useState } from "react";
+import Dropdown from "../common/Dropdown";
+import { ISelectionLocation } from "@/models/selection.model";
+import { useStore } from "zustand";
+import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 
 
-interface ISelectionCreateLocationProps {
-  onLocationChange: (locationValue: string) => void;
-  onSubLocationChange: (subLocationValue: string) => void;
-  locationOptions: {
-    id: number;
-    name: string;
-    options: {
-      id: number;
-      name: string;
-    }[];
-  }[];
-  location: {
-    location: {
-      id: number;
-      name: string;
-    } | undefined;
-    subLocation: {
-      id: number;
-      name: string;
-    } | undefined;
-  };
+interface ISelectionCreateLocation {
+  selectionLocations : ISelectionLocation[]
 }
 
-const SelectionCreateLocation : React.FC<ISelectionCreateLocationProps> = ({
-  onLocationChange,
-  onSubLocationChange,
-  locationOptions,
-  location,
+const SelectionCreateLocation : React.FC<ISelectionCreateLocation> = ({
+  selectionLocations, 
 }) => {
+  const [location, setLocation] = useState<{
+    location: {id: number, name: string} | undefined,
+    subLocation: {id: number, name: string} | undefined
+  }>({location: undefined, subLocation: undefined});
+
+  const { 
+    setLocation : setSelectionCreateLocation,
+    setSubLocation: setSelectionCreateSubLocation
+  } = useStore(useSelectionCreateStore);
+
+  useEffect(() => {
+    if (location.location && location.subLocation) {
+      setSelectionCreateLocation(location.location);
+      setSelectionCreateSubLocation(location.subLocation);
+    }
+  }, [
+    location, 
+    setSelectionCreateLocation, 
+    setSelectionCreateSubLocation
+  ]);
+
   return (
     <div className="flex items-start gap-6 py-6">
       <div className="flex items-center grow">
-        <label htmlFor="location" className="w-1/4 text-medium font-bold">지역 설정</label>
-        <div className="flex w-3/4 gap-[100px]">
-          <DropdownMenu 
-            onChange={onLocationChange}
-            options={
-              locationOptions.map((location) => ({
-                value: location.id,
-                label: location.name
-              }))
-            }
-          />
-          <DropdownMenu 
-            onChange={onSubLocationChange}
-            options={
-              locationOptions.find((loc) => loc.id === location.location?.id)?.options.map((subLocation) => (
-                {
-                  value: subLocation.id,
-                  label: subLocation.name
-                }
-              ))
-            }
-            currentChoice={location.subLocation?.name}
-          />
-        </div>
+        <label htmlFor="location" className="w-1/4 text-medium font-bold">
+          지역 설정
+        </label>
+        <Dropdown 
+          title="지역" 
+          contents={selectionLocations}
+          setLocation={setLocation} 
+        />
       </div>
-      <p className="text-grey4 text-small w-1/3">스팟들을 아우르는 지역을 선택해주세요</p>
+      <p className="text-grey4 text-small w-1/3">
+        스팟들을 아우르는 지역을 선택해주세요
+      </p>
     </div>
-  )
+  );
 };
 
 export default SelectionCreateLocation;

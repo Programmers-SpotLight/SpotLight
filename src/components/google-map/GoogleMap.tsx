@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { SPOTINFOWITHCATEGORY } from "../selection-detail/spot-selection-contents/SpotHeader";
-import { ISpotInfo, SpotCategory } from "@/models/spot";
+import { ISpotInfo } from "@/models/spot.model";
 
 interface IGoogleMapProps {
   width: string;
@@ -79,7 +79,13 @@ const GoogleMap = ({
     };
     initializeMap();
   }, [lat, lng, spots]);
-  return <div ref={mapRef} style={{ width: width, height: height }}></div>;
+  return (
+    <div
+      ref={mapRef}
+      style={{ width: width, height: height }}
+      className="absolute right-0 transition-width ease-in-out duration-500"
+    ></div>
+  );
 };
 
 export default GoogleMap;

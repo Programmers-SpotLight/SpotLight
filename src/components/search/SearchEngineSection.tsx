@@ -1,34 +1,27 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import SearchDropdown from "./search-contents/SearchDropdown";
 import TextInput from "../common/input/TextInput";
 import { MdAdd } from "react-icons/md";
 import Hashtag from "../common/Hashtag";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
-import useFetchSelectionCategories from "@/hooks/queries/useFetchSelectionCategories";
-import useFetchSelectionLocations from "@/hooks/queries/useFetchSelectionLocations";
-import { QUERY_STRING_NAME } from "@/constants/queryString";
 import AutoCompletion from "./search-contents/AutoCompletion";
 import { useSearchParams } from "next/navigation";
 import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
+import Dropdown from "../common/Dropdown";
+import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
+import { ISelectionCategory, ISelectionLocation } from "@/models/selection.model";
 
-const SearchEngineSection = () => {
+interface ISearchEngineSectionProps {
+  selectionCategories :ISelectionCategory[]
+  regionCategories : ISelectionLocation[]
+}
+
+const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEngineSectionProps) => {
   const searchParams = useSearchParams();
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
   const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearchAutoComplete();
-
-  const {
-    data: categoryDatas,
-    isError: categoryError,
-    isLoading: categoryLoading
-  } = useFetchSelectionCategories();
-  const {
-    data: locationDatas,
-    isError: locationError,
-    isLoading: locationLoading
-  } = useFetchSelectionLocations();
 
   useEffect(() => {
     if (tagInputRef.current) tagInputRef.current?.focus();
@@ -38,19 +31,19 @@ const SearchEngineSection = () => {
       addtagList.push(HeaderSearchTag);
     }
     const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags); // 세션 스토리지에 저장된 태그 불러오기
-    if (storedTags) {
+    if (storedTags) { // 세션에 저장된 데이터가 있는 경우 태그리스트에 추가
       const parseStoredTags = JSON.parse(storedTags);
       parseStoredTags.forEach((tag: string) => {
         addtagList.push(tag);
       });
+    }
 
-    if (addtagList.length > 0) {
-        addtagList.forEach((tag: string) => {
-          addQueryString(QUERY_STRING_NAME.tags, tag);
-      });
-      setTagList(addtagList);
-    }
-    }
+    if (addtagList.length > 0) { // 태그리스트에 값이 있는 경우 쿼리스트링에 추가
+      addtagList.forEach((tag: string) => {
+        addQueryString(QUERY_STRING_NAME.tags, tag);
+    });
+    setTagList(addtagList);
+  }
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -79,20 +72,18 @@ const SearchEngineSection = () => {
     deleteQueryString(QUERY_STRING_NAME.tags, tag);
   };
 
-  if (!categoryDatas || !locationDatas) return null;
-
   return (
     <div className="px-5">
       <div className="flex gap-5 mb-5 ">
-        <SearchDropdown
+        <Dropdown
           title="카테고리"
           query={QUERY_STRING_NAME.category_id}
-          contents={categoryDatas}
+          contents={selectionCategories}
         />
-        <SearchDropdown
+        <Dropdown
           title="지역"
           query={QUERY_STRING_NAME.region_id}
-          contents={locationDatas}
+          contents={regionCategories}
         />
       </div>
       <form onSubmit={handleSubmit} className="relative">

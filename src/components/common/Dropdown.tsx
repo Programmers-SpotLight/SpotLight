@@ -1,25 +1,44 @@
 "use client";
 
-import { QUERY_STRING_NAME } from "@/constants/queryString";
+import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import useClickOutside from "@/hooks/useClickOutside";
 import {
   ISelectionCategory,
   ISelectionLocation
 } from "@/models/selection.model";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { MdNavigateNext } from "react-icons/md";
 
-interface SearchDropdownProps {
+interface DropdownProps {
   title: string;
-  query: string;
-  contents: ISelectionCategory[] | ISelectionLocation[];
+  query?: string;
+  contents: ISelectionCategory[] | ISelectionLocation[] | any;
+  setCategory?: React.Dispatch<
+    React.SetStateAction<ISelectionCategory | undefined>
+  > | ((category: ISelectionCategory) => void);
+  setLocation?: Dispatch<SetStateAction<{
+    location: undefined | {
+        id: number;
+        name: string;
+    };
+    subLocation: undefined | {
+        id: number;
+        name: string;
+    };
+  }>>
 }
 
-const SearchDropdown = ({ title, contents, query }: SearchDropdownProps) => {
+const Dropdown = ({
+  title,
+  contents,
+  query,
+  setCategory,
+  setLocation
+}: DropdownProps) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
-  const [searchContents, setSearchContents] = useState<
+  const [categoryList, setCategoryList] = useState<
     ISelectionLocation[] | ISelectionCategory[]
   >([]);
   const [currentCategory, setCurrentCategory] = useState<string>(title);
@@ -35,9 +54,13 @@ const SearchDropdown = ({ title, contents, query }: SearchDropdownProps) => {
   });
 
   useEffect(() => {
-    const allOption = { id: 0, name: `${title} 전체` };
-    setSearchContents([allOption, ...contents]);
-  }, [contents, title]);
+    if (query) {
+      const addOption = { id: 0, name: `${title} 전체` };
+      setCategoryList([addOption, ...contents]);
+    } else {
+      setCategoryList([...contents]);
+    }
+  }, [contents, query, title]);
 
   const handleDropdownToggle = () => {
     setIsClicked((prev) => !prev);
@@ -50,22 +73,39 @@ const SearchDropdown = ({ title, contents, query }: SearchDropdownProps) => {
   ) => {
     if (options && options.length > 0) {
       setSubOptions(options);
+      if (setLocation && name) { // 셀렉션 생성에서 subOption 접근, => 지역 카테고리 접근값 반환
+        setLocation((prevState) => ({
+          ...prevState,
+          location: { id, name }
+        }));
+      }
     } else {
-      setCurrentCategory(name);
+      setCurrentCategory(name); 
+      if (setCategory && name) setCategory({ id, name }); // 셀렉션 생성에서 접근, => 셀렉션 카테고리 접근값 반환
+      if (query) { // 쿼리가 있는 경우, 검색창에서 접근, => 쿼리스트링 추가 
+        deleteQueryString(query);
+        deleteQueryString(QUERY_STRING_NAME.page);
+        addQueryString(query, id.toString());
+      }
       setIsClicked(false);
-      deleteQueryString(query);
-      deleteQueryString(QUERY_STRING_NAME.page);
-      addQueryString(query, id.toString());
       setSubOptions(null);
     }
   };
 
-  const handleSubItemClick = (name: string, id: number) => {
+  const handleSubItemClick = (name: string, id: number) => {    
+    if (setLocation && name) { // 셀렉션 생성에서 subOption 접근, => 지역 카테고리 접근값 반환
+      setLocation((prevState) => ({
+        ...prevState,
+        subLocation: { id, name }
+      }));
+    }
     setCurrentCategory(name);
     setIsClicked(false);
-    deleteQueryString(query);
-    deleteQueryString(QUERY_STRING_NAME.page);
-    addQueryString(query, id.toString());
+    if (query) { // 쿼리가 있는 경우, 검색창에서 접근, => 쿼리스트링 추가 
+      deleteQueryString(query);
+      deleteQueryString(QUERY_STRING_NAME.page);
+      addQueryString(query, id.toString());
+    }
     setSubOptions(null);
   };
 
@@ -76,14 +116,20 @@ const SearchDropdown = ({ title, contents, query }: SearchDropdownProps) => {
         onClick={handleDropdownToggle}
       >
         <div
-          className={`text-extraLarge font-extrabold ${
-            isClicked ? "text-primary" : "text-black"
-          }`}
+          className={`${
+            query
+              ? "text-extraLarge font-extrabold text-black"
+              : "text-medium text-black font-bold"
+          }
+          ${isClicked ? "text-primary" : "text-black"}
+          `}
         >
           {currentCategory}
         </div>
         <FaCaretDown
-          className={`w-6 h-6 ${isClicked ? "text-primary" : "text-black"}`}
+          className={` ${isClicked ? "text-primary" : "text-black"} ${
+            query ? "w-6 h-6" : "w-3 h-3"
+          }`}
         />
       </div>
       {isClicked && (
@@ -92,7 +138,7 @@ const SearchDropdown = ({ title, contents, query }: SearchDropdownProps) => {
             <h1 className="text-large font-extrabold">{title}</h1>
             <hr className="mt-5 mb-[10px] border-grey2" />
             <ul className="list-none p-2 min-h-[200px] overflow-y-auto">
-              {searchContents.map((content) => (
+              {categoryList.map((content) => (
                 <li
                   key={content.id}
                   className="p-2 hover:bg-grey1 flex justify-between rounded-lg text-grey4 cursor-pointer"
@@ -138,4 +184,4 @@ const SearchDropdown = ({ title, contents, query }: SearchDropdownProps) => {
   );
 };
 
-export default SearchDropdown;
+export default Dropdown;

@@ -1,6 +1,6 @@
 import { TsortType } from '@/models/searchResult.model';
 import { requestHandler } from './http';
-import { QUERY_STRING_NAME } from '@/constants/queryString';
+import { QUERY_STRING_NAME } from '@/constants/queryString.constants';
 
 export const fetchSearchResult = async (
   category_id?: string,
@@ -23,16 +23,6 @@ export const fetchSearchResult = async (
   const finalUrl = `${url}?${params.toString()}`;
 
   return await requestHandler('get', finalUrl);
-};
-
-export const fetchSelectionCategories  = async () => {
-  const url = "api/selections/categories";
-  return await requestHandler('get', url)
-}
-
-export const fetchSelectionLocations = async () => {
-  const url ="api/selections/locations"
-  return await requestHandler('get', url)
 };
 
 export const fetchSearchAutocompletion = async (

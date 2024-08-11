@@ -1,12 +1,13 @@
-import { ISelectionDetailInfo } from "@/models/selection";
-import { ISpotInfo, ISpotImage } from "@/models/spot";
+import { ISelectionDetailInfo } from "@/models/selection.model";
+import { ISpotImage, ISpotInfo } from "@/models/spot.model";
 import {
   getSelectionDetailInfo,
   getSelectionHashTags,
   getSpotDetailInfo,
   getSpotHashTags,
   getSpotImages
-} from "@/services/selection-detail-service";
+} from "@/services/selectionDetail.services";
+
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -34,12 +35,6 @@ export async function GET(
     );
   }
 
-  // if (selecitonDetailInfo.category) {
-  //   selecitonDetailInfo.category = JSON.parse(
-  //     selecitonDetailInfo.category as string
-  //   );
-  // }
-
   const hashtags: string[] = await getSelectionHashTags(selectionId);
   if (hashtags.length === 0) {
     return NextResponse.json(
@@ -66,10 +61,6 @@ export async function GET(
 
     const spotHashtags: string[] = await getSpotHashTags(spotDetailInfo[i].id);
     if (spotHashtags.length) spotDetailInfo[i].hashtags = spotHashtags;
-
-    // spotDetailInfo[i].category = JSON.parse(
-    //   spotDetailInfo[i].category as string
-    // );
   }
 
   selectionData = {

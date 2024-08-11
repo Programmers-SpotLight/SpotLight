@@ -1,6 +1,6 @@
 import { dbConnectionPool } from "@/libs/db";
-import { ISelectionDetailInfo } from "@/models/selection";
-import { ISpotInfo } from "@/models/spot";
+import { ISelectionDetailInfo } from "@/models/selection.model";
+import { ISpotInfo } from "@/models/spot.model";
 
 export const getSelectionDetailInfo = async (selectionId: number) => {
   try {
