@@ -137,10 +137,10 @@ export const useSelectionSpotCreateStore = create<ISelectionSpotCreateStore>()(
     setCategory: (category: ISelectionCategory) => set({ category }),
     setSelectedLocation: (selectedLocation: TPoiWithAddress) => set({ selectedLocation }),
     setSpotDescription: (description: string) => set({ description }),
-    setSpotPhoto: (spotPhoto: File | string) => set({ spotPhoto }),
-    setSpotPhoto1: (spotPhoto1: File | string) => set({ spotPhoto1 }),
-    setSpotPhoto2: (spotPhoto2: File | string) => set({ spotPhoto2 }),
-    setSpotPhoto3: (spotPhoto3: File | string) => set({ spotPhoto3 }),
+    setSpotPhoto: (spotPhoto: File | string | null) => set({ spotPhoto }),
+    setSpotPhoto1: (spotPhoto1: File | string | null) => set({ spotPhoto1 }),
+    setSpotPhoto2: (spotPhoto2: File | string | null) => set({ spotPhoto2 }),
+    setSpotPhoto3: (spotPhoto3: File | string | null) => set({ spotPhoto3 }),
     addHashtag: (hashtag: string) => {
       if (typeof hashtag !== "string") return;
       set(
@@ -159,7 +159,12 @@ export const useSelectionSpotCreateStore = create<ISelectionSpotCreateStore>()(
       currentCoordinate: { lat: 37.5503, lng: 126.9971 },
       title: "",
       description: "",
-      selectedLocation: undefined,
+      selectedLocation: {
+        key: "User's current location",
+        location: { lat: 37.5503, lng: 126.9971 },
+        address: "",
+        placeId: "",
+      },
       spotPhoto: null,
       spotPhoto1: null,
       spotPhoto2: null,

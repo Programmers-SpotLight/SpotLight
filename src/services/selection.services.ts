@@ -20,7 +20,9 @@ import {
 } from "@/utils/fileStorage";
 import { SELECTION_STATUS } from "@/constants/selection.constants";
 import { createSpots } from "./spot.services";
-import { BadRequestError, InternalServerError } from "@/utils/errors";
+import { BadRequestError, InternalServerError, NotFoundError } from "@/utils/errors";
+import axios from "axios";
+import { requestHandler } from "@/http/http";
 
 
 export async function getSelectionCategories() : Promise<ISelectionCategory[]> {
@@ -153,7 +155,7 @@ export async function createSelection(
     );
   }
 
-  if (formData.spots) {
+  if (formData.spots && formData.spots.length > 0) {
     await createSpots(
       transaction, 
       selectionId, 
@@ -225,20 +227,27 @@ async function createSelectionHashtags(
   selectionId: number,
   hashtags: number[]
 ) : Promise<void> {
-  for (let i = 0; i < hashtags.length; i++) {
-    try {
-      await transaction('selection_hashtag')
-        .insert({
-          slt_id: selectionId,
-          slt_htag_id: transaction.fn.uuidToBin(uuidv4()),
-          htag_id: hashtags[i]
-        })
-        .onConflict(['slt_id', 'htag_id'])
-        .ignore();
-    } catch (error) {
-      console.error(error);
-      throw new InternalServerError('셀렉션 해시태그 생성에 실패했습니다');
-    }
+
+  const hashtagsToInsert : {
+    slt_htag_id: Buffer, 
+    slt_id: number, 
+    htag_id: number
+  }[] = hashtags.map((hashtag) => {
+    return {
+      slt_htag_id: transaction.fn.uuidToBin(uuidv4()),
+      slt_id: selectionId,
+      htag_id: hashtag
+    };
+  });
+
+  try {
+    await transaction('selection_hashtag')
+      .insert(hashtagsToInsert)
+      .onConflict(['slt_id', 'htag_id'])
+      .ignore();
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('셀렉션 해시태그 생성에 실패했습니다');
   }
 }
 
@@ -617,6 +626,10 @@ export async function validateHashtags(
     if (typeof hashtag !== "string") {
       throw new BadRequestError("무효한 해시태그");
     }
+
+    if (hashtag.length > 40) {
+      throw new BadRequestError("해시태그는 40자 이하여야 합니다");
+    }
   });
 };
 
@@ -662,5 +675,101 @@ export async function validateData(data: ISelectionCreateFormData) : Promise<voi
     if (data.hashtags) {
       await validateHashtags(data.hashtags as string[]);
     }
+  }
+};
+
+export const validateHashtagsSuggestionPrompt = async (prompt: string) => {
+  if (!prompt) {
+    throw new BadRequestError('프롬프트는 필수입니다');
+  }
+
+  if (typeof prompt !== 'string') {
+    throw new BadRequestError('프롬프트는 문자열이어야 합니다');
+  }
+
+  if (prompt.length < 1) {
+    throw new BadRequestError('프롬프트는 1자 이상이어야 합니다');
+  }
+
+  if (prompt.length > 128) {
+    throw new BadRequestError('프롬프트는 128자 이하여야 합니다');
+  }
+
+  return prompt;
+}
+
+export const requestHashtagsSuggestionFromAI = async (prompt: string) => {
+  const finalPrompt = `${prompt}와 관련된 해시태그 8개 추천좀 해줘`;
+
+  try {
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: "gpt-3.5-turbo-1106",
+        messages: [{"role": "user", "content": finalPrompt}],         
+        temperature: 0.7
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        }
+      }
+    );
+
+    if (response.data.choices.length === 0) {
+      throw new InternalServerError('해시태그 추천에 실패했습니다');
+    }
+
+    const responseByAI : string = response.data.choices[0].message.content.replace(/[\n\r]/g, ' ');
+    let hashtags = responseByAI.match(/#[^\s#\n]+/g)?.map((hashtag) => hashtag.slice(1));
+      
+    // Return an array of hashtags or an empty array if none are found
+    return hashtags || [];
+  } catch (error: any) {
+    console.error(error);
+    throw new InternalServerError('해시태그 추천에 실패했습니다');
+  }
+};
+
+export const requestGeocoding = async (googleMapsPlaceId: string) => {
+  const API_URL = `https://maps.googleapis.com/maps/api/geocode/json?&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&place_id=${googleMapsPlaceId}&language=ko`;
+
+  try {
+    const response = await axios.get(API_URL);
+    if (response.data.status === 'ZERO_RESULTS') {
+      throw new NotFoundError('해당 장소를 찾을 수 없습니다');
+    }
+
+    const geoData = {
+      formatted_address: response.data.results[0].formatted_address,
+      latitude: response.data.results[0].geometry.location.lat,
+      longitude: response.data.results[0].geometry.location.lng
+    }
+
+    return geoData;
+  } catch (error: any) {
+    console.error(error);
+    throw new InternalServerError('Geocoding에 실패했습니다');
+  }
+}
+
+export const requestReverseGeocoding = async (latitude: string, longitude: string) => {
+  const API_URL_PART1 = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}`;
+  const API_URL_PART2 = `&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&language=ko&result_type=street_address`;
+
+  try {
+    const response = await axios.get(
+      API_URL_PART1 + API_URL_PART2
+    );
+    
+    const geoData : {formatted_address: string, place_id: string} = {
+      formatted_address: response.data.results[0].formatted_address,
+      place_id: response.data.results[0].place_id
+    };
+
+    return geoData;
+  } catch (error: any) {
+    console.error(error);
+    throw new InternalServerError('Reverse geocoding에 실패했습니다');
   }
 };
