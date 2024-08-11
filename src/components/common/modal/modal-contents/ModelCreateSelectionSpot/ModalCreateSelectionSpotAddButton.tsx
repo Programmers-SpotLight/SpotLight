@@ -1,4 +1,4 @@
-import { ISelectionSpot } from "@/models/selection.model";
+import { IModalCreateSelectionSpotExtraData, ISelectionSpot } from "@/models/selection.model";
 import { useModalStore } from "@/stores/modalStore";
 import { useSelectionCreateStore, useSelectionSpotCreateStore } from "@/stores/selectionCreateStore";
 import { useStore } from "zustand";
@@ -7,11 +7,17 @@ import { useStore } from "zustand";
 const ModalCreateSelectionSpotAddButton = () => {
   const {
     closeModal,
+    extraData: data,
     setExtraData,
+  } : {
+    closeModal: () => void,
+    extraData: IModalCreateSelectionSpotExtraData | null,
+    setExtraData: (data: IModalCreateSelectionSpotExtraData | null) => void
   } = useStore(useModalStore);
 
   const { 
     addSpot, 
+    updateSpot,
     spots: currentSpots 
   } = useStore(useSelectionCreateStore);
 
@@ -49,7 +55,9 @@ const ModalCreateSelectionSpotAddButton = () => {
     const isDuplicated = currentSpots.some(
       (spot) => spot.placeId === selectedLocation.placeId
     );
-    if (isDuplicated) {
+
+    // 수정 모드일 때 아닐 떄는 index가 없음
+    if (typeof data?.index != 'number' && isDuplicated) {
       alert('이미 등록된 스팟입니다.');
       return;
     }
@@ -85,7 +93,13 @@ const ModalCreateSelectionSpotAddButton = () => {
       photos
     };
 
-    addSpot(spot);
+    // 인덱스가 있으면 수정, 없으면 추가
+    if (typeof data?.index == 'number') {
+      updateSpot(data.index, spot);
+    } else {
+      addSpot(spot);
+    }
+
     setExtraData(null); 
     closeModal();
     reset();

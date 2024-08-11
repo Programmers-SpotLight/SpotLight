@@ -29,7 +29,7 @@ export const POST = async (request: NextRequest) => {
   } catch (error: any) {
     await transaction.rollback();
     return new Response(error.message, {
-      status: error.statusCode,
+      status: error.statusCode || 500,
       headers: {
         "Content-Type": "text/plain"
       }

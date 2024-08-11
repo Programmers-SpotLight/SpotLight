@@ -98,3 +98,9 @@ export interface ISelectionInfo extends ISelectionDetailInfo {
   spotList: ISpotInfo[];
   booked: boolean;
 }
+
+export interface IModalCreateSelectionSpotExtraData {
+  spotCategories: {id: number, name: string}[];
+  spot?: ISelectionSpot;
+  index?: number;
+}

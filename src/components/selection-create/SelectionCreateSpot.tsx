@@ -1,9 +1,11 @@
-import { ISelectionSpotCategory } from "@/models/selection.model";
+import { IModalCreateSelectionSpotExtraData, ISelectionSpotCategory } from "@/models/selection.model";
 import { useModalStore } from "@/stores/modalStore";
 import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 import Image from "next/image";
 import React from "react";
 import { useStore } from "zustand";
+import SelectionCreateSpotItem from "./SelectionCreateSpotItem";
+import useModalExtraData from "@/hooks/useModalExtraData";
 
 
 interface ISelectionCreateSpotProps {
@@ -13,19 +15,16 @@ interface ISelectionCreateSpotProps {
 const SelectionCreateSpot : React.FC<ISelectionCreateSpotProps> = ({
   spotCategories
 }) => {
-  const { spots, deleteSpot } = useStore(useSelectionCreateStore);
-  const { setExtraData, openModal } = useStore(useModalStore);
+  const { spots } = useStore(useSelectionCreateStore);
+  const { openModal } = useStore(useModalStore);
+  const { setExtraData } = useModalExtraData<IModalCreateSelectionSpotExtraData>();
 
   const handleAddSpotClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setExtraData({
-      spotCategories
+      spotCategories,
     });
     openModal('GoogleMapsAddSelectionSpot');
-  }
-
-  const handleDeleteSpotClick = (index: number) => {
-    deleteSpot(index);
   }
 
   return (
@@ -48,48 +47,19 @@ const SelectionCreateSpot : React.FC<ISelectionCreateSpotProps> = ({
           <div className="border border-solid border-grey2 w-full h-[190px] rounded-[8px] bg-white flex flex-col items-start gap-6 p-4 overflow-y-auto">
             {/* 스팟 리스트 */}
             {spots.map((spot, index) => (
-            <div key={index} className="flex items-center justify-between w-full">
-              <div className="flex gap-4 items-center text-medium">
-                <Image 
-                  src="/icons/move_7C7C7C.svg" 
-                  width={1} 
-                  height={1} 
-                  alt="upload_photo"
-                  className="w-[16px] h-[16px]"
-                />
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={"/icons/location_on_7C7C7C.svg"}
-                    width={16}
-                    height={16}
-                    alt="location"
-                  />
-                  {spot.title}
-                </div>
-                <button 
-                  onClick={
-                    (e: React.MouseEvent<HTMLButtonElement>) => {
-                      e.preventDefault();
-                      handleDeleteSpotClick(index);
-                    }
-                  }
-                >
-                  <Image
-                    src={"/icons/clear_7C7C7C.svg"}
-                    width={16}
-                    height={16}
-                    alt="clear"
-                  />
-                </button>
-              </div>
-            </div>
+              <SelectionCreateSpotItem
+                key={index}
+                index={index}
+                spot={spot}
+                spotCategories={spotCategories}
+              />
             ))}
           </div>
         </div>
       </div>
       <div className="flex flex-col justify-between h-[190px] w-1/3">
-        <p className="text-grey4 text-small w-full">사용자에게 제공되는 스팟입니다. 나만 알기 아까운 명소들을 없이 마음 껏 공유하세요!</p>
-        <p className="text-grey4 text-small w-full">사용자에게 제공되는 스팟입니다. 나만 알기 아까운 명소들을 없이 마음 껏 공유하세요!</p>
+        <p className="text-grey4 text-small w-full break-keep">사용자에게 제공되는 스팟입니다. 나만 알기 아까운 명소들을 없이 마음 껏 공유하세요!</p>
+        <p className="text-red-400 text-small w-full break-keep">사용자에게 제공되는 스팟입니다. 나만 알기 아까운 명소들을 없이 마음 껏 공유하세요!</p>
       </div>
     </div>
   )

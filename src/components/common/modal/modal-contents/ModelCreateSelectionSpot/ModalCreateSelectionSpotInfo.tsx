@@ -6,7 +6,7 @@ import { useStore } from "zustand";
 const ModalCreateSelectionSpotInfo = () => {
   const { 
     placeName, 
-    description, 
+    description: spotDescription, 
     setPlaceName, 
     setDescription 
   } = useStore(useSelectionSpotCreateStore);
@@ -36,7 +36,7 @@ const ModalCreateSelectionSpotInfo = () => {
           placeholder="스팟에 대한 상세설명을 입력해주세요." 
           id="description" 
           name="description" 
-          value={description}
+          value={spotDescription}
           onChange={handleDescriptionChange}
         />
       </div>

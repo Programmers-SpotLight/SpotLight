@@ -1,7 +1,7 @@
 import { AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
 
 
-export type TPoi = { key: string, location: google.maps.LatLngLiteral };
+export type TPoi = { key: string, location: google.maps.LatLngLiteral  };
 export type TPoiWithAddress = TPoi & { 
   address: string,
   placeId: string

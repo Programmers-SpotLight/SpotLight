@@ -181,14 +181,14 @@ const SelectionCreateSubmit : React.FC = () => {
   return (
     <div className="flex justify-center gap-4 mt-8">
       <button
-        className="w-[160px] text-center py-2 border border-solid border-grey2 bg-white text-medium font-medium hover:bg-grey1 hover:border-grey3"
+        className="w-[160px] text-grey5 text-medium font-bold mt-8 rounded-[8px] w-[163px] h-[40px] text-center border border-grey3"
         onClick={handleTempSubmitClick}
         disabled={isSubmitting}
       >
         임시저장
       </button>
       <button
-        className="w-[160px] text-center py-2 bg-primary text-white text-medium font-medium"
+        className="bg-primary text-white text-medium font-bold mt-8 rounded-[8px] w-[163px] h-[40px] text-center"
         onClick={handleSelectionSubmitClick}
         disabled={isSubmitting}
       >

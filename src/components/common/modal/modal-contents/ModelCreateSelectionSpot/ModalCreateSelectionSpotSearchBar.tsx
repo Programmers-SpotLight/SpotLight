@@ -38,8 +38,7 @@ const ModalCreateSelectionSpotSearchBar = () => {
     error 
   } = useSpotSearch();
 
-  const [isSpotSearchResultOpen, setIsSpotSearchResultOpen] = useState(false);
-
+  const [isSpotSearchResultOpen, setIsSpotSearchResultOpen] = useState<boolean>(false);
   useClickOutside(spotSearchResultRef, () => setIsSpotSearchResultOpen(false))
 
   const handleSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +60,7 @@ const ModalCreateSelectionSpotSearchBar = () => {
     if (!placeId) {
       return;
     }
-    if (placeId === selectedLocation.placeId) {
+    if (placeId === selectedLocation?.placeId) {
       return;
     }
 
@@ -94,8 +93,8 @@ const ModalCreateSelectionSpotSearchBar = () => {
     });
 
     // 사용자가 선택한 위치로 마커 배치 후 중앙으로 설정
-    setCurrentCoordinate(geocodingCoordinates || { lat: 0, lng: 0 });
-    map?.setCenter(geocodingCoordinates || { lat: 0, lng: 0 });
+    setCurrentCoordinate(geocodingCoordinates || { lat: 37.5503, lng: 126.9971 });
+    map?.setCenter(geocodingCoordinates || { lat: 37.5503, lng: 126.9971 });
   }, [
     geocodingLoading, 
     geocodingError, 
@@ -125,16 +124,23 @@ const ModalCreateSelectionSpotSearchBar = () => {
         className='absolute top-[110%] p-3 border border-solid border-black w-full bg-white rounded-[8px]'
       >
         <ul className='text-grey4 w-full max-h-[192px] overflow-y-auto'>
+        {/* 검색 결과 로딩 시 */}
         {loading && <li className='py-2'>로딩 중...</li>}
+
+        {/* 검색 결과 에러 시 */}
         {error && <li className='py-2'>에러가 발생했습니다.</li>}
-        {(!loading && !error && spots.length > 0) && spots.map((spot) => (
+
+        {/* 검색 결과 있을 시 */}
+        {(Array.isArray(spots) && spots.length > 0) && spots?.map((spot) => (
           <li key={spot.id} className='py-2 cursor-pointer hover:bg-grey1'>
             <button onClick={() => handleGeocodingClick(spot.id)}>
               {spot.displayName.text}
             </button>
           </li>
         ))}
-        {(!loading && !error && spots.length === 0) && (
+
+        {/* 검색 결과 없을 시 */}
+        {(Array.isArray(spots) && spots.length === 0) && (
           <li className='py-2'>검색 결과가 없습니다.</li>
         )}
         </ul>

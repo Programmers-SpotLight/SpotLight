@@ -22,8 +22,14 @@ const ModalCreateSelectionSpotHashtags = () => {
   const handleHashtagInput = (
     e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
+    // 한글 입력시 두 번 입력되는 것을 방지
+    if ((e as React.KeyboardEvent).nativeEvent?.isComposing) {
+      return;
+    }
+
     if (e.type === "click" || (e as React.KeyboardEvent).key === "Enter") {
       e.preventDefault();
+
       if (hashtags.length >= 8) {
         alert("태그는 최대 8개까지 등록 가능합니다.");
         return;
@@ -41,6 +47,11 @@ const ModalCreateSelectionSpotHashtags = () => {
 
       if (hashtagInputValue.includes(" ")) {
         alert("태그명에 공백이 포함되어 있습니다.");
+        return;
+      }
+
+      if (hashtagInputValue.length > 40) {
+        alert("태그명은 40자 이내로 입력해주세요.");
         return;
       }
 
