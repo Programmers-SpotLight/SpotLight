@@ -1,6 +1,7 @@
 import Hashtag from "@/components/common/Hashtag";
 import { ISelectionInfo } from "@/models/selection.model";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { FaBookmark, FaRegBookmark, FaShareAlt } from "react-icons/fa";
 
@@ -65,7 +66,9 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
         </h1>
         <div className="flex flex-wrap gap-[5px] overflow-auto mt-4 mb-[15px]">
           {selectionData.hashtags.map((tag, index) => (
-            <Hashtag size="big" name={tag} key={tag} />
+            <Link href={`/search?tags=${tag}`} key={tag}>
+              <Hashtag size="big" name={tag} />
+            </Link>
           ))}
         </div>
 
