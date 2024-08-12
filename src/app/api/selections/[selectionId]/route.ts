@@ -1,3 +1,4 @@
+import { Ihashtags } from "@/models/hashtag.model";
 import { ISelectionDetailInfo } from "@/models/selection.model";
 import { ISpotImage, ISpotInfo } from "@/models/spot.model";
 import {
@@ -35,7 +36,7 @@ export async function GET(
     );
   }
 
-  const hashtags: string[] = await getSelectionHashTags(selectionId);
+  const hashtags: Ihashtags[] = await getSelectionHashTags(selectionId);
   if (hashtags.length === 0) {
     return NextResponse.json(
       { error: "There Is No HashTags" },
@@ -59,7 +60,9 @@ export async function GET(
     const spotImages: ISpotImage[] = await getSpotImages(spotDetailInfo[i].id);
     if (spotImages.length) spotDetailInfo[i].images = spotImages;
 
-    const spotHashtags: string[] = await getSpotHashTags(spotDetailInfo[i].id);
+    const spotHashtags: Ihashtags[] = await getSpotHashTags(
+      spotDetailInfo[i].id
+    );
     if (spotHashtags.length) spotDetailInfo[i].hashtags = spotHashtags;
   }
 
