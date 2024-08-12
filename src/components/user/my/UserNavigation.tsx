@@ -34,7 +34,7 @@ const UserNavigation: React.FC = () => {
             <Link
               href={fullUrl}
               className={`${
-                isActive ? 'text-medium text-black font-bold' : 'text-medium text-grey3 font-bold hover:text-black'
+                isActive ? 'text-medium text-center text-black font-bold' : 'text-medium text-grey3 font-bold text-center hover:text-black'
               }`}
             >
               {item.name}

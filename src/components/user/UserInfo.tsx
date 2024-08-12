@@ -29,7 +29,7 @@ const UserInfo = ({
         <p className="text-grey4 break-keep relative text-small">
           {description}
           <span className="absolute bottom-0 right-0 cursor-pointer">
-            {isMyPage && <GoPencil />}
+            {isMyPage && <GoPencil/>}
           </span>
         </p>
       </div>

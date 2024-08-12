@@ -1,11 +1,13 @@
 import Button from "@/components/common/button/Button";
 import Hashtag from "@/components/common/Hashtag";
 import { Ihashtags } from "@/models/hashtag.model";
+import { useModalStore } from "@/stores/modalStore";
 import React from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoIosAdd } from "react-icons/io";
 import { MdChatBubble } from "react-icons/md";
 import { PiCardsFill } from "react-icons/pi";
+import { useStore } from "zustand";
 
 const userInfoWidgetDatas = [
   { icons: <PiCardsFill />, count: 3, name: "작성한 셀렉션" },
@@ -53,6 +55,8 @@ const hashtags: Ihashtags[] = [
 ];
 
 const UserInfoWidget = () => {
+  const {openModal} = useStore(useModalStore)
+
   return (
     <div className="mt-10 flex flex-col gap-10">
       <ul className="flex gap-6 justify-center">
@@ -77,6 +81,7 @@ const UserInfoWidget = () => {
         ))}
         <button 
         className="w-[26px] h-[26px] bg-grey3 rounded-full flex justify-center items-center transition-transform transform hover:scale-110 "
+        onClick={() => openModal("editTag", {hashtags: hashtags})}
         >
           <IoIosAdd className="fill-white text-large" />
         </button>
