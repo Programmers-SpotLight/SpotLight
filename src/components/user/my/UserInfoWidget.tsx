@@ -21,32 +21,32 @@ const hashtags: Ihashtags[] = [
     htag_type: "none"
   },
   {
-    htag_id: 3,
+    htag_id: 2,
     htag_name: "해시태그 조금 길게",
     htag_type: "none"
   },
   {
-    htag_id: 3,
+    htag_id: 4,
     htag_name: "이정도 해시태그",
     htag_type: "none"
   },
   {
-    htag_id: 3,
+    htag_id: 5,
     htag_name: "해시태그 살짝 많이 길수도",
     htag_type: "none"
   },
   {
-    htag_id: 3,
+    htag_id: 6,
     htag_name: "해시태그 조금 길게",
     htag_type: "none"
   },
   {
-    htag_id: 3,
+    htag_id: 7,
     htag_name: "이정도 해시태그",
     htag_type: "none"
   },
   {
-    htag_id: 3,
+    htag_id: 8,
     htag_name: "해시태그 살짝 많이 길수도",
     htag_type: "none"
   }
@@ -76,10 +76,7 @@ const UserInfoWidget = () => {
           </li>
         ))}
         <button 
-        className="w-[26px] h-[26px] bg-grey3 rounded-full flex justify-center items-center transition-transform transform hover:scale-110"
-        onClick={()=>{console.log('hello')} // 모달 출력 이벤트 구현
-        
-        }
+        className="w-[26px] h-[26px] bg-grey3 rounded-full flex justify-center items-center transition-transform transform hover:scale-110 "
         >
           <IoIosAdd className="fill-white text-large" />
         </button>
