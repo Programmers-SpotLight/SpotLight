@@ -28,9 +28,19 @@ const ReviewItem = ({ sltOrSpotId, review, updateReview, deleteReview }: IReview
 
   const renderText = () => {
     if (isExpanded) {
-      return review.reviewDescription;
+      return (
+        <span className="whitespace-pre-wrap">
+          {review.reviewDescription}
+        </span>
+      );
     }
-    return review.reviewDescription.length > 90 ? review.reviewDescription.slice(0, 90) + "..." : review.reviewDescription;
+    return (
+      <span className="whitespace-pre-wrap">
+        {review.reviewDescription.length > 90
+          ? review.reviewDescription.slice(0, 90) + "..."
+          : review.reviewDescription}
+      </span>
+    );
   };
 
   const openReviewEditModal = () => {

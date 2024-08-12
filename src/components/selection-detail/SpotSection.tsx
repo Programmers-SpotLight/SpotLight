@@ -3,7 +3,7 @@ import React from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
 import { ISpotInfo, SpotCategory } from "@/models/spot";
-import SelectionReview from "./review/selection-review/SelectionReview";
+import Review from "./review/Review";
 
 interface ISpotSectionProps {
   isSelectionDrawerOpen: boolean;
@@ -30,7 +30,7 @@ const SpotSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SelectionReview reviewType="spot" sltOrSpotId={spotIdHex} />
+      component: <Review reviewType="spot" sltOrSpotId={spotIdHex} />
     }
   ];
 

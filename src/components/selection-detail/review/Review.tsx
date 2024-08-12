@@ -1,13 +1,13 @@
-import Button from "../../../common/button/Button";
-import ReviewAvg from "../ReviewAvg";
-import ReviewCount from "../ReviewCount";
-import ReviewList from "../ReviewList";
+import Button from "../../common/button/Button";
+import ReviewAvg from "./ReviewAvg";
+import ReviewCount from "./ReviewCount";
+import ReviewList from "./ReviewList";
 import { useModalStore } from "@/stores/modalStore";
-import ReviewEmpty from "../ReviewEmpty";
-import ReviewOrderButton from "../ReviewOrderButton";
+import ReviewEmpty from "./ReviewEmpty";
+import ReviewOrderButton from "./ReviewOrderButton";
 import { useEffect, useRef, useState } from "react";
 import useReview from "@/hooks/queries/useReview";
-import ReveiwError from "../ReveiwError";
+import ReveiwError from "./ReveiwError";
 import Spinner from "@/components/common/Spinner";
 import useReviewInfo from "@/hooks/queries/useReviewInfo";
 
@@ -16,7 +16,7 @@ interface IReviewsProps {
   sltOrSpotId: number | string;
 };
 
-const SelectionReview = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
+const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
   const [sort, setSort] = useState<string>("like");
   const pageEnd = useRef<HTMLDivElement | null>(null);
 
@@ -98,4 +98,4 @@ const SelectionReview = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
   );
 };
 
-export default SelectionReview;
+export default Review;

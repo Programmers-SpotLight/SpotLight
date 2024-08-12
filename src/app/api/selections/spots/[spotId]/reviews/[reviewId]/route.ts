@@ -31,8 +31,6 @@ export async function PUT (
       reviewImg: reviewImg
     };
 
-    console.log("review겨과",review)
-
     await putSpotReviews(review);
 
     if (!review) {
