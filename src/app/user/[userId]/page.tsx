@@ -9,6 +9,7 @@ import React from "react";
 import PrivateUser from "@/components/user/other-user/PrivateUser";
 import { IMinimumUserInfo } from "@/models/user.model";
 import { ISelectionDetailInfo } from "@/models/selection.model";
+import MyPage from "@/components/user/my/MyPage";
 
 const user: IMinimumUserInfo = {
   id: 1,
@@ -87,7 +88,7 @@ const pagination: Ipagination = {
 };
 
 const UserPage = () => {
-  const isMyPage = false;
+  const isMyPage = true;
 
   if (!isMyPage) {
     return (
@@ -128,7 +129,9 @@ const UserPage = () => {
       </div>
     );
   } else {
-    //mypage
+    return (
+    <MyPage/>
+    )
   }
 };
 

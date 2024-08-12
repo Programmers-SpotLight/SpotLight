@@ -3,7 +3,7 @@ import React from "react";
 import { GoPencil } from "react-icons/go";
 
 interface IUserInfoProps {
-  image: string;
+  image?: string;
   nickname: string;
   description: string;
   isMyPage: boolean;
@@ -18,7 +18,10 @@ const UserInfo = ({
   return (
     <div className="flex w-[392px] gap-5 justify-center">
       <div className="w-[100px] h-[100px] relative rounded-full flex-shrink-0">
-        <Image src={image} fill alt={nickname} className="rounded-full" />
+        {
+          image ? <Image src={image} fill alt={nickname} className="rounded-full" />
+          : <div className="w-full  h-full rounded-full bg-grey3"/> 
+        }
       </div>
 
       <div className="flex flex-col items-start justify-end gap-2">
