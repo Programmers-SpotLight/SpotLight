@@ -87,9 +87,9 @@ const pagination: Ipagination = {
 };
 
 const UserPage = () => {
-  const otherUser = true;
+  const isMyPage = false;
 
-  if (otherUser) {
+  if (!isMyPage) {
     return (
       <div className="border border-solid border-grey2 bg-grey0 w-[1024px] mx-auto min-h-[calc(100vh-74px)] flex justify-center items-center">
         {user.isPrivate ? (
@@ -100,6 +100,7 @@ const UserPage = () => {
               image={user.image}
               nickname={user.nickname}
               description={user.description}
+              isMyPage={isMyPage}
             />
 
             <p className="font-bold text-extraLarge mt-20 text-center">

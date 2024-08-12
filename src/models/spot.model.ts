@@ -1,3 +1,5 @@
+import { Ihashtags } from "./hashtag.model";
+
 export type SpotCategory = "관광지" | "맛집" | "쇼핑" | "카페" | "기타";
 
 export interface ISpotImage {
@@ -16,7 +18,7 @@ export interface ISpotInfo {
   updatedAt: Date;
   gmapId: string;
   images: ISpotImage[];
-  hashtags: string[];
+  hashtags: Ihashtags[];
   categoryId: number;
   categoryName: SpotCategory;
 }

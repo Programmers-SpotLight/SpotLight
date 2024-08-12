@@ -1,7 +1,7 @@
 import React from "react";
 import { SPOTINFOWITHCATEGORY } from "../spot-selection-contents/SpotHeader";
 import Image from "next/image";
-import { ISpotInfo } from "@/models/spot";
+import { ISpotInfo } from "@/models/spot.model";
 
 interface ISpotListProps {
   spotClickHandler: (spotId: string, lat: number, lng: number) => void;
