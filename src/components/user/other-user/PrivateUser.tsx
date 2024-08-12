@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FaUserLock } from "react-icons/fa";
-import Button from "../common/button/Button";
+import Button from "../../common/button/Button";
 
 const PrivateUser = () => {
   const onClick = () => {
