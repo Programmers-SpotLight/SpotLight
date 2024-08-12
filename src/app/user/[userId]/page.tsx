@@ -88,6 +88,7 @@ const pagination: Ipagination = {
 
 const UserPage = () => {
   const otherUser = true;
+
   if (otherUser) {
     return (
       <div className="border border-solid border-grey2 bg-grey0 w-[1024px] mx-auto min-h-[calc(100vh-74px)] flex justify-center items-center">
