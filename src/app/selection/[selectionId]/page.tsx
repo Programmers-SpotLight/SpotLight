@@ -19,7 +19,7 @@ const SelectionPage = () => {
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
 
   const { selectionData, isPending, isError } = useSelectionDetail(
-    params!.selectionId
+    parseInt(params!.selectionId.toString(), 10)
   );
 
   useEffect(() => {
