@@ -28,6 +28,9 @@ export interface IsearchData {
 export interface ItempSelectionData {
 	slt_temp_id : number,
 	slt_temp_title : string,
+	user_nickname : string,
+	slt_category_name : string,
+	slt_location_option_name : string,
 	user_id : number,
 	slt_category_id : number,
 	slt_location_option_id : number;

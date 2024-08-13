@@ -132,8 +132,15 @@ export const getUserTempSelection = async (userId: string, currentPage: number, 
   try {
     const offset = (currentPage - 1) * limit;
     const resultQuery = await dbConnectionPool("selection_temporary")
-      .select("*")
+      .select("selection_temporary.*",
+        "user.user_nickname",
+        "selection_category.slt_category_name",
+        "selection_location_option.slt_location_option_name"
+      )
       .where("selection_temporary.user_id", userId)
+      .join("user", "selection_temporary.user_id", "=", "user.user_id")
+      .join("selection_category", "selection_temporary.slt_category_id", "=", "selection_category.slt_category_id")
+      .join("selection_location_option", "selection_temporary.slt_location_option_id", "=", "selection_location_option.slt_location_option_id")
       .limit(limit)
       .offset(offset);
     return resultQuery;
