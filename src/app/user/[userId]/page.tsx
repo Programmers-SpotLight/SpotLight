@@ -10,7 +10,7 @@ import PrivateUser from "@/components/user/other-user/PrivateUser";
 import { IMinimumUserInfo } from "@/models/user.model";
 import { ISelectionDetailInfo } from "@/models/selection.model";
 import UserInfoWidget from "@/components/user/my/UserInfoWidget";
-import UserSelectionList from "@/components/user/my/UserSelectionList";
+import UserSelectionList from "@/components/user/my/UserSelectionSection";
 
 const user: IMinimumUserInfo = {
   id: 1,

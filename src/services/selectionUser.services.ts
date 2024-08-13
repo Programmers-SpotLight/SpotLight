@@ -117,13 +117,27 @@ export const getUserSelectionResult = async (
       }
 }
 
-export const getUserTempSelection = async (userId : string) => {
+export const getUserTempSelectionCount = async (userId: string) => {
   try {
-    const resultQuery = dbConnectionPool("selection_temporary")
-    .select("*")
-
-  } catch {
-
+  const countQuery = await dbConnectionPool("selection_temporary")
+  .select("*")
+  .where("selection_temporary.user_id", userId)
+  return countQuery
+  } catch(error) {
+    throw new Error(`Failed to fetch search Result`);
   }
-
 }
+
+export const getUserTempSelection = async (userId: string, currentPage: number, limit: number) => {
+  try {
+    const offset = (currentPage - 1) * limit;
+    const resultQuery = await dbConnectionPool("selection_temporary")
+      .select("*")
+      .where("selection_temporary.user_id", userId)
+      .limit(limit)
+      .offset(offset);
+    return resultQuery;
+  } catch (error) {
+    throw new Error(`Failed to fetch search Result`);
+  }
+};
