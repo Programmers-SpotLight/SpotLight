@@ -1,5 +1,6 @@
 import { dbConnectionPool } from "@/libs/db";
 import { TsortType } from "@/models/searchResult.model";
+import { TuserSelection } from "@/models/user.model";
 
 const searchQueryBuilder = (
   queryBuilder: any,
