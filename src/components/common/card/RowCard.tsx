@@ -5,13 +5,13 @@ import Link from "next/link";
 import React from "react";
 import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 import { IBaseCardProps } from "./ColCard";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 
 export interface IRowCardProps extends IBaseCardProps {
   userName: string;
   userImage: string;
-  likes?: number;
-  liked?: boolean;
   ranking?: number;
+  booked?: boolean;
 }
 
 const RowCard = ({
@@ -23,10 +23,15 @@ const RowCard = ({
   userName,
   userImage,
   ranking,
-  likes,
-  liked,
+  booked,
   selectionId
 }: IRowCardProps) => {
+  const handleBookMarkClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("bookmark 클릭");
+  };
+
   return (
     <Link
       href={`/selection/${selectionId}`}
@@ -46,8 +51,23 @@ const RowCard = ({
           spotlight
         </div>
       )}
+
       <div className="absolute w-[30px] h-[23px] bg-black rounded-tl-lg top-0 left-0 text-white flex items-center justify-center text-small font-bold">
         {ranking}
+      </div>
+
+      <div className="absolute top-2 right-2">
+        {booked ? (
+          <FaBookmark
+            className="w-5 h-5 fill-red-600 cursor-pointer"
+            onClick={handleBookMarkClick}
+          />
+        ) : (
+          <FaRegBookmark
+            className="w-5 h-5 fill-grey3 cursor-pointer"
+            onClick={handleBookMarkClick}
+          />
+        )}
       </div>
 
       <div className="w-[270px] py-5 px-5">
@@ -65,26 +85,18 @@ const RowCard = ({
           <div className="flex justify-between items-center text-grey4 mt-auto">
             <div className="flex items-center gap-1">
               <div className="relative w-[16px] h-[16px]">
-                {userImage ?
-                <Image
-                  src={userImage}
-                  alt={userName}
-                  className="rounded-full object-cover"
-                  fill
-                /> :
-                <div className="w-full h-full flex justify-center items-center font-bold text-large"/>
-              }
+                {userImage ? (
+                  <Image
+                    src={userImage}
+                    alt={userName}
+                    className="rounded-full object-cover"
+                    fill
+                  />
+                ) : (
+                  <div className="w-full h-full flex justify-center items-center font-bold text-large" />
+                )}
               </div>
               <span className="text-extraSmall font-semibold">{userName}</span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              {liked ? (
-                <MdThumbUp size={16} fill="#7C7C7C" />
-              ) : (
-                <MdOutlineThumbUp size={16} />
-              )}
-              <span className="text-extraSmall font-medium">{likes}</span>
             </div>
           </div>
         )}

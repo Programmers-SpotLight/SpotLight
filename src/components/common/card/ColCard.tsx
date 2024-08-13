@@ -9,7 +9,7 @@ import { TselectionStatus } from "@/models/searchResult.model";
 import { Ihashtags } from "@/models/hashtag.model";
 import Hashtag from "../Hashtag";
 import { BiSolidPencil } from "react-icons/bi";
-import { FaTrash } from "react-icons/fa";
+import { FaBookmark, FaRegBookmark, FaTrash } from "react-icons/fa";
 import useClickOutside from "@/hooks/useClickOutside";
 
 export interface IBaseCardProps {
@@ -24,10 +24,9 @@ export interface IBaseCardProps {
 export interface IColCardProps extends IBaseCardProps {
   userName?: string;
   userImage?: string;
-  likes?: number;
-  liked?: boolean;
   hashtags: Ihashtags[];
   status: TselectionStatus;
+  booked?: boolean;
   onClick?: () => void;
 }
 
@@ -54,17 +53,16 @@ const ColCard = ({
   description,
   userName,
   userImage,
-  likes,
-  liked,
   hashtags,
   selectionId,
   status = "public",
+  booked = false,
   onClick
 }: IColCardProps) => {
   const pathname = usePathname();
   const [showMenu, setShowMenu] = useState(false);
   const selectionMenuRef = useRef<HTMLUListElement>(null);
-  useClickOutside(selectionMenuRef, ()=>setShowMenu(false))
+  useClickOutside(selectionMenuRef, () => setShowMenu(false));
 
   const handleIconClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -72,11 +70,17 @@ const ColCard = ({
     setShowMenu((prev) => !prev);
   };
 
-  const handleMenuItemClick = (e : React.MouseEvent, action: string) => {
+  const handleMenuItemClick = (e: React.MouseEvent, action: string) => {
     console.log(`${action} 클릭됨!`);
     e.preventDefault();
     e.stopPropagation();
     setShowMenu(false);
+  };
+
+  const handleBookMarkClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("bookmark 클릭");
   };
 
   return (
@@ -126,8 +130,9 @@ const ColCard = ({
                 onClick={handleIconClick}
               />
               {showMenu && (
-                <ul className="absolute top-5 right-30 bg-white border border-grey2 shadow-md w-[206px] flex border-solid rounded-lg flex-col z-30"
-                ref={selectionMenuRef}
+                <ul
+                  className="absolute top-5 right-30 bg-white border border-grey2 shadow-md w-[206px] flex border-solid rounded-lg flex-col z-30"
+                  ref={selectionMenuRef}
                 >
                   {menuList.map((menu, index) => (
                     <li
@@ -179,13 +184,18 @@ const ColCard = ({
               <span className="text-extraSmall font-semibold">{userName}</span>
             </div>
 
-            <div className="flex items-center gap-1">
-              {liked ? (
-                <MdThumbUp size={16} fill="#7C7C7C" />
+            <div>
+              {booked ? (
+                <FaBookmark
+                  className="w-5 h-5 fill-red-600 cursor-pointer"
+                  onClick={handleBookMarkClick}
+                />
               ) : (
-                <MdOutlineThumbUp size={16} />
+                <FaRegBookmark
+                  className="w-5 h-5 fill-grey3 cursor-pointer"
+                  onClick={handleBookMarkClick}
+                />
               )}
-              <span className="text-extraSmall font-medium">{likes}</span>
             </div>
           </div>
         )}
