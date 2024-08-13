@@ -1,4 +1,5 @@
-import { requestHashtagsSuggestionFromAI } from "@/services/selection.services";
+import { requestHashtagsSuggestionFromAI, validateHashtagsSuggestionPrompt } from "@/services/selection.services";
+import { BadRequestError } from "@/utils/errors";
 import { NextRequest } from "next/server";
 
 
@@ -14,8 +15,12 @@ export const POST = async (request: NextRequest) => {
     });
   }
 
+
   try {
-    const hashtags = await requestHashtagsSuggestionFromAI(formData.get('prompt') as string);
+    const prompt = formData.get('prompt') as string;
+    await validateHashtagsSuggestionPrompt(prompt);
+
+    const hashtags = await requestHashtagsSuggestionFromAI(prompt);
     return new Response(JSON.stringify(hashtags), {
       status: 200,
       headers: {

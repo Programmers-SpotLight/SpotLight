@@ -4,10 +4,13 @@ import { dbConnectionPool } from "@/libs/db";
 import { 
   ISelectionCategory, 
   ISelectionCategoryQueryResultRow, 
+  ISelectionCreateCompleteData, 
   ISelectionCreateFormData, 
+  ISelectionCreateTemporaryData, 
   ISelectionLocation, 
   ISelectionLocationQueryResultRow, 
-  ISelectionSpot 
+  ISelectionSpot, 
+  TSelectionCreateFormData
 } from "@/models/selection.model";
 import { Knex } from "knex";
 import { fileTypeFromBlob, FileTypeResult } from "file-type";
@@ -19,10 +22,9 @@ import {
   saveFile 
 } from "@/utils/fileStorage";
 import { SELECTION_STATUS } from "@/constants/selection.constants";
-import { createSpots } from "./spot.services";
+import { createSpots, createTemporarySpots } from "./spot.services";
 import { BadRequestError, InternalServerError, NotFoundError } from "@/utils/errors";
 import axios from "axios";
-import { requestHandler } from "@/http/http";
 
 
 export async function getSelectionCategories() : Promise<ISelectionCategory[]> {
@@ -97,11 +99,11 @@ export async function getSelectionLocations() : Promise<ISelectionLocation[]> {
     console.error(error);
     throw new InternalServerError('셀렉션 위치를 가져오는 데 실패했습니다');
   }
-};
+}
 
 export async function createSelection(
   transaction: Knex.Transaction<any, any[]>,
-  formData: ISelectionCreateFormData
+  formData: ISelectionCreateCompleteData
 ) : Promise<void> {
   // 이미지 파일이 FormData로 전송된 경우 파일을 저장하고 파일 경로를 formData.img에 대입
   if (formData.img instanceof File) {
@@ -111,7 +113,58 @@ export async function createSelection(
 
   // 해당 해시태그가 존재하지 않으면 새로 생성
   // 셀렉션 해시태그를 생성할 해시테그 id 배열로 변환
-  if (formData.hashtags) {
+  formData.hashtags = await createHashtags(
+    transaction, 
+    formData.hashtags as string[]
+  ) as number[];
+
+  // 각 spot에 대해 해시태그 생성
+  // 셀렉션에 포함된 spot들의 해시태그를 생성할 해시테그 id 배열로 변환
+  await createHashtagsForSpots(transaction, formData.spots);
+
+  let queryResult : number[];
+  try {
+    queryResult = await transaction('selection')
+      .insert({
+        slt_title: formData.title,
+        slt_status: formData.status,
+        slt_category_id: formData.category,
+        slt_location_option_id: formData.location.subLocation,
+        slt_description: formData.description,
+        slt_img: formData.img,
+      }, ['slt_id']);
+  } catch (error : any) {
+    console.error(error);
+    throw new InternalServerError('셀렉션 생성에 실패했습니다');
+  }
+
+  const selectionId : number = queryResult[0];
+  await createSelectionHashtags(
+    transaction, 
+    selectionId, 
+    formData.hashtags as number[]
+  );
+
+  await createSpots(
+    transaction, 
+    selectionId, 
+    formData.spots
+  );
+}
+
+export async function createTemporarySelection(
+  transaction: Knex.Transaction<any, any[]>,
+  formData: ISelectionCreateTemporaryData
+) : Promise<void> {
+  // 이미지 파일이 FormData로 전송된 경우 파일을 저장하고 파일 경로를 formData.img에 대입
+  if (formData.img instanceof File) {
+    const filePath : string = await saveSelectionImage(formData.img);
+    formData.img = filePath;
+  }
+
+  // 해당 해시태그가 존재하지 않으면 새로 생성
+  // 셀렉션 해시태그를 생성할 해시테그 id 배열로 변환
+  if (formData.hashtags && formData.hashtags.length > 0) {
     formData.hashtags = await createHashtags(
       transaction, 
       formData.hashtags as string[]
@@ -120,35 +173,27 @@ export async function createSelection(
 
   // 각 spot에 대해 해시태그 생성
   // 셀렉션에 포함된 spot들의 해시태그를 생성할 해시테그 id 배열로 변환
-  if (formData.spots) {
-    for (let i = 0; i < formData.spots.length; i++) {
-      const spot = formData.spots[i];
-      formData.spots[i].hashtags = await createHashtags(
-        transaction, 
-        spot.hashtags as string[]
-      );
-    }
-  }
+  if (formData.spots && formData.spots.length > 0)
+    await createHashtagsForSpots(transaction, formData.spots);
 
   let queryResult : number[];
   try {
-    queryResult = await transaction('selection')
+    queryResult = await transaction('selection_temporary')
       .insert({
-        slt_title: formData.title,
-        slt_status: formData.status,
+        slt_temp_title: formData.title,
         slt_category_id: formData.category ?? null,
         slt_location_option_id: formData.location?.subLocation ?? null,
-        slt_description: formData.description ?? null,
-        slt_img: formData.img ?? null,
-      }, ['slt_id']);
+        slt_temp_description: formData.description ?? null,
+        slt_temp_img: formData.img ?? null,
+      }, ['slt_temp_id']);
   } catch (error : any) {
     console.error(error);
-    throw new InternalServerError('셀렉션 생성에 실패했습니다');
+    throw new InternalServerError('임시 셀렉션 생성에 실패했습니다');
   }
 
   const selectionId : number = queryResult[0];
-  if (formData.hashtags) {
-    await createSelectionHashtags(
+  if (formData.hashtags && formData.hashtags.length > 0) {
+    await createTemporarySelectionHashtags(
       transaction, 
       selectionId, 
       formData.hashtags as number[]
@@ -156,7 +201,7 @@ export async function createSelection(
   }
 
   if (formData.spots && formData.spots.length > 0) {
-    await createSpots(
+    await createTemporarySpots(
       transaction, 
       selectionId, 
       formData.spots
@@ -190,6 +235,49 @@ export async function createHashtags(
     throw new InternalServerError('해시태그 생성에 실패했습니다');
   }
 }
+
+export async function createHashtagsForSpots(
+  transaction: Knex.Transaction<any, any[]>,
+  spots: ISelectionSpot[]
+) : Promise<void> {
+  if (spots.length === 0) {
+    throw new BadRequestError('스팟이 필요합니다');
+  }
+
+  const allHashtags = spots.map((spot) => spot.hashtags).flat() as string[];
+  const hashtagsToInsert : {htag_name: string}[] = allHashtags.map((hashtag) => {
+    return {
+      htag_name: hashtag
+    };
+  });
+
+  if (hashtagsToInsert.length === 0) {
+    return;
+  }
+
+  try {
+    await transaction('hashtag')
+      .insert(hashtagsToInsert)
+      .onConflict('htag_name')
+      .merge();
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('해시태그 생성에 실패했습니다');
+  }
+
+  const querySelectResult = await transaction('hashtag')
+    .select('htag_id', 'htag_name')
+    .whereIn('htag_name', allHashtags);
+
+  querySelectResult.forEach((row) => {
+    for (let i = 0; i < spots.length; i++) {
+      if (spots[i].hashtags.includes(row.htag_name)) {
+        spots[i].hashtags.push(row.htag_id);
+        spots[i].hashtags.splice(spots[i].hashtags.indexOf(row.htag_name), 1);
+      }
+    }
+  });
+};
 
 export async function saveSelectionImage(imageFile: File) : Promise<string> {
   const newFileName : string = `${Date.now()}-${uuidv4()}`;
@@ -251,12 +339,46 @@ async function createSelectionHashtags(
   }
 }
 
+export async function createTemporarySelectionHashtags(
+  transaction: Knex.Transaction<any, any[]>,
+  selectionId: number,
+  hashtags: number[]
+) : Promise<void> {
+
+  const hashtagsToInsert : {
+    slt_temp_htag_id: Buffer, 
+    slt_temp_id: number, 
+    htag_id: number
+  }[] = hashtags.map((hashtag) => {
+    return {
+      slt_temp_htag_id: transaction.fn.uuidToBin(uuidv4()),
+      slt_temp_id: selectionId,
+      htag_id: hashtag
+    };
+  });
+
+  let queryResult : number[];
+  try {
+    queryResult = await transaction('selection_temporary_hashtag')
+      .insert(hashtagsToInsert, ['slt_temp_id'])
+      .onConflict(['slt_temp_id', 'htag_id'])
+      .ignore();
+
+    if (queryResult.length === 0) {
+      throw new InternalServerError('임시 셀렉션 해시태그 생성에 실패했습니다');
+    }
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('임시 셀렉션 해시태그 생성에 실패했습니다');
+  }
+}
+
 export async function prepareSelectionCreateFormData(
   formData: FormData
-) : Promise<ISelectionCreateFormData> {
+) : Promise<TSelectionCreateFormData> {
   let data: ISelectionCreateFormData = {
     title: String(formData.get("title")),
-    status: String(formData.get("status"))
+    status: String(formData.get("status")) as "public" | "private" | "temp"
   };
 
   if (formData.get("img")) {
@@ -286,7 +408,7 @@ export async function prepareSelectionCreateFormData(
       for (let i=0; i < spots.length; i++) {
         const images : Array<string | File> = await extractSpotImages(spots[i].placeId, formData);
 
-        // FormData에서 이미지 파일을 추출하여 spots[i].photos에 추가
+        // FormData에서 이미지 파일을 추출하여 spots[i].photos에 다시 대입
         const photos: (File | string)[] = images.map((image) => {
           if (image instanceof File) {
             return image;
@@ -334,7 +456,11 @@ export async function prepareSelectionCreateFormData(
     }
   }
 
-  return data;
+  if (data.status === "temp") {
+    return data as ISelectionCreateTemporaryData;
+  }
+
+  return data as ISelectionCreateCompleteData;
 }
 
 // FormData에서 spotId에 해당하는 이미지 파일을 추출하여 반환
@@ -639,7 +765,7 @@ export async function validateStatus(selectionStatus: string) : Promise<void> {
   }
 }
 
-export async function validateData(data: ISelectionCreateFormData) : Promise<void> {
+export async function validateData(data: TSelectionCreateFormData) : Promise<void> {
   await validateTitle(data.title);
   await validateStatus(data.status);
 
@@ -694,8 +820,6 @@ export const validateHashtagsSuggestionPrompt = async (prompt: string) => {
   if (prompt.length > 128) {
     throw new BadRequestError('프롬프트는 128자 이하여야 합니다');
   }
-
-  return prompt;
 }
 
 export const requestHashtagsSuggestionFromAI = async (prompt: string) => {
