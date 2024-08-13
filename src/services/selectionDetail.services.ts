@@ -1,4 +1,5 @@
 import { dbConnectionPool } from "@/libs/db";
+import { Ihashtags } from "@/models/hashtag.model";
 import { ISelectionDetailInfo } from "@/models/selection.model";
 import { ISpotInfo } from "@/models/spot.model";
 
@@ -47,11 +48,20 @@ export const getSelectionHashTags = async (selectionId: number) => {
     if (hashtagIds.length > 0) {
       const htagIdArray = hashtagIds.map((item) => item.htag_id);
 
-      const hashtags = await dbConnectionPool("hashtag")
-        .select("htag_name as hashtags")
+      let hashtags = await dbConnectionPool("hashtag")
+        .select(
+          dbConnectionPool.raw(
+            `JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type) as hashtags`
+          )
+        )
         .whereIn("htag_id", htagIdArray);
 
-      return hashtags.map((tag) => tag.hashtags);
+      hashtags = hashtags.map((item) =>
+        typeof item.hashtags === "string"
+          ? (JSON.parse(item.hashtags) as Ihashtags[])
+          : item.hashtags
+      );
+      return hashtags;
     } else {
       return [];
     }
@@ -98,11 +108,20 @@ export const getSpotHashTags = async (spotId: string) => {
     if (hashtagIds.length > 0) {
       const htagIdArray = hashtagIds.map((item) => item.htag_id);
 
-      const hashtags = await dbConnectionPool("hashtag")
-        .select("htag_name as hashtags")
+      let hashtags = await dbConnectionPool("hashtag")
+        .select(
+          dbConnectionPool.raw(
+            `JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type) as hashtags`
+          )
+        )
         .whereIn("htag_id", htagIdArray);
 
-      return hashtags.map((tag) => tag.hashtags);
+      hashtags = hashtags.map((item) =>
+        typeof item.hashtags === "string"
+          ? (JSON.parse(item.hashtags) as Ihashtags[])
+          : item.hashtags
+      );
+      return hashtags;
     } else {
       return [];
     }
@@ -121,6 +140,18 @@ export const getSpotImages = async (spotId: string) => {
     else return spotImages;
   } catch (error) {
     throw new Error(`Failed to fetch spot ${spotId}'s images`);
+  }
+};
+
+export const getBookMarks = async (selectionId: number, userId: number) => {
+  try {
+    const bookmarks = await dbConnectionPool("bookmark")
+      .select("*")
+      .where("slt_id", selectionId)
+      .andWhere("user_id", userId);
+    return bookmarks;
+  } catch (error) {
+    throw new Error("Failed to getBookMarks");
   }
 };
 

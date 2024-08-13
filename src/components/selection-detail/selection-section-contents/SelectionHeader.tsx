@@ -1,6 +1,8 @@
 import Hashtag from "@/components/common/Hashtag";
+import { useBookMarks } from "@/hooks/queries/useBookMarks";
 import { ISelectionInfo } from "@/models/selection.model";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { FaBookmark, FaRegBookmark, FaShareAlt } from "react-icons/fa";
 
@@ -9,6 +11,10 @@ interface SelectionHeaderProps {
 }
 
 const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
+  const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
+    selectionData.id,
+    1
+  );
   const shareClickHandler = () => {
     // 클립보드 핸들러
     const currentUrl = window.location.href;
@@ -22,7 +28,14 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
       });
   };
 
-  const bookMarkClickHandler = () => {}; // 북마크 핸들러
+  const bookMarkClickHandler = () => {
+    //북마크 추가 삭제
+    if (selectionData.booked) {
+      removeBookMarksMutate();
+    } else {
+      addBookMarksMutate();
+    }
+  };
 
   return (
     <>
@@ -65,7 +78,9 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
         </h1>
         <div className="flex flex-wrap gap-[5px] overflow-auto mt-4 mb-[15px]">
           {selectionData.hashtags.map((tag, index) => (
-            <Hashtag size="big" name={tag} key={tag} />
+            <Link href={`/search?tags=${tag.htag_name}`} key={tag.htag_name}>
+              <Hashtag size="big" name={tag.htag_name} />
+            </Link>
           ))}
         </div>
 

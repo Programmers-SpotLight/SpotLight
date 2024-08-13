@@ -1,5 +1,5 @@
 "use client";
-import { ISpotImage } from "@/models/spot";
+import { ISpotImage } from "@/models/spot.model";
 import React, { useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 

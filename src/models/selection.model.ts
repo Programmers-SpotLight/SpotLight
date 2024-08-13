@@ -1,3 +1,5 @@
+import { Ihashtags } from "./hashtag.model";
+import { TselectionStatus } from "./searchResult.model";
 import { ISpotInfo } from "./spot.model";
 
 export interface ISelectionCategory {
@@ -81,12 +83,13 @@ export interface ISelectionDetailInfo {
   id: number;
   title: string;
   description: string;
-  status: string | null;
+  status: TselectionStatus;
   createdAt: Date;
   updatedAt: Date;
   categoryId: number;
   categoryName: string;
   image?: string;
+  hashtags: Ihashtags[];
 }
 
 export interface ISelectionInfo extends ISelectionDetailInfo {
@@ -96,13 +99,12 @@ export interface ISelectionInfo extends ISelectionDetailInfo {
     image?: string;
   };
   location: string;
-  hashtags: string[];
   spotList: ISpotInfo[];
   booked: boolean;
 }
 
 export interface IModalCreateSelectionSpotExtraData {
-  spotCategories: {id: number, name: string}[];
+  spotCategories: { id: number; name: string }[];
   spot?: ISelectionSpot;
   index?: number;
 }

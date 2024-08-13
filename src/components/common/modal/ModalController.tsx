@@ -9,6 +9,7 @@ import ModalCreateSelectionSpot from "./modal-contents/ModelCreateSelectionSpot/
 import { APIProvider } from "@vis.gl/react-google-maps";
 import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
 import { TModalSize, TmodalType } from "@/models/modal.model";
+import ModalEditTag from "./modal-contents/ModalEditTag";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -39,6 +40,13 @@ const modalDatas: ImodalDatas[] = [
     size: "full",
     overlayClose: true,
     component: SpotImages
+  },
+  {
+    type: "editTag",
+    title : "관심 태그 편집",
+    size : "medium",
+    overlayClose: true,
+    component: ModalEditTag
   }
 ];
 

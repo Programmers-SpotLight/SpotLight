@@ -1,7 +1,9 @@
 import Hashtag from "@/components/common/Hashtag";
-import { ISpotImage, SpotCategory } from "@/models/spot";
+import { Ihashtags } from "@/models/hashtag.model";
+import { ISpotImage, SpotCategory } from "@/models/spot.model";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { LuMapPin } from "react-icons/lu";
 import { useStore } from "zustand";
@@ -51,7 +53,7 @@ interface ISpotHeaderProps {
   categoryName: SpotCategory;
   title: string;
   address: string;
-  hashtags: string[];
+  hashtags: Ihashtags[];
 }
 
 const SpotHeader = ({
@@ -121,7 +123,12 @@ const SpotHeader = ({
           {/**hashtag */}
           <div className="flex">
             {hashtags.map((hashtag) => (
-              <Hashtag size="big" name={hashtag} key={hashtag} />
+              <Link
+                href={`/search?tags=${hashtag.htag_name}`}
+                key={hashtag.htag_id}
+              >
+                <Hashtag size="big" name={hashtag.htag_name} />
+              </Link>
             ))}
           </div>
         </div>
