@@ -5,8 +5,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export const useBookMarks = (selectionId: number, userId: number) => {
   const queryClient = useQueryClient();
 
-  //queryKey 나중에 ["selection", selectionId] 이 아니라 ["user",userId]로 바꿔야 됨
-  //ISelectionInfo의 booked도 빼고 user에서 북마크한 list들을 가지고 있어야 할 듯
   const { mutate: addBookMarksMutate } = useMutation({
     mutationKey: ["bookmark", selectionId],
     mutationFn: () => addBookMarks(selectionId, userId),
@@ -35,10 +33,11 @@ export const useBookMarks = (selectionId: number, userId: number) => {
         context?.previousSelection
       );
     },
-    onSettled: () => {
-      // 요청이 성공 또는 실패했을 때, 쿼리 상태를 다시 갱신
-      queryClient.invalidateQueries({
-        queryKey: ["selection", selectionId]
+    onSuccess: (data, variables, context) => {
+      // API 요청이 성공하면 데이터 수동으로 업데이트
+      queryClient.setQueryData(["selection", selectionId], {
+        ...context?.previousSelection,
+        booked: true
       });
     }
   });
@@ -71,10 +70,11 @@ export const useBookMarks = (selectionId: number, userId: number) => {
         context?.previousSelection
       );
     },
-    onSettled: () => {
-      // 요청이 성공 또는 실패했을 때, 쿼리 상태를 다시 갱신
-      queryClient.invalidateQueries({
-        queryKey: ["selection", selectionId]
+    onSuccess: (data, variables, context) => {
+      // API 요청이 성공하면 데이터 수동으로 업데이트
+      queryClient.setQueryData(["selection", selectionId], {
+        ...context?.previousSelection,
+        booked: false
       });
     }
   });
