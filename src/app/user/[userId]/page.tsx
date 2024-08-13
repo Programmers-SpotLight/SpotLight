@@ -9,6 +9,8 @@ import React from "react";
 import PrivateUser from "@/components/user/other-user/PrivateUser";
 import { IMinimumUserInfo } from "@/models/user.model";
 import { ISelectionDetailInfo } from "@/models/selection.model";
+import UserInfoWidget from "@/components/user/my/UserInfoWidget";
+import UserSelectionList from "@/components/user/my/UserSelectionList";
 
 const user: IMinimumUserInfo = {
   id: 1,
@@ -87,7 +89,7 @@ const pagination: Ipagination = {
 };
 
 const UserPage = () => {
-  const isMyPage = false;
+  const isMyPage = true;
 
   if (!isMyPage) {
     return (
@@ -97,7 +99,6 @@ const UserPage = () => {
         ) : (
           <div className="mt-20 flex flex-col items-center">
             <UserInfo
-              image={user.image}
               nickname={user.nickname}
               description={user.description}
               isMyPage={isMyPage}
@@ -128,7 +129,20 @@ const UserPage = () => {
       </div>
     );
   } else {
-    //mypage
+    return (
+      <div className='flex flex-col justify-center items-center mt-[60px] w-full'>
+      <div className='flex flex-col justify-center items-center translate-x-[-90px]'>
+        <UserInfo
+          nickname={user.nickname}
+          description={user.description}
+          image={"https://i.namu.wiki/i/WrW7KHFEzjh2bo9vITz4FaikSIH4ksVmUJOJW1bPZi24KTTsN8Yh71llfXwhqaU5qGKcjPFJuPgV_UQ6EklKplkIfzifTuixZ_XJTF7n1e7cIB_KKSKNRlKit681TubEApAZ-PueUKGm4Az9If5aNA.webp"}
+          isMyPage={isMyPage}
+        />
+        <UserInfoWidget />
+      </div>
+      <UserSelectionList />
+    </div>
+    )
   }
 };
 

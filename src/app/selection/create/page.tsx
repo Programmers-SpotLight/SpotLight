@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
 
-
 const SelectionCreatePage = () => {
   const params = useSearchParams();
 
