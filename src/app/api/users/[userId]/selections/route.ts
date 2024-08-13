@@ -11,7 +11,7 @@ import {
   QUERY_STRING_DEFAULT,
   QUERY_STRING_NAME
 } from "@/constants/queryString.constants";
-import { getUserSelectionQueryCount } from "@/services/selectionUser.services";
+import { getUserSelectionQueryCount, getUserSelectionResult } from "@/services/selectionUser.services";
 import { TuserSelection } from "@/models/user.model";
 
 export async function GET(
@@ -32,7 +32,6 @@ export async function GET(
     query.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit
   );
   const sort = query.get(QUERY_STRING_NAME.sort) || QUERY_STRING_DEFAULT.sort;
-  console.log(userId, userSelection, currentPage, limit, sort)
 
   try {
     const countResult = await getUserSelectionQueryCount(
@@ -44,8 +43,9 @@ export async function GET(
       countResult.length > 0 ? parseInt(countResult.length) : 0;
     const totalPages = Math.ceil(totalElements / limit);
 
+    console.log(totalElements, totalPages)
+
     if (totalElements === 0) {
-      // 개수 0, 검색 결과 없음
       const pagination: Ipagination = {
         currentPage,
         totalPages,
@@ -55,9 +55,11 @@ export async function GET(
       return NextResponse.json({ data: [], pagination });
     }
 
-    const pageResult: IsearchData[] = await getUserSelectionQueryCount(
+    const pageResult: IsearchData[] = await getUserSelectionResult(
       userSelection as TuserSelection,
       userId,
+      limit,
+      currentPage,
       sort as TsortType
     );
 
