@@ -12,7 +12,7 @@ const SelectionCreateDescription : React.FC = () => {
 
   return (
     <div className="flex items-start gap-6 py-6">
-      <div className="flex items-start grow">
+      <div className="flex items-start w-2/3">
         <label htmlFor="description" className="w-1/4 text-medium font-bold mt-3">셀렉션 설명</label>
         <textarea 
           className="border-solid h-[100px] border border-grey2 p-3 rounded-[8px] placeholder:font-medium w-3/4 resize-none" 

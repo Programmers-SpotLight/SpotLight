@@ -10,6 +10,12 @@ const useHashtagSuggestion = () => {
 
   const suggestHashtags = async (text: string) => {
     if (!text) {
+      alert('프롬프트를 입력해주세요.');
+      return;
+    }
+
+    if (text.length > 128) {
+      alert('프롬프트는 128자 이하로 입력해주세요.');
       return;
     }
 

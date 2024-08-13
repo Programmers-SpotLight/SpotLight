@@ -15,7 +15,6 @@ export const GET = async (request: NextRequest) => {
     return new Response("latitude와 longitude는 숫자여야 합니다", { status: 400 });
   }
 
-
   try {
     const geoData = await requestReverseGeocoding(latitude, longitude);
     return new Response(JSON.stringify(geoData), { status: 200 });

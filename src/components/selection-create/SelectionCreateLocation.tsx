@@ -35,7 +35,7 @@ const SelectionCreateLocation : React.FC<ISelectionCreateLocation> = ({
 
   return (
     <div className="flex items-start gap-6 py-6">
-      <div className="flex items-center grow">
+      <div className="flex items-center w-2/3">
         <label htmlFor="location" className="w-1/4 text-medium font-bold">
           지역 설정
         </label>
