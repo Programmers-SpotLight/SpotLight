@@ -43,8 +43,6 @@ export async function GET(
       countResult.length > 0 ? parseInt(countResult.length) : 0;
     const totalPages = Math.ceil(totalElements / limit);
 
-    console.log(totalElements, totalPages)
-
     if (totalElements === 0) {
       const pagination: Ipagination = {
         currentPage,

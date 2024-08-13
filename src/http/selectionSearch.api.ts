@@ -2,7 +2,6 @@ import { TsortType } from '@/models/searchResult.model';
 import { requestHandler } from './http';
 import { QUERY_STRING_NAME } from '@/constants/queryString.constants';
 import { TuserSelection } from '@/models/user.model';
-import UserSelectionList from '@/components/user/my/UserSelectionList';
 
 export const fetchSearchResult = async (
   category_id?: string,
@@ -50,7 +49,7 @@ export const fetchUserSelectionList = async (
   if(sort) params.append(QUERY_STRING_NAME.sort, sort);
   if (page) params.append(QUERY_STRING_NAME.page, page);
   if (limit) params.append(QUERY_STRING_NAME.limit, limit);
-  
+
   const finalUrl = `${url}?${params.toString()}`;
   return await requestHandler('get', finalUrl);
 

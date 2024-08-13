@@ -48,8 +48,6 @@ const userSelectionQueryBuilder = async (
             .innerJoin("bookmark as b", "b.slt_id", "selection.slt_id")
             .where("b.user_id", userId); // user_id를 올바르게 참조
     
-        } else if (userSelectionType === "temp") {
-            // temp에 대한 처리 추가 필요
         }
     }
     return queryBuilder
@@ -117,5 +115,15 @@ export const getUserSelectionResult = async (
       } catch (error) {
         throw new Error(`Failed to fetch search Result`);
       }
+}
+
+export const getUserTempSelection = async (userId : string) => {
+  try {
+    const resultQuery = dbConnectionPool("selection_temporary")
+    .select("*")
+
+  } catch {
+
+  }
 
 }

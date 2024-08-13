@@ -131,7 +131,6 @@ const UserPage = () => {
   } else {
     return (
       <div className='flex flex-col justify-center items-center mt-[60px] w-full'>
-      <div className='flex flex-col justify-center items-center translate-x-[-90px]'>
         <UserInfo
           nickname={user.nickname}
           description={user.description}
@@ -139,7 +138,6 @@ const UserPage = () => {
           isMyPage={isMyPage}
         />
         <UserInfoWidget />
-      </div>
       <UserSelectionList />
     </div>
     )

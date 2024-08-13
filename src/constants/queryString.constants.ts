@@ -16,5 +16,6 @@ export const QUERY_STRING_DEFAULT = {
     page : "1",
     limit : "12",
     sort : "latest",
-    userSelection : "my"
+    userSelection : "my",
+    userSelection_limit : "9"
 }

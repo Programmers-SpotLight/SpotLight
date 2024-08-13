@@ -1,86 +1,133 @@
-'use client';
+"use client";
 
 import ColCard from "@/components/common/card/ColCard";
 import Pagination from "@/components/search/Pagination";
+import SearchEmptyResults from "@/components/search/search-contents/SearchEmptyResults";
 import SearchLoading from "@/components/search/search-contents/SearchLoading";
-import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
+import {
+  QUERY_STRING_DEFAULT,
+  QUERY_STRING_NAME
+} from "@/constants/queryString.constants";
+import { userSelectiontabDatas } from "@/constants/selection.constants";
 import useFetchUserSelectionList from "@/hooks/queries/useFetchUserSelectionList";
-import { Ihashtags } from "@/models/hashtag.model";
+import useClickOutside from "@/hooks/useClickOutside";
+import useSelectionSort from "@/hooks/useSelectionSort";
 import { TsortType } from "@/models/searchResult.model";
 import { TuserSelection } from "@/models/user.model";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
-
-const tabDatas: Array<{ title: string; query: TuserSelection }> = [
-  {
-    title: "작성한 셀렉션",
-    query: "my"
-  },
-  {
-    title: "북마크 셀렉션",
-    query: "bookmark"
-  },
-  {
-    title: "임시저장 셀렉션",
-    query: "temp"
-  }
-];
+import { FaCaretDown } from "react-icons/fa";
 
 const UserSelectionList = () => {
-  const [currentSelection, setCurrentSelection] = useState<TuserSelection>("my");
+  const [currentSelection, setCurrentSelection] =
+    useState<TuserSelection>("my");
   const searchParams = useSearchParams();
-  const userSelectionType = (searchParams.get(QUERY_STRING_NAME.userSelection) as TuserSelection) || QUERY_STRING_DEFAULT.userSelection as TuserSelection
-  const sort = (searchParams.get(QUERY_STRING_NAME.sort) as TsortType) || QUERY_STRING_DEFAULT.sort as TsortType;
-  const page = searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
-  const limit = searchParams.get(QUERY_STRING_NAME.limit) || "9";
   const pathname = usePathname();
-  const userIdMatch = pathname.match(/user\/(\d+)/); // 예: "/users/123"에서 "123"을 추출
-  if(!userIdMatch) return null;
+  const userIdMatch = pathname.match(/user\/(\d+)/);
 
+  if (!userIdMatch) return null;
   const userId = userIdMatch[1];
-  const {data : userSelectionList, isLoading, isError} = useFetchUserSelectionList({userId, userSelectionType, sort, page, limit})
 
-  const handleTabData = (tabData : TuserSelection) => {
-    setCurrentSelection(tabData)
-    deleteQueryString(QUERY_STRING_NAME.userSelection)
+  const userSelectionType =
+    (searchParams.get(QUERY_STRING_NAME.userSelection) as TuserSelection) ||
+    (QUERY_STRING_DEFAULT.userSelection as TuserSelection);
+  const sort =
+    (searchParams.get(QUERY_STRING_NAME.sort) as TsortType) ||
+    (QUERY_STRING_DEFAULT.sort as TsortType);
+  const page =
+    searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
+  const limit =
+    searchParams.get(QUERY_STRING_NAME.limit) ||
+    QUERY_STRING_DEFAULT.userSelection_limit;
+
+  const {
+    setIsSortClicked,
+    toggleSortOptions,
+    currentSortOption,
+    sortRender,
+    sortRef
+  } = useSelectionSort();
+  useClickOutside(sortRef, () => setIsSortClicked(false));
+
+  const {
+    data: userSelectionList,
+    isLoading,
+    isError
+  } = useFetchUserSelectionList({
+    userId,
+    userSelectionType,
+    sort,
+    page,
+    limit
+  });
+
+  const handleTabData = (tabData: TuserSelection) => {
+    setCurrentSelection(tabData);
+    deleteQueryString(QUERY_STRING_NAME.userSelection);
     addQueryString(QUERY_STRING_NAME.userSelection, tabData);
-  }
+  };
 
-  if(!userSelectionList) return null;
-  if(isLoading) return <SearchLoading/>
-  if(isError) return <div>에러입니다.</div>
+  if (isError) return <div>에러입니다.</div>;
 
   return (
-    <div className="mt-10 h-auto m-auto">
-      <ul className="list-none flex gap-[20px] text-large font-bold text-grey3 cursor-pointer mb-10">{
-        tabDatas.map((tabData)=>(
-          <li key={tabData.query} className={currentSelection === tabData.query ? 'text-black font-extrabold' : 'text-grey3'}
-          onClick={()=>handleTabData(tabData.query)}
-          >{tabData.title}</li>
+    <div className="w-full mt-10 h-auto m-auto p-[20px] box-border">
+      <ul className="list-none flex gap-[20px] text-large font-bold text-grey3 cursor-pointer mb-10">
+        {userSelectiontabDatas.map((tabData) => (
+          <li
+            key={tabData.query}
+            className={
+              currentSelection === tabData.query
+                ? "text-black font-extrabold"
+                : "text-grey3"
+            }
+            onClick={() => handleTabData(tabData.query)}
+          >
+            {tabData.title}
+          </li>
         ))}
-
       </ul>
-      <div className="grid grid-cols-3 mt-5 gap-[20px]">
-        {userSelectionList.data.map((item) => (
-          <ColCard
-          key={item.slt_id}
-          thumbnail={item.slt_img}
-          category={item.slt_category_name}
-          region={item.slt_location_option_name}
-          selectionId={item.slt_id}
-          hashtags={item.slt_hashtags}
-          description={item.slt_description}
-          title={item.slt_title}
-          userName={item.user_nickname}
-          userImage={item.user_img}
-          status={item.slt_status}
-          />
-        ))}
+      <div
+        className="flex justify-end gap-[5px] text-medium text-grey4 mb-5 relative cursor-pointer"
+        ref={sortRef}
+        onClick={toggleSortOptions}
+      >
+        <div>{currentSortOption}</div>
+        <FaCaretDown className="w-[15px] h-[15px]" />
+        {sortRender()}
       </div>
-      <div className="translate-x-[-90px]">
-      <Pagination pagination={userSelectionList.pagination}></Pagination>
-      </div>
+      {isLoading || !userSelectionList ? (
+        <SearchLoading />
+      ) : (
+        <>
+          {userSelectionList.data.length > 0 ? (
+            <>
+              <div className="grid grid-cols-3 gap-[20px]">
+                {userSelectionList.data.map((item) => (
+                  <ColCard
+                    key={item.slt_id}
+                    thumbnail={item.slt_img}
+                    category={item.slt_category_name}
+                    region={item.slt_location_option_name}
+                    selectionId={item.slt_id}
+                    hashtags={item.slt_hashtags}
+                    description={item.slt_description}
+                    title={item.slt_title}
+                    userName={item.user_nickname}
+                    userImage={item.user_img}
+                    status={item.slt_status}
+                  />
+                ))}
+              </div>
+              <Pagination
+                pagination={userSelectionList.pagination}
+              ></Pagination>
+            </>
+          ) : (
+            <SearchEmptyResults />
+          )}
+        </>
+      )}
     </div>
   );
 };
