@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { GoKebabHorizontal } from "react-icons/go";
 import { IoMdLock } from "react-icons/io";
 import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
@@ -8,6 +8,9 @@ import { usePathname } from "next/navigation";
 import { TselectionStatus } from "@/models/searchResult.model";
 import { Ihashtags } from "@/models/hashtag.model";
 import Hashtag from "../Hashtag";
+import { BiSolidPencil } from "react-icons/bi";
+import { FaTrash } from "react-icons/fa";
+import useClickOutside from "@/hooks/useClickOutside";
 
 export interface IBaseCardProps {
   thumbnail: string;
@@ -28,6 +31,21 @@ export interface IColCardProps extends IBaseCardProps {
   onClick?: () => void;
 }
 
+const menuList = [
+  {
+    title: "수정하기",
+    icon: <BiSolidPencil />
+  },
+  {
+    title: "비공개 설정하기",
+    icon: <IoMdLock />
+  },
+  {
+    title: "삭제하기",
+    icon: <FaTrash />
+  }
+];
+
 const ColCard = ({
   thumbnail,
   title,
@@ -43,21 +61,30 @@ const ColCard = ({
   status = "public",
   onClick
 }: IColCardProps) => {
+  const pathname = usePathname();
+  const [showMenu, setShowMenu] = useState(false);
+  const selectionMenuRef = useRef<HTMLUListElement>(null);
+  useClickOutside(selectionMenuRef, ()=>setShowMenu(false))
+
   const handleIconClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (onClick) {
-      onClick();
-    }
+    e.stopPropagation();
+    setShowMenu((prev) => !prev);
   };
 
-  const pathname = usePathname();
+  const handleMenuItemClick = (e : React.MouseEvent, action: string) => {
+    console.log(`${action} 클릭됨!`);
+    e.preventDefault();
+    e.stopPropagation();
+    setShowMenu(false);
+  };
 
   return (
     <Link
       href={`/selection/${selectionId}`}
       className={`flex flex-col w-[248px] ${
         userImage && userName ? "h-[389px]" : "h-[355px]"
-      } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-75 bg-white`}
+      } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-90 bg-white`}
     >
       <div className="relative w-full h-[178px]">
         {thumbnail ? (
@@ -70,7 +97,9 @@ const ColCard = ({
             sizes="width : 100%, height : 178px"
           />
         ) : (
-          <div className="w-full h-full flex justify-center items-center text-white font-bold text-large bg-grey2">spotlight</div>
+          <div className="w-full h-full flex justify-center items-center text-white font-bold text-large bg-grey2">
+            spotlight
+          </div>
         )}
 
         {status === "private" && (
@@ -88,13 +117,33 @@ const ColCard = ({
             {category}
             {region && ` / ${region}`}
           </p>
-          {pathname === "/mypage" && (
-            <GoKebabHorizontal
-              fill="#7C7C7C"
-              className="rotate-90 z-10"
-              size={12}
-              onClick={handleIconClick}
-            />
+          {pathname.startsWith("/user") && (
+            <div className="relative">
+              <GoKebabHorizontal
+                fill="#7C7C7C"
+                className="rotate-90 z-10"
+                size={12}
+                onClick={handleIconClick}
+              />
+              {showMenu && (
+                <ul className="absolute top-5 right-30 bg-white border border-grey2 shadow-md w-[206px] flex border-solid rounded-lg flex-col z-30"
+                ref={selectionMenuRef}
+                >
+                  {menuList.map((menu, index) => (
+                    <li
+                      className={`cursor-pointer border-b border-solid border-grey2 hover:bg-grey1 flex gap-[10px] items-center text-grey4 px-5 box-border py-[5px] ${
+                        menu.title === "삭제하기" ? "text-red-500" : ""
+                      }`}
+                      key={menu.title}
+                      onClick={(e) => handleMenuItemClick(e, menu.title)}
+                    >
+                      {menu.icon}
+                      <h1 className="font-medium my-[10px]">{menu.title}</h1>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           )}
         </div>
 
@@ -108,7 +157,7 @@ const ColCard = ({
           ))}
         </div>
 
-        <p className="text-grey4 line-clamp-3 text-extraSmall font-medium h-9  ">
+        <p className="text-grey4 line-clamp-3 text-extraSmall font-medium h-9">
           {description}
         </p>
 
@@ -116,15 +165,16 @@ const ColCard = ({
           <div className="flex justify-between items-center text-grey4 mt-auto">
             <div className="flex items-center gap-1">
               <div className="relative w-[16px] h-[16px]">
-                {userImage ?
-                <Image
-                  src={userImage}
-                  alt={userName}
-                  className="rounded-full object-cover"
-                  fill
-                /> :
-                <div className="w-full h-full flex justify-center items-center font-bold text-large"/>
-              }
+                {userImage ? (
+                  <Image
+                    src={userImage}
+                    alt={userName}
+                    className="rounded-full object-cover"
+                    fill
+                  />
+                ) : (
+                  <div className="w-full h-full flex justify-center items-center font-bold text-large" />
+                )}
               </div>
               <span className="text-extraSmall font-semibold">{userName}</span>
             </div>
