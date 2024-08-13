@@ -5,7 +5,8 @@ export const QUERY_STRING_NAME = {
     page: "page",
     limit : "limit",
     sort : "sort",
-    tagValue: "tag_value"
+    tagValue: "tag_value",
+    userSelection : "user_selection"
 }
 
 export const QUERY_STRING_DEFAULT = {
@@ -14,5 +15,6 @@ export const QUERY_STRING_DEFAULT = {
     tags : [],
     page : "1",
     limit : "12",
-    sort : "latest"
+    sort : "latest",
+    userSelection : "my"
 }

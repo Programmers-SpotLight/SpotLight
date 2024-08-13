@@ -80,7 +80,7 @@ const UserInfoWidget = () => {
           </li>
         ))}
         <button 
-        className="w-[26px] h-[26px] bg-grey3 rounded-full flex justify-center items-center transition-transform transform hover:scale-110 "
+        className="w-[26px] h-[26px] bg-grey3 rounded-full flex justify-center items-center transition-transform transform hover:scale-110"
         onClick={() => openModal("editTag", {hashtags: hashtags})}
         >
           <IoIosAdd className="fill-white text-large" />

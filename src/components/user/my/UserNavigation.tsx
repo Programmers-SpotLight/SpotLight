@@ -22,7 +22,7 @@ const UserNavigation: React.FC = () => {
   const currentEndpoint = currentPath.split('/').pop();
 
   return (
-    <div className='w-[180px] px-10 flex flex-col h-full gap-10 list-none pt-[400px] box-border'>
+    <div className='w-[180px] px-10 flex flex-col h-full gap-10 list-none pt-[420px] box-border'>
       {userNavigationListData.map((item) => {
         const itemEndpoint = item.url.split('/').pop();
         

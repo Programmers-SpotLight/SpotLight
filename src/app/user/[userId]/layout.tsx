@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <div className="border border-solid border-grey2 bg-grey0 w-[1024px] m-auto flex">
       {isUser && (
-        <div className="sticky top-0 left-0 h-[100vh]">
+        <div className="top-0 left-0 h-[100vh]">
           <UserNavigation />
         </div>
       )}

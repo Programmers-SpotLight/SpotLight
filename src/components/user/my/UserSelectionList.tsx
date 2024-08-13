@@ -1,9 +1,12 @@
 import ColCard from "@/components/common/card/ColCard";
 import Pagination from "@/components/search/Pagination";
+import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import { Ihashtags } from "@/models/hashtag.model";
 import { Ipagination } from "@/models/searchResult.model";
 import { ISelectionDetailInfo } from "@/models/selection.model";
-import React from "react";
+import { TuserSelection } from "@/models/user.model";
+import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
+import React, { useState } from "react";
 
 const selectionData: ISelectionDetailInfo[] = [
   {
@@ -177,9 +180,40 @@ const pagination: Ipagination = {
   limit: 5
 };
 
+const tabDatas: Array<{ title: string; query: TuserSelection }> = [
+  {
+    title: "작성한 셀렉션",
+    query: "my"
+  },
+  {
+    title: "북마크 셀렉션",
+    query: "bookmark"
+  },
+  {
+    title: "임시저장 셀렉션",
+    query: "temp"
+  }
+];
+
 const UserSelectionList = () => {
+  const [currentSelection, setCurrentSelection] = useState<TuserSelection>("my");
+
+  const handleTabData = (tabData : TuserSelection) => {
+    setCurrentSelection(tabData)
+    deleteQueryString(QUERY_STRING_NAME.userSelection)
+    addQueryString(QUERY_STRING_NAME.userSelection, tabData);
+  }
+
   return (
     <div className="mt-10 h-auto m-auto">
+      <ul className="list-none flex gap-[20px] text-large font-bold text-grey3 cursor-pointer mb-10">{
+        tabDatas.map((tabData)=>(
+          <li key={tabData.query} className={currentSelection === tabData.query ? 'text-black font-extrabold' : 'text-grey3'}
+          onClick={()=>handleTabData(tabData.query)}
+          >{tabData.title}</li>
+        ))}
+
+      </ul>
       <div className="grid grid-cols-3 mt-5 gap-[20px]">
         {selectionData.map((item) => (
           <ColCard

@@ -5,3 +5,5 @@ export interface IMinimumUserInfo {
   description: string;
   isPrivate: boolean;
 }
+
+export type TuserSelection = "my" | "bookmark" | "temp"
