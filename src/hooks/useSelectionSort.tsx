@@ -31,7 +31,7 @@ const useSelectionSort = () => {
   const sortRender = () => {
     return (
       isSortClicked && (
-        <ul className="absolute top-full mt-5 p-2 bg-white w-32 h-auto z-10 border border-gray-300 rounded-lg">
+        <ul className="absolute top-full mt-5 p-2 bg-white w-32 h-auto z-10 border border-solid border-grey2 rounded-lg">
           {sortData.map((data, index) => (
             <li
               key={index}

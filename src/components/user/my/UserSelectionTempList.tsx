@@ -25,7 +25,7 @@ const UserSelectionTempList: React.FC<IUserSelectionList> = ({
   if (isError) return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>;
   if (!tempSelectionList) return null;
   return (
-    <div className="min-h-[800px] flex flex-col gap-[20px]">
+    <div className="min-h-[800px] flex flex-col gap-[10px]">
       {tempSelectionList.data.map((item, index) => (
         <TempCard
           key={item.slt_temp_id}

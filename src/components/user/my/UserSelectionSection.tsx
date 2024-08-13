@@ -22,8 +22,6 @@ import UserSelectionList from "./UserSelectionList";
 import UserSelectionTempList from "./UserSelectionTempList";
 
 const UserSelectionSection = () => {
-  const [currentSelection, setCurrentSelection] =
-    useState<TuserSelection>("my");
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const userIdMatch = pathname.match(/user\/(\d+)/);
@@ -43,6 +41,9 @@ const UserSelectionSection = () => {
     searchParams.get(QUERY_STRING_NAME.limit) ||
     QUERY_STRING_DEFAULT.userSelection_limit;
 
+  const [currentSelection, setCurrentSelection] = useState<TuserSelection>(
+    userSelectionType ? userSelectionType : "my"
+  );
   const {
     setIsSortClicked,
     toggleSortOptions,
@@ -84,22 +85,23 @@ const UserSelectionSection = () => {
         <FaCaretDown className="w-[15px] h-[15px]" />
         {sortRender()}
       </div>
-      {userSelectionType === "temp" ? 
-      <UserSelectionTempList
-      userId={userId}
-      userSelectionType={userSelectionType}
-      sort={sort}
-      page={page}
-      limit={limit}      />
-      : <UserSelectionList
-        userId={userId}
-        userSelectionType={userSelectionType}
-        sort={sort}
-        page={page}
-        limit={limit}
-      />
-
-}
+      {userSelectionType === "temp" ? (
+        <UserSelectionTempList
+          userId={userId}
+          userSelectionType={userSelectionType}
+          sort={sort}
+          page={page}
+          limit={limit}
+        />
+      ) : (
+        <UserSelectionList
+          userId={userId}
+          userSelectionType={userSelectionType}
+          sort={sort}
+          page={page}
+          limit={limit}
+        />
+      )}
     </div>
   );
 };
