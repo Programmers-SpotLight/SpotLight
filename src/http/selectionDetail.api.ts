@@ -1,8 +1,6 @@
 import { requestHandler } from "@/http/http";
 
-export const fetchSelectionDetailInfo = async (
-  selectionId: string | string[]
-) => {
+export const fetchSelectionDetailInfo = async (selectionId: number) => {
   try {
     const response = await requestHandler(
       "get",
