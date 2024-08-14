@@ -6,13 +6,14 @@ interface IUser {
 }
 
 interface IReviewImage {
-  reviewImageOrder: number;
+  reviewImgId: string | Buffer;
   reviewImgSrc: string;
+  reviewImageOrder: number;
 }
 
 interface IReview {
-  reviewId: number;
-  sltOrSpotId: number;
+  reviewId: string;
+  sltOrSpotId: number | string;
   reviewImg: IReviewImage[] | null;
   reviewDescription: string;
   reviewScore: number;
@@ -22,6 +23,10 @@ interface IReview {
   likeCount: number;
 }
 
+interface IReviewsInfo {
+  reviewAvg : number;
+  reviewCount : number;
+};
 interface IReviews {
   reviewAvg: number;
   reviewCount: number;
@@ -34,15 +39,15 @@ interface IReviewFormData {
   reviewImg: IReviewImage[] | null;
 }
 
-type ReviewType = "selection" | "spot";
+interface IReviewUpdateFormData extends IReviewFormData { reviewId: string; }
 
-interface IMyReview {
-  reviewId: string;
-  sltOrSpotId: number | string;
-  sltName: string;
-  spotName: string | null;
+interface IReviewInsertData {
+  reviewId: string | Buffer;
+  userId: number;
+  sltOrSpotId: string | number;
   reviewDescription: string;
   reviewScore: number;
-  updatedDate: string;
-  likeCount: number;
+  reviewImg: IReviewImage[] | null;
 }
+
+type ReviewType = "selection" | "spot";

@@ -3,29 +3,31 @@ import { useMutation } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
 export const useReviewsLikes = (
-  sltOrSpotId: number,
-  reviewId: number,
+  sltOrSpotId: number | string,
+  reviewId: string,
   reviewType: ReviewType,
   userId: number
 ) => {
   const params = useParams();
-  let selectionId,
-    spotId = null;
+
+  let selectionId: number | null = null;
+  let spotId: string | null = null;
+
   if (reviewType === "selection") {
-    selectionId = sltOrSpotId;
+    selectionId = Number(sltOrSpotId);
   } else {
     selectionId = parseInt(params.selectionId.toString(), 10);
-    spotId = sltOrSpotId;
+    spotId = sltOrSpotId.toString();
   }
 
   const { mutate: addLikeMutate } = useMutation({
     mutationKey: [],
-    mutationFn: () => addReviewLike(selectionId, reviewId, spotId, userId)
+    mutationFn: () => addReviewLike(selectionId, reviewId, spotId, userId),
   });
 
   const { mutate: removeLikeMutate } = useMutation({
     mutationKey: [],
-    mutationFn: () => removeReviewLike(selectionId, reviewId, spotId, userId)
+    mutationFn: () => removeReviewLike(selectionId, reviewId, spotId, userId),
   });
 
   return { addLikeMutate, removeLikeMutate };

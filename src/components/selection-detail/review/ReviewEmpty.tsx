@@ -1,16 +1,14 @@
 import Button from "@/components/common/button/Button";
 import { useModalStore } from "@/stores/modalStore";
 
-const ReviewEmpty = () => {
-  const { openModal } = useModalStore();
+interface IReviewEmptyProp {
+  openModal: () => void;
+}
 
-  const openReviewAddModal = () => {
-    openModal('review'); 
-  };
-
+const ReviewEmpty = ({ openModal }: IReviewEmptyProp) => {
   return (
     <div className="flex justify-center items-center">
-      <Button size="large" onClick={openReviewAddModal}>✨ 첫 번쨰 리뷰를 달아주세요 ✨</Button>
+      <Button size="large" onClick={openModal}>✨ 첫 번쨰 리뷰를 달아주세요 ✨</Button>
     </div>
   );
 };

@@ -7,7 +7,7 @@ function generateBinaryUUID(): Buffer {
 }
 
 export const addLike = async (
-  reviewId: number,
+  reviewId: string,
   reviewType: ReviewType,
   userId: number
 ) => {
@@ -18,23 +18,25 @@ export const addLike = async (
       await dbConnectionPool("selection_review_like").insert({
         slt_review_like_id: reviewLikeId,
         user_id: userId,
-        slt_review_id: reviewId
+        slt_review_id: dbConnectionPool.raw('UNHEX(?)', [reviewId])
       });
     } else {
       //spot add like
       await dbConnectionPool("spot_review_like").insert({
         spot_review_like_id: reviewLikeId,
         user_id: userId,
-        spot_review_id: reviewId
+        spot_review_id: dbConnectionPool.raw('UNHEX(?)', [reviewId])
       });
     }
   } catch (error) {
+
+    console.error("Error details:", error);
     throw new Error("Failed to add review like");
   }
 };
 
 export const removeLike = async (
-  reviewId: number,
+  reviewId: string,
   reviewType: ReviewType,
   userId: number
 ) => {
@@ -44,7 +46,7 @@ export const removeLike = async (
       await dbConnectionPool("selection_review_like")
         .where({
           user_id: userId,
-          slt_review_id: reviewId
+          slt_review_id: dbConnectionPool.raw('UNHEX(?)', [reviewId])
         })
         .del();
     } else {
@@ -52,7 +54,7 @@ export const removeLike = async (
       await dbConnectionPool("spot_review_like")
         .where({
           user_id: userId,
-          spot_review_id: reviewId
+          spot_review_id: dbConnectionPool.raw('UNHEX(?)', [reviewId])
         })
         .del();
     }

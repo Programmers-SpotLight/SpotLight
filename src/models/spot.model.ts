@@ -8,7 +8,7 @@ export interface ISpotImage {
 }
 
 export interface ISpotInfo {
-  id: string;
+  id: { type: string; data: number[] };
   title: string;
   description: string;
   address: string;
