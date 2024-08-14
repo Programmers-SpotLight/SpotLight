@@ -8,12 +8,12 @@ import { ISpotInfo } from "@/models/spot.model";
 interface ISpotSectionProps {
   isSelectionDrawerOpen: boolean;
   isSpotDrawerOpen: boolean;
-  selectedSpotId: string | null;
+  selectedSpotId: Buffer;
   spotData: ISpotInfo;
 }
 
-const bufferDataToHexString = (bufferObj: { type: string; data: number[] }): string => {
-  return Buffer.from(bufferObj.data).toString('hex');
+const bufferDataToHexString = (bufferObj: Buffer): string => {
+  return Buffer.from(bufferObj).toString("hex");
 };
 
 const SpotSection = ({
