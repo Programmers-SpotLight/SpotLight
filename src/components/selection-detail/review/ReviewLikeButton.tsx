@@ -48,8 +48,6 @@ const ReviewLikeButton = ({
     }
   };
 
-  console.log(reviewId, likes)
-
   const colorClass = checkLiked ? "text-primary" : "text-grey3";
 
   return (
