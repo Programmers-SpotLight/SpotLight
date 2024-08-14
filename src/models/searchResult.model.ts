@@ -47,7 +47,7 @@ export interface IsearchResult {
 
 export interface ItempSelectionResult {
 	data : ItempSelectionData[],
-	paginaton : Ipagination
+	pagination : Ipagination
 }
 
 export interface ErrorResponse { // 병합 시 작성 모델 적용

@@ -1,4 +1,5 @@
 import { formatDate } from "@/utils/formatDate";
+import Link from "next/link";
 import React from "react";
 import { FaTrash } from "react-icons/fa";
 
@@ -21,7 +22,9 @@ const TempCard = ({
 }: ITempCard) => {
   return (
     <div className="flex gap-5 cursor-pointer">
-      <div className="flex-[0.8] h-[110px] p-5 bg-white border border-solid border-grey2 rounded-lg flex flex-col gap-[5px]">
+      <Link
+      href={`/selection/create/${selectionId}`}
+      className="flex-[0.8] h-[110px] p-5 bg-white border border-solid border-grey2 rounded-lg flex flex-col gap-[5px]  hover:scale-105 transition-transform duration-200">
         <div className="flex justify-between">
           <h1 className="w-[400px] font-bold text-medium text-black overflow-hidden overflow-ellipsis line-clamp-1 h-[16px]">
             {title}
@@ -41,7 +44,7 @@ const TempCard = ({
         <div className="text-extraSmall font-medium text-grey4 h-[24px] line-clamp-2 mt-[5px]">
           {description ? description : "설명 미정"}
         </div>
-      </div>
+      </Link>
       <div className="flex-[0.2] flex items-center justify-center flex-col gap-[5px] text-red-500 cursor-pointer">
         <FaTrash />
         <h1>삭제하기</h1>

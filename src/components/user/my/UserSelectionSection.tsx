@@ -56,6 +56,7 @@ const UserSelectionSection = () => {
   const handleTabData = (tabData: TuserSelection) => {
     setCurrentSelection(tabData);
     deleteQueryString(QUERY_STRING_NAME.userSelection);
+    deleteQueryString(QUERY_STRING_NAME.page);
     addQueryString(QUERY_STRING_NAME.userSelection, tabData);
   };
 
