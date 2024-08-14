@@ -65,7 +65,9 @@ export interface ISelectionCreateFormData {
   hashtags?: Array<string | number>;
 }
 
-export type TSelectionCreateFormData = ISelectionCreateTemporaryData | ISelectionCreateCompleteData;
+export type TSelectionCreateFormData =
+  | ISelectionCreateTemporaryData
+  | ISelectionCreateCompleteData;
 
 export interface ISelectionCategoryQueryResultRow {
   category_id: number;
@@ -90,6 +92,7 @@ export interface ISelectionDetailInfo {
   categoryName: string;
   image?: string;
   hashtags: Ihashtags[];
+  location: string;
 }
 
 export interface ISelectionInfo extends ISelectionDetailInfo {
@@ -98,7 +101,6 @@ export interface ISelectionInfo extends ISelectionDetailInfo {
     nickname: string;
     image?: string;
   };
-  location: string;
   spotList: ISpotInfo[];
   booked: boolean;
 }
@@ -110,7 +112,7 @@ export interface IModalCreateSelectionSpotExtraData {
 }
 
 export interface ISelectionCreateCompleteData {
-  status: 'public' | 'private';
+  status: "public" | "private";
   title: string;
   description: string;
   category: number;
@@ -121,7 +123,7 @@ export interface ISelectionCreateCompleteData {
 }
 
 export interface ISelectionCreateTemporaryData {
-  status: 'temp';
+  status: "temp";
   title: string;
   description?: string;
   category?: number;

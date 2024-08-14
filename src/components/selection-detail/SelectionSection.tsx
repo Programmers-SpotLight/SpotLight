@@ -8,9 +8,9 @@ import { ISelectionInfo } from "@/models/selection.model";
 
 interface ISelectionSectionProps {
   isSelectionDrawerOpen: boolean;
-  spotClickHandler: (spotId: string) => void;
+  spotClickHandler: (spotId: Buffer) => void;
   selectionData: ISelectionInfo;
-  selectedSpotId: string | null;
+  selectedSpotId: Buffer;
 }
 
 const SelectionSection = ({
@@ -19,7 +19,7 @@ const SelectionSection = ({
   selectionData,
   selectedSpotId
 }: ISelectionSectionProps) => {
-  const selectionTabData = (spotClickHandler: (spotId: string) => void) => [
+  const selectionTabData = (spotClickHandler: (spotId: Buffer) => void) => [
     {
       title: "셀렉션 정보",
       component: <SelectionInfo description={selectionData.description} />
@@ -36,7 +36,9 @@ const SelectionSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <Review reviewType="selection" sltOrSpotId={selectionData.id} />
+      component: (
+        <Review reviewType="selection" sltOrSpotId={selectionData.id} />
+      )
     }
   ];
 
