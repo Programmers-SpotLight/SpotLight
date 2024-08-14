@@ -89,7 +89,8 @@ export const getSpotDetailInfo = async (selectionId: number) => {
         "spot_created_date as createdDate",
         "spot_gmap_id as gmapId",
         "spot_category.spot_category_id as categoryId",
-        "spot_category.spot_category_name as categoryName"
+        "spot_category.spot_category_name as categoryName",
+        "spot_order as order"
       )
       .where("spot.slt_id", selectionId);
 

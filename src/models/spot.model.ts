@@ -21,4 +21,5 @@ export interface ISpotInfo {
   hashtags: Ihashtags[];
   categoryId: number;
   categoryName: SpotCategory;
+  order: number;
 }

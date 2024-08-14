@@ -56,6 +56,7 @@ export async function GET(
       { status: 404 }
     );
   }
+  spotDetailInfo.sort((a, b) => a.order - b.order);
 
   for (let i = 0; i < spotDetailInfo.length; i++) {
     const spotImages: ISpotImage[] = await getSpotImages(spotDetailInfo[i].id);
