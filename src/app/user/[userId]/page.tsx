@@ -4,7 +4,7 @@ import React from "react";
 import UserSelectionList from "@/components/user/my/UserSelectionSection";
 
 const UserPage = () => {
-  const isMypage = true;
+  const isMypage = false;
   return (
     <>
       {isMypage ? (
@@ -13,7 +13,7 @@ const UserPage = () => {
         </div>
       ) : (
         <div className="w-[800px] m-auto my-5">
-          <UserSelectionList isMyPage={isMypage} />
+          <UserSelectionList/>
         </div>
       )}
     </>
