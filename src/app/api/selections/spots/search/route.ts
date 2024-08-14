@@ -16,17 +16,21 @@ export const GET = async (request: NextRequest) => {
     languageCode: 'ko',
   };
 
-  const response = await axios.post(
-    API_URL, 
-    inputData,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-        'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.attributions,places.id,places.name,nextPageToken',
+  try {
+    const response = await axios.post(
+      API_URL, 
+      inputData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+          'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.attributions,places.id,places.name,nextPageToken',
+        }
       }
-    }
-  );
+    );
 
-  return new Response(JSON.stringify(response.data.places), { status: 200 });
-}
+    return new Response(JSON.stringify(response.data.places), { status: 200 });
+  } catch (error: any) {
+    return new Response(error.message, { status: error.statusCode || 500 });
+  }
+};

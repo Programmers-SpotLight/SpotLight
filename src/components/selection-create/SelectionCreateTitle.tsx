@@ -13,7 +13,7 @@ const SelectionCreateTitle : React.FC = () => {
 
   return (
     <div className="flex items-center gap-6 pb-6">
-      <div className="flex items-center grow">
+      <div className="flex items-center w-2/3">
         <label htmlFor="title" className="w-1/4 text-medium font-bold">셀렉션 제목</label>
         <OneLineInput
           placeholder="셀렉션 제목을 입력해주세요." 

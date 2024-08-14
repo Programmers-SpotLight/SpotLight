@@ -1,6 +1,8 @@
+import { Ihashtags } from "@/models/hashtag.model";
 import { ISelectionDetailInfo } from "@/models/selection.model";
 import { ISpotImage, ISpotInfo } from "@/models/spot.model";
 import {
+  getBookMarks,
   getSelectionDetailInfo,
   getSelectionHashTags,
   getSpotDetailInfo,
@@ -12,9 +14,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { selectionId: string } }
+  { params }: { params: { selectionId: number } }
 ) {
-  const selectionId = parseInt(params.selectionId, 10);
+  const selectionId = params.selectionId;
 
   let selectionData = {};
 
@@ -35,7 +37,7 @@ export async function GET(
     );
   }
 
-  const hashtags: string[] = await getSelectionHashTags(selectionId);
+  const hashtags: Ihashtags[] = await getSelectionHashTags(selectionId);
   if (hashtags.length === 0) {
     return NextResponse.json(
       { error: "There Is No HashTags" },
@@ -59,14 +61,19 @@ export async function GET(
     const spotImages: ISpotImage[] = await getSpotImages(spotDetailInfo[i].id);
     if (spotImages.length) spotDetailInfo[i].images = spotImages;
 
-    const spotHashtags: string[] = await getSpotHashTags(spotDetailInfo[i].id);
+    const spotHashtags: Ihashtags[] = await getSpotHashTags(
+      spotDetailInfo[i].id
+    );
     if (spotHashtags.length) spotDetailInfo[i].hashtags = spotHashtags;
   }
+
+  const booked = await getBookMarks(selectionId, 1); //임시로 userId 1로 설정
 
   selectionData = {
     ...selecitonDetailInfo,
     hashtags,
-    spotList: spotDetailInfo
+    spotList: spotDetailInfo,
+    booked: booked.length ? true : false
   };
   return NextResponse.json(selectionData);
 }

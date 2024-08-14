@@ -2,8 +2,8 @@ import { Tab, Tabs } from "@/components/common/Tabs";
 import React from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
-import { ISpotInfo, SpotCategory } from "@/models/spot";
 import Review from "./review/Review";
+import { ISpotInfo } from "@/models/spot.model";
 
 interface ISpotSectionProps {
   isSelectionDrawerOpen: boolean;
@@ -48,7 +48,7 @@ border-[0.5px] border-grey2 border-solid w-[375px] overflow-y-scroll scrollbar-h
       style={{ height: "calc(100vh - 74px)" }}
     >
       <SpotHeader
-        images={spotData.images}
+        images={spotData.images.sort((a, b) => b.order - a.order)}
         categoryName={spotData.categoryName}
         title={spotData.title}
         address={spotData.address}

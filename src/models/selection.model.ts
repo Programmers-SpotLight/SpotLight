@@ -1,3 +1,5 @@
+import { Ihashtags } from "./hashtag.model";
+import { TselectionStatus } from "./searchResult.model";
 import { ISpotInfo } from "./spot.model";
 
 export interface ISelectionCategory {
@@ -63,6 +65,8 @@ export interface ISelectionCreateFormData {
   hashtags?: Array<string | number>;
 }
 
+export type TSelectionCreateFormData = ISelectionCreateTemporaryData | ISelectionCreateCompleteData;
+
 export interface ISelectionCategoryQueryResultRow {
   category_id: number;
   category_name: string;
@@ -79,12 +83,13 @@ export interface ISelectionDetailInfo {
   id: number;
   title: string;
   description: string;
-  status: string | null;
+  status: TselectionStatus;
   createdAt: Date;
   updatedAt: Date;
   categoryId: number;
   categoryName: string;
   image?: string;
+  hashtags: Ihashtags[];
 }
 
 export interface ISelectionInfo extends ISelectionDetailInfo {
@@ -94,13 +99,34 @@ export interface ISelectionInfo extends ISelectionDetailInfo {
     image?: string;
   };
   location: string;
-  hashtags: string[];
   spotList: ISpotInfo[];
   booked: boolean;
 }
 
 export interface IModalCreateSelectionSpotExtraData {
-  spotCategories: {id: number, name: string}[];
+  spotCategories: { id: number; name: string }[];
   spot?: ISelectionSpot;
   index?: number;
+}
+
+export interface ISelectionCreateCompleteData {
+  status: 'public' | 'private';
+  title: string;
+  description: string;
+  category: number;
+  location: { location: number; subLocation: number };
+  img: File | string;
+  spots: ISelectionSpot[];
+  hashtags: Array<string | number>;
+}
+
+export interface ISelectionCreateTemporaryData {
+  status: 'temp';
+  title: string;
+  description?: string;
+  category?: number;
+  location?: { location: number; subLocation: number };
+  img?: File | string;
+  spots?: ISelectionSpot[];
+  hashtags?: Array<string | number>;
 }

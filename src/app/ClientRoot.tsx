@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 
-
 export default function ClientRoot({
   children
 }: Readonly<{
@@ -15,7 +14,7 @@ export default function ClientRoot({
 }>) {
   const queryClient = useMemo(() => new QueryClient(), []);
   const pathname = usePathname();
-  const showFooter = !/^\/selection\/\d+$/.test(pathname);
+  const showFooter = !/^\/(selection\/\d+|other-user\/\d+)$/.test(pathname);
   const shouldBeFlex = /\/selection\/create$/.test(pathname);
 
   return (
