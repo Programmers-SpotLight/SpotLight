@@ -52,7 +52,7 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
       <div className="relative flex flex-col gap-[5px] p-5">
         <div className="flex justify-between ">
           <h2 className="text-small text-grey4 font-medium">
-            {selectionData.categoryName}
+            {selectionData.categoryName} &gt; {selectionData.location}
           </h2>
           <p className="flex gap-[5px]">
             <FaShareAlt

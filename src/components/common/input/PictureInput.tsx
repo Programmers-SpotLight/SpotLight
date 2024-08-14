@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 
 interface IPictureInputProps {
@@ -8,13 +8,15 @@ interface IPictureInputProps {
   index?: number;
 }
 
-const PictureInput = ({ 
-  inputSize, 
-  imgSrc, 
-  onPictureChange ,
-  index = -1 
+const PictureInput = ({
+  inputSize,
+  imgSrc,
+  onPictureChange,
+  index = -1
 }: IPictureInputProps) => {
-  const [image, setImage] = useState<string | ArrayBuffer | null>(imgSrc || null);
+  const [image, setImage] = useState<string | ArrayBuffer | null>(
+    imgSrc || null
+  );
 
   useEffect(() => {
     setImage(imgSrc || null);
@@ -42,9 +44,15 @@ const PictureInput = ({
   };
 
   return (
-    <div className={`${sizeStyles[inputSize]} relative border border-solid border-grey2 text-grey4 text-large rounded-lg flex flex-col items-center justify-center`}>
+    <div
+      className={`${sizeStyles[inputSize]} relative border border-solid border-grey2 text-grey4 text-large rounded-lg flex flex-col items-center justify-center`}
+    >
       {image ? (
-        <img src={image as string} alt="Uploaded" className="w-full h-full object-fill rounded-lg" />
+        <img
+          src={image as string}
+          alt="Uploaded"
+          className="w-full h-full object-fill rounded-lg"
+        />
       ) : (
         <>
           <FaCamera />
