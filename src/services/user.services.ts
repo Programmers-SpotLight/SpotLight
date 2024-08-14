@@ -44,3 +44,16 @@ export const getUserHashTags = async (userId: string) => {
         throw error;
     }
 }
+
+export const serviceUserDescription = async (userId: string, description: string) => {
+    try {
+        const queryData = await dbConnectionPool("user")
+            .where({ user_id: userId })
+            .update({ user_description: description });
+
+        return queryData;
+    } catch (error) {
+        console.error("Error updating user description:", error);
+        throw error;
+    }
+};

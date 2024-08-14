@@ -1,10 +1,10 @@
 import { getUserInfo } from "@/http/user.api";
 import { useQuery } from "@tanstack/react-query";
 
-export const useFetchUserInfo = (selectionId: string) => {
+export const useFetchUserInfo = (userId: string) => {
     return useQuery({
-      queryKey: ["userinfo", selectionId],
-      queryFn: () => getUserInfo(selectionId)
+      queryKey: ["userinfo", userId],
+      queryFn: () => getUserInfo(userId)
     });
     };
   

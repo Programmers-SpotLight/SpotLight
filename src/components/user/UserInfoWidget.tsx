@@ -12,6 +12,7 @@ import { useStore } from "zustand";
 
 interface UserInfoWidgetProps extends IUserInfoMapping{
   isMyPage : boolean
+  userId : string
 } 
 
 const UserInfoWidget = ({
@@ -23,7 +24,8 @@ const UserInfoWidget = ({
   selection_count,
   bookmark_count,
   spot_review_count,
-  selection_review_count
+  selection_review_count,
+  userId,
 }: UserInfoWidgetProps) => {
   const userInfoWidgetDatas = [
     { icons: <PiCardsFill />, count: selection_count, name: "작성한 셀렉션" },
@@ -49,7 +51,7 @@ const UserInfoWidget = ({
         <p className="flex">
           {description ? description : "자기소개가 없습니다."}
           {isMyPage && <IoPencil className="text-medium cursor-pointer"
-          onClick={() => openModal("editInfo",{description})}
+          onClick={() => openModal("editInfo",{description, userId})}
           />}
         </p>
       </div>

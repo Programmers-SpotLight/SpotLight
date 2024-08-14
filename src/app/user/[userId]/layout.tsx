@@ -23,7 +23,7 @@ export default function RootLayout({
 
   return (  
     <div className="w-[1024px] flex flex-col m-auto border border-solid border-grey2 bg-grey0 ">
-        <UserInfoWidget {...data} isMyPage={isMyPage} />
+        <UserInfoWidget {...data} isMyPage={isMyPage} userId={userId} />
         <div className="flex">
         {isMyPage && <UserNavigation/>}
         {children}

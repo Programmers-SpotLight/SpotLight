@@ -7,6 +7,11 @@ export const getUserInfo = async (userId: string) => {
     return await requestHandler("get", url);
 };
 
+export const updateUserDescription = async (userId : string, description : string) => {
+  const url = `/api/users/${userId}/description`
+  return await requestHandler("put", url, {data : {description, userId}})
+}
+
 export const fetchUserSelectionList = async (
   userId: string | string[],
   userSelectionType?: TuserSelection,
