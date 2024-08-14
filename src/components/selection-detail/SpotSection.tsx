@@ -1,5 +1,5 @@
 import { Tab, Tabs } from "@/components/common/Tabs";
-import React from "react";
+import React, { useEffect } from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
 import Review from "./review/Review";
@@ -21,6 +21,31 @@ const SpotSection = ({
   isSelectionDrawerOpen,
   spotData
 }: ISpotSectionProps) => {
+  const getImages = async () => {
+    const { Place } = (await google.maps.importLibrary(
+      "places"
+    )) as google.maps.PlacesLibrary;
+
+    if (spotData.images !== undefined) return;
+
+    spotData.images = [];
+
+    const place = new Place({ id: spotData.gmapId });
+
+    await place.fetchFields({ fields: ["photos"] });
+
+    if (place.photos && place.photos.length) {
+      for (let i = 0; i < place.photos.length; i++) {
+        if (i === 3) break;
+        spotData.images.push({ url: place.photos[i].getURI(), order: i });
+      }
+    }
+  };
+
+  useEffect(() => {
+    getImages();
+  }, []);
+
   const spotIdHex = bufferDataToHexString(spotData.id);
 
   const spotTab = [
@@ -48,7 +73,7 @@ border-[0.5px] border-grey2 border-solid w-[375px] overflow-y-scroll scrollbar-h
       style={{ height: "calc(100vh - 74px)" }}
     >
       <SpotHeader
-        images={spotData.images.sort((a, b) => b.order - a.order)}
+        images={spotData.images}
         categoryName={spotData.categoryName}
         title={spotData.title}
         address={spotData.address}

@@ -18,8 +18,6 @@ export async function GET(
 ) {
   const selectionId = params.selectionId;
 
-  let selectionData = {};
-
   if (!selectionId) {
     return NextResponse.json(
       { error: "Invalid selection ID" },
@@ -70,7 +68,7 @@ export async function GET(
 
   const booked = await getBookMarks(selectionId, 1); //임시로 userId 1로 설정
 
-  selectionData = {
+  const selectionData = {
     ...selecitonDetailInfo,
     hashtags,
     spotList: spotDetailInfo,
