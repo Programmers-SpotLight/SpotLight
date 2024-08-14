@@ -1,6 +1,6 @@
 import React from "react";
 import { Tab, Tabs } from "../common/Tabs";
-import SelectionReview from "./review/selection-review/SelectionReview";
+import Review from "./review/Review";
 import SelectionInfo from "./selection-section-contents/SelectionInfo";
 import SpotList from "./selection-section-contents/SpotList";
 import SelectionHeader from "./selection-section-contents/SelectionHeader";
@@ -36,7 +36,7 @@ const SelectionSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SelectionReview sltOrSpotId={101} reviewType="selection" />
+      component: <Review reviewType="selection" sltOrSpotId={selectionData.id} />
     }
   ];
 

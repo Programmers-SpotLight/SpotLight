@@ -2,7 +2,7 @@ import { Tab, Tabs } from "@/components/common/Tabs";
 import React from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
-import SpotReview from "./review/spot-review/SpotReview";
+import Review from "./review/Review";
 import { ISpotInfo } from "@/models/spot.model";
 
 interface ISpotSectionProps {
@@ -12,11 +12,17 @@ interface ISpotSectionProps {
   spotData: ISpotInfo;
 }
 
+const bufferDataToHexString = (bufferObj: { type: string; data: number[] }): string => {
+  return Buffer.from(bufferObj.data).toString('hex');
+};
+
 const SpotSection = ({
   isSpotDrawerOpen,
   isSelectionDrawerOpen,
   spotData
 }: ISpotSectionProps) => {
+  const spotIdHex = bufferDataToHexString(spotData.id);
+
   const spotTab = [
     {
       title: "스팟 정보",
@@ -24,7 +30,7 @@ const SpotSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SpotReview sltOrSpotId={101} reviewType={"spot"} />
+      component: <Review reviewType="spot" sltOrSpotId={spotIdHex} />
     }
   ];
 

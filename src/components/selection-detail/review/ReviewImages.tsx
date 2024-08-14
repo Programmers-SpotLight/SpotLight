@@ -4,30 +4,7 @@ import React, { useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useModalStore } from "@/stores/modalStore";
-
-const PrevArrow = (props: any) => {
-  const { onClick, show } = props;
-  if (!show) return null;
-  return (
-    <IoIosArrowBack
-      className="w-[20px] h-[20px] absolute top-1/2 -left-[7px] transform -translate-y-1/2 bg-grey3 text-white rounded-full flex items-center justify-center"
-      onClick={onClick}
-      style={{ zIndex: 1 }}
-    />
-  );
-};
-
-const NextArrow = (props: any) => {
-  const { onClick, show } = props;
-  if (!show) return null;
-  return (
-    <IoIosArrowForward
-      className="w-[20px] h-[20px] absolute top-1/2 -right-[7px] transform -translate-y-1/2 bg-grey3 text-white rounded-full flex items-center justify-center"
-      onClick={onClick}
-      style={{ zIndex: 1 }}
-    />
-  );
-};
+import { PrevArrow, NextArrow } from "./ReviewImageSlideButton";
 
 interface IReveiewImageProps {
   images: IReviewImage[];
@@ -46,8 +23,8 @@ const ReviewImages = ({ images }: IReveiewImageProps) => {
     slidesToScroll: 1,
     beforeChange: (current: number, next: number) => setCurrentSlide(next),
     afterChange: (current: number) => setCurrentSlide(current),
-    prevArrow: <PrevArrow show={currentSlide !== 0} />,
-    nextArrow: <NextArrow show={currentSlide < images.length - 2} />
+    prevArrow: <PrevArrow show={currentSlide !== 0} onClick={() => {}} />,
+    nextArrow: <NextArrow show={currentSlide < images.length - 2} onClick={() => {}} />,
   };
 
   const openReviewImageModal = (index: number) => {
