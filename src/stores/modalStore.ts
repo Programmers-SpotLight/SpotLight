@@ -21,6 +21,6 @@ export const useModalStore = create<IModalStore>()(
     props: null,
     openModal: <T extends object>(modalType: TmodalType, props?: T) =>
       set({ isOpen: true, modalType, props: props || null }),
-    closeModal: () => set({ isOpen: false, modalType: null, props: null }),
+    closeModal: () => set({ isOpen: false, modalType: null, props: null, extraData : null }),
   }))
 );

@@ -25,7 +25,7 @@ const SelectionCreateTitle : React.FC = () => {
           flexGrow={true}
         />
       </div>
-      <p className="text-grey4 text-small w-1/3">셀렉션에서 사용자에게 표시될 내용입니다. 이목을 끌어주세요!</p>
+      <p className="text-grey4 text-small w-1/3 break-keep">셀렉션에서 사용자에게 표시될 내용입니다. 이목을 끌어주세요!</p>
     </div>
   )
 }

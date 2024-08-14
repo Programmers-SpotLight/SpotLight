@@ -27,6 +27,11 @@ interface IReviewsInfo {
   reviewAvg : number;
   reviewCount : number;
 };
+interface IReviews {
+  reviewAvg: number;
+  reviewCount: number;
+  reviewList: IReview[];
+}
 
 interface IReviewFormData {
   reviewScore: number;
@@ -44,3 +49,5 @@ interface IReviewInsertData {
   reviewScore: number;
   reviewImg: IReviewImage[] | null;
 }
+
+type ReviewType = "selection" | "spot";

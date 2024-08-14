@@ -80,7 +80,7 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
 
             <ReviewOrderButton sort={sort} onSortChange={handleSortChange} />
 
-            <ReviewList sltOrSpotId={sltOrSpotId} reviews={reviews} updateReview={updateReview} deleteReview={deleteReview} />
+            <ReviewList reviewType={reviewType} sltOrSpotId={sltOrSpotId} reviews={reviews} updateReview={updateReview} deleteReview={deleteReview} />
 
             <div className="p-3" ref={pageEnd}>
               {isFetching && <Spinner size="small" />}

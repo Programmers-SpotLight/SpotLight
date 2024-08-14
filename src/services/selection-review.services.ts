@@ -18,7 +18,6 @@ export async function getSelectionReviews({
   const orderByClause = sort === 'like'
     ? [
         { column: 'likeCount', order: 'desc' },
-        { column: 'slt_review_created_date', order: 'desc' }
       ]
     : [
         { column: 'slt_review_created_date', order: 'desc' }

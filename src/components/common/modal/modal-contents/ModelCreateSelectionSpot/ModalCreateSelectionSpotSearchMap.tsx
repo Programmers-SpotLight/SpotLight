@@ -2,6 +2,7 @@ import useReverseGeocoding from "@/hooks/useReverseGeocoding";
 import { useSelectionSpotCreateStore } from "@/stores/selectionCreateStore";
 import { AdvancedMarker, Map, useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useRef } from "react";
+import { useStore } from "zustand";
 
 
 const ModalCreateSelectionSpotSearchMap = () => {
@@ -13,7 +14,7 @@ const ModalCreateSelectionSpotSearchMap = () => {
     setSelectedLocation,
     currentCoordinate, 
     setCurrentCoordinate 
-  } = useSelectionSpotCreateStore();
+  } = useStore(useSelectionSpotCreateStore);
 
   const {
     address: reverseGeocodingAddress,
@@ -43,6 +44,13 @@ const ModalCreateSelectionSpotSearchMap = () => {
 
   const handleMoveToMarkerClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     map?.panTo(currentCoordinate);
+  };
+
+  const decideInitialCoordinate = () => {
+    if (selectedLocation.location.lat != 0 && selectedLocation.location.lng != 0) {
+      return selectedLocation.location;
+    }
+    return currentCoordinate;
   };
 
    // 역지오코딩 결과 처리
@@ -76,7 +84,9 @@ const ModalCreateSelectionSpotSearchMap = () => {
     <Map
       style={{ width: '100%', height: '280px', position: 'relative' }}
       defaultZoom={13}
-      defaultCenter={ selectedLocation.location }
+      defaultCenter={ 
+        decideInitialCoordinate()
+      }
       streetViewControl={false}
       mapTypeControl={false}
       mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID}
