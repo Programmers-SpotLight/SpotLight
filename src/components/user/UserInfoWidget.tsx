@@ -34,65 +34,55 @@ const UserInfoWidget = ({
   const { openModal } = useStore(useModalStore);
 
   return (
-    <div className=" w-[1024px] m-auto flex flex-col justify-center items-center mb-10">
-      <div className="flex w-[380px] gap-5 justify-cente mt-10">
-        <div className="w-[100px] h-[100px] relative rounded-full flex-shrink-0">
-          {image ? (
-            <Image
-              src={image}
-              fill
-              alt={nickname}
-              className="rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-full  h-full rounded-full bg-grey3" />
-          )}
-        </div>
-        <div className="flex flex-col items-start justify-end gap-2">
-  <span className="font-extrabold text-large">{nickname}님</span>
-  <div className="flex items-center text-grey4 break-keep relative text-small">
-    <p className="flex ">{description}
-    {isMyPage && (
-        <IoPencil className="text-medium cursor-pointer"/>
-    )}
-    </p>
-  </div>
-</div>
-      </div>
-      <div className="mt-10 flex flex-col gap-10">
-        <ul className="flex gap-6 justify-center">
-          {userInfoWidgetDatas.map((item, index) => (
-            <li
-              key={index}
-              className="flex flex-col gap-[5px] text-grey3 justify-center items-center "
-            >
-              <div className="text-[20px]">{item.icons}</div>
-              <h1 className="font-extrabold text-extraLarge text-grey4">
-                {item.count}
-              </h1>
-              <h2 className="font-semibold text-small text-grey4">
-                {item.name}
-              </h2>
-            </li>
-          ))}
-        </ul>
-        {isMyPage &&
-        <ul className="w-[600px] flex gap-[5px] flex-wrap justify-center">
-          {hashtags.map((hashtag, index) => (
-            <li key={hashtag.user_htag_id}>
-              <Hashtag size="big" name={hashtag.htag_name} />
-            </li>
-          ))}
-          <button
-            className="w-[26px] h-[26px] bg-grey3 rounded-full flex justify-center items-center transition-transform transform hover:scale-110"
-            onClick={() => openModal("editTag", { hashtags: hashtags })}
-          >
-            <IoIosAdd className="fill-white text-large" />
-          </button>
-        </ul>
-      }
+<div className="w-[1024px] m-auto flex flex-col justify-center items-center mb-10">
+  <div className="flex w-[380px] gap-5 justify-center mt-10">
+    <div className="w-[100px] h-[100px] relative rounded-full flex-shrink-0">
+      {image ? (
+        <Image src={image} fill alt={nickname} className="rounded-full object-cover" />
+      ) : (
+        <div className="w-full h-full rounded-full bg-grey3" />
+      )}
+    </div>
+    <div className="flex flex-col items-start justify-end gap-2">
+      <span className="font-extrabold text-large">{nickname}님</span>
+      <div className="flex items-center text-grey4 break-keep relative text-small">
+        <p className="flex">
+          {description ? description : "자기소개가 없습니다."}
+          {isMyPage && <IoPencil className="text-medium cursor-pointer"
+          onClick={() => openModal("editInfo",{description})}
+          />}
+        </p>
       </div>
     </div>
+  </div>
+  <div className="mt-10 flex flex-col gap-10">
+    <ul className="flex gap-6 justify-center">
+      {userInfoWidgetDatas.map((item, index) => (
+        <li key={index} className="flex flex-col gap-[5px] text-grey3 justify-center items-center">
+          <div className="text-[20px]">{item.icons}</div>
+          <h1 className="font-extrabold text-extraLarge text-grey4">{item.count}</h1>
+          <h2 className="font-semibold text-small text-grey4">{item.name}</h2>
+        </li>
+      ))}
+    </ul>
+    {isMyPage && (
+      <ul className="w-[600px] flex gap-[5px] flex-wrap justify-center">
+        {hashtags.map((hashtag) => (
+          <li key={hashtag.user_htag_id}>
+            <Hashtag size="big" name={hashtag.htag_name} />
+          </li>
+        ))}
+        <button
+          className="w-[26px] h-[26px] bg-grey3 rounded-full flex justify-center items-center transition-transform transform hover:scale-110"
+          onClick={() => openModal("editTag", { hashtags })}
+        >
+          <IoIosAdd className="fill-white text-large" />
+        </button>
+      </ul>
+    )}
+  </div>
+</div>
+
   );
 };
 

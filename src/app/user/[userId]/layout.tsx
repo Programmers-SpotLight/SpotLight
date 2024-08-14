@@ -14,7 +14,7 @@ export default function RootLayout({
   const userIdMatch = pathname.match(/user\/(\d+)/);
   if (!userIdMatch) return null;
   const userId = userIdMatch[1];
-  const isMyPage = false;
+  const isMyPage = true;
   const {data, isLoading, isError} = useFetchUserInfo(userId)
 
   if(!data) return null;

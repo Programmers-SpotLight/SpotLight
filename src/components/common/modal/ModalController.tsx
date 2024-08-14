@@ -11,6 +11,7 @@ import SpotImages from "@/components/selection-detail/spot-selection-contents/Sp
 import { TModalSize, TmodalType } from "@/models/modal.model";
 import ModalEditTag from "./modal-contents/ModalEditTag";
 import ModalFeedbackForm from "./modal-contents/ModalFeedbackForm";
+import ModalEditInfo from "./modal-contents/ModalEditInfo";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -55,6 +56,13 @@ const modalDatas: ImodalDatas[] = [
     size: "large",
     overlayClose: true,
     component: ModalFeedbackForm
+  },
+  {
+    type: "editInfo",
+    title: "자기소개 편집",
+    size: "medium",
+    overlayClose: true,
+    component: ModalEditInfo
   }
 ];
 

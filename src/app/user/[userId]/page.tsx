@@ -4,7 +4,7 @@ import React from "react";
 import UserSelectionList from "@/components/user/my/UserSelectionSection";
 
 const UserPage = () => {
-  const isMypage = false;
+  const isMypage = true;
   return (
     <>
       {isMypage ? (
