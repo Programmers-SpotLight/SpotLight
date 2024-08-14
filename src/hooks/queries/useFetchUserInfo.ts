@@ -1,7 +1,8 @@
 import { getUserInfo } from "@/http/user.api";
-import { useQuery } from "@tanstack/react-query";
+import { IUserInfoMapping } from "@/models/user.model";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
-export const useFetchUserInfo = (userId: string) => {
+export const useFetchUserInfo = (userId: string) : UseQueryResult<IUserInfoMapping> => {
     return useQuery({
       queryKey: ["userinfo", userId],
       queryFn: () => getUserInfo(userId)

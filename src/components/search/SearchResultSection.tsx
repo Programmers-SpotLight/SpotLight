@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import ColCard from "../common/card/ColCard";
 import { useSearchParams } from "next/navigation";
 import { FaCaretDown } from "react-icons/fa";
-import { MdNavigateNext } from "react-icons/md";
 import useClickOutside from "@/hooks/useClickOutside";
-import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
 import { TsortType } from "@/models/searchResult.model";
 import useFetchSearchResult from "@/hooks/queries/useFetchSearchResult";
 import Pagination from "./Pagination";
@@ -37,7 +35,7 @@ const SearchResultSection = () => {
   if (isError) return <div>Error loading results.</div>;
   if (!results) return null;
   if (results.data.length === 0) return <SearchEmptyResults/>
-
+  
   return (
     <div className="px-5">
       <div
@@ -51,19 +49,7 @@ const SearchResultSection = () => {
       </div>
       <div className="grid grid-cols-4 gap-5">
         {results.data && results.data.map((item) => (
-          <ColCard 
-            key={item.slt_id}
-            thumbnail={item.slt_img}
-            category={item.slt_category_name}
-            region={item.slt_location_option_name}
-            selectionId={item.slt_id}
-            hashtags={item.slt_hashtags}
-            description={item.slt_description}
-            title={item.slt_title}
-            userName={item.user_nickname}
-            userImage={item.user_img}
-            status={item.slt_status}
-          />
+          <ColCard key={item.selectionId} {...item}/>
         ))}
       </div>
       <Pagination pagination={results.pagination}/>

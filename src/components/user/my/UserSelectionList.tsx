@@ -40,20 +40,7 @@ const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelection
             <>
               <div className="grid grid-cols-3 gap-[20px]">
                 {selectionList.data.map((item) => (
-                  <ColCard
-                    key={item.slt_id}
-                    thumbnail={item.slt_img}
-                    category={item.slt_category_name}
-                    region={item.slt_location_option_name}
-                    selectionId={item.slt_id}
-                    hashtags={item.slt_hashtags}
-                    description={item.slt_description}
-                    title={item.slt_title}
-                    userName={item.user_nickname}
-                    userImage={item.user_img}
-                    isMypage={isMyPage}
-                    status={item.slt_status}
-                  />
+                  <ColCard key={item.selectionId} {...item}/>
                 ))}
               </div>
               <Pagination pagination={selectionList.pagination} />

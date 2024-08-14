@@ -1,4 +1,5 @@
 import { updateUserDescription } from "@/http/user.api";
+import { IUserInfoMapping } from "@/models/user.model";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const useUpdateUserDescription = (userId: string, description: string) => {
@@ -19,7 +20,7 @@ const useUpdateUserDescription = (userId: string, description: string) => {
 
       queryClient.setQueryData(
         ["userinfo", userId],
-        (oldData: any) => ({
+        (oldData: IUserInfoMapping) => ({
           ...oldData,
           description
         })

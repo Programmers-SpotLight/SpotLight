@@ -47,13 +47,11 @@ const UserInfoWidget = ({
     </div>
     <div className="flex flex-col items-start justify-end gap-2">
       <span className="font-extrabold text-large">{nickname}님</span>
-      <div className="flex items-center text-grey4 break-keep relative text-small">
-        <p className="flex">
+      <div className="flex w-[250px] items-center text-grey4 break-keep relative text-small">
           {description ? description : "자기소개가 없습니다."}
           {isMyPage && <IoPencil className="text-medium cursor-pointer"
           onClick={() => openModal("editInfo",{description, userId})}
           />}
-        </p>
       </div>
     </div>
   </div>

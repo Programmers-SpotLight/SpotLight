@@ -4,9 +4,7 @@ import React, { FormEvent, useState } from "react";
 import TextAreaInput from "../../input/TextAreaInput";
 import Button from "../../button/Button";
 import { useModalStore } from "@/stores/modalStore";
-import { updateUserDescription } from "@/http/user.api";
 import useUpdateUserDescription from "@/hooks/queries/useUpdateUserDescription";
-import SearchLoading from "@/components/search/search-contents/SearchLoading";
 
 interface ModalEditInfoProps {
     userId : string;
