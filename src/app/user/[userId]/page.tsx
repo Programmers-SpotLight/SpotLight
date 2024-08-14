@@ -10,7 +10,7 @@ import PrivateUser from "@/components/user/other-user/PrivateUser";
 import { IMinimumUserInfo } from "@/models/user.model";
 import { ISelectionDetailInfo } from "@/models/selection.model";
 import UserInfoWidget from "@/components/user/my/UserInfoWidget";
-import UserSelectionList from "@/components/user/my/UserSelectionList";
+import UserSelectionList from "@/components/user/my/UserSelectionSection";
 
 const user: IMinimumUserInfo = {
   id: 1,
@@ -131,7 +131,6 @@ const UserPage = () => {
   } else {
     return (
       <div className='flex flex-col justify-center items-center mt-[60px] w-full'>
-      <div className='flex flex-col justify-center items-center translate-x-[-90px]'>
         <UserInfo
           nickname={user.nickname}
           description={user.description}
@@ -139,7 +138,6 @@ const UserPage = () => {
           isMyPage={isMyPage}
         />
         <UserInfoWidget />
-      </div>
       <UserSelectionList />
     </div>
     )
