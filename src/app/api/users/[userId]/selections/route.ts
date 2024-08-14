@@ -92,7 +92,6 @@ export async function GET(
     );
 
     const finalResults = pageResult.map((item: IsearchData) => ({
-      // 해시태그 JSON 파일 타입 변환
       ...item,
       slt_hashtags:
         typeof item.slt_hashtags === "string"
