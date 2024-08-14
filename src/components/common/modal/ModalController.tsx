@@ -10,6 +10,7 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
 import { TModalSize, TmodalType } from "@/models/modal.model";
 import ModalEditTag from "./modal-contents/ModalEditTag";
+import ModalFeedbackForm from "./modal-contents/ModalFeedbackForm";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -43,10 +44,17 @@ const modalDatas: ImodalDatas[] = [
   },
   {
     type: "editTag",
-    title : "관심 태그 편집",
-    size : "medium",
+    title: "관심 태그 편집",
+    size: "medium",
     overlayClose: true,
     component: ModalEditTag
+  },
+  {
+    type: "feedback",
+    title: "유저의 소리",
+    size: "large",
+    overlayClose: true,
+    component: ModalFeedbackForm
   }
 ];
 
