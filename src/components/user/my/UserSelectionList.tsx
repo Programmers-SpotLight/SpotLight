@@ -14,9 +14,10 @@ export interface IUserSelectionList {
     sort: TsortType;
     page: string;
     limit: string;
+    isMyPage? : boolean
 }
 
-const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelectionType, sort, page, limit }) => {    
+const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelectionType, sort, page, limit, isMyPage }) => {    
     const {
         data,
         isLoading,
@@ -50,6 +51,7 @@ const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelection
                     title={item.slt_title}
                     userName={item.user_nickname}
                     userImage={item.user_img}
+                    isMypage={isMyPage}
                     status={item.slt_status}
                   />
                 ))}

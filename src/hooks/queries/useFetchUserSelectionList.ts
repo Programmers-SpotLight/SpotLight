@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { IsearchResult, ItempSelectionResult, TsortType } from "@/models/searchResult.model";
 import { TuserSelection } from "@/models/user.model";
-import { fetchUserSelectionList } from "@/http/selectionSearch.api";
+import { fetchUserSelectionList } from "@/http/user.api";
 
 interface IuseFetchUserSelectionList {
     userId : string,

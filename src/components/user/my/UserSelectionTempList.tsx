@@ -28,7 +28,7 @@ const UserSelectionTempList: React.FC<IUserSelectionList> = ({
   if (!tempSelectionList) return null;
 
   return (
-    <div className="min-h-[800px] flex flex-col gap-[10px]">
+    <div className="flex flex-col justify-center gap-5">
       {tempSelectionList.data.length > 0 ? (
         <>
           {tempSelectionList.data.map((item, index) => (
