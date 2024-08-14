@@ -35,3 +35,14 @@ interface IReviewFormData {
 }
 
 type ReviewType = "selection" | "spot";
+
+interface IMyReview {
+  reviewId: string;
+  sltOrSpotId: number | string;
+  sltName: string;
+  spotName: string | null;
+  reviewDescription: string;
+  reviewScore: number;
+  updatedDate: string;
+  likeCount: number;
+}
