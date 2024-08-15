@@ -11,6 +11,7 @@ import SpotImages from "@/components/selection-detail/spot-selection-contents/Sp
 import { TModalSize, TmodalType } from "@/models/modal.model";
 import ModalEditTag from "./modal-contents/ModalEditTag";
 import ModalFeedbackForm from "./modal-contents/ModalFeedbackForm";
+import ModalUser from "../../users/ModalUser";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -27,6 +28,13 @@ const modalDatas: ImodalDatas[] = [
     size: "medium",
     overlayClose: true,
     component: ModalTemp
+  },
+  {
+    type: "login",
+    title: "모달 로그인",
+    size: "small",
+    overlayClose: true,
+    component: ModalUser
   },
   {
     type: "GoogleMapsAddSelectionSpot",
