@@ -3,7 +3,6 @@ import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { GoKebabHorizontal } from "react-icons/go";
 import { IoMdLock } from "react-icons/io";
-import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { TselectionStatus } from "@/models/searchResult.model";
 import { Ihashtags } from "@/models/hashtag.model";
@@ -26,7 +25,7 @@ export interface IColCardProps extends IBaseCardProps {
   userImage?: string;
   hashtags: Ihashtags[];
   status: TselectionStatus;
-  isMyPage : boolean
+  isMyPage? : boolean
   booked?: boolean;
   onClick?: () => void;
 }

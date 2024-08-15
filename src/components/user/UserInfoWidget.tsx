@@ -74,7 +74,7 @@ const UserInfoWidget = ({
         ))}
         <button
           className="w-[26px] h-[26px] bg-grey3 rounded-full flex justify-center items-center transition-transform transform hover:scale-110"
-          onClick={() => openModal("editTag", { hashtags })}
+          onClick={() => openModal("editTag", { userId })}
         >
           <IoIosAdd className="fill-white text-large" />
         </button>

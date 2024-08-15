@@ -15,6 +15,7 @@ import {
 import { getUserSelectionQueryCount, getUserSelectionResult, getUserTempSelection, getUserTempSelectionCount } from "@/services/selectionUser.services";
 import { TuserSelection } from "@/models/user.model";
 import { ITempCardProps } from "@/components/common/card/TempCard";
+import { IColCardProps } from "@/components/common/card/ColCard";
 
 export async function GET(
   req: NextRequest,
@@ -60,7 +61,7 @@ export async function GET(
         description : item.slt_temp_description,
         selectionId : item.slt_temp_id,
         userId : item.user_id,
-        created_at : item.slt_temp_created_date,
+        created_at : item.slt_temp_created_date.toString(),
         img : item.slt_img,
         }
       ))
@@ -107,7 +108,7 @@ export async function GET(
           : item.slt_hashtags
     }));
 
-    const MappingResults = hashConvert.map((item) => ({
+    const MappingResults : IColCardProps[] = hashConvert.map((item) => ({
       thumbnail: item.slt_img,
       category: item.slt_category_name,
       region: item.slt_location_option_name,

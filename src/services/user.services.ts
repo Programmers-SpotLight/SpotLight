@@ -1,5 +1,5 @@
 import { dbConnectionPool } from "@/libs/db"
-import { Ihashtags } from "@/models/hashtag.model";
+import { Ihashtags, ThtagType } from "@/models/hashtag.model";
 import { IUserInfoData } from "@/models/user.model";
 
 export const getUserInfo = async (userId: string) => {
@@ -60,58 +60,56 @@ export const serviceUserDescription = async (userId: string, description: string
 
 export const servicePostUserHashtag = async (userId: string, hashtag: string) => {
     try {
-        const existingHashtag = await dbConnectionPool("hashtag")
-            .select("htag_id")
+        let htag = await dbConnectionPool("hashtag")
+            .select("htag_id", "htag_type", "htag_name")
             .where({ htag_name: hashtag })
             .first();
 
-        let htagId: number;
-
-        if (!existingHashtag) {
+        if (!htag) {
             await dbConnectionPool("hashtag")
-                .insert({ htag_name: hashtag, htag_created_date: new Date() });
-            
-            const [newHashtag] = await dbConnectionPool("hashtag")
-                .select("htag_id")
+                .insert({ htag_name: hashtag });
+
+            htag = await dbConnectionPool("hashtag")
+                .select("htag_id", "htag_type", "htag_name")
                 .where({ htag_name: hashtag })
                 .orderBy("htag_id", "desc")
-                .limit(1);
-
-            htagId = newHashtag.htag_id;
-        } else {
-            htagId = existingHashtag.htag_id;
+                .first();
         }
 
-        await dbConnectionPool("user_hashtag")
-            .insert({ user_id: userId, htag_id: htagId });
+        const existingUserHashtag = await dbConnectionPool("user_hashtag")
+            .where({ user_id: userId, htag_id: htag.htag_id })
+            .first();
 
-        return { message: "해시태그가 성공적으로 추가되었습니다." };
+        if (!existingUserHashtag) {
+            await dbConnectionPool("user_hashtag")
+                .insert({ user_id: userId, htag_id: htag.htag_id });
+        }
+
+        return htag;
     } catch (error) {
         console.error("해시태그 추가 중 오류 발생:", error);
         throw new Error("해시태그 추가 중 오류가 발생했습니다.");
     }
 };
 
-export const serviceDeleteUserHashtag = async (userId: string, hashtagId: number) => {
-    try {
-        await dbConnectionPool("user_hashtag")
-            .where({ user_id: userId, htag_id: hashtagId })
-            .del();
 
-        const count = await dbConnectionPool("user_hashtag")
-            .count("* as count")
-            .where({ htag_id: hashtagId })
+export const serviceDeleteUserHashtagById = async (userId: string, userHashtagId: number) => {
+    try {
+        const existingRecord = await dbConnectionPool('user_hashtag')
+            .where({ user_id: userId, user_htag_id: userHashtagId })
             .first();
 
-        if (count && count.count === 0) {
-            await dbConnectionPool("hashtag")
-                .where({ htag_id: hashtagId })
-                .del();
+        if (!existingRecord) {
+            throw new Error('해당 레코드가 존재하지 않습니다.');
         }
 
-        return { message: "해시태그가 성공적으로 삭제되었습니다." };
+        await dbConnectionPool('user_hashtag')
+            .where({ user_htag_id: userHashtagId })
+            .del();
+
+        return { message: '레코드가 성공적으로 삭제되었습니다.' };
     } catch (error) {
-        console.error("해시태그 삭제 중 오류 발생:", error);
-        throw new Error("해시태그 삭제 중 오류가 발생했습니다.");
+        console.error('레코드 삭제 중 오류 발생:', error);
+        throw new Error('레코드 삭제 중 오류가 발생했습니다.');
     }
 };
