@@ -14,7 +14,7 @@ export interface IUserSelectionList {
     sort: TsortType;
     page: string;
     limit: string;
-    isMyPage? : boolean
+    isMyPage : boolean
 }
 
 const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelectionType, sort, page, limit, isMyPage }) => {    
@@ -27,7 +27,7 @@ const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelection
         userSelectionType,
         sort,
         page,
-        limit
+        limit,
     });
 
     if (isLoading) return <SearchLoading />;
@@ -40,7 +40,7 @@ const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelection
             <>
               <div className="grid grid-cols-3 gap-[20px]">
                 {selectionList.data.map((item) => (
-                  <ColCard key={item.selectionId} {...item}/>
+                  <ColCard key={item.selectionId} {...item} isMyPage={isMyPage}/>
                 ))}
               </div>
               <Pagination pagination={selectionList.pagination} />

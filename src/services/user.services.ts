@@ -57,3 +57,61 @@ export const serviceUserDescription = async (userId: string, description: string
         throw error;
     }
 };
+
+export const servicePostUserHashtag = async (userId: string, hashtag: string) => {
+    try {
+        const existingHashtag = await dbConnectionPool("hashtag")
+            .select("htag_id")
+            .where({ htag_name: hashtag })
+            .first();
+
+        let htagId: number;
+
+        if (!existingHashtag) {
+            await dbConnectionPool("hashtag")
+                .insert({ htag_name: hashtag, htag_created_date: new Date() });
+            
+            const [newHashtag] = await dbConnectionPool("hashtag")
+                .select("htag_id")
+                .where({ htag_name: hashtag })
+                .orderBy("htag_id", "desc")
+                .limit(1);
+
+            htagId = newHashtag.htag_id;
+        } else {
+            htagId = existingHashtag.htag_id;
+        }
+
+        await dbConnectionPool("user_hashtag")
+            .insert({ user_id: userId, htag_id: htagId });
+
+        return { message: "해시태그가 성공적으로 추가되었습니다." };
+    } catch (error) {
+        console.error("해시태그 추가 중 오류 발생:", error);
+        throw new Error("해시태그 추가 중 오류가 발생했습니다.");
+    }
+};
+
+export const serviceDeleteUserHashtag = async (userId: string, hashtagId: number) => {
+    try {
+        await dbConnectionPool("user_hashtag")
+            .where({ user_id: userId, htag_id: hashtagId })
+            .del();
+
+        const count = await dbConnectionPool("user_hashtag")
+            .count("* as count")
+            .where({ htag_id: hashtagId })
+            .first();
+
+        if (count && count.count === 0) {
+            await dbConnectionPool("hashtag")
+                .where({ htag_id: hashtagId })
+                .del();
+        }
+
+        return { message: "해시태그가 성공적으로 삭제되었습니다." };
+    } catch (error) {
+        console.error("해시태그 삭제 중 오류 발생:", error);
+        throw new Error("해시태그 삭제 중 오류가 발생했습니다.");
+    }
+};

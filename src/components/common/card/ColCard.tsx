@@ -26,7 +26,7 @@ export interface IColCardProps extends IBaseCardProps {
   userImage?: string;
   hashtags: Ihashtags[];
   status: TselectionStatus;
-  isMypage? : boolean
+  isMyPage : boolean
   booked?: boolean;
   onClick?: () => void;
 }
@@ -56,7 +56,7 @@ const ColCard = ({
   userImage,
   hashtags,
   selectionId,
-  isMypage,
+  isMyPage,
   status = "public",
   booked = false,
   onClick
@@ -123,7 +123,7 @@ const ColCard = ({
             {category}
             {region && ` / ${region}`}
           </p>
-          {isMypage && (
+          {isMyPage && (
             <div className="relative">
               <GoKebabHorizontal
                 fill="#7C7C7C"
