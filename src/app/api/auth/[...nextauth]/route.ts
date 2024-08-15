@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth/next';
 import KakaoProvider from "next-auth/providers/kakao";
 import { dbConnectionPool } from '@/libs/db';
+import { getNicknameFromDatabase } from '@/services/users.services';
 
 const handler = NextAuth({
   providers: [
@@ -14,17 +15,19 @@ const handler = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
-      console.log("jwt callback", { token, user});
       if (user) {
+        const userDBInfo : Array<{ [key: string]: any }> = await getNicknameFromDatabase(user.id);
+        if(userDBInfo.length == 1) {
+          token.nickname = userDBInfo[0].user_nickname;
+          if(userDBInfo[0].user_img) token.userImage = userDBInfo[0].user_img;
+        }else token.nickname = user.id;
         token.id = user.id; // Kakao ID
-        token.nickname = user.name; // 사용자 이름 또는 다른 프로필 정보
       }
       return token; // {...token, ...user}
     },
 
     async session({ session, token }) {
-      console.log("session callback", { session, token});
-      // session.user = token as any;
+      session.user = { ...session.user, name : token.nickname as string, image: token.userImage as string | null };
       return session;
     },
     async signIn({ user, account, profile }) {
@@ -44,7 +47,6 @@ const handler = NextAuth({
     },
     async redirect({ url, baseUrl }) {
       // 로그인이 완료된 후 리디렉션할 URL을 정의.
-      console.log("redirect callback", { url, baseUrl });
       return url.startsWith(baseUrl)
         ? url
         : baseUrl;

@@ -7,7 +7,7 @@ import Button from '../common/button/Button'
 const handleKakaoSignIn = () => {
   signIn("kakao", {
     redirect: false,
-    callbackUrl: "http://localhost:3000/api/auth/callback/kakao",
+    callbackUrl: "http://localhost:3000",
   })
   .then((result) => {
     // console.log("Sign-in successful:", result);

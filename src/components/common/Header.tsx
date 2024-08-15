@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoPersonSharp, IoSearchOutline } from "react-icons/io5";
 import AutoCompletion from "../search/search-contents/AutoCompletion";
 import useClickOutside from "@/hooks/useClickOutside";
 import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
+import { useModalStore } from "@/stores/modalStore";
+import Image from "next/image";
+import { useSession, signOut } from "next-auth/react";
 
 const Header = () => {
   const router = useRouter();
@@ -16,6 +19,8 @@ const Header = () => {
   const profileRef = useRef<HTMLImageElement>(null);
   const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearchAutoComplete();
   useClickOutside(dropdownRef, () => setIsDropDownVisible(false))
+  const { openModal } = useModalStore();
+  const { data: session, status } = useSession();
 
   const onClickHandler = () => {
     setIsDropDownVisible((prev) => !prev);
@@ -26,6 +31,18 @@ const Header = () => {
     setVisibleAutoCompletion(false)
     router.push(`/search?tags=${tagValue}`);
     setTagValue("");
+  };
+
+  // SNS Login / Sign in
+  const handleLogin = () => {
+  
+  }
+  const handleSignout = () => {
+    signOut();
+  }
+
+  const handleOpenModal = () => {
+    openModal('login', { name: 'test' });
   };
 
   return (
@@ -63,31 +80,44 @@ const Header = () => {
         )}
       </div>
 
-      {/**로그인 X */}
-      {/* <button className="text-grey2 font-semibold w-[70px] h-[40px] rounded-xl bg-primary">
-        로그인
-      </button> */}
-
-      {/**로그인 O */}
-      {/** user image가 없으면  */}
-      <div
-        ref={profileRef}
-        className="w-[55px] h-[55px] rounded-full cursor-pointer bg-grey1 flex items-center justify-center"
-        onClick={onClickHandler}
-      >
-        <IoPersonSharp size={30} className="text-primary" />
-      </div>
-
-      {/** user image가 있으면 */}
-      {/* <Image
-        ref={profileRef}
-        src={""}
-        alt="user"
-        width={55}
-        height={55}
-        className="rounded-full cursor-pointer relative"
-        onClick={onClickHandler}
-      /> */}
+      {
+        /**로그인 X */
+        !session && 
+        <button 
+          className="text-grey2 font-semibold w-[70px] h-[40px] rounded-xl bg-primary"
+          onClick={handleOpenModal}
+        >
+          로그인
+        </button>
+      }
+      {
+        /**로그인 O */
+        /** user image가 있으면 */
+        !!session && session.user?.image && (
+          <Image
+          ref={profileRef}
+          src={""}
+          alt="user"
+          width={55}
+          height={55}
+          className="rounded-full cursor-pointer relative"
+          onClick={onClickHandler}
+          />
+        )
+      }
+      {
+        /**로그인 O */
+        /** user image가 없으면  */
+        !!session && !session.user?.image && (
+          <div
+          ref={profileRef}
+          className="w-[55px] h-[55px] rounded-full cursor-pointer bg-grey1 flex items-center justify-center"
+          onClick={onClickHandler}
+          >
+          <IoPersonSharp size={30} className="text-primary" />
+        </div>
+        )
+      }
 
       {isDropDownVisible && (
         <div
@@ -101,7 +131,9 @@ const Header = () => {
             마이페이지
           </Link>
           <hr className="w-full" />
-          <button className="h-1/2 flex items-center text-medium text-grey4 hover:text-primary">
+          <button className="h-1/2 flex items-center text-medium text-grey4 hover:text-primary"
+            onClick={handleSignout}
+          >
             로그아웃
           </button>
         </div>
