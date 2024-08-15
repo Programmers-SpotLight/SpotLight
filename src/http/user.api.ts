@@ -15,7 +15,6 @@ export const updateUserDescription = async (userId : string, description : strin
 
 export const addUserHashTag = async (userId : string, hashtag : string) => {
   const url = `/api/users/${userId}/hashtag`
-  console.log(userId, hashtag)
   return await requestHandler("post", url, {data : {userId, hashtag}})
 }
 

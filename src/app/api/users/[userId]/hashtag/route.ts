@@ -26,14 +26,12 @@ export async function GET(req : NextRequest, { params }: { params: { userId: str
 export async function POST(req: NextRequest): Promise<NextResponse<IResponsePostUserHashtag | ErrorResponse >> {
     try {
         const { data } = await req.json();
-        console.log(data);
         const validationError = postUserHashtagValidator(data);
         if (validationError) return validationError;
-        const {htag_id, htag_name, htag_type} = await servicePostUserHashtag(data.userId, data.hashtag);
+    const {htag_id, htag_name, htag_type} = await servicePostUserHashtag(data.userId, data.hashtag);
 
         return NextResponse.json({ data : {htag_id : htag_id, htag_name : htag_name, htag_type : htag_type}}, {status: 200});
     } catch (error) {
-        console.log(error);
         return NextResponse.json({ error: "생성에 실패하였습니다." }, { status: 400 });
     }
 }
@@ -41,13 +39,11 @@ export async function POST(req: NextRequest): Promise<NextResponse<IResponsePost
 export async function DELETE(req: NextRequest): Promise<NextResponse<SuccessResponse | ErrorResponse >> {
         try {
         const { userId,userHashtagId } = await req.json();
-        console.log(userId, userHashtagId)
         const validationError = deleteUserHashtagValdator(userId,userHashtagId);
         if (validationError) return validationError;
         await serviceDeleteUserHashtagById(userId,userHashtagId);
         return NextResponse.json({ message: "성공적으로 삭제하였습니다."}, {status: 200});
     } catch (error) {
-        console.log(error)
         return NextResponse.json({ error: "삭제에 실패하였습니다." }, { status: 400 });
     }
 }

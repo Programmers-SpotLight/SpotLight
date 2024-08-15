@@ -4,7 +4,6 @@ import { useModalStore } from "@/stores/modalStore";
 import React from "react";
 import { useStore } from "zustand";
 import Modal from "./Modal";
-import ModalTemp from "./modal-contents/ModalTemp";
 import ModalCreateSelectionSpot from "./modal-contents/ModelCreateSelectionSpot/ModalCreateSelectionSpot";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
@@ -22,13 +21,6 @@ interface ImodalDatas {
 }
 
 const modalDatas: ImodalDatas[] = [
-  {
-    type: "temp",
-    title: "모달 테스트",
-    size: "medium",
-    overlayClose: true,
-    component: ModalTemp
-  },
   {
     type: "GoogleMapsAddSelectionSpot",
     title: "스팟 추가",
