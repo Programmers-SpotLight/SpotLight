@@ -35,4 +35,12 @@ export interface IUserInfoMapping {
   selection_review_count: number
 }
 
+export interface SuccessResponse {
+  message: string;
+}
+
+export interface ErrorResponse {
+  error: string;
+}
+
 export type TuserSelection = "my" | "bookmark" | "temp"

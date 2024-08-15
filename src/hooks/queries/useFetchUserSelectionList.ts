@@ -1,5 +1,5 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { IsearchResult, ItempSelectionResult, TsortType } from "@/models/searchResult.model";
+import { IsearchResult, ItempResult, ItempSelectionResult, TsortType } from "@/models/searchResult.model";
 import { TuserSelection } from "@/models/user.model";
 import { fetchUserSelectionList } from "@/http/user.api";
 
@@ -12,8 +12,8 @@ interface IuseFetchUserSelectionList {
 
 }
 
-const useFetchUserSelectionList = ({userId, userSelectionType, sort, page, limit} : IuseFetchUserSelectionList) : UseQueryResult<IsearchResult | ItempSelectionResult> => {
-    return useQuery<IsearchResult>({
+const useFetchUserSelectionList = ({userId, userSelectionType, sort, page, limit} : IuseFetchUserSelectionList) : UseQueryResult<IsearchResult | ItempResult> => {
+    return useQuery<IsearchResult | ItempResult>({
         queryKey: ['searchResult', userId, userSelectionType, sort, page, limit],
         queryFn : () => fetchUserSelectionList(userId, userSelectionType, sort, page, limit)
     })

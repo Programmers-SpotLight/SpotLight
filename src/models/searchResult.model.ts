@@ -1,4 +1,6 @@
+import { IColCardProps } from "@/components/common/card/ColCard";
 import { Ihashtags } from "./hashtag.model"
+import { ITempCardProps } from "@/components/common/card/TempCard";
 
 export type TselectionStatus = "public" | "private" | "temp"
 export type TsortType = "popular" | "latest" | "asc"
@@ -41,8 +43,13 @@ export interface ItempSelectionData {
 }
 
 export interface IsearchResult {
-    data : IsearchData[]
+    data : IColCardProps[] // 카드 매핑 데이터 반환
     pagination : Ipagination
+}
+
+export interface ItempResult {
+	data : ITempCardProps[],
+	pagination : Ipagination
 }
 
 export interface ItempSelectionResult {
