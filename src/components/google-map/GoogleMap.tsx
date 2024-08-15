@@ -9,7 +9,7 @@ interface IGoogleMapProps {
   lat: number;
   lng: number;
   spots: ISpotInfo[];
-  spotClickHandler: (spotId: string) => void;
+  spotClickHandler: (spotId: Buffer) => void;
   setMap: React.Dispatch<React.SetStateAction<google.maps.Map | null>>;
 }
 

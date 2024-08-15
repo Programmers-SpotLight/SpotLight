@@ -11,6 +11,7 @@ import { TModalSize, TmodalType } from "@/models/modal.model";
 import ModalEditTag from "./modal-contents/ModalEditTag";
 import ModalFeedbackForm from "./modal-contents/ModalFeedbackForm";
 import ModalEditInfo from "./modal-contents/ModalEditInfo";
+import ModalUser from "../../users/ModalUser";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -21,6 +22,13 @@ interface ImodalDatas {
 }
 
 const modalDatas: ImodalDatas[] = [
+  {
+    type: "login",
+    title: "모달 로그인",
+    size: "small",
+    overlayClose: true,
+    component: ModalUser
+  },
   {
     type: "GoogleMapsAddSelectionSpot",
     title: "스팟 추가",

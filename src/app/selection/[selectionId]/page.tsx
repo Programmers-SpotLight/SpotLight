@@ -16,7 +16,7 @@ const SelectionPage = () => {
     useState<boolean>(false);
   const [isSpotDrawerOpen, setIsSpotDrawerOpen] = useState<boolean>(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
+  const [selectedSpotId, setSelectedSpotId] = useState<Buffer | null>(null);
 
   const { selectionData, isPending, isError } = useSelectionDetail(
     parseInt(params!.selectionId.toString(), 10)
@@ -33,7 +33,7 @@ const SelectionPage = () => {
     else if (!isSpotDrawerOpen) setIsSelectionDrawerOpen((prev) => !prev);
   };
 
-  const spotClickHandler = (spotId: string, lat?: number, lng?: number) => {
+  const spotClickHandler = (spotId: Buffer, lat?: number, lng?: number) => {
     setIsSelectionDrawerOpen(true);
     setIsSpotDrawerOpen(true);
     if (map && lat && lng) {

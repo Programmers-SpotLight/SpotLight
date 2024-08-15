@@ -8,7 +8,8 @@ export const useSelectionDetail = (selectionId: number) => {
     isError
   } = useQuery({
     queryKey: ["selection", selectionId],
-    queryFn: () => fetchSelectionDetailInfo(selectionId)
+    queryFn: () => fetchSelectionDetailInfo(selectionId),
+    staleTime: Infinity
   });
 
   return { selectionData, isPending, isError };
