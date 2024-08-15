@@ -53,7 +53,7 @@ const modalDatas: ImodalDatas[] = [
     type: "feedback",
     title: "유저의 소리",
     size: "large",
-    overlayClose: true,
+    overlayClose: false,
     component: ModalFeedbackForm
   }
 ];

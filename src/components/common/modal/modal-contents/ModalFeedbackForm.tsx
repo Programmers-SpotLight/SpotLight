@@ -2,14 +2,28 @@ import React, { useState } from "react";
 import TextInput from "../../input/TextInput";
 import Button from "../../button/Button";
 import PictureInput from "../../input/PictureInput";
+import { v4 as uuidv4 } from "uuid";
+import { requestHandler } from "@/http/http";
+import { useStore } from "zustand";
+import { useModalStore } from "@/stores/modalStore";
+import { useSendFeedback } from "@/hooks/queries/useSendFeedback";
+
+export interface IFeedbackFormData {
+  type: string;
+  title: string;
+  contents: string;
+  pictures: IReviewImage[];
+}
 
 const ModalFeedbackForm = () => {
-  const [formData, setFormData] = useState({
+  const { closeModal } = useStore(useModalStore);
+  const [formData, setFormData] = useState<IFeedbackFormData>({
     type: "",
     title: "",
     contents: "",
-    pictures: [] as IReviewImage[]
+    pictures: []
   });
+  const { send, isError, isPending } = useSendFeedback(formData);
 
   const [errors, setErrors] = useState({
     type: "",
@@ -29,12 +43,17 @@ const ModalFeedbackForm = () => {
     });
   };
 
-  const handlePictureAdd = (image: string) => {
+  const handlePictureAdd = (image: string, index: number, type: string) => {
     setFormData((prevData) => ({
       ...prevData,
       pictures: [
         ...prevData.pictures,
-        { reviewImgSrc: image, reviewImageOrder: prevData.pictures.length }
+        {
+          reviewImgId: uuidv4(),
+          reviewImgSrc: image,
+          reviewImageOrder: prevData.pictures.length,
+          imgType: type
+        }
       ]
     }));
   };
@@ -75,10 +94,16 @@ const ModalFeedbackForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      console.log(formData);
+      try {
+        send();
+        alert("피드백을 전송했습니다.");
+        closeModal();
+      } catch (error: any) {
+        alert("전송에 실패했습니다.");
+      }
     }
   };
 
@@ -112,8 +137,9 @@ const ModalFeedbackForm = () => {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            placeholder="의견을 입력해주세요."
+            placeholder="제목을 입력해주세요. (최대 180자)"
             width="medium"
+            maxLength={180}
           />
           {errors.title && (
             <span className="text-danger mt-1">{errors.title}</span>
