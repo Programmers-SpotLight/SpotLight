@@ -34,17 +34,17 @@ export const getUserHashTags = async (userId: string) => {
             .select(
                 "user_hashtag.user_htag_id",
                 "hashtag.htag_name",
-                "hashtag.htag_type"
+                "hashtag.htag_type",
             )
-            .join("hashtag", "user_hashtag.htag_id", "=", "hashtag.htag_id") // hashtag 테이블과 조인
-            .where("user_hashtag.user_id", userId); // 특정 user_id로 필터링
+            .join("hashtag", "user_hashtag.htag_id", "=", "hashtag.htag_id") 
+            .where("user_hashtag.user_id", userId)
+            .orderBy("hashtag.htag_created_date", "asc");
         return userHashData;
     } catch (error) {
         console.error("Error fetching user hashtags:", error);
         throw error;
     }
 }
-
 export const serviceUserDescription = async (userId: string, description: string) => {
     try {
         const queryData = await dbConnectionPool("user")
@@ -60,6 +60,15 @@ export const serviceUserDescription = async (userId: string, description: string
 
 export const servicePostUserHashtag = async (userId: string, hashtag: string) => {
     try {
+        const userHashtagCount = await dbConnectionPool("user_hashtag")
+            .where({ user_id: userId })
+            .count("user_htag_id as count")
+            .first();
+
+        if (userHashtagCount && userHashtagCount.count as number >= 8) {
+            return new Error("해시태그는 최대 8개까지 등록이 가능합니다.");
+        }
+
         let htag = await dbConnectionPool("hashtag")
             .select("htag_id", "htag_type", "htag_name")
             .where({ htag_name: hashtag })
@@ -72,7 +81,6 @@ export const servicePostUserHashtag = async (userId: string, hashtag: string) =>
             htag = await dbConnectionPool("hashtag")
                 .select("htag_id", "htag_type", "htag_name")
                 .where({ htag_name: hashtag })
-                .orderBy("htag_id", "desc")
                 .first();
         }
 

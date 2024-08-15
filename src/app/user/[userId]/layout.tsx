@@ -18,7 +18,7 @@ export default function RootLayout({
   const {data, isLoading, isError} = useFetchUserInfo(userId)
 
   if(!data) return null;
-  if(isLoading) return <div className="w-[1024px] flex justify-center items-center"><SearchLoading/></div>
+  if(isLoading) return <div className="w-[1024px] flex justify-center items-center"><SearchLoading height="full"/></div>
   if(isError) return <div>에러페이지입니다</div>
 
   return (  

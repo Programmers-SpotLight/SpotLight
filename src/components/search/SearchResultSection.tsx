@@ -31,7 +31,7 @@ const SearchResultSection = () => {
     window.scrollTo(0, 0);
   }, [page]);
 
-  if (isLoading) return <SearchLoading/>
+  if (isLoading) return <SearchLoading height="search"/>
   if (isError) return <div>Error loading results.</div>;
   if (!results) return null;
   if (results.data.length === 0) return <SearchEmptyResults/>

@@ -1,7 +1,7 @@
 import React from "react";
 import { IUserSelectionList } from "./UserSelectionList";
 import useFetchUserSelectionList from "@/hooks/queries/useFetchUserSelectionList";
-import { ItempResult, ItempSelectionResult } from "@/models/searchResult.model";
+import { ItempResult } from "@/models/searchResult.model";
 import TempCard from "@/components/common/card/TempCard";
 import SearchLoading from "@/components/search/search-contents/SearchLoading";
 import Pagination from "@/components/search/Pagination";
@@ -23,7 +23,7 @@ const UserSelectionTempList: React.FC<IUserSelectionList> = ({
   });
 
   const tempSelectionList = data as unknown as ItempResult;
-  if (isLoading) return <SearchLoading />;
+  if (isLoading) return <SearchLoading height="search" />;
   if (isError) return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>;
   if (!tempSelectionList) return null;
 

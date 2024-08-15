@@ -11,6 +11,7 @@ import {
   useDeleteHashtag
 } from "@/hooks/queries/useUpdateUserHashtag";
 import AutoCompletion from "@/components/search/search-contents/AutoCompletion";
+import SearchLoading from "@/components/search/search-contents/SearchLoading";
 
 interface ModalAddTagProps {
   userId: string;
@@ -29,36 +30,44 @@ const ModalEditTag = ({ userId }: ModalAddTagProps) => {
   const { deleteHtag } = useDeleteHashtag(userId);
   const { data: hashtags, isLoading } = useFetchUserHashtag(userId);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <SearchLoading height="medium"/>
   if (!hashtags || !hashtags.data) return null;
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // Todo : 스낵 메세지로 변경
     e.preventDefault();
+
     if (tagValue.trim()) {
-      if (tagValue.length === 0) {
-        return;
-      }
-      if (tagValue.length > 10) {
-        alert("10글자 이내로 작성해주세요");
-        return;
-      }
-      if (hashtags?.data.length > 8) {
-        alert("해시태그는 최대 8개까지 등록이 가능합니다");
-        return;
-      }
-      const addTag = tagValue.replace(/\s+/g, "");
-      AddHtag(addTag);
-      setTagValue("");
+        const addTag = tagValue.replace(/\s+/g, "");
+        const isDuplicate = hashtags.data.some((hashtag) => hashtag.htag_name === addTag);
+
+        if (addTag.length === 0) {
+            return;
+        }
+        if (addTag.length > 10) {
+            alert("10글자 이내로 작성해주세요");
+            setTagValue("");
+            return;
+        }
+        if (hashtags?.data.length >= 8) {
+            alert("해시태그는 최대 8개까지 등록이 가능합니다");
+            setTagValue("");
+            return;
+        }
+        if (isDuplicate) {
+            alert("이미 등록된 해시태그입니다.");
+            setTagValue("");
+            return;
+        }
+        setTagValue("");
+        AddHtag(addTag);
     }
-  };
+};
 
   const handleDelete = (userHtagId: number | undefined) => {
     if (userHtagId) deleteHtag(userHtagId);
   };
 
   return (
-    <form className="flex flex-col gap-[10px] h-[350px] relative" onSubmit={handleSubmit}>
+    <form className="flex flex-col h-[350px] relative" onSubmit={handleSubmit}>
       <TextInput
         className="text-grey2"
         width="full"
