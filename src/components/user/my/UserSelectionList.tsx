@@ -14,7 +14,7 @@ export interface IUserSelectionList {
     sort: TsortType;
     page: string;
     limit: string;
-    isMyPage? : boolean
+    isMyPage : boolean
 }
 
 const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelectionType, sort, page, limit, isMyPage }) => {    
@@ -27,10 +27,10 @@ const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelection
         userSelectionType,
         sort,
         page,
-        limit
+        limit,
     });
 
-    if (isLoading) return <SearchLoading />;
+    if (isLoading) return <SearchLoading height='search' />;
     if (isError) return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>;
     if (!data) return null;
     const selectionList = data as unknown as IsearchResult;
@@ -40,20 +40,7 @@ const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelection
             <>
               <div className="grid grid-cols-3 gap-[20px]">
                 {selectionList.data.map((item) => (
-                  <ColCard
-                    key={item.slt_id}
-                    thumbnail={item.slt_img}
-                    category={item.slt_category_name}
-                    region={item.slt_location_option_name}
-                    selectionId={item.slt_id}
-                    hashtags={item.slt_hashtags}
-                    description={item.slt_description}
-                    title={item.slt_title}
-                    userName={item.user_nickname}
-                    userImage={item.user_img}
-                    isMypage={isMyPage}
-                    status={item.slt_status}
-                  />
+                  <ColCard key={item.selectionId} {...item} isMyPage={isMyPage}/>
                 ))}
               </div>
               <Pagination pagination={selectionList.pagination} />

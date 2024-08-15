@@ -18,12 +18,12 @@ export default function RootLayout({
   const {data, isLoading, isError} = useFetchUserInfo(userId)
 
   if(!data) return null;
-  if(isLoading) return <div className="w-[1024px] flex justify-center items-center"><SearchLoading/></div>
+  if(isLoading) return <div className="w-[1024px] flex justify-center items-center"><SearchLoading height="full"/></div>
   if(isError) return <div>에러페이지입니다</div>
 
   return (  
     <div className="w-[1024px] flex flex-col m-auto border border-solid border-grey2 bg-grey0 ">
-        <UserInfoWidget {...data} isMyPage={isMyPage} />
+        <UserInfoWidget {...data} isMyPage={isMyPage} userId={userId} />
         <div className="flex">
         {isMyPage && <UserNavigation/>}
         {children}

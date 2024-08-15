@@ -4,7 +4,7 @@ const useSearchAutoComplete = () => {
   const tagInputRef = useRef<HTMLInputElement>(null);
   const tagACRef = useRef<HTMLDivElement>(null);
   const [visibleAutoCompletion, setVisibleAutoCompletion] =
-    useState<boolean>(true);
+    useState<boolean>(false);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown" && visibleAutoCompletion && tagACRef.current) {

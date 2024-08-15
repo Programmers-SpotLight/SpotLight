@@ -1,11 +1,41 @@
 import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import { TuserSelection } from "@/models/user.model";
 import { requestHandler } from "./http";
+import axios from "axios";
 
 export const getUserInfo = async (userId: string) => {
     const url = `/api/users/${userId}/`;
     return await requestHandler("get", url);
 };
+
+export const updateUserDescription = async (userId : string, description : string) => {
+  const url = `/api/users/${userId}/description`
+  return await requestHandler("put", url, {data : {description, userId}})
+}
+
+export const addUserHashTag = async (userId : string, hashtag : string) => {
+  const url = `/api/users/${userId}/hashtag`
+  return await requestHandler("post", url, {data : {userId, hashtag}})
+}
+
+export const deleteUserHashTag = async (userId : string, userHashtagId : number) => {
+  const url = `/api/users/${userId}/hashtag`
+  try {
+  await axios.delete(url, {
+    data: {
+      userId,
+      userHashtagId
+    }
+  });
+} catch (error) {
+  throw new Error("Failed to remove bookmarks");
+}
+}
+
+export const getUserHashTag = async (userId : string) => {
+  const url = `/api/users/${userId}/hashtag`
+  return await requestHandler("get", url)
+}
 
 export const fetchUserSelectionList = async (
   userId: string | string[],

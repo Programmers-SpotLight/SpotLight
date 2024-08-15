@@ -3,13 +3,14 @@ import Link from "next/link";
 import React from "react";
 import { FaTrash } from "react-icons/fa";
 
-interface ITempCard {
+export interface ITempCardProps {
   title: string;
   category?: string;
   region?: string;
   description?: string;
   selectionId?: number;
   created_at: string;
+  img? : string;
 }
 
 const TempCard = ({
@@ -19,7 +20,7 @@ const TempCard = ({
   description,
   selectionId,
   created_at
-}: ITempCard) => {
+}: ITempCardProps) => {
   return (
     <div className="flex gap-5 cursor-pointer">
       <Link

@@ -4,13 +4,14 @@ import { useModalStore } from "@/stores/modalStore";
 import React from "react";
 import { useStore } from "zustand";
 import Modal from "./Modal";
-import ModalTemp from "./modal-contents/ModalTemp";
 import ModalCreateSelectionSpot from "./modal-contents/ModelCreateSelectionSpot/ModalCreateSelectionSpot";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
 import { TModalSize, TmodalType } from "@/models/modal.model";
 import ModalEditTag from "./modal-contents/ModalEditTag";
 import ModalFeedbackForm from "./modal-contents/ModalFeedbackForm";
+import ModalEditInfo from "./modal-contents/ModalEditInfo";
+import ModalUser from "../../users/ModalUser";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -22,11 +23,11 @@ interface ImodalDatas {
 
 const modalDatas: ImodalDatas[] = [
   {
-    type: "temp",
-    title: "모달 테스트",
-    size: "medium",
+    type: "login",
+    title: "모달 로그인",
+    size: "small",
     overlayClose: true,
-    component: ModalTemp
+    component: ModalUser
   },
   {
     type: "GoogleMapsAddSelectionSpot",
@@ -55,6 +56,13 @@ const modalDatas: ImodalDatas[] = [
     size: "large",
     overlayClose: false,
     component: ModalFeedbackForm
+  },
+  {
+    type: "editInfo",
+    title: "자기소개 편집",
+    size: "medium",
+    overlayClose: true,
+    component: ModalEditInfo
   }
 ];
 

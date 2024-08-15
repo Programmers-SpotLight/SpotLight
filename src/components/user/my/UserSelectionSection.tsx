@@ -16,7 +16,7 @@ import UserSelectionList from "./UserSelectionList";
 import UserSelectionTempList from "./UserSelectionTempList";
 
 interface UserSelectionProps {
-  isMyPage?: boolean;
+  isMyPage: boolean;
 }
 
 const UserSelectionSection = ({ isMyPage }: UserSelectionProps) => {
@@ -98,6 +98,7 @@ const UserSelectionSection = ({ isMyPage }: UserSelectionProps) => {
         <UserSelectionTempList
           userId={userId}
           userSelectionType={userSelectionType}
+          isMyPage={isMyPage}
           sort={sort}
           page={page}
           limit={limit}
