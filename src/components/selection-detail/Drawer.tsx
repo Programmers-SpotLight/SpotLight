@@ -9,8 +9,8 @@ interface IDrawerProps {
   isSelectionDrawerOpen: boolean;
   isSpotDrawerOpen: boolean;
   toggleDrawer: () => void;
-  spotClickHandler: (spotId: string) => void;
-  selectedSpotId: string | null;
+  spotClickHandler: (spotId: Buffer) => void;
+  selectedSpotId: Buffer;
 }
 const Drawer = ({
   selectionData,

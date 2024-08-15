@@ -4,9 +4,9 @@ import Image from "next/image";
 import { ISpotInfo } from "@/models/spot.model";
 
 interface ISpotListProps {
-  spotClickHandler: (spotId: string, lat: number, lng: number) => void;
+  spotClickHandler: (spotId: Buffer, lat: number, lng: number) => void;
   spotList: ISpotInfo[];
-  selectedSpotId: string | null;
+  selectedSpotId: Buffer;
 }
 
 const SpotList = ({

@@ -14,7 +14,7 @@ const ModalEditTag = ({hashtags} :ModalAddTagProps) => {
       <TextInput className='text-grey2' width='full' icon={<FaSearch className='fill-grey3' />} placeholder='검색어를 입력해주세요'/>
       <div className='flex-wrap flex list-none gap-[5px]'>
         {hashtags.map((htag, index)=>(
-          <li key={htag.htag_id}><Hashtag name={htag.htag_name} size='big' cancelHashtag={()=>{}}/></li>
+          <li key={htag.user_htag_id}><Hashtag name={htag.htag_name} size='big' cancelHashtag={()=>{}}/></li>
         ))}
 
       </div>

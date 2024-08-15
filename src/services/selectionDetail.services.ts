@@ -89,7 +89,8 @@ export const getSpotDetailInfo = async (selectionId: number) => {
         "spot_created_date as createdDate",
         "spot_gmap_id as gmapId",
         "spot_category.spot_category_id as categoryId",
-        "spot_category.spot_category_name as categoryName"
+        "spot_category.spot_category_name as categoryName",
+        "spot_order as order"
       )
       .where("spot.slt_id", selectionId);
 
@@ -99,7 +100,7 @@ export const getSpotDetailInfo = async (selectionId: number) => {
   }
 };
 
-export const getSpotHashTags = async (spotId: string) => {
+export const getSpotHashTags = async (spotId: Buffer) => {
   try {
     const hashtagIds = await dbConnectionPool("spot_hashtag")
       .select("htag_id")
@@ -130,7 +131,7 @@ export const getSpotHashTags = async (spotId: string) => {
   }
 };
 
-export const getSpotImages = async (spotId: string) => {
+export const getSpotImages = async (spotId: Buffer) => {
   try {
     const spotImages = await dbConnectionPool("spot_image")
       .select("spot_img_url as url", "spot_img_order as order")

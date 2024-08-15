@@ -36,8 +36,8 @@ export interface ItempSelectionData {
 	slt_location_option_id : number;
 	slt_temp_description: string,
     slt_temp_img: string,
-    slt_temp_created_date: Date,
-    slt_temp_updated_date: Date
+    slt_temp_created_date: string,
+    slt_temp_updated_date: string
 }
 
 export interface IsearchResult {
