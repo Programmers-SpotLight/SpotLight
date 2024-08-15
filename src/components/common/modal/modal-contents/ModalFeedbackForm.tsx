@@ -7,6 +7,7 @@ import { requestHandler } from "@/http/http";
 import { useStore } from "zustand";
 import { useModalStore } from "@/stores/modalStore";
 import { useSendFeedback } from "@/hooks/queries/useSendFeedback";
+import Spinner from "../../Spinner";
 
 export interface IFeedbackFormData {
   type: string;
@@ -23,7 +24,7 @@ const ModalFeedbackForm = () => {
     contents: "",
     pictures: []
   });
-  const { send, isError, isPending } = useSendFeedback(formData);
+  const { send, isPending } = useSendFeedback(formData);
 
   const [errors, setErrors] = useState({
     type: "",
@@ -97,13 +98,7 @@ const ModalFeedbackForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      try {
-        send();
-        alert("피드백을 전송했습니다.");
-        closeModal();
-      } catch (error: any) {
-        alert("전송에 실패했습니다.");
-      }
+      send();
     }
   };
 
@@ -196,7 +191,13 @@ const ModalFeedbackForm = () => {
         </fieldset>
 
         <fieldset className="mx-auto">
-          <Button type="submit">보내기</Button>
+          <Button
+            type="submit"
+            disabled={isPending}
+            color={`${isPending ? "white" : "primary"}`}
+          >
+            {isPending ? <Spinner size="extraSmall" /> : "보내기"}
+          </Button>
         </fieldset>
       </form>
     </div>
