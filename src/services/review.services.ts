@@ -6,6 +6,34 @@ function generateBinaryUUID(): Buffer {
   return Buffer.from(uuid, "hex"); // 16바이트의 Buffer로 변환
 }
 
+export const fetchMyReview = async (
+  reviewType: ReviewType,
+  page : string,
+  limit : string,
+) => {
+  try {
+    const reviewLikeId = generateBinaryUUID();
+    if (reviewType === "selection") {
+      //selection
+      // await dbConnectionPool("selection_review_like").insert({
+      //   slt_review_like_id: reviewLikeId,
+      //   user_id: userId,
+      //   slt_review_id: dbConnectionPool.raw('UNHEX(?)', [reviewId])
+      // });
+    } else {
+      //spot
+      // await dbConnectionPool("spot_review_like").insert({
+      //   spot_review_like_id: reviewLikeId,
+      //   user_id: userId,
+      //   spot_review_id: dbConnectionPool.raw('UNHEX(?)', [reviewId])
+      // });
+    }
+  } catch (error) {
+    console.error("Error details:", error);
+    throw new Error("Failed to add review like");
+  }
+}
+
 export const addLike = async (
   reviewId: string,
   reviewType: ReviewType,
