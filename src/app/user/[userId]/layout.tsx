@@ -31,7 +31,7 @@ export default function RootLayout({
 
   if (data.is_private)
     return (
-      <div className="w-[1024px] h-[calc(100vh-260px)] mx-auto border border-solid border-grey2 bg-grey0">
+      <div className="w-[1024px] h-[calc(100vh-266px)] mx-auto ">
         <PrivateUser />
       </div>
     );
