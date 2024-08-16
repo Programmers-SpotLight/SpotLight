@@ -1,11 +1,12 @@
-"use client"
+"use client";
 
 import Spinner from "@/components/common/Spinner";
+import SearchLoading from "@/components/search/search-contents/SearchLoading";
 import MyReviewList from "@/components/user/my/review/MyReviewList";
 import MyReviewPagination from "@/components/user/my/review/MyReviewPagination";
 import MyReviewTab from "@/components/user/my/review/MyReviewTab";
 import useMyReview from "@/hooks/queries/useMyReview";
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 const UserSelectionPage = () => {
   const [currentTab, setCurrentTab] = useState<ReviewType>("selection");
@@ -30,13 +31,13 @@ const UserSelectionPage = () => {
   };
 
   return (
-    <div>
+    <div className="h-auto m-auto px-[20px] box-border w-full w-max-[600px]">
       <MyReviewTab reviewType={currentTab} handleTabData={handleTabData} />
       {
         isLoading ? (
-          <Spinner size="large" /> 
+          <SearchLoading height='search' loadingMessage="리뷰를 불러오는 중입니다" />
         ) : error ? (
-          <div className="text-center text-xl font-semibold text-red-500">
+          <div className="h-32 flex items-center justify-center text-center text-xl font-semibold text-red-500">
             Error loading reviews
           </div>
         ) : ( data && data.reviews.length > 0 ? (
@@ -53,13 +54,13 @@ const UserSelectionPage = () => {
           </>
         )
           :
-            <div className="text-center text-xl font-semibold text-grey4">
+            <div className="h-32 flex items-center justify-center text-center text-xl font-semibold text-grey4">
               No reviews found
             </div>
         )
       }
     </div>
-  )
-}
+  );
+};
 
-export default UserSelectionPage
+export default UserSelectionPage;

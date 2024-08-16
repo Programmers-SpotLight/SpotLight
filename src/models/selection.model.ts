@@ -1,6 +1,7 @@
 import { Ihashtags } from "./hashtag.model";
 import { TselectionStatus } from "./searchResult.model";
 import { ISpotInfo } from "./spot.model";
+import { IUserInfoData } from "./user.model";
 
 export interface ISelectionCategory {
   id: number;
@@ -93,14 +94,11 @@ export interface ISelectionDetailInfo {
   image?: string;
   hashtags: Ihashtags[];
   location: string;
+  writerId: number;
 }
 
 export interface ISelectionInfo extends ISelectionDetailInfo {
-  user: {
-    id: number;
-    nickname: string;
-    image?: string;
-  };
+  writer: IUserInfoData;
   spotList: ISpotInfo[];
   booked: boolean;
 }

@@ -1,15 +1,17 @@
+import { useModalStore } from "@/stores/modalStore";
 import { formatDate } from "@/utils/formatDate";
 import Link from "next/link";
 import React from "react";
 import { FaTrash } from "react-icons/fa";
 
-interface ITempCard {
+export interface ITempCardProps {
   title: string;
   category?: string;
   region?: string;
   description?: string;
   selectionId?: number;
   created_at: string;
+  img? : string;
 }
 
 const TempCard = ({
@@ -19,7 +21,8 @@ const TempCard = ({
   description,
   selectionId,
   created_at
-}: ITempCard) => {
+}: ITempCardProps) => {
+  const {openModal} = useModalStore();
   return (
     <div className="flex gap-5 cursor-pointer">
       <Link
@@ -45,7 +48,8 @@ const TempCard = ({
           {description ? description : "설명 미정"}
         </div>
       </Link>
-      <div className="flex-[0.2] flex items-center justify-center flex-col gap-[5px] text-red-500 cursor-pointer">
+      <div className="flex-[0.2] flex items-center justify-center flex-col gap-[5px] text-red-500 cursor-pointer hover:scale-105 transition-transform duration-200"
+      onClick={() => openModal("selection-delete", {title, selectionId})}>
         <FaTrash />
         <h1>삭제하기</h1>
       </div>

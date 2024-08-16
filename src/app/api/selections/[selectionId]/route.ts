@@ -1,6 +1,8 @@
+import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import { Ihashtags } from "@/models/hashtag.model";
-import { ISelectionDetailInfo } from "@/models/selection.model";
+import { ISelectionDetailInfo, ISelectionInfo } from "@/models/selection.model";
 import { ISpotImage, ISpotInfo } from "@/models/spot.model";
+import { ErrorResponse, SuccessResponse, TuserSelection } from "@/models/user.model";
 import {
   getBookMarks,
   getSelectionDetailInfo,
@@ -9,8 +11,10 @@ import {
   getSpotHashTags,
   getSpotImages
 } from "@/services/selectionDetail.services";
+import { serviceDeleteSelection, serviceDeleteTempSelection } from "@/services/selectionUser.services";
+import { getUserInfo } from "@/services/user.services";
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
@@ -68,11 +72,84 @@ export async function GET(
 
   const booked = await getBookMarks(selectionId, 1); //임시로 userId 1로 설정
 
-  const selectionData = {
+  const selectionWriterInfo = await getUserInfo(
+    selecitonDetailInfo.writerId.toString()
+  );
+
+  const selectionData: ISelectionInfo = {
     ...selecitonDetailInfo,
+    writer: selectionWriterInfo,
     hashtags,
     spotList: spotDetailInfo,
     booked: booked.length ? true : false
   };
   return NextResponse.json(selectionData);
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { selectionId: number; user_selection: TuserSelection } }
+): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
+  try {
+    const url = req.nextUrl;
+    const query = url.searchParams;
+    const selectionId = params.selectionId;
+    const selectionType = query.get(QUERY_STRING_NAME.userSelection) as TuserSelection;
+
+    console.log(selectionId, selectionType)
+    const userId = "1"; // temp
+
+    const validationError = deleteSelectionValidator(selectionId, selectionType, userId);
+    if (validationError) return validationError;
+
+    if (selectionType === "temp") {
+      await serviceDeleteTempSelection(userId, selectionId);
+      return NextResponse.json(
+        { message: "성공적으로 임시 데이터를 삭제하였습니다." },
+        { status: 200 }
+      );
+    } else {
+      await serviceDeleteSelection(userId, selectionId);
+      return NextResponse.json(
+        { message: "성공적으로 데이터를 삭제하였습니다." },
+        { status: 200 }
+      );
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { error: "서버에서 오류가 발생했습니다." },
+      { status: 500 } // Internal Server Error
+    );
+  }
+}
+
+const deleteSelectionValidator = (
+  selectionId: number,
+  selectionType: TuserSelection,
+  userId: string
+): NextResponse<ErrorResponse> | null => {
+
+  const validSelectionTypes: TuserSelection[] = ["temp", "my", "bookmark"];
+  if (!validSelectionTypes.includes(selectionType)) {
+    return NextResponse.json(
+      { error: "유효하지 않은 selectionType입니다." },
+      { status: 400 }
+    );
+  }
+
+  if (!selectionId) {
+    return NextResponse.json(
+      { error: "유효하지 않은 selectionId입니다." },
+      { status: 400 }
+    );
+  }
+
+  if (!userId) {
+    return NextResponse.json(
+      { error: "유효하지 않은 사용자입니다." },
+      { status: 401 } // Unauthorized
+    );
+  }
+
+  return null;
+};

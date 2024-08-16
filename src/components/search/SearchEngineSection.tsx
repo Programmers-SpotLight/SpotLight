@@ -27,20 +27,18 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
     if (tagInputRef.current) tagInputRef.current?.focus();
     const addtagList = [];
     const HeaderSearchTag = searchParams.get(QUERY_STRING_NAME.tags); // 검색을 통해 접근하는 경우 태그 불러오기
-    if (HeaderSearchTag) {
-      addtagList.push(HeaderSearchTag);
-    }
+    if (HeaderSearchTag) {addtagList.push(HeaderSearchTag);}
     const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags); // 세션 스토리지에 저장된 태그 불러오기
     if (storedTags) { // 세션에 저장된 데이터가 있는 경우 태그리스트에 추가
       const parseStoredTags = JSON.parse(storedTags);
       parseStoredTags.forEach((tag: string) => {
-        addtagList.push(tag);
+      addtagList.push(tag);
       });
     }
 
     if (addtagList.length > 0) { // 태그리스트에 값이 있는 경우 쿼리스트링에 추가
       addtagList.forEach((tag: string) => {
-        addQueryString(QUERY_STRING_NAME.tags, tag);
+      addQueryString(QUERY_STRING_NAME.tags, tag);
     });
     setTagList(addtagList);
   }

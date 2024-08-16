@@ -3,148 +3,224 @@ import { TsortType } from "@/models/searchResult.model";
 import { TuserSelection } from "@/models/user.model";
 
 const userSelectionQueryBuilder = async (
-    queryBuilder: any,
-    userSelectionType: TuserSelection,
-    userId : string,
-    sort?: TsortType,
+  queryBuilder: any,
+  userSelectionType: TuserSelection,
+  userId: string,
+  sort?: TsortType,
+  isMyPage?: boolean
 ) => {
-    queryBuilder.join("user", "selection.user_id", "=", "user.user_id")
+  queryBuilder
+    .join("user", "selection.user_id", "=", "user.user_id")
     .join(
-        "selection_hashtag",
-        "selection.slt_id",
-        "=",
-        "selection_hashtag.slt_id"
-      )
-      .join(
-        "selection_category",
-        "selection.slt_category_id",
-        "=",
-        "selection_category.slt_category_id"
-      )
-      .join(
-        "selection_location_option",
-        "selection.slt_location_option_id",
-        "=",
-        "selection_location_option.slt_location_option_id"
-      )
-      .join("hashtag", "selection_hashtag.htag_id", "=", "hashtag.htag_id");
-      
-      if (sort) {
-        if (sort === "latest") {
-          queryBuilder.orderBy("selection.slt_created_date", "desc");
-        } else if (sort === "asc") {
-          queryBuilder.orderBy("selection.slt_title", "asc");
-        } else if (sort === "popular") {
-          // Todo : 인기 순 리뷰 기능 구현 시 추가 구현
-        }
-      }
+      "selection_hashtag",
+      "selection.slt_id",
+      "=",
+      "selection_hashtag.slt_id"
+    )
+    .join(
+      "selection_category",
+      "selection.slt_category_id",
+      "=",
+      "selection_category.slt_category_id"
+    )
+    .join(
+      "selection_location_option",
+      "selection.slt_location_option_id",
+      "=",
+      "selection_location_option.slt_location_option_id"
+    )
+    .join("hashtag", "selection_hashtag.htag_id", "=", "hashtag.htag_id");
 
-      if (userSelectionType) {
-        if (userSelectionType === "my") {
-            queryBuilder.where("selection.user_id", userId); // 수정된 부분
-    
-        } else if (userSelectionType === "bookmark") {
-            queryBuilder
-            .innerJoin("bookmark as b", "b.slt_id", "selection.slt_id")
-            .where("b.user_id", userId); // user_id를 올바르게 참조
-    
-        }
+  if (!isMyPage) {
+    queryBuilder.whereNot("selection.slt_status", "private");
+  }
+
+  if (sort) {
+    if (sort === "latest") {
+      queryBuilder.orderBy("selection.slt_created_date", "desc");
+    } else if (sort === "asc") {
+      queryBuilder.orderBy("selection.slt_title", "asc");
+    } else if (sort === "popular") {
+      // Todo : 인기 순 리뷰 기능 구현 시 추가 구현
     }
-    return queryBuilder
-}
+  }
+
+  if (userSelectionType) {
+    if (userSelectionType === "my") {
+      queryBuilder.where("selection.user_id", userId); // 수정된 부분
+    } else if (userSelectionType === "bookmark") {
+      queryBuilder
+        .innerJoin("bookmark as b", "b.slt_id", "selection.slt_id")
+        .where("b.user_id", userId); // user_id를 올바르게 참조
+    }
+  }
+  
+  queryBuilder.where("selection.slt_status", "<>", "delete");
+  return queryBuilder;
+};
 
 export const getUserSelectionQueryCount = async (
-    userSelectionType: TuserSelection,
-    userId : string,
-    sort?: TsortType,
-  ) => {
-    try {
-      const countQuery = await dbConnectionPool("selection")
-        .select(
-          "selection.*",
-          "user.user_nickname",
-          "user.user_img",
-          "selection_category.slt_category_name",
-          "selection_location_option.slt_location_option_name",
-          dbConnectionPool.raw(
-            'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
-          )
+  userSelectionType: TuserSelection,
+  userId: string,
+  sort?: TsortType,
+  isMyPage?: boolean
+) => {
+  try {
+    const countQuery = await dbConnectionPool("selection")
+      .select(
+        "selection.*",
+        "user.user_nickname",
+        "user.user_img",
+        "selection_category.slt_category_name",
+        "selection_location_option.slt_location_option_name",
+        dbConnectionPool.raw(
+          'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
         )
-        .groupBy("selection.slt_id", "user.user_id")
-        .modify((queryBuilder) =>
-          userSelectionQueryBuilder(queryBuilder, userSelectionType, userId, sort)
-        );
-  
-      return countQuery;
-    } catch (error) {
-      throw new Error(`Failed to fetch search Result`); // Todo : Error 처리
-    }
-  };
+      )
+      .groupBy("selection.slt_id", "user.user_id")
+      .modify((queryBuilder) =>
+        userSelectionQueryBuilder(
+          queryBuilder,
+          userSelectionType,
+          userId,
+          sort,
+          isMyPage
+        )
+      );
+
+    return countQuery;
+  } catch (error) {
+    throw new Error(`Failed to fetch search Result`); // Todo : Error 처리
+  }
+};
 
 export const getUserSelectionResult = async (
-    userSelectionType: TuserSelection,
-    userId : string,
-    limit : number,
-    currentPage : number,
-    sort?: TsortType,
+  userSelectionType: TuserSelection,
+  userId: string,
+  limit: number,
+  currentPage: number,
+  sort?: TsortType,
+  isMyPage?: boolean
 ) => {
-    try {
-        const resultQuery = dbConnectionPool("selection")
-          .select(
-            "selection.*",
-            "user.user_nickname",
-            "user.user_img",
-            "selection_category.slt_category_name",
-            "selection_location_option.slt_location_option_name",
-            dbConnectionPool.raw(
-              'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
-            )
-          )
-          .groupBy("selection.slt_id", "user.user_id")
-          .modify((queryBuilder) =>
-            userSelectionQueryBuilder(
-              queryBuilder,
-              userSelectionType,
-              userId,
-              sort
-            )
-          )
-          .limit(limit)
-          .offset((currentPage - 1) * limit);
-        return resultQuery;
-      } catch (error) {
-        throw new Error(`Failed to fetch search Result`);
-      }
-}
+  try {
+    const resultQuery = dbConnectionPool("selection")
+      .select(
+        "selection.*",
+        "user.user_nickname",
+        "user.user_img",
+        "selection_category.slt_category_name",
+        "selection_location_option.slt_location_option_name",
+        dbConnectionPool.raw(
+          'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
+        )
+      )
+      .groupBy("selection.slt_id", "user.user_id")
+      .modify((queryBuilder) =>
+        userSelectionQueryBuilder(
+          queryBuilder,
+          userSelectionType,
+          userId,
+          sort,
+          isMyPage
+        )
+      )
+      .limit(limit)
+      .offset((currentPage - 1) * limit);
+    return resultQuery;
+  } catch (error) {
+    throw new Error(`Failed to fetch search Result`);
+  }
+};
 
 export const getUserTempSelectionCount = async (userId: string) => {
   try {
-  const countQuery = await dbConnectionPool("selection_temporary")
-  .select("*")
-  .where("selection_temporary.user_id", userId)
-  return countQuery
-  } catch(error) {
+    const countQuery = await dbConnectionPool("selection_temporary")
+      .select("*")
+      .where("selection_temporary.user_id", userId);
+    return countQuery;
+  } catch (error) {
     throw new Error(`Failed to fetch search Result`);
   }
-}
+};
 
-export const getUserTempSelection = async (userId: string, currentPage: number, limit: number) => {
+export const getUserTempSelection = async (
+  userId: string,
+  currentPage: number,
+  limit: number
+) => {
   try {
     const offset = (currentPage - 1) * limit;
     const resultQuery = await dbConnectionPool("selection_temporary")
-      .select("selection_temporary.*",
+      .select(
+        "selection_temporary.*",
         "user.user_nickname",
         "selection_category.slt_category_name",
         "selection_location_option.slt_location_option_name"
       )
       .where("selection_temporary.user_id", userId)
       .join("user", "selection_temporary.user_id", "=", "user.user_id")
-      .join("selection_category", "selection_temporary.slt_category_id", "=", "selection_category.slt_category_id")
-      .join("selection_location_option", "selection_temporary.slt_location_option_id", "=", "selection_location_option.slt_location_option_id")
+      .join(
+        "selection_category",
+        "selection_temporary.slt_category_id",
+        "=",
+        "selection_category.slt_category_id"
+      )
+      .join(
+        "selection_location_option",
+        "selection_temporary.slt_location_option_id",
+        "=",
+        "selection_location_option.slt_location_option_id"
+      )
       .limit(limit)
       .offset(offset);
     return resultQuery;
   } catch (error) {
     throw new Error(`Failed to fetch search Result`);
+  }
+};
+
+export const servicePutUserSelectionPrivate = async (userId: string, selectionId: number) => {
+  try {
+    await dbConnectionPool('selection')
+    .where({
+      slt_id: selectionId,
+      user_id: userId
+    })
+    .update({
+      slt_status: dbConnectionPool.raw(`CASE WHEN slt_status = 'private' THEN 'public' ELSE 'private' END`)
+    });
+  } catch (error) {
+    throw new Error(`Failed to update user selection status: ${error}`);
+  }
+};
+
+export const serviceDeleteSelection = async (userId: string, selectionId: number) => {
+  try {
+    await dbConnectionPool('selection')
+      .where({
+        slt_id: selectionId,
+        user_id: userId
+      })
+      .update({
+        slt_status: 'delete'
+      });
+  } catch (error) {
+    throw new Error(`Failed to update user selection status: ${error}`);
+  }
+};
+
+export const serviceDeleteTempSelection = async (userId: string, selectionId: number) => {
+  try { 
+    // 보류, 삭제를 자식 테이블들을 전부 다 삭제하는 CASCADE로 할지
+    // selection과 같이 상태를 따로 구분할지
+    await dbConnectionPool('selection_temporary')
+      .where({
+        slt_temp_id: selectionId,
+        user_id: userId
+      })
+      .del();
+  } catch (error) {
+    console.log(error)
+    throw new Error('임시 선택 데이터를 삭제하는 중 오류가 발생했습니다.');
   }
 };

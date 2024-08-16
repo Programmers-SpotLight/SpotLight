@@ -20,6 +20,7 @@ export const getSelectionDetailInfo = async (selectionId: number) => {
       )
       .select(
         "selection.slt_id as id",
+        "selection.user_id as writerId",
         "selection.slt_title as title",
         "selection.slt_img as image",
         "selection.slt_description as description",
