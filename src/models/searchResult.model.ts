@@ -2,7 +2,7 @@ import { IColCardProps } from "@/components/common/card/ColCard";
 import { Ihashtags } from "./hashtag.model"
 import { ITempCardProps } from "@/components/common/card/TempCard";
 
-export type TselectionStatus = "public" | "private" | "temp"
+export type TselectionStatus = "public" | "private" | "temp" | "delete"
 export type TsortType = "popular" | "latest" | "asc"
 
 export interface Ipagination {

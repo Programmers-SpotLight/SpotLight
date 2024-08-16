@@ -13,7 +13,6 @@ import SearchEmptyResults from "./search-contents/SearchEmptyResults";
 import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import useSelectionSort from "@/hooks/useSelectionSort";
 
-
 const SearchResultSection = () => {
   const searchParams = useSearchParams();
   const tags = searchParams.getAll(QUERY_STRING_NAME.tags);
@@ -24,18 +23,20 @@ const SearchResultSection = () => {
   const limit = searchParams.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit;
 
   const { data: results, isError, isLoading } = useFetchSearchResult({category_id, region_id, tags, sort, page, limit});
-  const {setIsSortClicked, toggleSortOptions, currentSortOption, sortRender, sortRef} = useSelectionSort()
-  useClickOutside(sortRef, ()=>setIsSortClicked(false));
+  const { setIsSortClicked, toggleSortOptions, currentSortOption, sortRender, sortRef } = useSelectionSort();
+  useClickOutside(sortRef, () => setIsSortClicked(false));
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [page]);
 
-  if (isLoading) return <SearchLoading height="search"/>
+  if (isLoading) return <SearchLoading height="search" />;
   if (isError) return <div>Error loading results.</div>;
   if (!results) return null;
-  if (results.data.length === 0) return <SearchEmptyResults/>
-  
+  if (results.data.length === 0) return <SearchEmptyResults />;
+
+  const filteredResults = results.data.filter(item => item.status !== 'private');
+
   return (
     <div className="px-5">
       <div
@@ -48,11 +49,15 @@ const SearchResultSection = () => {
         {sortRender()}
       </div>
       <div className="grid grid-cols-4 gap-5">
-        {results.data && results.data.map((item) => (
-          <ColCard key={item.selectionId} {...item}/>
-        ))}
+        {filteredResults.length > 0 ? (
+          filteredResults.map((item) => (
+            <ColCard key={item.selectionId} {...item} />
+          ))
+        ) : (
+          <SearchEmptyResults />
+        )}
       </div>
-      <Pagination pagination={results.pagination}/>
+      <Pagination pagination={results.pagination} />
     </div>
   );
 };

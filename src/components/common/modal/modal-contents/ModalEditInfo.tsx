@@ -11,7 +11,7 @@ interface ModalEditInfoProps {
     description: string;
 }
 
-const ModalEditInfo: React.FC<ModalEditInfoProps> = ({ description, userId }) => {
+const ModalEditInfo = ({ description, userId } : ModalEditInfoProps) => {
     const [text, setText] = useState<string>(description);
     const {closeModal} = useModalStore();
     const {userUpd} = useUpdateUserDescription(userId, text)

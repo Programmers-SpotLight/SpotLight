@@ -13,7 +13,7 @@ export const getUserInfo = async (userId: string) => {
                 "user.user_role",
                 "user.user_is_private",
                 "user.user_type",
-                dbConnectionPool.raw("(SELECT COUNT(*) FROM selection WHERE selection.user_id = user.user_id) as selection_count"),
+                dbConnectionPool.raw("(SELECT COUNT(*) FROM selection WHERE selection.user_id = user.user_id AND selection.slt_status != 'delete') as selection_count"),
                 dbConnectionPool.raw("(SELECT COUNT(*) FROM bookmark WHERE bookmark.user_id = user.user_id) as bookmark_count"),
                 dbConnectionPool.raw("(SELECT COUNT(*) FROM spot_review WHERE spot_review.user_id = user.user_id) as spot_review_count"),
                 dbConnectionPool.raw("(SELECT COUNT(*) FROM selection_review WHERE selection_review.user_id = user.user_id) as selection_review_count"),

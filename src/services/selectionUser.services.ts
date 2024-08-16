@@ -50,6 +50,9 @@ const userSelectionQueryBuilder = async (
     
         }
     }
+
+    queryBuilder.where("selection.slt_status", "<>", "delete");
+
     return queryBuilder
 }
 
@@ -159,6 +162,21 @@ export const servicePutUserSelectionPrivate = async (userId: string, selectionId
     .update({
       slt_status: dbConnectionPool.raw(`CASE WHEN slt_status = 'private' THEN 'public' ELSE 'private' END`)
     });
+  } catch (error) {
+    throw new Error(`Failed to update user selection status: ${error}`);
+  }
+};
+
+export const serviceDeleteSelection = async (userId: string, selectionId: number) => {
+  try {
+    await dbConnectionPool('selection')
+      .where({
+        slt_id: selectionId,
+        user_id: userId
+      })
+      .update({
+        slt_status: 'delete'
+      });
   } catch (error) {
     throw new Error(`Failed to update user selection status: ${error}`);
   }

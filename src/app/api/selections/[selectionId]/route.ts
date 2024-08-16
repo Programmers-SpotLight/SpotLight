@@ -1,6 +1,7 @@
 import { Ihashtags } from "@/models/hashtag.model";
 import { ISelectionDetailInfo } from "@/models/selection.model";
 import { ISpotImage, ISpotInfo } from "@/models/spot.model";
+import { ErrorResponse, SuccessResponse } from "@/models/user.model";
 import {
   getBookMarks,
   getSelectionDetailInfo,
@@ -9,8 +10,9 @@ import {
   getSpotHashTags,
   getSpotImages
 } from "@/services/selectionDetail.services";
+import { serviceDeleteSelection } from "@/services/selectionUser.services";
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
@@ -76,3 +78,23 @@ export async function GET(
   };
   return NextResponse.json(selectionData);
 }
+
+export async function DELETE(req: NextRequest, { params }: { params: { selectionId: number }}): Promise<NextResponse<SuccessResponse | ErrorResponse >> {
+  try {
+    const selectionId = params.selectionId;
+    const validationError = deleteSelectionValidator(selectionId);
+      if (validationError) return validationError;
+      const deleteSelection = await serviceDeleteSelection("1", selectionId);
+      return NextResponse.json({ message: "성공적으로 삭제하였습니다."}, {status: 200});
+  } catch (error) {
+      return NextResponse.json({ error: "유효하지 않은 데이터입니다." }, { status: 400 });
+  }
+}
+
+const deleteSelectionValidator = (selectionId : number): NextResponse<ErrorResponse> | null => {
+ if (!selectionId) {
+      return NextResponse.json({ error: "유효하지 않은 데이터입니다." }, { status: 400 });
+  }
+  // Todo: 쿠키로 받은 데이터와 ID가 일치하는지 유효성 추가
+  return null;
+};

@@ -119,7 +119,7 @@ const ColCard = ({
               />
               {showMenu && (
                 <ul
-                  className="absolute top-5 right-30 bg-white border border-grey2 shadow-md w-[206px] flex border-solid rounded-lg flex-col z-20"
+                  className="absolute top-5 right-30 bg-white border border-grey2 shadow-md w-[206px] flex border-solid rounded-lg flex-col z-10"
                   ref={selectionMenuRef}
                 >
                   {menuList.map((menu, index) => (
@@ -128,7 +128,7 @@ const ColCard = ({
                         menu.title === "삭제하기" ? "text-red-500" : ""
                       }`}
                       key={menu.title}
-                      onClick={(e) => handleMenuItemClick(e, menu.title, selectionId)}
+                      onClick={(e) => handleMenuItemClick(e, menu.title, selectionId, title)}
                     >
                       {menu.icon}
                       <h1 className="font-medium my-[10px]">{menu.title}</h1>

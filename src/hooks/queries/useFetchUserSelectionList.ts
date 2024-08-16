@@ -14,7 +14,7 @@ interface IuseFetchUserSelectionList {
 
 const useFetchUserSelectionList = ({userId, userSelectionType, sort, page, limit} : IuseFetchUserSelectionList) : UseQueryResult<IsearchResult | ItempResult> => {
     return useQuery<IsearchResult | ItempResult>({
-        queryKey: ['searchResult', userId, userSelectionType, sort, page, limit],
+        queryKey: ['userSelectionList', userId, userSelectionType, sort, page, limit],
         queryFn : () => getUserSelectionList(userId, userSelectionType, sort, page, limit)
     })
 }

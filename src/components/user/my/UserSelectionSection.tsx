@@ -70,7 +70,7 @@ const UserSelectionSection = ({ isMyPage }: UserSelectionProps) => {
 
   return (
     <div className="h-auto m-auto px-[20px] box-border w-full w-max-[600px]">
-      <ul className="list-none flex gap-[20px] text-large font-bold text-grey3 mb-10 z-30">
+      <ul className="list-none flex gap-[20px] text-large font-bold text-grey3 mb-10">
         {userSelectiontabDatas.map((tabData) => (
           <li
             key={tabData.query}

@@ -23,6 +23,11 @@ export const updateUserSelectionPrivate = async (userId : string, selectionId : 
   return await requestHandler("put", url, {data : {userId, selectionId}})
 }
 
+export const deleteSelection = async (selectionId : number) => {
+  const url = `/api/selections/${selectionId}`
+  return await requestHandler("delete", url)
+}
+
 export const deleteUserHashTag = async (userId : string, userHashtagId : number) => {
   const url = `/api/users/${userId}/hashtag`
   try {
