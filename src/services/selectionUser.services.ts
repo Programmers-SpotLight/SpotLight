@@ -148,3 +148,18 @@ export const getUserTempSelection = async (userId: string, currentPage: number, 
     throw new Error(`Failed to fetch search Result`);
   }
 };
+
+export const servicePutUserSelectionPrivate = async (userId: string, selectionId: number) => {
+  try {
+    await dbConnectionPool('selection')
+    .where({
+      slt_id: selectionId,
+      user_id: userId
+    })
+    .update({
+      slt_status: dbConnectionPool.raw(`CASE WHEN slt_status = 'private' THEN 'public' ELSE 'private' END`)
+    });
+  } catch (error) {
+    throw new Error(`Failed to update user selection status: ${error}`);
+  }
+};

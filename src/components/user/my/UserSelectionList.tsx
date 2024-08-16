@@ -29,10 +29,10 @@ const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelection
         page,
         limit,
     });
-
     if (isLoading) return <SearchLoading height='search' />;
     if (isError) return <div>데이터를 불러오는 중 오류가 발생했습니다.</div>;
     if (!data) return null;
+    
     const selectionList = data as unknown as IsearchResult;
     return (
         <>

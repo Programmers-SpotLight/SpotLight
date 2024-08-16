@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { GoKebabHorizontal } from "react-icons/go";
 import { IoMdLock } from "react-icons/io";
 import { usePathname } from "next/navigation";
@@ -9,7 +9,7 @@ import { Ihashtags } from "@/models/hashtag.model";
 import Hashtag from "../Hashtag";
 import { BiSolidPencil } from "react-icons/bi";
 import { FaBookmark, FaRegBookmark, FaTrash } from "react-icons/fa";
-import useClickOutside from "@/hooks/useClickOutside";
+import useHandleCardMenu from "@/hooks/useHandleCardMenu";
 
 export interface IBaseCardProps {
   thumbnail: string;
@@ -25,7 +25,7 @@ export interface IColCardProps extends IBaseCardProps {
   userImage?: string;
   hashtags: Ihashtags[];
   status: TselectionStatus;
-  isMyPage? : boolean
+  isMyPage?: boolean;
   booked?: boolean;
   onClick?: () => void;
 }
@@ -54,35 +54,22 @@ const ColCard = ({
   userName,
   userImage,
   hashtags,
-  selectionId,
+  selectionId, 
   isMyPage,
   status = "public",
   booked = false,
   onClick
 }: IColCardProps) => {
   const pathname = usePathname();
-  const [showMenu, setShowMenu] = useState(false);
-  const selectionMenuRef = useRef<HTMLUListElement>(null);
-  useClickOutside(selectionMenuRef, () => setShowMenu(false));
-
-  const handleIconClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowMenu((prev) => !prev);
-  };
-
-  const handleMenuItemClick = (e: React.MouseEvent, action: string) => {
-    console.log(`${action} 클릭됨!`);
-    e.preventDefault();
-    e.stopPropagation();
-    setShowMenu(false);
-  };
-
-  const handleBookMarkClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("bookmark 클릭");
-  };
+  const {
+    showMenu,
+    setShowMenu,
+    selectionMenuRef,
+    currentStatus,
+    handleIconClick,
+    handleMenuItemClick,
+    handleBookMarkClick
+  } = useHandleCardMenu(status);
 
   return (
     <Link
@@ -107,7 +94,7 @@ const ColCard = ({
           </div>
         )}
 
-        {status === "private" && (
+        {currentStatus === "private" && (
           <IoMdLock
             className="absolute top-2 right-2"
             fill="#7C7C7C"
@@ -141,7 +128,7 @@ const ColCard = ({
                         menu.title === "삭제하기" ? "text-red-500" : ""
                       }`}
                       key={menu.title}
-                      onClick={(e) => handleMenuItemClick(e, menu.title)}
+                      onClick={(e) => handleMenuItemClick(e, menu.title, selectionId)}
                     >
                       {menu.icon}
                       <h1 className="font-medium my-[10px]">{menu.title}</h1>

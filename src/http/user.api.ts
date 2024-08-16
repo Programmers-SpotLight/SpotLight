@@ -18,6 +18,11 @@ export const addUserHashTag = async (userId : string, hashtag : string) => {
   return await requestHandler("post", url, {data : {userId, hashtag}})
 }
 
+export const updateUserSelectionPrivate = async (userId : string, selectionId : number) => {
+  const url = `/api/users/${userId}/selections/private`
+  return await requestHandler("put", url, {data : {userId, selectionId}})
+}
+
 export const deleteUserHashTag = async (userId : string, userHashtagId : number) => {
   const url = `/api/users/${userId}/hashtag`
   try {
@@ -37,7 +42,7 @@ export const getUserHashTag = async (userId : string) => {
   return await requestHandler("get", url)
 }
 
-export const fetchUserSelectionList = async (
+export const getUserSelectionList = async (
   userId: string | string[],
   userSelectionType?: TuserSelection,
   sort?: string,
@@ -46,8 +51,7 @@ export const fetchUserSelectionList = async (
 ) => {
   const url = `api/users/${userId}/selections`;
   const params = new URLSearchParams();
-  if (userSelectionType)
-    params.append(QUERY_STRING_NAME.userSelection, userSelectionType);
+  if (userSelectionType) params.append(QUERY_STRING_NAME.userSelection, userSelectionType);
   if (sort) params.append(QUERY_STRING_NAME.sort, sort);
   if (page) params.append(QUERY_STRING_NAME.page, page);
   if (limit) params.append(QUERY_STRING_NAME.limit, limit);
