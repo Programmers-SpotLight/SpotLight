@@ -28,17 +28,38 @@ const UserInfoWidget = ({
   userId
 }: UserInfoWidgetProps) => {
   const userInfoWidgetDatas = [
-    { icons: <PiCardsFill />, count: selection_count, name: "작성한 셀렉션" },
-    { icons: <FaHeart />, count: bookmark_count, name: "북마크 셀렉션" },
+    {
+      icons: <PiCardsFill />,
+      count: selection_count,
+      name: "작성한 셀렉션",
+      type: "public"
+    },
+    {
+      icons: <FaHeart />,
+      count: bookmark_count,
+      name: "북마크 셀렉션",
+      type: "public"
+    },
     {
       icons: <MdChatBubble />,
       count: selection_review_count,
-      name: "셀렉션 리뷰"
+      name: "셀렉션 리뷰",
+      type: "private"
     },
-    { icons: <MdChatBubble />, count: spot_review_count, name: "스팟 리뷰" }
+    {
+      icons: <MdChatBubble />,
+      count: spot_review_count,
+      name: "스팟 리뷰",
+      type: "private"
+    }
   ];
   const { openModal } = useStore(useModalStore);
   const { isMyPage } = useUserPage();
+
+  const filteredWidgetData = isMyPage
+    ? userInfoWidgetDatas
+    : userInfoWidgetDatas.filter((item) => item.type === "public");
+
   return (
     <div className="w-[1024px] m-auto flex flex-col justify-center items-center mb-10">
       <div className="flex w-[380px] gap-5 justify-center mt-10">
@@ -67,25 +88,25 @@ const UserInfoWidget = ({
           </div>
         </div>
       </div>
-      {isMyPage && (
-        <div className="mt-10 flex flex-col gap-10">
-          <ul className="flex gap-6 justify-center">
-            {userInfoWidgetDatas.map((item, index) => (
-              <li
-                key={index}
-                className="flex flex-col gap-[5px] text-grey3 justify-center items-center"
-              >
-                <div className="text-[20px]">{item.icons}</div>
-                <h1 className="font-extrabold text-extraLarge text-grey4">
-                  {item.count}
-                </h1>
-                <h2 className="font-semibold text-small text-grey4">
-                  {item.name}
-                </h2>
-              </li>
-            ))}
-          </ul>
+      <div className="mt-10 flex flex-col gap-10">
+        <ul className="flex gap-6 justify-center">
+          {filteredWidgetData.map((item, index) => (
+            <li
+              key={index}
+              className="flex flex-col gap-[5px] text-grey3 justify-center items-center"
+            >
+              <div className="text-[20px]">{item.icons}</div>
+              <h1 className="font-extrabold text-extraLarge text-grey4">
+                {item.count}
+              </h1>
+              <h2 className="font-semibold text-small text-grey4">
+                {item.name}
+              </h2>
+            </li>
+          ))}
+        </ul>
 
+        {isMyPage && (
           <ul className="w-[600px] h-[50px] flex gap-[5px] flex-wrap justify-center items-center">
             {hashtags.length === 0 ? (
               <div className="flex justify-start items-center text-small text-grey3">
@@ -107,8 +128,8 @@ const UserInfoWidget = ({
               <IoIosAdd className="fill-white text-large" />
             </button>
           </ul>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
