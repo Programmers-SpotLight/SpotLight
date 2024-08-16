@@ -5,7 +5,7 @@ import PrivateUser from "@/components/user/other-user/PrivateUser";
 import UserInfoWidget from "@/components/user/UserInfoWidget";
 import { UserPageProvider } from "@/context/UserPageContext";
 import { useFetchUserInfo } from "@/hooks/queries/useFetchUserInfo";
-import { useParams, usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import React from "react";
 
 export default function RootLayout({

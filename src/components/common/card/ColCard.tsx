@@ -25,7 +25,7 @@ export interface IColCardProps extends IBaseCardProps {
   userImage?: string;
   hashtags: Ihashtags[];
   status: TselectionStatus;
-  isMyPage? : boolean
+  isMyPage?: boolean;
   booked?: boolean;
   onClick?: () => void;
 }
