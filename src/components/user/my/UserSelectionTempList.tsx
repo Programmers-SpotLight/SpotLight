@@ -36,7 +36,7 @@ const UserSelectionTempList: React.FC<IUserSelectionList> = ({
           ))}
         </>
       ) : (
-        <SearchEmptyResults />
+        <SearchEmptyResults/>
       )}
 
       <Pagination pagination={tempSelectionList.pagination} />

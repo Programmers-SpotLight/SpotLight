@@ -1,7 +1,12 @@
+'use client';
+
 import React from "react";
 import Button from "../../button/Button";
 import { useModalStore } from "@/stores/modalStore";
 import useDeleteSelection from "@/hooks/queries/useDeleteSelection";
+import { useSearchParams } from "next/navigation";
+import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
+import { TuserSelection } from "@/models/user.model";
 
 interface ModalSelectionDeletePrpse {
   title: string;
@@ -14,9 +19,10 @@ const ModalSelectionDelete = ({
 }: ModalSelectionDeletePrpse) => {
   const {handleDeleteSelection} = useDeleteSelection()
   const {closeModal} = useModalStore();
-
+  const searchParams = useSearchParams();
+  const selectionType =(searchParams.get(QUERY_STRING_NAME.userSelection) as TuserSelection) ||(QUERY_STRING_DEFAULT.userSelection as TuserSelection);
   const handleDelete = (selectionId : number) => {
-    handleDeleteSelection(selectionId)
+    if(selectionType) handleDeleteSelection({selectionId, selectionType})
     closeModal();
   }
 

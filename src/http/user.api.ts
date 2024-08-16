@@ -23,9 +23,12 @@ export const updateUserSelectionPrivate = async (userId : string, selectionId : 
   return await requestHandler("put", url, {data : {userId, selectionId}})
 }
 
-export const deleteSelection = async (selectionId : number) => {
+export const deleteSelection = async (selectionId : number, selectionType? : TuserSelection) => {
+  const params = new URLSearchParams();
+  if(selectionType) params.append(QUERY_STRING_NAME.userSelection, selectionType)
   const url = `/api/selections/${selectionId}`
-  return await requestHandler("delete", url)
+  const finalUrl = `${url}?${params.toString()}`;
+  return await requestHandler("delete", finalUrl)
 }
 
 export const deleteUserHashTag = async (userId : string, userHashtagId : number) => {
