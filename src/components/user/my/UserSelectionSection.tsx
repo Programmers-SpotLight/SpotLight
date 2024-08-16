@@ -14,29 +14,29 @@ import React, { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import UserSelectionList from "./UserSelectionList";
 import UserSelectionTempList from "./UserSelectionTempList";
+import { useUserPage } from "@/context/UserPageContext";
 
-interface UserSelectionProps {
-  isMyPage: boolean;
-}
-
-const UserSelectionSection = ({ isMyPage }: UserSelectionProps) => {
-
-  const userSelectiontabDatas: Array<{ title: string; query: TuserSelection }> = [
-    {
-      title: "작성한 셀렉션",
-      query: "my"
-    },
-    {
-      title: "북마크 셀렉션",
-      query: "bookmark"
-    },
-    ...(isMyPage
-      ? [{
-          title: "임시저장 셀렉션",
-          query: "temp" as TuserSelection
-        }]
-      : [])
-  ];
+const UserSelectionSection = () => {
+  const { isMyPage } = useUserPage();
+  const userSelectiontabDatas: Array<{ title: string; query: TuserSelection }> =
+    [
+      {
+        title: "작성한 셀렉션",
+        query: "my"
+      },
+      {
+        title: "북마크 셀렉션",
+        query: "bookmark"
+      },
+      ...(isMyPage
+        ? [
+            {
+              title: "임시저장 셀렉션",
+              query: "temp" as TuserSelection
+            }
+          ]
+        : [])
+    ];
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -45,12 +45,22 @@ const UserSelectionSection = ({ isMyPage }: UserSelectionProps) => {
   if (!userIdMatch) return null;
   const userId = userIdMatch[1];
 
-  const userSelectionType =(searchParams.get(QUERY_STRING_NAME.userSelection) as TuserSelection) ||(QUERY_STRING_DEFAULT.userSelection as TuserSelection);
-  const sort =(searchParams.get(QUERY_STRING_NAME.sort) as TsortType) ||(QUERY_STRING_DEFAULT.sort as TsortType);
-  const page =searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
-  const limit =searchParams.get(QUERY_STRING_NAME.limit) ||QUERY_STRING_DEFAULT.userSelection_limit;
+  const userSelectionType =
+    (searchParams.get(QUERY_STRING_NAME.userSelection) as TuserSelection) ||
+    (QUERY_STRING_DEFAULT.userSelection as TuserSelection);
+  const sort =
+    (searchParams.get(QUERY_STRING_NAME.sort) as TsortType) ||
+    (QUERY_STRING_DEFAULT.sort as TsortType);
+  const page =
+    searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
+  const limit =
+    searchParams.get(QUERY_STRING_NAME.limit) ||
+    QUERY_STRING_DEFAULT.userSelection_limit;
 
-  const [currentSelection, setCurrentSelection] = useState<TuserSelection>( userSelectionType? userSelectionType: (QUERY_STRING_DEFAULT.userSelection as TuserSelection)
+  const [currentSelection, setCurrentSelection] = useState<TuserSelection>(
+    userSelectionType
+      ? userSelectionType
+      : (QUERY_STRING_DEFAULT.userSelection as TuserSelection)
   );
   const {
     setIsSortClicked,
@@ -98,7 +108,6 @@ const UserSelectionSection = ({ isMyPage }: UserSelectionProps) => {
         <UserSelectionTempList
           userId={userId}
           userSelectionType={userSelectionType}
-          isMyPage={isMyPage}
           sort={sort}
           page={page}
           limit={limit}
@@ -110,7 +119,6 @@ const UserSelectionSection = ({ isMyPage }: UserSelectionProps) => {
           sort={sort}
           page={page}
           limit={limit}
-          isMyPage={isMyPage}
         />
       )}
     </div>

@@ -2,18 +2,19 @@
 
 import React from "react";
 import UserSelectionList from "@/components/user/my/UserSelectionSection";
+import { useUserPage } from "@/context/UserPageContext";
 
 const UserPage = () => {
-  const isMypage = true;
+  const { isMyPage } = useUserPage();
   return (
     <div
       className={
-        isMypage
+        isMyPage
           ? "flex flex-col justify-center items-center w-full mt-5"
           : "w-[800px] m-auto my-5"
       }
     >
-      <UserSelectionList isMyPage={isMypage} />
+      <UserSelectionList />
     </div>
   );
 };
