@@ -1,29 +1,27 @@
-import { useState } from "react";
 import { AiFillLike } from "react-icons/ai";
 import { FaStar, FaTrash } from "react-icons/fa";
-import { IoIosArrowDown, IoIosArrowUp, IoMdTrash } from "react-icons/io";
-import { MdEdit } from "react-icons/md";
-import { useModalStore } from "@/stores/modalStore";
 import { formatDate } from "@/utils/formatDate";
+import { useModalStore } from "@/stores/modalStore";
 
 interface IReviewProps {
   review: IMyReview;
+  updateReviewMutation: (data: IMyReviewUpdateFormData) => void;
+  deleteReviewMutation: (reviewId: string) => void;
 }
 
-const user = {
-  userId: 1
-};
-
-const MyReviewItem = ({ review }: IReviewProps) => {
+const MyReviewItem = ({ review, updateReviewMutation, deleteReviewMutation }: IReviewProps) => {
   const { openModal } = useModalStore();
-  const sltOrSpotId = review.sltOrSpotId;
-
+ 
   const openReviewEditModal = () => {
-    // openModal('review', { review, sltOrSpotId, onSubmit: updateReview }); 
+    openModal('review',{ review, sltOrSpotId: review.sltOrSpotId, onSubmit: updateReviewMutation });
   };
-
+  
   const openReviewDeleteModal = () => {
-    // openModal('review-delete', { reviewId: review.reviewId , onSubmit: deleteReview });
+    console.log(review.reviewId);
+    openModal("review-delete", { reviewId: review.reviewId , onSubmit: deleteReviewMutation });
+    return review.reviewDescription.length > 90
+      ? review.reviewDescription.slice(0, 90) + "..."
+      : review.reviewDescription;
   };
 
   return (
@@ -68,20 +66,18 @@ const MyReviewItem = ({ review }: IReviewProps) => {
           </div>    
         </div>
 
-        <div className="text-grey4 text-small w-[550px] overflow-hidden overflow-ellipsis whitespace-nowrap">
+        <div className="text-grey4 text-small w-[570px] overflow-hidden overflow-ellipsis whitespace-nowrap">
           {review.reviewDescription}
         </div>
       </div>
-
+      
       <div 
         className="flex-[0.2] flex items-center justify-center flex-col gap-[5px] text-red-500 cursor-pointer"
-        onClick={openReviewDeleteModal}  
+        onClick={openReviewDeleteModal}
       >
         <FaTrash />
         <h1>삭제하기</h1>
       </div>
-
-      {/* <Pagination pagination={tempSelectionList.pagination} /> */}
     </div>
   );
 };

@@ -40,6 +40,10 @@ interface IReviewFormData {
 }
 
 interface IReviewUpdateFormData extends IReviewFormData { reviewId: string; }
+interface IMyReviewUpdateFormData extends IReviewFormData { 
+  reviewId: string; 
+  sltOrSpotId: string | number;
+}
 
 interface IReviewInsertData {
   reviewId: string | Buffer;
@@ -59,6 +63,17 @@ interface IMyReview {
   spotName: string | null;
   reviewDescription: string;
   reviewScore: number;
+  createdDate: string;
   updatedDate: string;
   likeCount: number;
+  reviewImg: IReviewImage[] | null;
+}
+
+interface IMyReviews {
+  reviews: IMyReview[];
+  pagination: {
+    currentPage: number;
+    limit: number;
+    totalCount: number;
+  }
 }

@@ -17,7 +17,7 @@ const modalDatas: ImodalDatas[] = [
     type: "review-delete",
     title: "",
     size: "small",
-    overlayClose: true,
+    overlayClose: false,
   }
 ];
 

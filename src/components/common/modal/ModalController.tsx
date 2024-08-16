@@ -10,6 +10,8 @@ import SpotImages from "@/components/selection-detail/spot-selection-contents/Sp
 import { TModalSize, TmodalType } from "@/models/modal.model";
 import ModalEditTag from "./modal-contents/ModalEditTag";
 import ModalFeedbackForm from "./modal-contents/ModalFeedbackForm";
+import ReviewDeleteModal from "./modal-contents/review/ReviewDeleteModal";
+import ReviewModal from "./modal-contents/review/ReviewModal";
 import ModalEditInfo from "./modal-contents/ModalEditInfo";
 import ModalUser from "../../users/ModalUser";
 import ModalSelectionDelete from "./modal-contents/ModalSelectionDelete";
@@ -57,6 +59,20 @@ const modalDatas: ImodalDatas[] = [
     size: "large",
     overlayClose: false,
     component: ModalFeedbackForm
+  },
+  {
+    type: "review",
+    title: "리뷰",
+    size: "medium",
+    overlayClose: false,
+    component: ReviewModal
+  },
+  {
+    type: "review-delete",
+    title: "",
+    size: "small",
+    overlayClose: false,
+    component: ReviewDeleteModal
   },
   {
     type: "editInfo",

@@ -42,7 +42,6 @@ export default function ReviewRating({ rating, onRatingChange }: IProps) {
           );
         })}
       </div>
-      <p className="mt-2 text-lg">{rating}</p>
     </div>
   );
 }

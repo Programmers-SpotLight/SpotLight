@@ -1,5 +1,6 @@
 import axios from "axios";
 import { requestHandler } from "./http";
+import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
 
 interface IFetchReviewsParams {
   reviewType: "selection" | "spot";
@@ -146,3 +147,17 @@ export const removeReviewLike = async (
   }
 };
 
+
+export const fetchMyReview = async (
+  reviewType: ReviewType,
+  page : string
+) => {
+  const url = `/api/users/reviews/${reviewType}s`;
+
+  const params = new URLSearchParams();
+  if (page) params.append(QUERY_STRING_NAME.page, page);
+
+  const finalUrl = `${url}?${params.toString()}`;
+
+  return await requestHandler('get', finalUrl);
+};
