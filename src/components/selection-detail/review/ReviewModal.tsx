@@ -17,7 +17,7 @@ const modalDatas: ImodalDatas[] = [
     type: "review",
     title: "리뷰 등록",
     size: "medium",
-    overlayClose: true
+    overlayClose: false
   }
 ];
 
@@ -79,7 +79,6 @@ const ReviewModal = () => {
           <ReviewForm 
             review={review} 
             onSubmit={handleSubmit} 
-            onCancel={handleCloseModal} 
           />
         </Modal>
       </div>

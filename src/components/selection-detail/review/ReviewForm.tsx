@@ -8,13 +8,11 @@ import { v4 as uuidv4 } from 'uuid';
 interface IReviewFormProps {
   review: IReview | null;
   onSubmit: (data: IReviewFormData | IReviewUpdateFormData) => void;
-  onCancel: () => void;
 }
 
 const ReviewForm = ({ 
   review, 
-  onSubmit, 
-  onCancel 
+  onSubmit,  
 }: IReviewFormProps) => {
   const [rating, setRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>('');

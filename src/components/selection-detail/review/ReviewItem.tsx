@@ -50,7 +50,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
   };
 
   const openReviewDeleteModal = () => {
-    openModal('review-delete', { reviewId: review.reviewId , onSubmit: deleteReview });
+    openModal("review-delete", { reviewId: review.reviewId , onSubmit: deleteReview });
     return review.reviewDescription.length > 90
       ? review.reviewDescription.slice(0, 90) + "..."
       : review.reviewDescription;
