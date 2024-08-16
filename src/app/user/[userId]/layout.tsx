@@ -20,13 +20,18 @@ export default function RootLayout({
   const isMyPage = false;
   const { data, isLoading, isError } = useFetchUserInfo(userId);
 
-  if (!data) return null;
   if (isLoading)
     return (
-      <div className="w-[1024px] flex justify-center items-center">
-        <SearchLoading height="full" />
+      <div className="w-[1024px] h-[calc(100vh-270px)] mx-auto">
+        <SearchLoading
+          height="full"
+          loadingMessage="사용자 정보를 불러오는 중입니다."
+        />
       </div>
     );
+
+  if (!data) return null;
+
   if (isError) return <div>에러페이지입니다</div>;
 
   if (data.is_private)
