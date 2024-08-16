@@ -5,7 +5,7 @@ import PrivateUser from "@/components/user/other-user/PrivateUser";
 import UserInfoWidget from "@/components/user/UserInfoWidget";
 import { UserPageProvider } from "@/context/UserPageContext";
 import { useFetchUserInfo } from "@/hooks/queries/useFetchUserInfo";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import React from "react";
 
 export default function RootLayout({
@@ -13,11 +13,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const userIdMatch = pathname.match(/user\/(\d+)/);
-  if (!userIdMatch) return null;
-  const userId = userIdMatch[1];
-  const isMyPage = false;
+  const params = useParams();
+  const userId = params.userId.toString();
+  const isMyPage = true;
   const { data, isLoading, isError } = useFetchUserInfo(userId);
 
   if (isLoading)

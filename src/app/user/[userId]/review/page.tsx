@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import MyReview from "@/components/user/my/review/MyReview";
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
 const reviewTabData: Array<{ title: string; query: ReviewType }> = [
   {
@@ -13,7 +13,6 @@ const reviewTabData: Array<{ title: string; query: ReviewType }> = [
     query: "spot"
   }
 ];
-
 
 const UserSelectionPage = () => {
   const [currentTab, setCurrentTab] = useState<ReviewType>("selection");
@@ -41,7 +40,7 @@ const UserSelectionPage = () => {
       </ul>
       <MyReview reviewType={currentTab} />
     </div>
-  )
-}
+  );
+};
 
-export default UserSelectionPage
+export default UserSelectionPage;
