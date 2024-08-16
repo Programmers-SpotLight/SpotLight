@@ -12,6 +12,7 @@ import ModalEditTag from "./modal-contents/ModalEditTag";
 import ModalFeedbackForm from "./modal-contents/ModalFeedbackForm";
 import ModalEditInfo from "./modal-contents/ModalEditInfo";
 import ModalUser from "../../users/ModalUser";
+import ModalSelectionDelete from "./modal-contents/ModalSelectionDelete";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -63,6 +64,13 @@ const modalDatas: ImodalDatas[] = [
     size: "medium",
     overlayClose: true,
     component: ModalEditInfo
+  },
+  {
+    type: "selection-delete",
+    title: "셀렉션 삭제",
+    size : "small",
+    overlayClose : true,
+    component : ModalSelectionDelete
   }
 ];
 

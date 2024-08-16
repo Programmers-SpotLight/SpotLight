@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { GoKebabHorizontal } from "react-icons/go";
 import { IoMdLock } from "react-icons/io";
 import { usePathname } from "next/navigation";
@@ -9,7 +9,7 @@ import { Ihashtags } from "@/models/hashtag.model";
 import Hashtag from "../Hashtag";
 import { BiSolidPencil } from "react-icons/bi";
 import { FaBookmark, FaRegBookmark, FaTrash } from "react-icons/fa";
-import useClickOutside from "@/hooks/useClickOutside";
+import useHandleCardMenu from "@/hooks/useHandleCardMenu";
 
 export interface IBaseCardProps {
   thumbnail: string;
@@ -54,42 +54,29 @@ const ColCard = ({
   userName,
   userImage,
   hashtags,
-  selectionId,
+  selectionId, 
   isMyPage,
   status = "public",
   booked = false,
   onClick
 }: IColCardProps) => {
   const pathname = usePathname();
-  const [showMenu, setShowMenu] = useState(false);
-  const selectionMenuRef = useRef<HTMLUListElement>(null);
-  useClickOutside(selectionMenuRef, () => setShowMenu(false));
-
-  const handleIconClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowMenu((prev) => !prev);
-  };
-
-  const handleMenuItemClick = (e: React.MouseEvent, action: string) => {
-    console.log(`${action} 클릭됨!`);
-    e.preventDefault();
-    e.stopPropagation();
-    setShowMenu(false);
-  };
-
-  const handleBookMarkClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("bookmark 클릭");
-  };
+  const {
+    showMenu,
+    setShowMenu,
+    selectionMenuRef,
+    currentStatus,
+    handleIconClick,
+    handleMenuItemClick,
+    handleBookMarkClick
+  } = useHandleCardMenu(status);
 
   return (
     <Link
       href={`/selection/${selectionId}`}
       className={`flex flex-col w-[248px] ${
         userImage && userName ? "h-[389px]" : "h-[355px]"
-      } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-90 bg-white`}
+      } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-95 transition-transform duration-200 bg-white hover:z-10`}
     >
       <div className="relative w-full h-[178px]">
         {thumbnail ? (
@@ -98,7 +85,7 @@ const ColCard = ({
             alt={title}
             fill
             priority
-            className="rounded-t-lg object-cover"
+            className="rounded-t-lg object-cover z-0"
             sizes="width : 100%, height : 178px"
           />
         ) : (
@@ -107,7 +94,7 @@ const ColCard = ({
           </div>
         )}
 
-        {status === "private" && (
+        {currentStatus === "private" && (
           <IoMdLock
             className="absolute top-2 right-2"
             fill="#7C7C7C"
@@ -132,7 +119,7 @@ const ColCard = ({
               />
               {showMenu && (
                 <ul
-                  className="absolute top-5 right-30 bg-white border border-grey2 shadow-md w-[206px] flex border-solid rounded-lg flex-col z-30"
+                  className="absolute top-5 right-30 bg-white border border-grey2 shadow-md w-[206px] flex border-solid rounded-lg flex-col z-10"
                   ref={selectionMenuRef}
                 >
                   {menuList.map((menu, index) => (
@@ -141,7 +128,7 @@ const ColCard = ({
                         menu.title === "삭제하기" ? "text-red-500" : ""
                       }`}
                       key={menu.title}
-                      onClick={(e) => handleMenuItemClick(e, menu.title)}
+                      onClick={(e) => handleMenuItemClick(e, menu.title, selectionId, title)}
                     >
                       {menu.icon}
                       <h1 className="font-medium my-[10px]">{menu.title}</h1>

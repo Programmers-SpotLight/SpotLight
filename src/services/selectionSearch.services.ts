@@ -1,6 +1,5 @@
 import { dbConnectionPool } from "@/libs/db";
 import { TsortType } from "@/models/searchResult.model";
-import { TuserSelection } from "@/models/user.model";
 
 const searchQueryBuilder = (
   queryBuilder: any,
@@ -56,6 +55,10 @@ const searchQueryBuilder = (
       // Todo : 인기 순 리뷰 기능 구현 시 추가 구현
     }
   }
+
+  queryBuilder.where("selection.slt_status", "<>", "private");
+  queryBuilder.where("selection.slt_status", "<>", "delete");
+
   return queryBuilder;
 };
 

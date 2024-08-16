@@ -20,7 +20,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
     const totalElements = countResult.length > 0 ? parseInt(countResult.length) : 0;
     const totalPages = Math.ceil(totalElements / limit);
 
-    if (totalElements === 0) { // 개수 0, 검색 결과 없음
+    if (totalElements === 0) {
       const pagination: Ipagination = {
         currentPage,
         totalPages,
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
 
     const pageResult: IsearchData[] = await getSearchResult(category_id, region_id, tags, sort  as TsortType, limit, currentPage);
 
-    const hashConvert = pageResult.map((item: IsearchData) => ({ // 해시태그 JSON 파일 타입 변환
+    const hashConvert = pageResult.map((item: IsearchData) => ({
       ...item,
       slt_hashtags: typeof item.slt_hashtags === 'string' ? JSON.parse(item.slt_hashtags) as Ihashtags[] : item.slt_hashtags
     }));

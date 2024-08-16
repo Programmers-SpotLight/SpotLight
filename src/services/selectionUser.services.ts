@@ -54,6 +54,8 @@ const userSelectionQueryBuilder = async (
         .where("b.user_id", userId); // user_id를 올바르게 참조
     }
   }
+  
+  queryBuilder.where("selection.slt_status", "<>", "delete");
   return queryBuilder;
 };
 
@@ -174,5 +176,51 @@ export const getUserTempSelection = async (
     return resultQuery;
   } catch (error) {
     throw new Error(`Failed to fetch search Result`);
+  }
+};
+
+export const servicePutUserSelectionPrivate = async (userId: string, selectionId: number) => {
+  try {
+    await dbConnectionPool('selection')
+    .where({
+      slt_id: selectionId,
+      user_id: userId
+    })
+    .update({
+      slt_status: dbConnectionPool.raw(`CASE WHEN slt_status = 'private' THEN 'public' ELSE 'private' END`)
+    });
+  } catch (error) {
+    throw new Error(`Failed to update user selection status: ${error}`);
+  }
+};
+
+export const serviceDeleteSelection = async (userId: string, selectionId: number) => {
+  try {
+    await dbConnectionPool('selection')
+      .where({
+        slt_id: selectionId,
+        user_id: userId
+      })
+      .update({
+        slt_status: 'delete'
+      });
+  } catch (error) {
+    throw new Error(`Failed to update user selection status: ${error}`);
+  }
+};
+
+export const serviceDeleteTempSelection = async (userId: string, selectionId: number) => {
+  try { 
+    // 보류, 삭제를 자식 테이블들을 전부 다 삭제하는 CASCADE로 할지
+    // selection과 같이 상태를 따로 구분할지
+    await dbConnectionPool('selection_temporary')
+      .where({
+        slt_temp_id: selectionId,
+        user_id: userId
+      })
+      .del();
+  } catch (error) {
+    console.log(error)
+    throw new Error('임시 선택 데이터를 삭제하는 중 오류가 발생했습니다.');
   }
 };

@@ -4,7 +4,7 @@ import { IUserInfoData } from "@/models/user.model";
 
 export const getUserInfo = async (userId: string) => {
     try {
-        const userInfoData : IUserInfoData = await dbConnectionPool("user")
+        const userInfoData: IUserInfoData = await dbConnectionPool("user")
             .select(
                 "user.user_nickname",
                 "user.user_email",
@@ -13,10 +13,29 @@ export const getUserInfo = async (userId: string) => {
                 "user.user_role",
                 "user.user_is_private",
                 "user.user_type",
-                dbConnectionPool.raw("(SELECT COUNT(*) FROM selection WHERE selection.user_id = user.user_id) as selection_count"),
-                dbConnectionPool.raw("(SELECT COUNT(*) FROM bookmark WHERE bookmark.user_id = user.user_id) as bookmark_count"),
-                dbConnectionPool.raw("(SELECT COUNT(*) FROM spot_review WHERE spot_review.user_id = user.user_id) as spot_review_count"),
-                dbConnectionPool.raw("(SELECT COUNT(*) FROM selection_review WHERE selection_review.user_id = user.user_id) as selection_review_count"),
+                dbConnectionPool.raw(`
+                    (SELECT COUNT(*) 
+                     FROM selection 
+                     WHERE selection.user_id = user.user_id 
+                       AND selection.slt_status != 'delete') AS selection_count
+                `),
+                dbConnectionPool.raw(`
+                    (SELECT COUNT(*) 
+                     FROM bookmark 
+                     JOIN selection ON selection.slt_id = bookmark.slt_id
+                     WHERE bookmark.user_id = user.user_id 
+                       AND selection.slt_status != 'delete') AS bookmark_count
+                `),
+                dbConnectionPool.raw(`
+                    (SELECT COUNT(*) 
+                     FROM spot_review 
+                     WHERE spot_review.user_id = user.user_id) AS spot_review_count
+                `),
+                dbConnectionPool.raw(`
+                    (SELECT COUNT(*) 
+                     FROM selection_review 
+                     WHERE selection_review.user_id = user.user_id) AS selection_review_count
+                `),
             )
             .where("user.user_id", userId)
             .first();
@@ -25,7 +44,7 @@ export const getUserInfo = async (userId: string) => {
     } catch (error) {
         console.error("Error fetching user and selection count:", error);
         throw error; 
-}    
+    }
 }
 
 export const getUserHashTags = async (userId: string) => {

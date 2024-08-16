@@ -6,7 +6,7 @@ import {
   TsortType
 } from "@/models/searchResult.model";
 import { TuserSelection } from "@/models/user.model";
-import { fetchUserSelectionList } from "@/http/user.api";
+import { getUserSelectionList } from "@/http/user.api";
 
 interface IuseFetchUserSelectionList {
   userId: string;

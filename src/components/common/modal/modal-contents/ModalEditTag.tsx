@@ -93,7 +93,7 @@ const ModalEditTag = ({ userId }: ModalAddTagProps) => {
         />
         </div>
       )}
-      <div className="flex-wrap flex list-none gap-[5px] mt-2">
+      <div className="flex-wrap flex list-none gap-[5px] mt-5">
         {hashtags.data.map((htag) => (
           <li key={htag.user_htag_id}>
             <Hashtag
