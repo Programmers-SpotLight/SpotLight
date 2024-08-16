@@ -1,6 +1,6 @@
 import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import { Ihashtags } from "@/models/hashtag.model";
-import { ISelectionDetailInfo } from "@/models/selection.model";
+import { ISelectionDetailInfo, ISelectionInfo } from "@/models/selection.model";
 import { ISpotImage, ISpotInfo } from "@/models/spot.model";
 import { ErrorResponse, SuccessResponse, TuserSelection } from "@/models/user.model";
 import {
@@ -12,6 +12,7 @@ import {
   getSpotImages
 } from "@/services/selectionDetail.services";
 import { serviceDeleteSelection, serviceDeleteTempSelection } from "@/services/selectionUser.services";
+import { getUserInfo } from "@/services/user.services";
 
 import { NextRequest, NextResponse } from "next/server";
 
@@ -71,8 +72,13 @@ export async function GET(
 
   const booked = await getBookMarks(selectionId, 1); //임시로 userId 1로 설정
 
-  const selectionData = {
+  const selectionWriterInfo = await getUserInfo(
+    selecitonDetailInfo.writerId.toString()
+  );
+
+  const selectionData: ISelectionInfo = {
     ...selecitonDetailInfo,
+    writer: selectionWriterInfo,
     hashtags,
     spotList: spotDetailInfo,
     booked: booked.length ? true : false
