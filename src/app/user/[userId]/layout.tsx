@@ -4,7 +4,7 @@ import UserNavigation from "@/components/user/my/UserNavigation";
 import PrivateUser from "@/components/user/other-user/PrivateUser";
 import UserInfoWidget from "@/components/user/UserInfoWidget";
 import { UserPageProvider } from "@/context/UserPageContext";
-import { useFetchUserInfo } from "@/hooks/queries/useFetchUserInfo";
+import { useFetchUserHashtag, useFetchUserInfo } from "@/hooks/queries/useFetchUserInfo";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -16,9 +16,10 @@ export default function RootLayout({
   const params = useParams();
   const userId = params.userId.toString();
   const isMyPage = true;
-  const { data, isLoading, isError } = useFetchUserInfo(userId);
+  const { data : infoData, isLoading : infoLoading, isError: infoError } = useFetchUserInfo(userId);
+  const { data : hashData, isLoading : hashLoading, isError : hashError} = useFetchUserHashtag(userId);
 
-  if (isLoading)
+  if (infoLoading || hashLoading)
     return (
       <div className="w-[1024px] h-[calc(100vh-270px)] mx-auto">
         <SearchLoading
@@ -28,11 +29,11 @@ export default function RootLayout({
       </div>
     );
 
-  if (!data) return null;
+  if (!infoData || !hashData) return null;
 
-  if (isError) return <div>에러페이지입니다</div>;
+  if (infoError || hashError) return <div>에러페이지입니다</div>;
 
-  if (data.is_private)
+  if (infoData.is_private)
     return (
       <div className="w-[1024px] h-[calc(100vh-266px)] mx-auto ">
         <PrivateUser />
@@ -42,7 +43,7 @@ export default function RootLayout({
   return (
     <UserPageProvider isMyPage={isMyPage}>
       <div className="w-[1024px] flex flex-col m-auto border border-solid border-grey2 bg-grey0">
-        <UserInfoWidget {...data} userId={userId} />
+        <UserInfoWidget {...infoData} userId={userId} hashtags={hashData.data} />
         <div className="flex">
           {isMyPage && <UserNavigation />}
           {children}
