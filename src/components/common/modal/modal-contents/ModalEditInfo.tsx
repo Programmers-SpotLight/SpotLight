@@ -18,6 +18,12 @@ const ModalEditInfo: React.FC<ModalEditInfoProps> = ({ description, userId }) =>
 
     const onClickSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (text.length === 0) {return}
+        if (text.length > 50) {
+            console.log(text.length)
+            alert("50자 이내로 작성해주세요");
+            return
+        }
         userUpd();
         closeModal();
     };
@@ -26,7 +32,7 @@ const ModalEditInfo: React.FC<ModalEditInfoProps> = ({ description, userId }) =>
         <div>
             <form onSubmit={(e)=>onClickSubmit(e)}>
                 <TextAreaInput
-                    placeholder="회원님을 30자 이내로 간략하게 소개해주세요!"
+                    placeholder="회원님을 50자 이내로 간략하게 소개해주세요!"
                     width="medium"
                     height="large"
                     className="text-small font-light"

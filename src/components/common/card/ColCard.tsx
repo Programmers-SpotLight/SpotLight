@@ -89,7 +89,7 @@ const ColCard = ({
       href={`/selection/${selectionId}`}
       className={`flex flex-col w-[248px] ${
         userImage && userName ? "h-[389px]" : "h-[355px]"
-      } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-90 bg-white`}
+      } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-95 transition-transform duration-200 bg-white hover:z-10`}
     >
       <div className="relative w-full h-[178px]">
         {thumbnail ? (
@@ -98,7 +98,7 @@ const ColCard = ({
             alt={title}
             fill
             priority
-            className="rounded-t-lg object-cover"
+            className="rounded-t-lg object-cover z-0"
             sizes="width : 100%, height : 178px"
           />
         ) : (
@@ -132,7 +132,7 @@ const ColCard = ({
               />
               {showMenu && (
                 <ul
-                  className="absolute top-5 right-30 bg-white border border-grey2 shadow-md w-[206px] flex border-solid rounded-lg flex-col z-30"
+                  className="absolute top-5 right-30 bg-white border border-grey2 shadow-md w-[206px] flex border-solid rounded-lg flex-col z-20"
                   ref={selectionMenuRef}
                 >
                   {menuList.map((menu, index) => (

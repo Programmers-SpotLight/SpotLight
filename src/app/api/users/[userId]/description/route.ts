@@ -19,8 +19,8 @@ const updateUserDescriptionValidator = (data: {description : string, userId : st
    if (!data || !data.description) {
         return NextResponse.json({ error: "유효하지 않은 데이터입니다." }, { status: 400 });
     }
-    if (data.description.length > 30) {
-        return NextResponse.json({ error: "30자 이내로 입력해주세요" }, { status: 400 });
+    if (data.description.length > 50) {
+        return NextResponse.json({ error: "50자 이내로 입력해주세요" }, { status: 400 });
     }
     // Todo: 쿠키로 받은 데이터와 ID가 일치하는지 유효성 추가
     return null;
