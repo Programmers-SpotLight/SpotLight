@@ -20,7 +20,6 @@ export interface IUserInfoMapping {
   description: string;
   is_private: number;
   isMyPage: boolean;
-  hashtags: Ihashtags[];
   selection_count: number;
   bookmark_count: number;
   spot_review_count: number;

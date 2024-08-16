@@ -1,5 +1,6 @@
 import Hashtag from "@/components/common/Hashtag";
 import { useUserPage } from "@/context/UserPageContext";
+import { Ihashtags } from "@/models/hashtag.model";
 import { IUserInfoMapping } from "@/models/user.model";
 import { useModalStore } from "@/stores/modalStore";
 import { hash } from "crypto";
@@ -14,6 +15,7 @@ import { useStore } from "zustand";
 
 interface UserInfoWidgetProps extends IUserInfoMapping {
   userId: string;
+  hashtags : Ihashtags[];
 }
 
 const UserInfoWidget = ({
