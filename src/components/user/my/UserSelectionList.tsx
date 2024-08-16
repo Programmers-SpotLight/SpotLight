@@ -16,7 +16,8 @@ export interface IUserSelectionList {
   limit: string;
 }
 
-const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelectionType, sort, page, limit, isMyPage }) => {    
+const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelectionType, sort, page, limit}) => {
+  const { isMyPage } = useUserPage();    
     const {
         data,
         isLoading,
@@ -27,6 +28,7 @@ const UserSelectionList: React.FC<IUserSelectionList> = ({ userId, userSelection
         sort,
         page,
         limit,
+        isMyPage
     });
   
     if (isLoading) return <SearchLoading height='search' />;
