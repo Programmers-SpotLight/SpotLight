@@ -9,8 +9,15 @@ const userSelectionQueryBuilder = async (
   sort?: TsortType,
   isMyPage?: boolean
 ) => {
+  const bookmarkCountSubquery = dbConnectionPool('bookmark')
+  .select('slt_id')
+  .count('slt_id as bookmark_count')
+  .groupBy('slt_id')
+  .as('bc');
+
   queryBuilder
     .join("user", "selection.user_id", "=", "user.user_id")
+    .leftJoin(bookmarkCountSubquery, 'selection.slt_id', '=', 'bc.slt_id')
     .join(
       "selection_hashtag",
       "selection.slt_id",
@@ -41,17 +48,17 @@ const userSelectionQueryBuilder = async (
     } else if (sort === "asc") {
       queryBuilder.orderBy("selection.slt_title", "asc");
     } else if (sort === "popular") {
-      // Todo : 인기 순 리뷰 기능 구현 시 추가 구현
+      queryBuilder.orderBy("bookmark_count", "desc");
     }
   }
 
   if (userSelectionType) {
     if (userSelectionType === "my") {
-      queryBuilder.where("selection.user_id", userId); // 수정된 부분
+      queryBuilder.where("selection.user_id", userId);
     } else if (userSelectionType === "bookmark") {
       queryBuilder
         .innerJoin("bookmark as b", "b.slt_id", "selection.slt_id")
-        .where("b.user_id", userId); // user_id를 올바르게 참조
+        .where("b.user_id", userId);
     }
   }
   
@@ -77,6 +84,7 @@ export const getUserSelectionQueryCount = async (
           'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
         )
       )
+      .select(dbConnectionPool.raw('COALESCE(bc.bookmark_count, 0) AS bookmark_count')) // bookmark 개수 추가
       .groupBy("selection.slt_id", "user.user_id")
       .modify((queryBuilder) =>
         userSelectionQueryBuilder(
@@ -114,6 +122,7 @@ export const getUserSelectionResult = async (
           'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
         )
       )
+      .select(dbConnectionPool.raw('COALESCE(bc.bookmark_count, 0) AS bookmark_count')) // bookmark 개수 추가
       .groupBy("selection.slt_id", "user.user_id")
       .modify((queryBuilder) =>
         userSelectionQueryBuilder(
