@@ -1,38 +1,61 @@
-import Image from 'next/image'
-import React from 'react';
-import githubIcon from '../../../public/gitsvg.svg';
-import notionIcon from '../../../public/notionsvg.svg';
-import Link from 'next/link';
+import Image from "next/image";
+import React from "react";
+import githubIcon from "../../../public/gitsvg.svg";
+import notionIcon from "../../../public/notionsvg.svg";
+import Link from "next/link";
+import { BiMessageEdit } from "react-icons/bi";
+import { useStore } from "zustand";
+import { useModalStore } from "@/stores/modalStore";
 
 const Footer = () => {
+  const { openModal } = useStore(useModalStore);
+
+  const openFeedbackForm = () => {
+    openModal("feedback");
+  };
   return (
     <div className="none:container py-10 border-solid border-2 border-gray-200 bg-gray-100">
-      <div className='footer-content text-slate-500 font-sans'>
-        <h2 className='pb-3 text-2xl text-center font-bold'>Spotlight</h2>
-        <p className='text-lg text-center font-medium pb-3'>Spotlight를 통해 일상 속 특별함을 더하세요!</p>
-        <div className='flex link-box'>
-          <div className='m-auto flex'>
-            <Link href={'https://github.com/Programmers-SpotLight/SpotLight'} className='mr-2'>
-              <Image 
+      <div className="footer-content text-slate-500 font-sans">
+        <h2 className="pb-3 text-2xl text-center font-bold">Spotlight</h2>
+        <p className="text-lg text-center font-medium pb-3">
+          Spotlight를 통해 일상 속 특별함을 더하세요!
+        </p>
+        <div className="flex link-box">
+          <div className="m-auto flex items-center">
+            <Link
+              href={"https://github.com/Programmers-SpotLight/SpotLight"}
+              className="mr-2"
+            >
+              <Image
                 src={githubIcon}
-                alt={'github image'}
+                alt={"github image"}
                 width={20}
                 height={20}
               />
             </Link>
-            <Link href={'https://www.notion.so/prgrms/95a04e9503c849a292bdf04f7fcf50e2'}>
-              <Image 
+            <Link
+              href={
+                "https://www.notion.so/prgrms/95a04e9503c849a292bdf04f7fcf50e2"
+              }
+              className="mr-2"
+            >
+              <Image
                 src={notionIcon}
-                alt={'github image'}
+                alt={"github image"}
                 width={20}
                 height={20}
-                />
+              />
             </Link>
+            <BiMessageEdit
+              size={25}
+              onClick={openFeedbackForm}
+              className="cursor-pointer"
+            />
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

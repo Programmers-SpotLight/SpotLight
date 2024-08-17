@@ -52,7 +52,7 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
       <div className="relative flex flex-col gap-[5px] p-5">
         <div className="flex justify-between ">
           <h2 className="text-small text-grey4 font-medium">
-            {selectionData.categoryName}
+            {selectionData.categoryName} &gt; {selectionData.location}
           </h2>
           <p className="flex gap-[5px]">
             <FaShareAlt
@@ -84,18 +84,20 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
           ))}
         </div>
 
-        {selectionData.user && (
-          <div className="flex gap-[5px] justify-end items-center cursor-pointer">
-            <img
-              src={selectionData.user.image}
-              className="object-cover border-none w-5 h-5 bg-grey1 rounded-full"
-              alt="userImg"
-            />
+        {selectionData.writer && (
+          <Link href={`/user/${selectionData.writerId}`}>
+            <div className="flex gap-[5px] justify-start items-center cursor-pointer">
+              <img
+                src={selectionData.writer.user_img}
+                className="object-cover border-none w-5 h-5 bg-grey1 rounded-full"
+                alt="userImg"
+              />
 
-            <h3 className="font-medium text-small text-grey4">
-              {selectionData.user.nickname}
-            </h3>
-          </div>
+              <h3 className="font-medium text-small text-grey4">
+                {selectionData.writer.user_nickname}
+              </h3>
+            </div>
+          </Link>
         )}
 
         <hr className="mt-5" />

@@ -34,3 +34,4 @@ export const fetchSearchAutocompletion = async (
   const finalUrl = `${url}?${params.toString()}`;
   return await requestHandler('get', finalUrl)
 }
+

@@ -1,11 +1,11 @@
 import { useModalStore } from "@/stores/modalStore";
 import React, { useEffect, useState } from "react";
 import { useStore } from "zustand";
-import { TmodalType } from "@/models/modal";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { TmodalType } from "@/models/modal.model";
 
 const PrevArrow = (props: any) => {
   const { onClick, show } = props;

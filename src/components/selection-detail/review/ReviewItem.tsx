@@ -6,30 +6,23 @@ import { IoPersonSharp } from "react-icons/io5";
 import ReviewImages from "./ReviewImages";
 import { MdEdit } from "react-icons/md";
 import { useModalStore } from "@/stores/modalStore";
-import { addLike, removeLike } from "@/services/review.services";
-import { useReviewsLikes } from "@/hooks/queries/useReviewsLikes";
+import ReviewLikeButton from "./ReviewLikeButton";
 
 interface IReviewProps {
-  sltOrSpotId: number;
+  sltOrSpotId: number | string;
   review: IReview;
   reviewType: ReviewType;
+  updateReview: (data: IReviewUpdateFormData) => void;
+  deleteReview: (reviewId: string) => void; 
 }
 
 const user = {
-  userId: 201
-};
+  userId: 1
+}
 
-const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
+const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteReview }: IReviewProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModalStore();
-
-  const { addLikeMutate, removeLikeMutate } = useReviewsLikes(
-    sltOrSpotId,
-    // 10, // review.reviewId, selection test
-    1, //review.reviewId, spot test
-    reviewType,
-    1 //user.userId
-  );
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -37,29 +30,30 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
 
   const renderText = () => {
     if (isExpanded) {
-      return review.reviewDescription;
+      return (
+        <span className="whitespace-pre-wrap">
+          {review.reviewDescription}
+        </span>
+      );
     }
-    return review.reviewDescription.length > 90
-      ? review.reviewDescription.slice(0, 90) + "..."
-      : review.reviewDescription;
+    return (
+      <span className="whitespace-pre-wrap">
+        {review.reviewDescription.length > 90
+          ? review.reviewDescription.slice(0, 90) + "..."
+          : review.reviewDescription}
+      </span>
+    );
   };
 
   const openReviewEditModal = () => {
-    openModal("review", { review, sltOrSpotId });
+    openModal('review', { review, sltOrSpotId, onSubmit: updateReview }); 
   };
 
   const openReviewDeleteModal = () => {
-    openModal("review-delete");
-  };
-
-  const toggleLike = () => {
-    if (review.user.isLiked) {
-      //remove like
-      removeLikeMutate();
-    } else {
-      //add like
-      addLikeMutate();
-    }
+    openModal("review-delete", { reviewId: review.reviewId , onSubmit: deleteReview });
+    return review.reviewDescription.length > 90
+      ? review.reviewDescription.slice(0, 90) + "..."
+      : review.reviewDescription;
   };
 
   return (
@@ -82,21 +76,10 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
 
           <div className="space-y-1 text-small w-[80px] ml-2">
             <div>{review.user.userNickname}</div>
-            <div className="text-grey3">{review.updatedDate}</div>
+            <div className="text-grey3">{review.createdDate}</div>
           </div>
         </div>
-        <div
-          className={`${
-            review.user.isLiked ? "text-primary" : "text-grey3"
-          } flex items-center space-x-1 text-bold left-0 `}
-        >
-          <AiFillLike
-            size={15}
-            className="cursor-pointer"
-            onClick={toggleLike}
-          />
-          <div className="text-small">{review.likeCount}</div>
-        </div>
+        <ReviewLikeButton liked={review.user.isLiked} likeCount={review.likeCount} reviewType={reviewType} sltOrSpotId={review.sltOrSpotId} reviewId={review.reviewId} />
       </div>
 
       <div className="flex justify-between">

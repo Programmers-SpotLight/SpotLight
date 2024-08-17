@@ -20,7 +20,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
     const totalElements = countResult.length > 0 ? parseInt(countResult.length) : 0;
     const totalPages = Math.ceil(totalElements / limit);
 
-    if (totalElements === 0) { // 개수 0, 검색 결과 없음
+    if (totalElements === 0) {
       const pagination: Ipagination = {
         currentPage,
         totalPages,
@@ -32,10 +32,23 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
 
     const pageResult: IsearchData[] = await getSearchResult(category_id, region_id, tags, sort  as TsortType, limit, currentPage);
 
-    const finalResults = pageResult.map((item: IsearchData) => ({ // 해시태그 JSON 파일 타입 변환
+    const hashConvert = pageResult.map((item: IsearchData) => ({
       ...item,
       slt_hashtags: typeof item.slt_hashtags === 'string' ? JSON.parse(item.slt_hashtags) as Ihashtags[] : item.slt_hashtags
     }));
+
+    const MappingResults = hashConvert.map((item) => ({
+      thumbnail: item.slt_img,
+      category: item.slt_category_name,
+      region: item.slt_location_option_name,
+      selectionId: item.slt_id,
+      hashtags: item.slt_hashtags,
+      description: item.slt_description,
+      title: item.slt_title,
+      userName: item.user_nickname,
+      userImage: item.user_img,
+      status: item.slt_status,
+  }));
 
     const pagination: Ipagination = {
       currentPage,
@@ -43,7 +56,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
       totalElements,
       limit
     };
-    return NextResponse.json({ data: finalResults, pagination });
+    return NextResponse.json({ data: MappingResults, pagination });
   } catch (error) {
     return NextResponse.json({ error: "데이터 조회 중 오류 발생" }, { status: 500 }); // Todo : 에러 처리
   }

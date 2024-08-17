@@ -4,7 +4,7 @@ import { ISpotImage, SpotCategory } from "@/models/spot.model";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { LuMapPin } from "react-icons/lu";
 import { useStore } from "zustand";
 
@@ -49,7 +49,7 @@ export const SPOTINFOWITHCATEGORY: { [key in SpotCategory]: ISpot } = {
 };
 
 interface ISpotHeaderProps {
-  images: ISpotImage[];
+  images: ISpotImage[] | undefined;
   categoryName: SpotCategory;
   title: string;
   address: string;
@@ -65,6 +65,8 @@ const SpotHeader = ({
 }: ISpotHeaderProps) => {
   const { openModal } = useStore(useModalStore);
 
+  images && images.sort((a, b) => b.order - a.order);
+
   const imageClickHandler = () => {
     if (!images) return;
     openModal("images", { images, title });
@@ -76,15 +78,12 @@ const SpotHeader = ({
         className="w-full h-[194px] relative mb-5"
         onClick={imageClickHandler}
       >
-        {images ? (
+        {images && images.length ? (
           <>
-            <Image
-              src={`/${images[0].url}`}
+            <img
+              src={images[0].url}
               alt="spot image"
-              fill
-              sizes="width:100%, height:194px"
-              className="cursor-pointer"
-              style={{ objectFit: "cover" }}
+              className="w-full h-[194px] cursor-pointer object-cover"
             />
             <div className="absolute bottom-0 right-0 rounded-tl-md bg-black w-11 h-7 text-white flex items-center justify-center text-medium font-bold">
               + {images.length - 1}

@@ -10,5 +10,7 @@ export type TmodalType =
   | "image"
   | "images"
   | "GoogleMapsAddSelectionSpot"
+  | "feedback"
+  | "selection-delete"
   | null;
 export type TModalSize = "small" | "medium" | "large" | "full" | null;

@@ -1,22 +1,53 @@
 import { Tab, Tabs } from "@/components/common/Tabs";
-import React from "react";
+import React, { useEffect } from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
-import SpotReview from "./review/spot-review/SpotReview";
+import Review from "./review/Review";
 import { ISpotInfo } from "@/models/spot.model";
 
 interface ISpotSectionProps {
   isSelectionDrawerOpen: boolean;
   isSpotDrawerOpen: boolean;
-  selectedSpotId: string | null;
+  selectedSpotId: Buffer;
   spotData: ISpotInfo;
 }
+
+const bufferDataToHexString = (bufferObj: Buffer): string => {
+  return Buffer.from(bufferObj).toString("hex");
+};
 
 const SpotSection = ({
   isSpotDrawerOpen,
   isSelectionDrawerOpen,
   spotData
 }: ISpotSectionProps) => {
+  const getImages = async () => {
+    const { Place } = (await google.maps.importLibrary(
+      "places"
+    )) as google.maps.PlacesLibrary;
+
+    if (spotData.images !== undefined) return;
+
+    spotData.images = [];
+
+    const place = new Place({ id: spotData.gmapId });
+
+    await place.fetchFields({ fields: ["photos"] });
+
+    if (place.photos && place.photos.length) {
+      for (let i = 0; i < place.photos.length; i++) {
+        if (i === 3) break;
+        spotData.images.push({ url: place.photos[i].getURI(), order: i });
+      }
+    }
+  };
+
+  useEffect(() => {
+    getImages();
+  }, []);
+
+  const spotIdHex = bufferDataToHexString(spotData.id);
+
   const spotTab = [
     {
       title: "스팟 정보",
@@ -24,7 +55,7 @@ const SpotSection = ({
     },
     {
       title: "유저 리뷰",
-      component: <SpotReview sltOrSpotId={101} reviewType={"spot"} />
+      component: <Review reviewType="spot" sltOrSpotId={spotIdHex} />
     }
   ];
 
@@ -42,7 +73,7 @@ border-[0.5px] border-grey2 border-solid w-[375px] overflow-y-scroll scrollbar-h
       style={{ height: "calc(100vh - 74px)" }}
     >
       <SpotHeader
-        images={spotData.images.sort((a, b) => b.order - a.order)}
+        images={spotData.images}
         categoryName={spotData.categoryName}
         title={spotData.title}
         address={spotData.address}

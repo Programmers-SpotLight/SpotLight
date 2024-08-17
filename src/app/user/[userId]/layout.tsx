@@ -1,21 +1,54 @@
+"use client";
+import SearchLoading from "@/components/search/search-contents/SearchLoading";
 import UserNavigation from "@/components/user/my/UserNavigation";
+import PrivateUser from "@/components/user/other-user/PrivateUser";
+import UserInfoWidget from "@/components/user/UserInfoWidget";
+import { UserPageProvider } from "@/context/UserPageContext";
+import { useFetchUserHashtag, useFetchUserInfo } from "@/hooks/queries/useFetchUserInfo";
+import { useParams } from "next/navigation";
+import React from "react";
 
 export default function RootLayout({
   children
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const isUser = true;
-  return (
-    <div className="border border-solid border-grey2 bg-grey0 w-[1024px] m-auto flex">
-      {isUser && (
-        <div className="top-0 left-0 h-[100vh]">
-          <UserNavigation />
-        </div>
-      )}
-      <div className="flex-1 h-full">
-        {children}
+}) {
+  const params = useParams();
+  const userId = params.userId.toString();
+  const isMyPage = true;
+  const { data : infoData, isLoading : infoLoading, isError: infoError } = useFetchUserInfo(userId);
+  const { data : hashData, isLoading : hashLoading, isError : hashError} = useFetchUserHashtag(userId);
+
+  if (infoLoading || hashLoading)
+    return (
+      <div className="w-[1024px] h-[calc(100vh-270px)] mx-auto">
+        <SearchLoading
+          height="full"
+          loadingMessage="사용자 정보를 불러오는 중입니다."
+        />
       </div>
-    </div>
+    );
+
+  if (!infoData || !hashData) return null;
+
+  if (infoError || hashError) return <div>에러페이지입니다</div>;
+
+  if (infoData.is_private)
+    return (
+      <div className="w-[1024px] h-[calc(100vh-266px)] mx-auto ">
+        <PrivateUser />
+      </div>
+    );
+
+  return (
+    <UserPageProvider isMyPage={isMyPage}>
+      <div className="w-[1024px] flex flex-col m-auto border border-solid border-grey2 bg-grey0">
+        <UserInfoWidget {...infoData} userId={userId} hashtags={hashData.data} />
+        <div className="flex">
+          {isMyPage && <UserNavigation />}
+          {children}
+        </div>
+      </div>
+    </UserPageProvider>
   );
 }

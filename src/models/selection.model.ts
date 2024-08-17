@@ -1,6 +1,7 @@
 import { Ihashtags } from "./hashtag.model";
 import { TselectionStatus } from "./searchResult.model";
 import { ISpotInfo } from "./spot.model";
+import { IUserInfoData } from "./user.model";
 
 export interface ISelectionCategory {
   id: number;
@@ -65,7 +66,9 @@ export interface ISelectionCreateFormData {
   hashtags?: Array<string | number>;
 }
 
-export type TSelectionCreateFormData = ISelectionCreateTemporaryData | ISelectionCreateCompleteData;
+export type TSelectionCreateFormData =
+  | ISelectionCreateTemporaryData
+  | ISelectionCreateCompleteData;
 
 export interface ISelectionCategoryQueryResultRow {
   category_id: number;
@@ -90,15 +93,12 @@ export interface ISelectionDetailInfo {
   categoryName: string;
   image?: string;
   hashtags: Ihashtags[];
+  location: string;
+  writerId: number;
 }
 
 export interface ISelectionInfo extends ISelectionDetailInfo {
-  user: {
-    id: number;
-    nickname: string;
-    image?: string;
-  };
-  location: string;
+  writer: IUserInfoData;
   spotList: ISpotInfo[];
   booked: boolean;
 }
@@ -110,7 +110,7 @@ export interface IModalCreateSelectionSpotExtraData {
 }
 
 export interface ISelectionCreateCompleteData {
-  status: 'public' | 'private';
+  status: "public" | "private";
   title: string;
   description: string;
   category: number;
@@ -121,7 +121,7 @@ export interface ISelectionCreateCompleteData {
 }
 
 export interface ISelectionCreateTemporaryData {
-  status: 'temp';
+  status: "temp";
   title: string;
   description?: string;
   category?: number;

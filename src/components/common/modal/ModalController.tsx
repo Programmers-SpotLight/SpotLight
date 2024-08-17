@@ -4,12 +4,17 @@ import { useModalStore } from "@/stores/modalStore";
 import React from "react";
 import { useStore } from "zustand";
 import Modal from "./Modal";
-import ModalTemp from "./modal-contents/ModalTemp";
 import ModalCreateSelectionSpot from "./modal-contents/ModelCreateSelectionSpot/ModalCreateSelectionSpot";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import SpotImages from "@/components/selection-detail/spot-selection-contents/SpotImages";
 import { TModalSize, TmodalType } from "@/models/modal.model";
 import ModalEditTag from "./modal-contents/ModalEditTag";
+import ModalFeedbackForm from "./modal-contents/ModalFeedbackForm";
+import ReviewDeleteModal from "./modal-contents/review/ReviewDeleteModal";
+import ReviewModal from "./modal-contents/review/ReviewModal";
+import ModalEditInfo from "./modal-contents/ModalEditInfo";
+import ModalUser from "../../users/ModalUser";
+import ModalSelectionDelete from "./modal-contents/ModalSelectionDelete";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -21,11 +26,11 @@ interface ImodalDatas {
 
 const modalDatas: ImodalDatas[] = [
   {
-    type: "temp",
-    title: "모달 테스트",
-    size: "medium",
+    type: "login",
+    title: "모달 로그인",
+    size: "small",
     overlayClose: true,
-    component: ModalTemp
+    component: ModalUser
   },
   {
     type: "GoogleMapsAddSelectionSpot",
@@ -43,10 +48,45 @@ const modalDatas: ImodalDatas[] = [
   },
   {
     type: "editTag",
-    title : "관심 태그 편집",
-    size : "medium",
+    title: "관심 태그 편집",
+    size: "medium",
     overlayClose: true,
     component: ModalEditTag
+  },
+  {
+    type: "feedback",
+    title: "유저의 소리",
+    size: "large",
+    overlayClose: false,
+    component: ModalFeedbackForm
+  },
+  {
+    type: "review",
+    title: "리뷰",
+    size: "medium",
+    overlayClose: false,
+    component: ReviewModal
+  },
+  {
+    type: "review-delete",
+    title: "",
+    size: "small",
+    overlayClose: false,
+    component: ReviewDeleteModal
+  },
+  {
+    type: "editInfo",
+    title: "자기소개 편집",
+    size: "medium",
+    overlayClose: true,
+    component: ModalEditInfo
+  },
+  {
+    type: "selection-delete",
+    title: "셀렉션 삭제",
+    size : "small",
+    overlayClose : true,
+    component : ModalSelectionDelete
   }
 ];
 

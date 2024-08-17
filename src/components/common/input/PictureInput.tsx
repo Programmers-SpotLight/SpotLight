@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 
 interface IPictureInputProps {
   inputSize: "small" | "large";
   imgSrc?: string;
-  onPictureChange?: (image: string, index: number) => void;
+  onPictureChange?: (image: string, index: number, type: string) => void;
   index?: number;
 }
 
-const PictureInput = ({ 
-  inputSize, 
-  imgSrc, 
-  onPictureChange ,
-  index = -1 
+const PictureInput = ({
+  inputSize,
+  imgSrc,
+  onPictureChange,
+  index = -1
 }: IPictureInputProps) => {
-  const [image, setImage] = useState<string | ArrayBuffer | null>(imgSrc || null);
+  const [image, setImage] = useState<string | ArrayBuffer | null>(
+    imgSrc || null
+  );
 
   useEffect(() => {
     setImage(imgSrc || null);
@@ -32,19 +34,30 @@ const PictureInput = ({
       reader.onloadend = () => {
         const result = reader.result as string;
         if (onPictureChange) {
-          onPictureChange(result, index);
+          onPictureChange(result, index, file.type);
         } else {
           setImage(result);
         }
       };
+      const fileType = file.type;
+      if (!fileType.includes("image")) {
+        alert(`해당 파일은 이미지 파일이 아닙니다.\n이미지(JPG,JPEG,GIF,PNG)`);
+        return;
+      }
       reader.readAsDataURL(file);
     }
   };
 
   return (
-    <div className={`${sizeStyles[inputSize]} relative border border-solid border-grey2 text-grey4 text-large rounded-lg flex flex-col items-center justify-center`}>
+    <div
+      className={`${sizeStyles[inputSize]} relative border border-solid border-grey2 text-grey4 text-large rounded-lg flex flex-col items-center justify-center`}
+    >
       {image ? (
-        <img src={image as string} alt="Uploaded" className="w-full h-full object-fill rounded-lg" />
+        <img
+          src={image as string}
+          alt="Uploaded"
+          className="w-full h-full object-fill rounded-lg"
+        />
       ) : (
         <>
           <FaCamera />
@@ -52,7 +65,7 @@ const PictureInput = ({
       )}
       <input
         type="file"
-        // accept="image/*"
+        accept="image/*"
         onChange={handleFileChange}
         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
       />

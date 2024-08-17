@@ -8,7 +8,7 @@ export interface ISpotImage {
 }
 
 export interface ISpotInfo {
-  id: string;
+  id: Buffer;
   title: string;
   description: string;
   address: string;
@@ -21,4 +21,5 @@ export interface ISpotInfo {
   hashtags: Ihashtags[];
   categoryId: number;
   categoryName: SpotCategory;
+  order: number;
 }

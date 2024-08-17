@@ -1,9 +1,9 @@
 import { useModalStore } from "@/stores/modalStore";
 import React from "react";
 import { useStore } from "zustand";
-import { TModalSize, TmodalType } from "@/models/modal";
 import Modal from "@/components/common/modal/Modal";
 import Button from "@/components/common/button/Button";
+import { TModalSize, TmodalType } from "@/models/modal.model";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -17,12 +17,20 @@ const modalDatas: ImodalDatas[] = [
     type: "review-delete",
     title: "",
     size: "small",
-    overlayClose: true,
+    overlayClose: false,
   }
 ];
 
+interface ImodalProps {
+  reviewId: string;
+  onSubmit: (reviewId: string) => void;
+}
+
 const ReviewDeleteModal = () => {
   const { isOpen, closeModal, modalType, props } = useStore(useModalStore);
+  const reviewProps = props as ImodalProps;
+  const reviewId = reviewProps?.reviewId;
+  const onSubmit = reviewProps?.onSubmit;
 
   if (!isOpen) return null;
 
@@ -33,6 +41,11 @@ const ReviewDeleteModal = () => {
   const { title, size, overlayClose } = findModal;
 
   const handleOverlayClick = () => {
+    closeModal();
+  };
+
+  const handleSubmit = () => {
+    onSubmit(reviewId);
     closeModal();
   };
 
@@ -52,8 +65,8 @@ const ReviewDeleteModal = () => {
               삭제 후에는 해당 리뷰의 모든 정보가 영구적으로 제거되며 되돌릴 수 없습니다.
             </div>
             <div className="flex justify-center space-x-2">
-              <Button type="submit" size="small" color="white" onClick={closeModal}>취소</Button>
-              <Button type="submit" size="small" color="primary">삭제</Button>  
+              <Button type="button" size="small" color="white" onClick={closeModal}>취소</Button>
+              <Button type="submit" size="small" color="primary" onClick={handleSubmit}>삭제</Button>  
             </div>
           </div>
         </Modal>
