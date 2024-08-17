@@ -7,7 +7,7 @@ export const GET = async (request: NextRequest) => {
   const latitude : string | null = searchParams.get("latitude");
   const longitude : string | null = searchParams.get("longitude");
 
-  if (!latitude || !longitude) {
+  if (latitude === null || longitude === null ) {
     return new Response("경도인 longitude와 위도인 latitude를 입력해주세요", { status: 400 });
   }
 

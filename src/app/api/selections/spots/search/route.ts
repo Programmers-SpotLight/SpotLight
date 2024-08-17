@@ -6,7 +6,7 @@ export const GET = async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
   const query : string | null = searchParams.get("query");
 
-  if (!query) {
+  if (query === null) {
     return new Response("Please provide a query", { status: 400 });
   }
 
