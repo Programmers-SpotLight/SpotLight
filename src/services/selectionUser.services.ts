@@ -38,10 +38,6 @@ const userSelectionQueryBuilder = async (
     )
     .join("hashtag", "selection_hashtag.htag_id", "=", "hashtag.htag_id");
 
-  if (!isMyPage) {
-    queryBuilder.whereNot("selection.slt_status", "private");
-  }
-
   if (sort) {
     if (sort === "latest") {
       queryBuilder.orderBy("selection.slt_created_date", "desc");
@@ -61,8 +57,10 @@ const userSelectionQueryBuilder = async (
         .where("b.user_id", userId);
     }
   }
-  
-  queryBuilder.where("selection.slt_status", "<>", "delete");
+  if (!isMyPage) {
+    queryBuilder.whereNot("selection.slt_status", "private");
+  }
+  queryBuilder.whereNot("selection.slt_status", "delete");
   return queryBuilder;
 };
 
