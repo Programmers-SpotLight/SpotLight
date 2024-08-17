@@ -42,7 +42,7 @@ const handler = NextAuth({
       if (existingUser) {
         return true ; // 기존 사용자일 경우 로그인 허용
       }else{
-        return '/signup?kakaoId=' + kakaoId + '&provider=' + account?.provider;
+        return '/?uid=' + kakaoId + '&provider=' + account?.provider;
       }
     },
     async redirect({ url, baseUrl }) {
@@ -53,7 +53,7 @@ const handler = NextAuth({
     },
   },
   pages:{
-      signIn: '/api/users/signin',
+      signIn: '',
       signOut: '/auth/signout',
       error: '/auth/error', // 24-08-14 기준 페이지 미구현
   },

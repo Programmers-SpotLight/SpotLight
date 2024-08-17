@@ -10,6 +10,7 @@ import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import useCheckSignUpParams from "@/hooks/useCheckSignUpParams";
 
 const Header = () => {
   const router = useRouter();
@@ -21,6 +22,9 @@ const Header = () => {
   useClickOutside(dropdownRef, () => setIsDropDownVisible(false))
   const { openModal } = useModalStore();
   const { data: session, status } = useSession();
+  const imageUrl = session?.user?.image ? session?.user?.image : '';
+
+  useCheckSignUpParams();
 
   const onClickHandler = () => {
     setIsDropDownVisible((prev) => !prev);
@@ -42,7 +46,7 @@ const Header = () => {
   }
 
   const handleOpenModal = () => {
-    openModal('login', { name: 'test' });
+    openModal('signin');
   };
 
   return (
@@ -96,7 +100,7 @@ const Header = () => {
         !!session && session.user?.image && (
           <Image
           ref={profileRef}
-          src={""}
+          src={imageUrl}
           alt="user"
           width={55}
           height={55}
