@@ -2,6 +2,13 @@
 
 import { dbConnectionPool } from "@/libs/db";
 import { ISelectionSpot, ISelectionSpotCategory } from "@/models/selection.model";
+import { insertMultipleSpotHashtag, insertMultipleSpotTemporaryHashtag } from "@/repositories/hashtag.repository";
+import { 
+  insertMultipleSpot, 
+  insertMultipleSpotImage, 
+  insertMultipleSpotTemporary, 
+  insertMultipleSpotTemporaryImage 
+} from "@/repositories/spot.repository";
 import { InternalServerError } from "@/utils/errors";
 import { createDirectory, saveFile } from "@/utils/fileStorage";
 import { fileTypeFromBlob, FileTypeResult } from "file-type";
@@ -61,13 +68,7 @@ export async function createSpots(
     };
   });
 
-  try {
-    await transaction('spot')
-      .insert(spotsToInsert);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('스팟을 생성하는데 실패했습니다');
-  }
+  await insertMultipleSpot(transaction, spotsToInsert);
 
   // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
   for (let i = 0; i < spotsIdsPhotos.length; i++) {
@@ -79,15 +80,21 @@ export async function createSpots(
     }
   }
 
-  await createSpotHashtags(
+  await insertMultipleSpotHashtag(
     transaction, 
     spotsIdsHashtags as Array<{id: string, hashtags: number[]}>
   );
 
-  await createSpotImages(
-    transaction, 
-    spotsIdsPhotos as Array<{id: string, photos: Array<string>}>
-  );
+  const photos = spotsIdsPhotos.map((spot) => {
+    return spot.photos;
+  }).flat();
+
+  if (photos.length > 0) {
+    await insertMultipleSpotImage(
+      transaction, 
+      spotsIdsPhotos as Array<{id: string, photos: Array<string>}>
+    );
+  }
 }
 
 export async function createTemporarySpots(
@@ -124,13 +131,7 @@ export async function createTemporarySpots(
     };
   });
 
-  try {
-    await transaction('spot_temporary')
-      .insert(spotsToInsert);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('스팟을 생성하는데 실패했습니다');
-  }
+  await insertMultipleSpotTemporary(transaction, spotsToInsert);
 
   // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
   for (let i = 0; i < spotsIdsPhotos.length; i++) {
@@ -142,15 +143,21 @@ export async function createTemporarySpots(
     }
   }
 
-  await createTemporarySpotHashtags(
+  await insertMultipleSpotTemporaryHashtag(
     transaction, 
     spotsIdsHashtags as Array<{id: string, hashtags: number[]}>
   );
 
-  await createSpotTemporaryImages(
-    transaction, 
-    spotsIdsPhotos as Array<{id: string, photos: Array<string>}>
-  );
+  const photos = spotsIdsPhotos.map((spot) => {
+    return spot.photos;
+  }).flat();
+
+  if (photos.length > 0) {
+    await insertMultipleSpotTemporaryImage(
+      transaction, 
+      spotsIdsPhotos as Array<{id: string, photos: Array<string>}>
+    );
+  }
 }
 
 export const saveSpotPhoto : (imageFile: File) => Promise<string> = async (imageFile: File) => {
@@ -172,144 +179,3 @@ export const saveSpotPhoto : (imageFile: File) => Promise<string> = async (image
   }
   return filePath;
 };
-
-export async function createSpotHashtags(
-  transaction: Knex.Transaction<any, any[]>,
-  spotHashtags: Array<{id: string, hashtags: number[]}>
-) : Promise<void> {
-
-  let insertData : Array<{
-    spot_htag_id: Buffer,
-    spot_id: Buffer,
-    htag_id: number
-  }> = [];
-
-  for (let i = 0; i < spotHashtags.length; i++) {
-    spotHashtags[i].hashtags.map((hashtag) => {
-      insertData.push({
-        spot_htag_id: transaction.fn.uuidToBin(uuidv4()),
-        spot_id: transaction.fn.uuidToBin(spotHashtags[i].id),
-        htag_id: hashtag
-      });
-    });
-  }
-
-  try {
-    await transaction('spot_hashtag')
-      .insert(insertData)
-      .onConflict(['spot_id', 'htag_id'])
-      .ignore();
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('스팟 해시태그를 생성하는데 실패했습니다');
-  }
-}
-
-export async function createTemporarySpotHashtags(
-  transaction: Knex.Transaction<any, any[]>,
-  spotHashtags: Array<{id: string, hashtags: number[]}>
-) : Promise<void> {
-
-  let insertData : Array<{
-    spot_temp_htag_id: Buffer,
-    spot_temp_id: Buffer,
-    htag_id: number
-  }> = [];
-
-  for (let i = 0; i < spotHashtags.length; i++) {
-    spotHashtags[i].hashtags.map((hashtag) => {
-      insertData.push({
-        spot_temp_htag_id: transaction.fn.uuidToBin(uuidv4()),
-        spot_temp_id: transaction.fn.uuidToBin(spotHashtags[i].id),
-        htag_id: hashtag
-      });
-    });
-  }
-
-  try {
-    await transaction('spot_temporary_hashtag')
-      .insert(insertData)
-      .onConflict(['spot_temp_id', 'htag_id'])
-      .ignore();
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('스팟 해시태그를 생성하는데 실패했습니다');
-  }
-}
-
-export async function createSpotImages(
-  transaction: Knex.Transaction<any, any[]>,
-  spotPhotos: Array<{id: string, photos: Array<string>}>
-) : Promise<void> {
-
-  let insertData : Array<{
-    spot_img_id: Buffer,
-    spot_id: Buffer,
-    spot_img_url: string,
-    spot_img_order: number
-  }> = [];
-
-  for (let i = 0; i < spotPhotos.length; i++) {
-    spotPhotos[i].photos.map((photo, index) => {
-      insertData.push({
-        spot_img_id: transaction.fn.uuidToBin(uuidv4()),
-        spot_id: transaction.fn.uuidToBin(spotPhotos[i].id),
-        spot_img_url: photo,
-        spot_img_order: index+1
-      });
-    });
-  }
-
-  if (insertData.length === 0) {
-    return;
-  }
-
-  try {
-    await transaction('spot_image')
-      .insert(insertData)
-      .onConflict(['spot_id', 'spot_photo_url'])
-      .ignore();
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('스팟 이미지를 생성하는데 실패했습니다');
-  }
-}
-
-export async function createSpotTemporaryImages(
-  transaction: Knex.Transaction<any, any[]>,
-  spotPhotos: Array<{id: string, photos: Array<string>}>
-) : Promise<void> {
-
-  let insertData : Array<{
-    spot_temp_img_id: Buffer,
-    spot_temp_id: Buffer,
-    spot_temp_img_url: string,
-    spot_temp_img_order: number
-  }> = [];
-
-  for (let i = 0; i < spotPhotos.length; i++) {
-    spotPhotos[i].photos.map((photo, index) => {
-      insertData.push({
-        spot_temp_img_id: transaction.fn.uuidToBin(uuidv4()),
-        spot_temp_id: transaction.fn.uuidToBin(spotPhotos[i].id),
-        spot_temp_img_url: photo,
-        spot_temp_img_order: index+1
-      });
-    });
-  }
-
-  if (insertData.length === 0) {
-    return;
-  }
-
-  console.log("Inserting " + insertData.length + " spot images");
-  try {
-    await transaction('spot_temporary_image')
-      .insert(insertData)
-      .onConflict(['spot_temp_id', 'spot_temp_img_url'])
-      .ignore();
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('스팟 이미지를 생성하는데 실패했습니다');
-  }
-}

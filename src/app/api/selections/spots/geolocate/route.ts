@@ -6,7 +6,7 @@ export const GET = async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
   const googleMapsPlaceId : string | null = searchParams.get("gmap-id");
 
-  if (!googleMapsPlaceId) {
+  if (googleMapsPlaceId === null) {
     return new Response("Please provide a Google Maps Place ID", { status: 400 });
   }
 

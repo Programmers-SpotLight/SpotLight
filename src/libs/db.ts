@@ -1,5 +1,6 @@
 import Knex from "knex";
 
+
 // Create a connection pool to the database
 export const dbConnectionPool = Knex({
   client: "mysql2",
