@@ -93,6 +93,7 @@ const ModalEditTag = ({ userId }: ModalAddTagProps) => {
         />
         </div>
       )}
+      <h1 className="text-small text-grey3 mt-5">해시태그는 10글자 이내로 작성해주세요</h1>
       <div className="flex-wrap flex list-none gap-[5px] mt-5">
         {hashtags.data.map((htag) => (
           <li key={htag.user_htag_id}>

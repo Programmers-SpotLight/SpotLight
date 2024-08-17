@@ -8,8 +8,16 @@ const searchQueryBuilder = (
   tags: string[],
   sort?: TsortType
 ) => {
-  queryBuilder
+  try {
+    const bookmarkCountSubquery = dbConnectionPool('bookmark')
+    .select('slt_id')
+    .count('slt_id as bookmark_count')
+    .groupBy('slt_id')
+    .as('bc');
+    
+    queryBuilder
     .join("user", "selection.user_id", "=", "user.user_id")
+    .leftJoin(bookmarkCountSubquery, 'selection.slt_id', '=', 'bc.slt_id')
     .join(
       "selection_hashtag",
       "selection.slt_id",
@@ -52,7 +60,7 @@ const searchQueryBuilder = (
     } else if (sort === "asc") {
       queryBuilder.orderBy("selection.slt_title", "asc");
     } else if (sort === "popular") {
-      // Todo : 인기 순 리뷰 기능 구현 시 추가 구현
+      queryBuilder.orderBy("bookmark_count", "desc");
     }
   }
 
@@ -60,6 +68,9 @@ const searchQueryBuilder = (
   queryBuilder.where("selection.slt_status", "<>", "delete");
 
   return queryBuilder;
+} catch(error) {
+  console.log("쿼리빌더 에러", error)
+}
 };
 
 export const getSearchResultCount = async (
@@ -80,6 +91,7 @@ export const getSearchResultCount = async (
           'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
         )
       )
+      .select(dbConnectionPool.raw('COALESCE(bc.bookmark_count, 0) AS bookmark_count')) // bookmark 개수 추가
       .groupBy("selection.slt_id", "user.user_id")
       .modify((queryBuilder) =>
         searchQueryBuilder(queryBuilder, category_id, region_id, tags, sort)
@@ -87,6 +99,7 @@ export const getSearchResultCount = async (
 
     return countQuery;
   } catch (error) {
+    console.log("카운트 쿼리 에러", error)
     throw new Error(`Failed to fetch search Result`); // Todo : Error 처리
   }
 };
@@ -111,6 +124,7 @@ export const getSearchResult = async (
           'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
         )
       )
+      .select(dbConnectionPool.raw('COALESCE(bc.bookmark_count, 0) AS bookmark_count')) // bookmark 개수 추가
       .groupBy("selection.slt_id", "user.user_id")
       .modify((queryBuilder) =>
         searchQueryBuilder(
