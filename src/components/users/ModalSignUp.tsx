@@ -5,7 +5,6 @@ import { useStore } from 'zustand';
 import TextInput from '../common/input/TextInput';
 import Button from '../common/button/Button';
 import { signIn } from 'next-auth/react';
-import { checkNicknameDuplication, signUp } from '@/services/user.services';
 
 interface ImodalDatas {
   type: TmodalType;

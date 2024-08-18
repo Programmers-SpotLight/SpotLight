@@ -11,6 +11,7 @@ import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import useCheckSignUpParams from "@/hooks/useCheckSignUpParams";
+import useAuthMonitoring from "@/hooks/useAuthMonitoring";
 
 const Header = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const Header = () => {
   const { openModal } = useModalStore();
   const { data: session, status } = useSession();
   const imageUrl = session?.user?.image ? session?.user?.image : '';
-
+  useAuthMonitoring(status);
   useCheckSignUpParams();
 
   const onClickHandler = () => {
