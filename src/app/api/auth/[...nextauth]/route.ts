@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth/next';
 import KakaoProvider from "next-auth/providers/kakao";
 import { dbConnectionPool } from '@/libs/db';
-import { getNicknameFromDatabase } from '@/services/users.services';
+import { getUserInfoByUid } from '@/services/user.services';
 
 const handler = NextAuth({
   providers: [
@@ -16,7 +16,7 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const userDBInfo : Array<{ [key: string]: any }> = await getNicknameFromDatabase(user.id);
+        const userDBInfo : Array<{ [key: string]: any }> = await getUserInfoByUid(user.id);
         if(userDBInfo.length == 1) {
           token.nickname = userDBInfo[0].user_nickname;
           if(userDBInfo[0].user_img) token.userImage = userDBInfo[0].user_img;
@@ -33,16 +33,16 @@ const handler = NextAuth({
     async signIn({ user, account, profile }) {
       // 사용자가 로그인할 때의 콜백을 정의.
       console.log("sign in result :", user, account, profile );
-      const kakaoId = user.id;
+      const uid = user.id;
       
       const existingUser = await dbConnectionPool("user")
-        .where({ user_uid: kakaoId, user_type: account?.provider })
+        .where({ user_uid: uid, user_type: account?.provider })
         .first();
 
       if (existingUser) {
         return true ; // 기존 사용자일 경우 로그인 허용
       }else{
-        return '/?uid=' + kakaoId + '&provider=' + account?.provider;
+        return '/?uid=' + uid + '&provider=' + account?.provider;
       }
     },
     async redirect({ url, baseUrl }) {

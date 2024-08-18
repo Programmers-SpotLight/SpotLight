@@ -135,7 +135,7 @@ const Header = () => {
             마이페이지
           </Link>
           <hr className="w-full" />
-          <button className="h-1/2 flex items-center text-medium text-grey4 hover:text-primary"
+          <button className="w-full h-1/2 flex items-center text-medium text-grey4 hover:text-primary"
             onClick={handleSignout}
           >
             로그아웃
