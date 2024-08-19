@@ -12,6 +12,8 @@ import SearchLoading from "./search-contents/SearchLoading";
 import SearchEmptyResults from "./search-contents/SearchEmptyResults";
 import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import useSelectionSort from "@/hooks/useSelectionSort";
+import { isAxiosError } from "axios";
+import SearchErrorPage from "./search-contents/SearchErrorPage";
 
 const SearchResultSection = () => {
   const searchParams = useSearchParams();
@@ -22,7 +24,7 @@ const SearchResultSection = () => {
   const page = searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
   const limit = searchParams.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit;
 
-  const { data: results, isError, isLoading } = useFetchSearchResult({category_id, region_id, tags, sort, page, limit});
+  const { data: results, isError, isLoading, error } = useFetchSearchResult({category_id, region_id, tags, sort, page, limit});
   const { setIsSortClicked, toggleSortOptions, currentSortOption, sortRender, sortRef } = useSelectionSort();
   useClickOutside(sortRef, () => setIsSortClicked(false));
 
@@ -31,7 +33,7 @@ const SearchResultSection = () => {
   }, [page]);
 
   if (isLoading) return <SearchLoading height="search" />;
-  if (isError) return <div>Error loading results.</div>;
+  if (isError && isAxiosError(error))  return <SearchErrorPage message={error.response?.data.error}/>
   if (!results) return null;
   if (results.data.length === 0) return <SearchEmptyResults />;
 
