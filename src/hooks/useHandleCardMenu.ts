@@ -3,12 +3,13 @@ import useClickOutside from "./useClickOutside";
 import { TselectionStatus } from "@/models/searchResult.model";
 import useUpdateUserSelectionPrivate from "./queries/useUpdateUserSelectionPrivate";
 import { useModalStore } from "@/stores/modalStore";
+import { toast } from "react-toastify";
 
 const useHandleCardMenu = (status: TselectionStatus) => {
   const [showMenu, setShowMenu] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<TselectionStatus>(status);
   const { selectionPrivate } = useUpdateUserSelectionPrivate("1");
-  const {openModal} = useModalStore();
+  const { openModal } = useModalStore();
 
   const selectionMenuRef = useRef<HTMLUListElement>(null);
   useClickOutside(selectionMenuRef, () => setShowMenu(false));
@@ -23,7 +24,7 @@ const useHandleCardMenu = (status: TselectionStatus) => {
     e: React.MouseEvent,
     action: string,
     selectionId: number,
-    title : string,
+    title: string
   ) => {
     console.log(`${action} 클릭됨!`);
     e.preventDefault();
@@ -33,7 +34,7 @@ const useHandleCardMenu = (status: TselectionStatus) => {
       const updateStatus = currentStatus === "private" ? "public" : "private";
       selectionPrivate(selectionId, {
         onSuccess: () => {
-          alert(
+          toast.success(
             currentStatus === "private"
               ? "비공개 설정을 해제하였습니다"
               : "비공개 설정하였습니다"
@@ -41,12 +42,12 @@ const useHandleCardMenu = (status: TselectionStatus) => {
           setCurrentStatus(updateStatus);
         },
         onError: () => {
-          alert("오류가 발생하였습니다"); // 스낵메세지 대체
+          toast.error("오류가 발생하였습니다"); // 스낵메세지 대체
           setCurrentStatus(prvStatus);
         }
       });
     } else if (action === "삭제하기") {
-      openModal("selection-delete", {title, selectionId})
+      openModal("selection-delete", { title, selectionId });
     }
   };
 
