@@ -2,6 +2,7 @@ import { IFeedbackFormData } from "@/components/common/modal/modal-contents/Moda
 import { sendFeedback } from "@/http/feedback.api";
 import { useModalStore } from "@/stores/modalStore";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 import { useStore } from "zustand";
 
 export const useSendFeedback = (formData: IFeedbackFormData) => {
@@ -15,10 +16,10 @@ export const useSendFeedback = (formData: IFeedbackFormData) => {
     mutationFn: () => sendFeedback(formData),
     onSuccess: () => {
       closeModal();
-      alert("성공적으로 전송되었습니다.");
+      toast.success("성공적으로 전송되었습니다.");
     },
     onError: () => {
-      alert("전송에 실패했습니다.");
+      toast.error("전송에 실패했습니다.");
     }
   });
 

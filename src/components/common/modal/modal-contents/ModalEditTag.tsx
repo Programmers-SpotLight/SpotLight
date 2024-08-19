@@ -12,6 +12,7 @@ import {
 } from "@/hooks/queries/useUpdateUserHashtag";
 import AutoCompletion from "@/components/search/search-contents/AutoCompletion";
 import SearchLoading from "@/components/search/search-contents/SearchLoading";
+import { toast } from "react-toastify";
 
 interface ModalAddTagProps {
   userId: string;
@@ -30,37 +31,39 @@ const ModalEditTag = ({ userId }: ModalAddTagProps) => {
   const { deleteHtag } = useDeleteHashtag(userId);
   const { data: hashtags, isLoading } = useFetchUserHashtag(userId);
 
-  if (isLoading) return <SearchLoading height="medium"/>
+  if (isLoading) return <SearchLoading height="medium" />;
   if (!hashtags || !hashtags.data) return null;
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (tagValue.trim()) {
-        const addTag = tagValue.replace(/\s+/g, "");
-        const isDuplicate = hashtags.data.some((hashtag) => hashtag.htag_name === addTag);
+      const addTag = tagValue.replace(/\s+/g, "");
+      const isDuplicate = hashtags.data.some(
+        (hashtag) => hashtag.htag_name === addTag
+      );
 
-        if (addTag.length === 0) {
-            return;
-        }
-        if (addTag.length > 10) {
-            alert("10글자 이내로 작성해주세요");
-            setTagValue("");
-            return;
-        }
-        if (hashtags?.data.length >= 8) {
-            alert("해시태그는 최대 8개까지 등록이 가능합니다");
-            setTagValue("");
-            return;
-        }
-        if (isDuplicate) {
-            alert("이미 등록된 해시태그입니다.");
-            setTagValue("");
-            return;
-        }
+      if (addTag.length === 0) {
+        return;
+      }
+      if (addTag.length > 10) {
+        toast.error("10글자 이내로 작성해주세요");
         setTagValue("");
-        AddHtag(addTag);
+        return;
+      }
+      if (hashtags?.data.length >= 8) {
+        toast.error("해시태그는 최대 8개까지 등록이 가능합니다");
+        setTagValue("");
+        return;
+      }
+      if (isDuplicate) {
+        toast.error("이미 등록된 해시태그입니다.");
+        setTagValue("");
+        return;
+      }
+      setTagValue("");
+      AddHtag(addTag);
     }
-};
+  };
 
   const handleDelete = (userHtagId: number | undefined) => {
     if (userHtagId) deleteHtag(userHtagId);
@@ -78,22 +81,23 @@ const ModalEditTag = ({ userId }: ModalAddTagProps) => {
         onChange={(e) => {
           setTagValue(e.target.value);
           setVisibleAutoCompletion(true);
-
         }}
         onKeyDown={handleKeyDown}
       />
       {visibleAutoCompletion && (
         <div className="top-[10px]">
-        <AutoCompletion
-          tagValue={tagInputRef.current ? tagInputRef.current.value : null}
-          setTagValue={setTagValue}
-          tagACRef={tagACRef}
-          tagInputRef={tagInputRef}
-          setVisibleAutoCompletion={setVisibleAutoCompletion}
-        />
+          <AutoCompletion
+            tagValue={tagInputRef.current ? tagInputRef.current.value : null}
+            setTagValue={setTagValue}
+            tagACRef={tagACRef}
+            tagInputRef={tagInputRef}
+            setVisibleAutoCompletion={setVisibleAutoCompletion}
+          />
         </div>
       )}
-      <h1 className="text-small text-grey3 mt-5">해시태그는 10글자 이내로 작성해주세요</h1>
+      <h1 className="text-small text-grey3 mt-5">
+        해시태그는 10글자 이내로 작성해주세요
+      </h1>
       <div className="flex-wrap flex list-none gap-[5px] mt-5">
         {hashtags.data.map((htag) => (
           <li key={htag.user_htag_id}>

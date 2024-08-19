@@ -3,53 +3,57 @@ import OneLineInput from "../common/input/OneLineInput";
 import { useState } from "react";
 import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 import { useStore } from "zustand";
-
+import { toast } from "react-toastify";
 
 const SelectionCreateHashtagInput = () => {
-  const [ hashtagInputValue, setHashtagInputValue ] = useState<string>("");
+  const [hashtagInputValue, setHashtagInputValue] = useState<string>("");
   const { hashtags, addHashtag } = useStore(useSelectionCreateStore);
 
-  const handleHashtagInputValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHashtagInputValueChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     e.preventDefault();
     setHashtagInputValue(e.target.value);
   };
 
   const validateHashtag = (hashtag: string) => {
     if (hashtag.length > 40) {
-      alert('태그명은 40자 이내로 입력해주세요.');
+      toast.error("태그명은 40자 이내로 입력해주세요.");
       return false;
     }
 
     if (hashtag === "") {
-      alert('태그명을 입력해주세요.');
+      toast.error("태그명을 입력해주세요.");
       return false;
     }
 
     if (hashtag.includes(" ")) {
-      alert('태그명에 공백이 포함되어 있습니다.');
+      toast.error("태그명에 공백이 포함되어 있습니다.");
       return false;
     }
 
     if (hashtags.length >= 8) {
-      alert('태그는 최대 8개까지 등록 가능합니다.');
+      toast.error("태그는 최대 8개까지 등록 가능합니다.");
       return false;
     }
 
     if (hashtags.includes(hashtag)) {
-      alert('이미 등록된 태그입니다.');
+      toast.error("이미 등록된 태그입니다.");
       return false;
     }
 
     return true;
   };
 
-  const handleAddHashtagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleAddHashtagKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     // 두 번 입력되는 것을 방지
     if (e.nativeEvent.isComposing) {
       return;
     }
 
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       if (validateHashtag(hashtagInputValue)) {
         addHashtag(hashtagInputValue);
@@ -58,9 +62,7 @@ const SelectionCreateHashtagInput = () => {
     }
   };
 
-  const handleAddHashtagClick = (
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleAddHashtagClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (validateHashtag(hashtagInputValue)) {
       addHashtag(hashtagInputValue);
@@ -80,19 +82,19 @@ const SelectionCreateHashtagInput = () => {
         onChange={handleHashtagInputValueChange}
         onKeyDown={handleAddHashtagKeyDown}
       />
-      <button 
-        className='absolute top-[50%] right-[1%] transform -translate-y-1/2'
+      <button
+        className="absolute top-[50%] right-[1%] transform -translate-y-1/2"
         onClick={handleAddHashtagClick}
       >
-        <Image 
-          src="/icons/add_7C7C7C.svg" 
-          width={32} 
-          height={32} 
-          alt="add-spot" 
+        <Image
+          src="/icons/add_7C7C7C.svg"
+          width={32}
+          height={32}
+          alt="add-spot"
         />
       </button>
     </div>
-  )
+  );
 };
 
 export default SelectionCreateHashtagInput;
