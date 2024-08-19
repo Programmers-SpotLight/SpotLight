@@ -8,7 +8,10 @@ import ReviewImageModal from "@/components/selection-detail/review/ReviewImageMo
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import MapLoading from "@/components/google-map/MapLoading";
-import { useSelectionDetail } from "@/hooks/queries/useSelectionDetail";
+import NotFound from "@/components/error/NotFound";
+import Forbidden from "@/components/error/Forbidden";
+import InternalServerError from "@/components/error/InternalServerError";
+import useSelectionDetail from "@/hooks/queries/useSelectionDetail";
 
 const SelectionPage = () => {
   const params = useParams();
@@ -18,9 +21,12 @@ const SelectionPage = () => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedSpotId, setSelectedSpotId] = useState<Buffer | null>(null);
 
-  const { selectionData, isPending, isError } = useSelectionDetail(
-    parseInt(params!.selectionId.toString(), 10)
-  );
+  const {
+    data: selectionData,
+    isPending,
+    isError,
+    error
+  } = useSelectionDetail(parseInt(params!.selectionId.toString(), 10));
 
   useEffect(() => {
     if (selectionData && selectionData.spotList.length > 0) {
@@ -54,7 +60,16 @@ const SelectionPage = () => {
         </span>
       </div>
     );
-  if (isError) return <div>에러 발생</div>;
+
+  if (isError || !selectionData) {
+    console.log(error);
+
+    return (
+      <div className={`h-[calc(100vh-74px)]`}>
+        <InternalServerError />
+      </div>
+    );
+  }
 
   return (
     <div className={`relative h-[calc(100vh-74px)]`}>
