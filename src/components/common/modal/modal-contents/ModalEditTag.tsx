@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import TextInput from "../../input/TextInput";
 import { FaSearch } from "react-icons/fa";
 import Hashtag from "../../Hashtag";
@@ -12,7 +12,6 @@ import {
 } from "@/hooks/queries/useUpdateUserHashtag";
 import AutoCompletion from "@/components/search/search-contents/AutoCompletion";
 import SearchLoading from "@/components/search/search-contents/SearchLoading";
-import { toast } from "react-toastify";
 
 interface ModalAddTagProps {
   userId: string;
@@ -25,7 +24,8 @@ const ModalEditTag = ({ userId }: ModalAddTagProps) => {
     tagACRef,
     handleKeyDown,
     visibleAutoCompletion,
-    setVisibleAutoCompletion
+    setVisibleAutoCompletion,
+    searchValidator
   } = useSearchAutoComplete();
   const { AddHtag } = useAddUserHashtag(userId);
   const { deleteHtag } = useDeleteHashtag(userId);
@@ -35,33 +35,12 @@ const ModalEditTag = ({ userId }: ModalAddTagProps) => {
   if (!hashtags || !hashtags.data) return null;
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (tagValue.trim()) {
-      const addTag = tagValue.replace(/\s+/g, "");
-      const isDuplicate = hashtags.data.some(
-        (hashtag) => hashtag.htag_name === addTag
-      );
-
-      if (addTag.length === 0) {
-        return;
-      }
-      if (addTag.length > 10) {
-        toast.error("10글자 이내로 작성해주세요");
-        setTagValue("");
-        return;
-      }
-      if (hashtags?.data.length >= 8) {
-        toast.error("해시태그는 최대 8개까지 등록이 가능합니다");
-        setTagValue("");
-        return;
-      }
-      if (isDuplicate) {
-        toast.error("이미 등록된 해시태그입니다.");
-        setTagValue("");
-        return;
-      }
-      setTagValue("");
-      AddHtag(addTag);
+    const addTag = tagValue.replace(/\s+/g, "");
+      if(searchValidator(addTag, hashtags.data)) {
+      AddHtag(tagValue)
+      setTagValue('');
+    } else {
+      setVisibleAutoCompletion(false)
     }
   };
 

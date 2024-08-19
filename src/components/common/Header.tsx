@@ -10,6 +10,7 @@ import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const router = useRouter();
@@ -28,9 +29,20 @@ const Header = () => {
 
   const onSubmithandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const addTag = tagValue.replace(/\s+/g, "");
+    if (addTag.length === 0) {
+      toast.error("해시태그를 입력해주세요.");
+      setTagValue("");
+      return false;
+    }
+    if (addTag.length > 10) {
+      toast.error("10글자 이내로 작성해주세요");
+      setTagValue("");
+      return false;
+  } 
+    setTagValue("");
     setVisibleAutoCompletion(false)
     router.push(`/search?tags=${tagValue}`);
-    setTagValue("");
   };
 
   // SNS Login / Sign in
