@@ -1,8 +1,10 @@
 import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
+import { dbConnectionPool } from "@/libs/db";
 import { Ihashtags } from "@/models/hashtag.model";
-import { ISelectionDetailInfo, ISelectionInfo } from "@/models/selection.model";
+import { ISelectionCreateCompleteData, ISelectionDetailInfo, ISelectionInfo } from "@/models/selection.model";
 import { ISpotImage, ISpotInfo } from "@/models/spot.model";
 import { ErrorResponse, SuccessResponse, TuserSelection } from "@/models/user.model";
+import { prepareAndValidateSelectionCreateFormData } from "@/services/selectionCreate.validation";
 import {
   getBookMarks,
   getSelectionDetailInfo,
@@ -11,6 +13,7 @@ import {
   getSpotHashTags,
   getSpotImages
 } from "@/services/selectionDetail.services";
+import { editSelection } from "@/services/selectionEdit.services";
 import { serviceDeleteSelection, serviceDeleteTempSelection } from "@/services/selectionUser.services";
 import { getUserInfo } from "@/services/user.services";
 
@@ -153,3 +156,64 @@ const deleteSelectionValidator = (
 
   return null;
 };
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { selectionId: number } }
+) {
+  const selectionId = params.selectionId;
+
+  if (!selectionId) {
+    return new Response(
+      JSON.stringify({ error: "Invalid selection ID" }),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
+
+  if (isNaN(selectionId)) {
+    return new Response(
+      JSON.stringify({ error: "Invalid selection ID" }),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
+
+  const transaction = await dbConnectionPool.transaction();
+  try {
+    const formData : FormData = await request.formData();
+    // 데이터 유효성 검사
+    const data : ISelectionCreateCompleteData = await prepareAndValidateSelectionCreateFormData(formData);
+    // add logic for updating temporary selection
+    await editSelection(
+      transaction, 
+      selectionId, 
+      data
+    );
+
+    await transaction.commit();
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  } catch (error: any) {
+    await transaction.rollback();
+    console.error(error);
+    return new Response(error.message, {
+      status: error.statusCode || 500,
+      headers: {
+        "Content-Type": "text/plain"
+      }
+    });
+  } 
+}

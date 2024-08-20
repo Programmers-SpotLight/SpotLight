@@ -1,4 +1,4 @@
-import { requestHashtagsSuggestionFromAI } from "@/services/selection.services";
+import { requestHashtagsSuggestionFromAI } from "@/services/selectionCreate.services";
 import { validateHashtagsSuggestionPrompt } from "@/services/selectionCreate.validation";
 import { NextRequest } from "next/server";
 
