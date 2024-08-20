@@ -5,7 +5,7 @@ import Link from "next/link";
 const NotFound = () => {
   return (
     <div className="w-full h-full relative">
-      <Image src={bg} alt="404" fill />
+      <Image src={bg} alt="404" fill priority />
       <p className="text-8xl text-white absolute left-1/2 -translate-x-1/2 top-20">
         404 ERROR
       </p>

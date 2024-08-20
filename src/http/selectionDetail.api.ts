@@ -1,5 +1,6 @@
 import { requestHandler } from "@/http/http";
-import { NotFoundError } from "@/utils/errors";
+import { handleHttpError } from "@/utils/errors";
+import axios from "axios";
 
 export const fetchSelectionDetailInfo = async (selectionId: number) => {
   try {
@@ -9,8 +10,7 @@ export const fetchSelectionDetailInfo = async (selectionId: number) => {
     );
     return response;
   } catch (error: any) {
-    const status = error.response.status;
-    if (status === 404)
-      throw new NotFoundError("셀렉션 정보를 찾을 수 없습니다.");
+    if (axios.isAxiosError(error)) handleHttpError(error);
+    else throw new Error("An unexpected error occured");
   }
 };

@@ -6,7 +6,7 @@ import Image from "next/image";
 const Forbidden = () => {
   return (
     <div className="w-full h-full relative">
-      <Image src={bg} alt="403" fill />
+      <Image src={bg} alt="403" fill priority />
       <p className="text-8xl text-gray-800 absolute left-1/2 -translate-x-1/2 top-20">
         403 ERROR
       </p>

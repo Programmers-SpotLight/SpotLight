@@ -8,8 +8,8 @@ import ReviewImageModal from "@/components/selection-detail/review/ReviewImageMo
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import MapLoading from "@/components/google-map/MapLoading";
-import NotFound from "@/components/error/NotFound";
 import useSelectionDetail from "@/hooks/queries/useSelectionDetail";
+import useErrorComponents from "@/hooks/useErrorComponents";
 
 const SelectionPage = () => {
   const params = useParams();
@@ -25,6 +25,8 @@ const SelectionPage = () => {
     isError,
     error
   } = useSelectionDetail(parseInt(params!.selectionId.toString(), 10));
+
+  const ErrorComponent = useErrorComponents(error);
 
   useEffect(() => {
     if (selectionData && selectionData.spotList.length > 0) {
@@ -59,12 +61,8 @@ const SelectionPage = () => {
       </div>
     );
 
-  if (isError || !selectionData) {
-    return (
-      <div className={`h-[calc(100vh-74px)]`}>
-        <NotFound />
-      </div>
-    );
+  if (isError) {
+    return <div className={`h-[calc(100vh-74px)]`}>{ErrorComponent}</div>;
   }
 
   return (

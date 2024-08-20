@@ -5,7 +5,7 @@ import Image from "next/image";
 import bg from "../../../public/imgs/500.jpeg";
 import Link from "next/link";
 
-const InternalServerError = () => {
+const InternalServer = () => {
   const { openModal } = useStore(useModalStore);
 
   const openFeedbackForm = () => {
@@ -14,7 +14,7 @@ const InternalServerError = () => {
 
   return (
     <div className="w-full h-full relative">
-      <Image src={bg} alt="403" fill />
+      <Image src={bg} alt="403" fill priority />
       <p className="text-8xl text-white absolute left-1/2 -translate-x-1/2 top-20">
         500 ERROR
       </p>
@@ -37,4 +37,4 @@ const InternalServerError = () => {
   );
 };
 
-export default InternalServerError;
+export default InternalServer;
