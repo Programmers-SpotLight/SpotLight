@@ -1,7 +1,7 @@
 export type TmodalType =
   | "temp"
-  | "signin"
-  | "signup"
+  | "login"
+  | "register"
   | "review"
   | "review-delete"
   | "info"

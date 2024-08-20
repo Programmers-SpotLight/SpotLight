@@ -2,11 +2,6 @@ import { dbConnectionPool } from "@/libs/db"
 import { Ihashtags, ThtagType } from "@/models/hashtag.model";
 import { IUserInfoData } from "@/models/user.model";
 
-// 회원가입 & 로그인
-export const getUserInfoByUid = async (userUid: string) => {
-    return await dbConnectionPool('user').select('*').where('user_uid', userUid);
-}
-
 export const getUserInfo = async (userId: string) => {
     try {
         const userInfoData: IUserInfoData = await dbConnectionPool("user")
