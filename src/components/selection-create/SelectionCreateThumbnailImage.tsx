@@ -4,17 +4,14 @@ import React from "react";
 import { toast } from "react-toastify";
 import { useStore } from "zustand";
 
-const SelectionCreateThumbnailImage: React.FC = () => {
-  const { selectionPhoto, setSelectionPhoto } = useStore(
-    useSelectionCreateStore
-  );
 
-  const handleThumbnailImageChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+const SelectionCreateThumbnailImage : React.FC = () => {
+  const { selectionImage, setSelectionImage } = useStore(useSelectionCreateStore);
+
+  const handleThumbnailImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-      setSelectionPhoto(file);
+    if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+      setSelectionImage(file);
     } else {
       toast.error("png, jpg, jpeg 파일만 업로드 가능합니다.");
     }
@@ -27,24 +24,32 @@ const SelectionCreateThumbnailImage: React.FC = () => {
           셀렉션 썸네일 등록
         </label>
         <button className="relative border border-solid border-grey2 w-3/4 h-[190px] rounded-[8px] bg-white flex flex-col items-center justify-center overflow-hidden">
-          {selectionPhoto ? (
-            <img
-              src={
-                selectionPhoto instanceof File
-                  ? URL.createObjectURL(selectionPhoto)
-                  : selectionPhoto
-              }
-              className="object-fill absolute"
-              alt="thumbnail"
-            />
-          ) : (
-            <Image
-              src="/icons/photo_camera_7C7C7C.svg"
-              width={56}
-              height={56}
-              alt="upload_photo"
-            />
-          )}
+        {selectionImage instanceof File && (
+          <img 
+            src={
+              URL.createObjectURL(selectionImage)
+            } 
+            className="object-fill absolute"
+            alt="thumbnail"
+          />
+        )} 
+        {typeof selectionImage === 'string' && (
+          <Image
+            src={`/images/selections/${selectionImage}`}
+            width={200}
+            height={100}
+            className='object-fill absolute w-full'
+            alt="thumbnail"
+          />
+        )}
+        {!selectionImage && (
+          <Image 
+            src="/icons/photo_camera_7C7C7C.svg" 
+            width={56} 
+            height={56} 
+            alt="upload_photo"
+          />
+        )}
           <input
             type="file"
             accept=".png, .jpg, .jpeg"

@@ -1,6 +1,6 @@
 import { Ihashtags } from "./hashtag.model";
 import { TselectionStatus } from "./searchResult.model";
-import { ISpotInfo } from "./spot.model";
+import { ISelectSpot, ISpotInfo } from "./spot.model";
 import { IUserInfoData } from "./user.model";
 
 export interface ISelectionCategory {
@@ -47,7 +47,7 @@ export interface ISelectionSpot {
   latitude: number;
   longitude: number;
   hashtags: Array<number | string>;
-  photos: Array<File | string>;
+  images: Array<File | string>;
 }
 
 export interface ISelectionSpotCategory {
@@ -110,6 +110,7 @@ export interface IModalCreateSelectionSpotExtraData {
 }
 
 export interface ISelectionCreateCompleteData {
+  temp_id?: number;
   status: "public" | "private";
   title: string;
   description: string;
@@ -129,4 +130,37 @@ export interface ISelectionCreateTemporaryData {
   img?: File | string;
   spots?: ISelectionSpot[];
   hashtags?: Array<string | number>;
+}
+
+export interface IInsertSelection {
+  slt_title: string;
+  slt_status: string;
+  slt_category_id: number;
+  slt_location_option_id: number;
+  slt_description: string;
+  slt_img: string;
+}
+
+export interface IInsertSelectionTemporary {
+  slt_temp_title: string;
+  slt_category_id: number | null;
+  slt_location_option_id: number | null;
+  slt_temp_description: string | null;
+  slt_temp_img: string | null;
+}
+
+export interface ISelectSelection {
+  title: string;
+  status?: string;
+  userId: number;
+  categoryId: number;
+  categoryName: string;
+  locationId: number;
+  locationName: string;
+  subLocationId: number;
+  subLocationName: string;
+  description: string;
+  image: string;
+  hashtags: string[];
+  spots: ISelectSpot[];
 }

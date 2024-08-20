@@ -22,11 +22,11 @@ const useOpenSelectionSpotEditModal = () => {
     setCategory,
     setSelectedLocation,
     setSpotDescription,
-    setSpotPhoto,
-    setSpotPhoto1,
-    setSpotPhoto2,
-    setSpotPhoto3,
-    addHashtag
+    setSpotImage,
+    setSpotImage1,
+    setSpotImage2,
+    setSpotImage3,
+    addHashtag,
   } = useStore(useSelectionSpotCreateStore);
 
   const openSpotEditModal = (
@@ -68,17 +68,17 @@ const useOpenSelectionSpotEditModal = () => {
     });
     setSpotDescription(spot.description);
 
-    if (spot.photos.length > 0) {
-      setSpotPhoto(spot.photos[0]);
+    if (spot.images.length > 0) {
+      setSpotImage(spot.images[0]);
     }
-    if (spot.photos.length > 1) {
-      setSpotPhoto1(spot.photos[1]);
+    if (spot.images.length > 1) {
+      setSpotImage1(spot.images[1]);
     }
-    if (spot.photos.length > 2) {
-      setSpotPhoto2(spot.photos[2]);
+    if (spot.images.length > 2) {
+      setSpotImage2(spot.images[2]);
     }
-    if (spot.photos.length > 3) {
-      setSpotPhoto3(spot.photos[3]);
+    if (spot.images.length > 3) {
+      setSpotImage3(spot.images[3]);
     }
 
     spot.hashtags.forEach((hashtag) => {

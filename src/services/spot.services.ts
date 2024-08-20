@@ -2,12 +2,21 @@
 
 import { dbConnectionPool } from "@/libs/db";
 import { ISelectionSpot, ISelectionSpotCategory } from "@/models/selection.model";
-import { insertMultipleSpotHashtag, insertMultipleSpotTemporaryHashtag } from "@/repositories/hashtag.repository";
+import { deleteMultipleSpotHashtagNotIn, deleteMultipleSpotTemporaryHashtagNotIn, insertMultipleSpotHashtag, insertMultipleSpotTemporaryHashtag } from "@/repositories/hashtag.repository";
 import { 
+  deleteAllSpotImageBySelectionId,
+  deleteMultipleSpotBySelectionIdAndNotInPlaceId,
+  deleteMultipleSpotImageBySelectionIdAndNotInImageUrl,
+  deleteMultipleSpotTemporaryBySelectionIdAndNotInPlaceId,
+  deleteMultipleSpotTemporaryImageBySelectionIdAndNotInImageUrl,
   insertMultipleSpot, 
   insertMultipleSpotImage, 
   insertMultipleSpotTemporary, 
-  insertMultipleSpotTemporaryImage 
+  insertMultipleSpotTemporaryImage, 
+  selectMultipleExistingSpotByInPlaceId, 
+  selectMultipleExistingSpotTemporaryByInPlaceId, 
+  updateMultipleSpot, 
+  updateMultipleSpotTemporary
 } from "@/repositories/spot.repository";
 import { InternalServerError } from "@/utils/errors";
 import { createDirectory, saveFile } from "@/utils/fileStorage";
@@ -39,15 +48,15 @@ export async function createSpots(
   selectionId: number,
   spots: ISelectionSpot[]
 ) : Promise<void> {
-  const spotsIdsPhotos: Array<{id: string, photos: Array<string | File>}> = [];
+  const spotsIdsImages: Array<{id: string, images: Array<string | File>}> = [];
   const spotsIdsHashtags: Array<{id: string, hashtags: number[]}> = [];
 
   // 각 spot에 대해 spot_id를 생성하고, spot_hashtag, spot_image 테이블에 데이터 삽입
   const spotsToInsert = spots.map((spot, index) => {
-    const spotId = uuidv4();
-    spotsIdsPhotos.push({
+    const spotId = uuidv4().replace(/-/g, '');
+    spotsIdsImages.push({
       id: spotId,
-      photos: spot.photos
+      images: spot.images
     });
     spotsIdsHashtags.push({
       id: spotId,
@@ -55,7 +64,7 @@ export async function createSpots(
     });
 
     return {
-      spot_id: transaction.fn.uuidToBin(spotId),
+      spot_id: transaction.raw(`UNHEX(?)`, spotId),
       slt_id: selectionId,
       spot_order: index+1,
       spot_title: spot.title,
@@ -71,11 +80,11 @@ export async function createSpots(
   await insertMultipleSpot(transaction, spotsToInsert);
 
   // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
-  for (let i = 0; i < spotsIdsPhotos.length; i++) {
-    for (let j = 0; j < spotsIdsPhotos[i].photos.length; j++) {
-      if (spotsIdsPhotos[i].photos[j] instanceof File) {
-        const filePath : string = await saveSpotPhoto(spotsIdsPhotos[i].photos[j] as File);
-        spotsIdsPhotos[i].photos[j] = filePath;
+  for (let i = 0; i < spotsIdsImages.length; i++) {
+    for (let j = 0; j < spotsIdsImages[i].images.length; j++) {
+      if (spotsIdsImages[i].images[j] instanceof File) {
+        const filePath : string = await saveSpotPhoto(spotsIdsImages[i].images[j] as File);
+        spotsIdsImages[i].images[j] = filePath;
       }
     }
   }
@@ -85,14 +94,14 @@ export async function createSpots(
     spotsIdsHashtags as Array<{id: string, hashtags: number[]}>
   );
 
-  const photos = spotsIdsPhotos.map((spot) => {
-    return spot.photos;
+  const images = spotsIdsImages.map((spot) => {
+    return spot.images;
   }).flat();
 
-  if (photos.length > 0) {
+  if (images.length > 0) {
     await insertMultipleSpotImage(
       transaction, 
-      spotsIdsPhotos as Array<{id: string, photos: Array<string>}>
+      spotsIdsImages as Array<{id: string, images: Array<string>}>
     );
   }
 }
@@ -102,15 +111,15 @@ export async function createTemporarySpots(
   selectionId: number,
   spots: ISelectionSpot[]
 ) : Promise<void> {
-  const spotsIdsPhotos : Array<{id: string, photos: Array<string | File>}> = [];
+  const spotsIdsImages : Array<{id: string, images: Array<string | File>}> = [];
   const spotsIdsHashtags : Array<{id: string, hashtags: number[]}> = [];
 
   // 각 spot에 대해 spot_id를 생성하고, spot_hashtag, spot_image 테이블에 데이터 삽입
   const spotsToInsert = spots.map((spot, index) => {
-    const spotId = uuidv4();
-    spotsIdsPhotos.push({
+    const spotId = uuidv4().replace(/-/g, '');
+    spotsIdsImages.push({
       id: spotId,
-      photos: spot.photos
+      images: spot.images
     });
     spotsIdsHashtags.push({
       id: spotId,
@@ -118,7 +127,7 @@ export async function createTemporarySpots(
     });
 
     return {
-      spot_temp_id: transaction.fn.uuidToBin(spotId),
+      spot_temp_id: transaction.raw(`UNHEX(?)`, spotId),
       slt_temp_id: selectionId,
       spot_temp_order: index+1,
       spot_category_id: spot.category,
@@ -134,11 +143,11 @@ export async function createTemporarySpots(
   await insertMultipleSpotTemporary(transaction, spotsToInsert);
 
   // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
-  for (let i = 0; i < spotsIdsPhotos.length; i++) {
-    for (let j = 0; j < spotsIdsPhotos[i].photos.length; j++) {
-      if (spotsIdsPhotos[i].photos[j] instanceof File) {
-        const filePath : string = await saveSpotPhoto(spotsIdsPhotos[i].photos[j] as File);
-        spotsIdsPhotos[i].photos[j] = filePath;
+  for (let i = 0; i < spotsIdsImages.length; i++) {
+    for (let j = 0; j < spotsIdsImages[i].images.length; j++) {
+      if (spotsIdsImages[i].images[j] instanceof File) {
+        const filePath : string = await saveSpotPhoto(spotsIdsImages[i].images[j] as File);
+        spotsIdsImages[i].images[j] = filePath;
       }
     }
   }
@@ -148,14 +157,14 @@ export async function createTemporarySpots(
     spotsIdsHashtags as Array<{id: string, hashtags: number[]}>
   );
 
-  const photos = spotsIdsPhotos.map((spot) => {
-    return spot.photos;
+  const images = spotsIdsImages.map((spot) => {
+    return spot.images;
   }).flat();
 
-  if (photos.length > 0) {
+  if (images.length > 0) {
     await insertMultipleSpotTemporaryImage(
       transaction, 
-      spotsIdsPhotos as Array<{id: string, photos: Array<string>}>
+      spotsIdsImages as Array<{id: string, images: Array<string>}>
     );
   }
 }
@@ -179,3 +188,268 @@ export const saveSpotPhoto : (imageFile: File) => Promise<string> = async (image
   }
   return filePath;
 };
+
+export async function upsertTemporarySpots(
+  transaction: Knex.Transaction<any, any[]>,
+  selectionId: number,
+  spots: ISelectionSpot[]
+) {
+  const spotPlaceIds = spots.map((spot) => spot.placeId);
+  const existingSpots = await selectMultipleExistingSpotTemporaryByInPlaceId(
+    selectionId,
+    spotPlaceIds
+  );
+
+  const spotsIdsImages : Array<{id: string, images: Array<string | File>}> = [];
+  const spotsIdsHashtags : Array<{id: string, hashtags: number[]}> = [];
+
+  const spotsToInsert = spots.map((spot, index) => {
+    const duplicateSpotId = existingSpots.find(
+      (existingSpot) => existingSpot.spot_temp_gmap_id === spot.placeId
+    )?.spot_temp_id;
+
+    if (duplicateSpotId) {
+      return;
+    }
+
+    const spotId = uuidv4().replace(/-/g, '');
+    spotsIdsImages.push({
+      id: spotId,
+      images: spot.images
+    });
+    spotsIdsHashtags.push({
+      id: spotId,
+      hashtags: spot.hashtags as number[]
+    });
+
+    return {
+      spot_temp_id: transaction.raw(`UNHEX(?)`, spotId),
+      slt_temp_id: selectionId,
+      spot_temp_order: index+1,
+      spot_category_id: spot.category,
+      spot_temp_title: spot.title,
+      spot_temp_description: spot.description,
+      spot_temp_gmap_id: spot.placeId,
+      spot_temp_gmap_address: spot.formattedAddress,
+      spot_temp_gmap_latitude: spot.latitude,
+      spot_temp_gmap_longitude: spot.longitude
+    };
+  });
+
+  // 각 spot에 대해 spot_id를 생성하고, spot_hashtag, spot_image 테이블에 데이터 삽입
+  const spotsToUpdate = spots.map((spot, index) => {
+    const spotId = existingSpots.find(
+      (existingSpot) => existingSpot.spot_temp_gmap_id === spot.placeId
+    )?.spot_temp_id;
+
+    if (!spotId) {
+      return;
+    }
+
+    spotsIdsImages.push({
+      id: spotId,
+      images: spot.images
+    });
+    spotsIdsHashtags.push({
+      id: spotId,
+      hashtags: spot.hashtags as number[]
+    });
+
+    return {
+      spot_temp_id: transaction.raw(`UNHEX(?)`, spotId),
+      slt_temp_id: selectionId,
+      spot_temp_order: index+1,
+      spot_category_id: spot.category,
+      spot_temp_title: spot.title,
+      spot_temp_description: spot.description,
+      spot_temp_gmap_id: spot.placeId,
+      spot_temp_gmap_address: spot.formattedAddress,
+      spot_temp_gmap_latitude: spot.latitude,
+      spot_temp_gmap_longitude: spot.longitude
+    };
+  });
+
+  const spotsToInsertFiltered = spotsToInsert.filter((spot) => spot !== undefined);
+  const spotsToUpdateFiltered = spotsToUpdate.filter((spot) => spot !== undefined);
+
+  if (spotsToInsertFiltered.length > 0)
+    await insertMultipleSpotTemporary(transaction, spotsToInsertFiltered);
+
+  if (spotsToUpdateFiltered.length > 0)
+    await updateMultipleSpotTemporary(transaction, spotsToUpdateFiltered);
+
+  if (spotPlaceIds.length > 0) {
+    await deleteMultipleSpotTemporaryBySelectionIdAndNotInPlaceId(
+      transaction,
+      selectionId,
+      spotPlaceIds
+    );
+  }
+
+  // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
+  for (let i = 0; i < spotsIdsImages.length; i++) {
+    for (let j = 0; j < spotsIdsImages[i].images.length; j++) {
+      if (spotsIdsImages[i].images[j] instanceof File) {
+        const filePath : string = await saveSpotPhoto(spotsIdsImages[i].images[j] as File);
+        spotsIdsImages[i].images[j] = filePath;
+      }
+    }
+  }
+
+  await insertMultipleSpotTemporaryHashtag(
+    transaction, 
+    spotsIdsHashtags as Array<{id: string, hashtags: number[]}>
+  );
+
+  await deleteMultipleSpotTemporaryHashtagNotIn(
+    transaction,
+    selectionId,
+    spotsIdsHashtags.map((spot) => spot.hashtags).flat()
+  )
+
+  const images = spotsIdsImages.map((spot) => {
+    return spot.images;
+  }).flat(); 
+
+  if (images.length > 0) {
+    await insertMultipleSpotTemporaryImage(
+      transaction, 
+      spotsIdsImages as Array<{id: string, images: Array<string>}>
+    );
+
+    await deleteMultipleSpotTemporaryImageBySelectionIdAndNotInImageUrl(
+      transaction,
+      selectionId,
+      spotsIdsImages.map((spot) => spot.images as string[]).flat()
+    )
+  }
+}
+
+export async function upsertSpots(
+  transaction: Knex.Transaction<any, any[]>,
+  selectionId: number,
+  spots: ISelectionSpot[]
+) {
+  const spotPlaceIds = spots.map((spot) => spot.placeId);
+  const existingSpots = await selectMultipleExistingSpotByInPlaceId(
+    selectionId,
+    spotPlaceIds
+  )
+
+  const spotsIdsImages : Array<{id: string, images: Array<string | File>}> = [];
+  const spotsIdsHashtags : Array<{id: string, hashtags: number[]}> = [];
+
+  const spotsToInsert = spots.map((spot, index) => {
+    const duplicateSpotId = existingSpots.find(
+      (existingSpot) => existingSpot.spot_gmap_id === spot.placeId
+    )?.spot_id;
+
+    if (duplicateSpotId) {
+      return;
+    }
+
+    const spotId = uuidv4().replace(/-/g, '');
+    spotsIdsImages.push({
+      id: spotId,
+      images: spot.images
+    });
+    spotsIdsHashtags.push({
+      id: spotId,
+      hashtags: spot.hashtags as number[]
+    });
+
+    return {
+      spot_id: transaction.raw(`UNHEX(?)`, spotId),
+      slt_id: selectionId,
+      spot_order: index+1,
+      spot_title: spot.title,
+      spot_description: spot.description,
+      spot_category_id: spot.category,
+      spot_gmap_id: spot.placeId,
+      spot_gmap_address: spot.formattedAddress,
+      spot_gmap_latitude: spot.latitude,
+      spot_gmap_longitude: spot.longitude
+    };
+  });
+
+  // 각 spot에 대해 spot_id를 생성하고, spot_hashtag, spot_image 테이블에 데이터 삽입
+  const spotsToUpdate = spots.map((spot, index) => {
+    const spotId = existingSpots.find(
+      (existingSpot) => existingSpot.spot_gmap_id === spot.placeId
+    )?.spot_id;
+
+    if (!spotId) {
+      return;
+    }
+
+    spotsIdsImages.push({
+      id: spotId,
+      images: spot.images
+    });
+    spotsIdsHashtags.push({
+      id: spotId,
+      hashtags: spot.hashtags as number[]
+    });
+
+    return {
+      spot_id: transaction.raw(`UNHEX(?)`, spotId),
+      slt_id: selectionId,
+      spot_order: index+1,
+      spot_title: spot.title,
+      spot_description: spot.description,
+      spot_category_id: spot.category,
+      spot_gmap_id: spot.placeId,
+      spot_gmap_address: spot.formattedAddress,
+      spot_gmap_latitude: spot.latitude,
+      spot_gmap_longitude: spot.longitude
+    };
+  });
+
+  const spotsToInsertFiltered = spotsToInsert.filter((spot) => spot !== undefined);
+  const spotsToUpdateFiltered = spotsToUpdate.filter((spot) => spot !== undefined);
+
+  if (spotsToInsertFiltered.length > 0)
+    await insertMultipleSpot(transaction, spotsToInsertFiltered);
+
+  if (spotsToUpdateFiltered.length > 0)
+    await updateMultipleSpot(transaction, spotsToUpdateFiltered);
+
+  await deleteMultipleSpotBySelectionIdAndNotInPlaceId(
+    transaction,
+    selectionId,
+    spotPlaceIds
+  );
+
+  // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
+  for (let i = 0; i < spotsIdsImages.length; i++) {
+    for (let j = 0; j < spotsIdsImages[i].images.length; j++) {
+      if (spotsIdsImages[i].images[j] instanceof File) {
+        const filePath : string = await saveSpotPhoto(spotsIdsImages[i].images[j] as File);
+        spotsIdsImages[i].images[j] = filePath;
+      }
+    }
+  }
+
+  await insertMultipleSpotHashtag(
+    transaction, 
+    spotsIdsHashtags as Array<{id: string, hashtags: number[]}>
+  );
+
+  await deleteMultipleSpotHashtagNotIn(
+    transaction,
+    selectionId,
+    spotsIdsHashtags.map((spot) => spot.hashtags).flat()
+  )
+
+  const images = spotsIdsImages.map((spot) => {
+    return spot.images;
+  }).flat();
+
+  if (images.length > 0) {
+    await deleteAllSpotImageBySelectionId(transaction, selectionId);
+    await insertMultipleSpotImage(
+      transaction, 
+      spotsIdsImages as Array<{id: string, images: Array<string>}>
+    );
+  }
+}

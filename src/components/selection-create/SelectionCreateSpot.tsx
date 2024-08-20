@@ -41,7 +41,9 @@ const SelectionCreateSpot : React.FC<ISelectionCreateSpotProps> = ({
       </div>
       <div className="flex flex-col justify-between h-[190px] w-1/3">
         <p className="text-grey4 text-small w-full break-keep">사용자에게 제공되는 스팟입니다. 나만 알기 아까운 명소들을 없이 마음 껏 공유하세요!</p>
-        <p className="text-red-400 text-small w-full break-keep">사용자에게 제공되는 스팟입니다. 나만 알기 아까운 명소들을 없이 마음 껏 공유하세요!</p>
+        <p className="text-red-400 text-small w-full break-keep">
+          * 허위 스팟을 제공할 시 이용 정지될 수 있습니다
+        </p>
       </div>
     </div>
   )
