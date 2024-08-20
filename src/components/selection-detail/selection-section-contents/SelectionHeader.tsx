@@ -1,6 +1,7 @@
 import Hashtag from "@/components/common/Hashtag";
 import { useBookMarks } from "@/hooks/queries/useBookMarks";
 import { ISelectionInfo } from "@/models/selection.model";
+import { useModalStore } from "@/stores/modalStore";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,6 +20,8 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
     selectionData.id,
     data?.user.id
   );
+  const { openModal } = useModalStore();
+
   const shareClickHandler = () => {
     // 클립보드 핸들러
     const currentUrl = window.location.href;
@@ -33,6 +36,10 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
   };
 
   const bookMarkClickHandler = () => {
+    //로그인이 안되어 있다면
+    if (!data?.user) {
+      openModal("signin");
+    }
     //북마크 추가 삭제
     if (selectionData.booked) {
       removeBookMarksMutate();

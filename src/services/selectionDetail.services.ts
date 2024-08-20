@@ -146,6 +146,7 @@ export const getSpotImages = async (spotId: Buffer) => {
 };
 
 export const getBookMarks = async (selectionId: number, userId: number) => {
+  if (!userId) return [];
   try {
     const bookmarks = await dbConnectionPool("bookmark")
       .select("*")

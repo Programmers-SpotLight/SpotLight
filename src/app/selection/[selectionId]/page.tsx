@@ -29,7 +29,6 @@ const SelectionPage = () => {
 
   const ErrorComponent = useErrorComponents(error);
 
-  useSession();
   useEffect(() => {
     if (selectionData && selectionData.spotList.length > 0) {
       setSelectedSpotId(selectionData.spotList[0].id);
