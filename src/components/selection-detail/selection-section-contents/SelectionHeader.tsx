@@ -1,10 +1,13 @@
 import Hashtag from "@/components/common/Hashtag";
 import { useBookMarks } from "@/hooks/queries/useBookMarks";
 import { ISelectionInfo } from "@/models/selection.model";
+import { useModalStore } from "@/stores/modalStore";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaBookmark, FaRegBookmark, FaShareAlt } from "react-icons/fa";
+import { IoPersonSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 
 interface SelectionHeaderProps {
@@ -12,10 +15,13 @@ interface SelectionHeaderProps {
 }
 
 const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
+  const { data } = useSession();
   const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
     selectionData.id,
-    1
+    data?.user.id
   );
+  const { openModal } = useModalStore();
+
   const shareClickHandler = () => {
     // 클립보드 핸들러
     const currentUrl = window.location.href;
@@ -30,6 +36,10 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
   };
 
   const bookMarkClickHandler = () => {
+    //로그인이 안되어 있다면
+    if (!data?.user) {
+      openModal("signin");
+    }
     //북마크 추가 삭제
     if (selectionData.booked) {
       removeBookMarksMutate();
@@ -88,11 +98,19 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
         {selectionData.writer && (
           <Link href={`/user/${selectionData.writerId}`}>
             <div className="flex gap-[5px] justify-start items-center cursor-pointer">
-              <img
-                src={selectionData.writer.user_img}
-                className="object-cover border-none w-5 h-5 bg-grey1 rounded-full"
-                alt="userImg"
-              />
+              {selectionData.writer.user_img ? (
+                <div className="border-none w-5 h-5 bg-grey1 rounded-full relative">
+                  <Image
+                    src={selectionData.writer.user_img}
+                    alt="userImg"
+                    fill
+                  />
+                </div>
+              ) : (
+                <div className="border-none w-5 h-5 bg-grey1 rounded-full flex items-center justify-center">
+                  <IoPersonSharp fill="white" />
+                </div>
+              )}
 
               <h3 className="font-medium text-small text-grey4">
                 {selectionData.writer.user_nickname}
