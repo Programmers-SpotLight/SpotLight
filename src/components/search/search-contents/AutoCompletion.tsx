@@ -105,7 +105,9 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
             />
             { isRecommend &&
             <div className="flex-0.5 w-2/5">
-              <AutoCompletionRecommendList/>
+              <AutoCompletionRecommendList
+              setTagValue={setTagValue}
+              />
             </div>
             }
           </div>
