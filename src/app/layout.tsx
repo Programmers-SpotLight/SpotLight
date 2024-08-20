@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ClientRoot from "./ClientRoot";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,9 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ClientRoot>
-          {children}
-        </ClientRoot>
+        <ClientRoot>{children}</ClientRoot>
       </body>
     </html>
   );

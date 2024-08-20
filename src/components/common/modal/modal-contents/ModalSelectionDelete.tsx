@@ -3,10 +3,10 @@
 import React from "react";
 import Button from "../../button/Button";
 import { useModalStore } from "@/stores/modalStore";
-import useDeleteSelection from "@/hooks/queries/useDeleteSelection";
 import { useSearchParams } from "next/navigation";
 import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import { TuserSelection } from "@/models/user.model";
+import useDeleteSelection from "@/hooks/mutations/useDeleteSelection";
 
 interface ModalSelectionDeletePrpse {
   title: string;
