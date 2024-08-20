@@ -37,8 +37,8 @@ const ModalSignIn = () => {
     closeModal();
   };
 
-  const handleKakaoSignin = () => {
-    signIn("kakao", {
+  const handleSignin = (provider: "kakao" | "google") => {
+    signIn(provider, {
       redirect: false,
       callbackUrl: "http://localhost:3000",
     })
@@ -56,14 +56,14 @@ const ModalSignIn = () => {
         src={googleButtonImg}
         alt="google sign in button"
         className="m-auto mb-2 cursor-pointer relative"
-        onClick={handleGoogleSignin}
+        onClick={()=>handleSignin("google")}
       />
       <Image
         src={kakaoButtonImg}
         alt="kakao sign in button"
         height={40}
         className="m-auto cursor-pointer relative"
-        onClick={handleKakaoSignin}
+        onClick={()=>handleSignin("kakao")}
       />
     </div>
   )

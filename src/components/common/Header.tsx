@@ -142,7 +142,7 @@ const Header = () => {
       {isDropDownVisible && (
         <div
           ref={dropdownRef}
-          className="w-[200px] h-[100px] border-[0.5px] bg-grey0 border-solid border-grey2 absolute top-20 right-5 shadow-xl px-3 rounded-xl text-medium text-grey4"
+          className="w-[200px] h-[100px] border-[0.5px] bg-grey0 border-solid border-grey2 absolute top-20 right-5 shadow-xl px-3 rounded-xl text-medium text-grey4 z-20"
         >
           <Link
             href={"/mypage"}

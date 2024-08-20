@@ -22,16 +22,17 @@ const modalDatas: ImodalDatas[] = [
   }
 ];
 const ModalSignUp = () => {
-  const { isOpen, closeModal, modalType, props } = useStore(useModalStore);
-  if (!isOpen) return null;
-
-  const findModal = modalDatas.find((modal) => modal.type === modalType);
-  if (!findModal) return null;
-
-  const { uid, provider} = props as { uid: string; provider: string; };
   const [nickname, setNickname] = useState("");
   const [duplicateMessage, setDuplicateMessage] = useState("");
   const nickNameRef = useRef<HTMLInputElement>(null);
+  
+  const { isOpen, closeModal, modalType, props } = useStore(useModalStore);
+  if (!isOpen) return null;
+  
+  const findModal = modalDatas.find((modal) => modal.type === modalType);
+  if (!findModal) return null;
+  
+  const { uid, provider} = props as { uid: string; provider: string; };
 
   const handleSignUp = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,7 +59,7 @@ const ModalSignUp = () => {
           if(res.error) {
             console.error(res);
           }
-          closeModal;
+          closeModal();
           return signIn(provider, { callbackUrl: '/' });
         })
       })
