@@ -6,12 +6,9 @@ import { FaSearch } from "react-icons/fa";
 import Hashtag from "../../Hashtag";
 import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 import { useFetchUserHashtag } from "@/hooks/queries/useFetchUserInfo";
-import {
-  useAddUserHashtag,
-  useDeleteHashtag
-} from "@/hooks/queries/useUpdateUserHashtag";
 import AutoCompletion from "@/components/search/search-contents/AutoCompletion";
 import SearchLoading from "@/components/search/search-contents/SearchLoading";
+import { useAddUserHashtag, useDeleteHashtag } from "@/hooks/mutations/useUpdateUserHashtag";
 
 interface ModalAddTagProps {
   userId: string;

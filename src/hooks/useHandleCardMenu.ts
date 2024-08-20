@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
 import useClickOutside from "./useClickOutside";
 import { TselectionStatus } from "@/models/searchResult.model";
-import useUpdateUserSelectionPrivate from "./queries/useUpdateUserSelectionPrivate";
 import { useModalStore } from "@/stores/modalStore";
 import { toast } from "react-toastify";
+import useUpdateUserSelectionPrivate from "./mutations/useUpdateUserSelectionPrivate";
 
 const useHandleCardMenu = (status: TselectionStatus) => {
   const [showMenu, setShowMenu] = useState(false);

@@ -4,8 +4,8 @@ import React, { FormEvent, useState } from "react";
 import TextAreaInput from "../../input/TextAreaInput";
 import Button from "../../button/Button";
 import { useModalStore } from "@/stores/modalStore";
-import useUpdateUserDescription from "@/hooks/queries/useUpdateUserDescription";
 import { toast } from "react-toastify";
+import useUpdateUserDescription from "@/hooks/mutations/useUpdateUserDescription";
 
 interface ModalEditInfoProps {
   userId: string;
