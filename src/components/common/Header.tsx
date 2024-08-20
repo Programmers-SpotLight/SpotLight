@@ -24,7 +24,7 @@ const Header = () => {
   const { openModal } = useModalStore();
   const { data: session, status } = useSession();
   const imageUrl = session?.user?.image ? session?.user?.image : '';
-  useAuthMonitoring(status);
+  
   useCheckSignUpParams();
 
   const onClickHandler = () => {
@@ -39,9 +39,6 @@ const Header = () => {
   };
 
   // SNS Login / Sign in
-  const handleLogin = () => {
-  
-  }
   const handleSignout = () => {
     signOut();
   }
