@@ -1,14 +1,19 @@
 import NextAuth from 'next-auth/next';
 import KakaoProvider from "next-auth/providers/kakao";
+import GoogleProvider from "next-auth/providers/google";
 import { dbConnectionPool } from '@/libs/db';
 import { getUserInfoByUid } from '@/services/user.services';
 
 const handler = NextAuth({
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
     KakaoProvider({
       clientId: process.env.KAKAO_CLIENT_ID!,
       clientSecret: process.env.KAKAO_CLIENT_SECRET!
-    })
+    }),
   ],
   session: {
     strategy: 'jwt',
@@ -18,8 +23,11 @@ const handler = NextAuth({
       if (user) {
         const userDBInfo : Array<{ [key: string]: any }> = await getUserInfoByUid(user.id);
         if(userDBInfo.length == 1) {
+          token.userId = userDBInfo[0].user_id;
           token.nickname = userDBInfo[0].user_nickname;
-          if(userDBInfo[0].user_img) token.userImage = userDBInfo[0].user_img;
+          if(userDBInfo[0].user_img) {
+            token.userImage = userDBInfo[0].user_img;
+          }
         }else token.nickname = user.id;
         token.id = user.id; // Kakao ID
       }
@@ -27,7 +35,7 @@ const handler = NextAuth({
     },
 
     async session({ session, token }) {
-      session.user = { ...session.user, name : token.nickname as string, image: token.userImage as string | null };
+      session.user = { ...session.user, id : token.userId, name : token.nickname as string, image: token.userImage as string | null };
       return session;
     },
     async signIn({ user, account, profile }) {
