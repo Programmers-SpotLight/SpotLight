@@ -62,7 +62,7 @@ const SelectionPage = () => {
     );
 
   if (isError) {
-    return <div className={`h-[calc(100vh-74px)]`}>{ErrorComponent}</div>;
+    return ErrorComponent;
   }
 
   return (

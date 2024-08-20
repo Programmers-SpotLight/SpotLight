@@ -14,7 +14,7 @@ const InternalServer = () => {
 
   return (
     <div className="w-full h-full relative">
-      <Image src={bg} alt="403" fill priority />
+      <Image src={bg} alt="500" fill priority />
       <p className="text-8xl text-white absolute left-1/2 -translate-x-1/2 top-20">
         500 ERROR
       </p>

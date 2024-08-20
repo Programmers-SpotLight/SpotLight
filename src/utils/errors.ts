@@ -54,6 +54,8 @@ export function handleHttpError(error: AxiosError): never {
   const status = error.response?.status;
 
   switch (status) {
+    case 400:
+      throw new BadRequestError("잘못된 요청입니다.");
     case 403:
       throw new ForbiddenError("엑세스 권한이 없습니다.");
     case 404:
