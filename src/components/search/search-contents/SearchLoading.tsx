@@ -5,12 +5,13 @@ export const Spinner = () => {
 };
 
 interface SearchLoadingProps {
-  height: "full" | "search" | "medium" | "small"; 
+  height?: "full" | "search" | "medium" | "small"; 
+  customHeight? : number;
   loadingMessage?: string;
   additionalClass?: string;
 }
 
-export const SearchLoading = ({ height, loadingMessage = "검색 중입니다", additionalClass = "" }: SearchLoadingProps) => {
+export const SearchLoading = ({ height, loadingMessage = "검색 중입니다", additionalClass = "", customHeight }: SearchLoadingProps) => {
   let heightClass;
 
   switch (height) {
@@ -26,6 +27,8 @@ export const SearchLoading = ({ height, loadingMessage = "검색 중입니다", 
     default:
       heightClass = "h-[full]";
   }
+
+  if(customHeight) heightClass = `h-[${customHeight}px]`
 
   return (
     <div className={`w-full ${heightClass} flex flex-col justify-center items-center gap-[10px] ${additionalClass}`}>
