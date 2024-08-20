@@ -19,7 +19,9 @@ const BadRequest = () => {
       </p>
       <div className="flex gap-4 absolute left-1/2 -translate-x-1/2 bottom-8">
         <Link href={"/"}>
-          <Button size="large">홈으로</Button>
+          <Button size="large" color="white">
+            홈으로
+          </Button>
         </Link>
       </div>
     </div>
