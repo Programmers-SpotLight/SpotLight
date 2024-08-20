@@ -40,7 +40,6 @@ const handler = NextAuth({
     },
     async signIn({ user, account, profile }) {
       // 사용자가 로그인할 때의 콜백을 정의.
-      console.log("sign in result :", user, account, profile );
       const uid = user.id;
       
       const existingUser = await dbConnectionPool("user")

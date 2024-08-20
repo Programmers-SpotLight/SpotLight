@@ -1,3 +1,5 @@
+"use client"
+
 import { useModalStore } from "@/stores/modalStore";
 import React, { ReactNode } from "react";
 
