@@ -1,123 +1,126 @@
 import { SELECTION_STATUS } from "@/constants/selection.constants";
-import { ISelectionCategoryQueryResultRow, ISelectionCreateCompleteData, ISelectionCreateFormData, ISelectionCreateTemporaryData, ISelectionLocationQueryResultRow, ISelectionSpot, TSelectionCreateFormData } from "@/models/selection.model";
-import { selectAllSelectionCategoriesWhereIdIn, selectAllSelectionLocationOptionsWhereIdIn, selectAllSelectionWhereImageEqual } from "@/repositories/selection.repository";
+import { 
+  ISelectionCategoryQueryResultRow, 
+  ISelectionCreateCompleteData, 
+  ISelectionCreateTemporaryData, 
+  ISelectionLocationQueryResultRow, 
+  ISelectionSpot, 
+  TSelectionCreateFormData 
+} from "@/models/selection.model";
+import { 
+  selectAllSelectionCategoriesWhereIdIn, 
+  selectAllSelectionLocationOptionsWhereIdIn, 
+  selectTemporarySelectionWhereIdEqual
+} from "@/repositories/selection.repository";
 import { BadRequestError, InternalServerError } from "@/utils/errors";
 import { checkIfDirectoryOrFileExists } from "@/utils/fileStorage";
 import { fileTypeFromBlob } from "file-type";
 import path from "path/posix";
 
-export async function prepareSelectionCreateFormData(
+
+export async function prepareAndValidateSelectionCreateFormData(
   formData: FormData
-) : Promise<TSelectionCreateFormData> {
-  let data: ISelectionCreateFormData = {
+) : Promise<ISelectionCreateCompleteData> {
+  let data: ISelectionCreateCompleteData = {
+    temp_id: Number(formData.get("temp_id")) || undefined,
     title: String(formData.get("title")),
-    status: String(formData.get("status")) as "public" | "private" | "temp"
+    status: String(formData.get("status")) as "public" | "private",
+    img: formData.get("img") as File | string,
+    category: Number(formData.get("category")),
+    description: String(formData.get("description")),
+    spots: await prepareSpots(formData),
+    hashtags: await safeJSONParse(String(formData.get("hashtags"))),
+    location: await safeJSONParse(String(formData.get("location"))),
   };
 
-  if (formData.get("img")) {
-    data = {
-      ...data,
-      img: formData.get("img") as File | string
-    };
-  }
-
-  if (formData.get("category")) {
-    data = {
-      ...data,
-      category: Number(formData.get("category"))
-    };
-  }
-
-  if (formData.get("description")) {
-    data = {
-      ...data,
-      description: String(formData.get("description"))
-    };
-  }
-
-  if (formData.get("spots")) {
-    const spots = JSON.parse(String(formData.get("spots")));
-    if (spots?.length) {
-      for (let i = 0; i < spots.length; i++) {
-        const images: Array<string | File> = await extractSpotImages(
-          spots[i].placeId,
-          formData
-        );
-
-        // FormData에서 이미지 파일을 추출하여 spots[i].photos에 다시 대입
-        const photos: (File | string)[] = images.map((image) => {
-          if (image instanceof File) {
-            return image;
-          } else {
-            return image as string;
-          }
-        });
-
-        if (photos.length > 0) spots[i].photos = photos;
-      }
-    }
-    data = {
-      ...data,
-      spots
-    };
-  }
-
-  if (formData.get("hashtags")) {
-    const hashtags = JSON.parse(String(formData.get("hashtags")));
-    if (!Array.isArray(hashtags)) {
-      data.hashtags = [];
-    } else {
-      data = {
-        ...data,
-        hashtags
-      };
-    }
-  }
-
-  if (formData.get("location")) {
-    const location: {
-      location: number;
-      subLocation: number;
-    } = JSON.parse(String(formData.get("location")));
-
-    if (!isNaN(location.location) && !isNaN(location.subLocation)) {
-      data = {
-        ...data,
-        location: {
-          location: location.location,
-          subLocation: location.subLocation
-        }
-      };
-    }
-  }
-
-  if (data.status === "temp") {
-    return data as ISelectionCreateTemporaryData;
-  }
-
-  return data as ISelectionCreateCompleteData;
+  await validateData(data);
+  return data;
 }
 
-// FormData에서 spotId에 해당하는 이미지 파일을 추출하여 반환
-async function extractSpotImages(
-  placeId: string,
+export async function prepareAndValidateTemporarySelectionCreateFormData(
   formData: FormData
-): Promise<Array<string | File>> {
-  const keys: string[] = Array.from(formData.keys()).sort();
+): Promise<ISelectionCreateTemporaryData> {
+  let data: ISelectionCreateTemporaryData = {
+    title: formData.get("title") as string,
+    status: "temp",
+    img: formData.get("img") as File | string || undefined,
+    category: Number(formData.get("category")) || undefined,
+    description: formData.get("description") as string | undefined,
+    spots: await prepareSpots(formData) || undefined,
+    hashtags: await safeJSONParse(String(formData.get("hashtags"))) || undefined,
+    location: await safeJSONParse(String(formData.get("location"))) || undefined,
+  };
 
-  return keys
-    .map((key) => {
-      if (key.startsWith(`spots[${placeId}][photos]`)) {
-        return formData.get(key);
-      }
-      return null;
-    })
-    .filter((image) => image !== null);
+  await validateData(data);
+  return data;
+}
+
+export async function validateData(data: TSelectionCreateFormData) : Promise<void> {
+  await validateTitle(data.title);
+  await validateStatus(data.status);
+
+  // 미리저장이 아닌 경우 모든 필수 데이터를 검증
+  if (data.status != "temp") {
+    if (data.temp_id) {
+      await validateTempId(data.temp_id);
+    }
+    await validateCategory(data.category);
+    await validateLocation(data.location);
+    await validateDescription(data.description);
+    await validateImg(data.img);
+    await validateSpots(data.spots);
+    await validateHashtags(data.hashtags as string[]);
+  } else {
+    if (data.category) {
+      await validateCategory(data.category);
+    }
+
+    if (data.location) {
+      await validateLocation(data.location);
+    }
+
+    if (data.description) {
+      await validateDescription(data.description);
+    }
+
+    if (data.img) {
+      await validateImg(data.img);
+    }
+
+    if (data.spots) {
+      await validateSpots(data.spots);
+    }
+
+    if (data.hashtags) {
+      await validateHashtags(data.hashtags as string[]);
+    }
+  }
+}
+
+// 임시저장한 셀렉션 ID가 유효한지 확인
+// 임시저장 셀렉션을 셀렉션으로 제출 시 사용하는 유효성 검사 함수
+export async function validateTempId(tempId: number): Promise<void> {
+  if (tempId == null) {
+    throw new BadRequestError("임시저장 ID는 필수입니다");
+  }
+
+  if (isNaN(tempId)) {
+    throw new BadRequestError("유효하지 않은 임시저장 ID입니다");
+  }
+
+  const queryResult = await selectTemporarySelectionWhereIdEqual(tempId);
+  if (queryResult == null) {
+    throw new BadRequestError("유효하지 않은 임시저장 ID입니다");
+  }
 }
 
 export async function validateTitle(title: string): Promise<void> {
   if (!title) {
     throw new BadRequestError("제목은 필수입니다");
+  }
+
+  if (typeof title !== "string") {
+    throw new BadRequestError("유효하지 않은 제목입니다");
   }
 
   if (title.length > 128) {
@@ -126,7 +129,7 @@ export async function validateTitle(title: string): Promise<void> {
 }
 
 export async function validateCategory(
-  category: number | undefined
+  category: number
 ): Promise<void> {
   if (category == null) {
     throw new BadRequestError("카테고리는 필수입니다");
@@ -166,6 +169,12 @@ export async function validateLocation(
     );
   }
 
+  if (!location.location || !location.subLocation) {
+    throw new BadRequestError(
+      "유효하지 않은 위치입니다. location 및 subLocation은 필수입니다"
+    );
+  }
+
   if (isNaN(location.location) || isNaN(location.subLocation)) {
     throw new BadRequestError(
       "유효하지 않은 위치입니다. location 및 subLocation은 정수값이어야 합니다"
@@ -191,15 +200,19 @@ export async function validateLocation(
 }
 
 export async function validateDescription(
-  description: string | undefined
+  description: string
 ): Promise<void> {
   if (!description) {
     throw new BadRequestError("설명은 필수입니다");
   }
+
+  if (typeof description !== "string") {
+    throw new BadRequestError("유효하지 않은 설명입니다");
+  }
 }
 
 export async function validateImg(
-  img: File | string | undefined
+  img: File | string
 ): Promise<void> {
   if (!img) {
     throw new BadRequestError("이미지는 필수입니다");
@@ -236,24 +249,11 @@ export async function validateImg(
       img
     );
     await checkIfDirectoryOrFileExists(imgPath);
-
-    try {
-      const queryResult = await selectAllSelectionWhereImageEqual(img);
-
-      if (queryResult.length === 0) {
-        throw new BadRequestError(
-          "유효하지 않은 이미지입니다. 이미지가 존재하지 않습니다"
-        );
-      }
-    } catch (error) {
-      console.error(error);
-      throw new InternalServerError("이미지를 확인하는데 실패했습니다");
-    }
   }
 }
 
 export async function validateSpots(
-  spots: ISelectionSpot[] | undefined
+  spots: ISelectionSpot[]
 ): Promise<void> {
   if (!spots) {
     throw new BadRequestError("스팟은 필수입니다");
@@ -314,12 +314,14 @@ export async function validateSpots(
       );
     }
 
-    await validateSpotImages(spots[i].photos);
+    if (spots[i].images.length > 0) {
+      await validateSpotImages(spots[i].images);
+    }
   }
 }
 
 export async function validateSpotCategory(
-  categoryId: number | undefined
+  categoryId: number
 ): Promise<void> {
   if (!categoryId) {
     throw new BadRequestError("카테고리는 필수입니다");
@@ -347,32 +349,33 @@ export async function validateSpotCategory(
 }
 
 export async function validateSpotImages(
-  photos: Array<string | File> | undefined
+  images: Array<string | File>
 ): Promise<void> {
-  if (!photos) {
+  if (!images) {
     throw new BadRequestError("사진은 필수입니다");
   }
 
-  if (!Array.isArray(photos)) {
+  if (!Array.isArray(images)) {
     throw new BadRequestError(
       "유효하지 않은 사진입니다. 사진은 배열이어야 합니다"
     );
   }
 
-  if (photos.length > 4) {
+  if (images.length > 4) {
     throw new BadRequestError("최대 4개의 사진만 허용됩니다");
   }
-  for (const photo of photos) {
-    if (typeof photo !== "string" && !(photo instanceof File)) {
+
+  for (const image of images) {
+    if (typeof image !== "string" && !(image instanceof File)) {
       throw new BadRequestError(
         `유효하지 않은 사진입니다. 사진은 파일 또는 문자열(URL)이어야 합니다`
       );
     }
-    if (photo instanceof File) {
-      await validateImg(photo as File);
+    if (image instanceof File) {
+      await validateImg(image as File);
     } else {
       // check for invalid characters in the file name
-      const imageFileName = photo as string;
+      const imageFileName = image as string;
       if (imageFileName.includes("/")) {
         throw new BadRequestError(`파일 이름에 / 문자가 포함되어 있습니다.`);
       }
@@ -404,22 +407,26 @@ export async function validateSpotImages(
 }
 
 export async function validateHashtags(
-  hashtags: string[] | undefined
+  hashtags: string[]
 ): Promise<void> {
   if (!hashtags) {
     throw new BadRequestError("해시태그는 필수입니다");
   }
+
   if (!Array.isArray(hashtags)) {
     throw new BadRequestError(
       "무효한 해시태그입니다. 해시태그는 배열이어야 합니다"
     );
   }
+
   if (hashtags.length === 0) {
     throw new BadRequestError("해시태그는 최소한 하나 필요합니다");
   }
+
   if (hashtags.length > 8) {
     throw new BadRequestError("최대 8개의 해시태그만 허용됩니다");
   }
+  
   hashtags.forEach((hashtag) => {
     if (!hashtag) {
       throw new BadRequestError("빈 해시태그는 허용되지 않습니다");
@@ -441,45 +448,6 @@ export async function validateStatus(selectionStatus: string): Promise<void> {
   }
 }
 
-export async function validateData(data: TSelectionCreateFormData) : Promise<void> {
-  await validateTitle(data.title);
-  await validateStatus(data.status);
-
-  // 미리저장이 아닌 경우 모든 필수 데이터를 검증
-  if (data.status != "temp") {
-    await validateCategory(data.category);
-    await validateLocation(data.location);
-    await validateDescription(data.description);
-    await validateImg(data.img);
-    await validateSpots(data.spots);
-    await validateHashtags(data.hashtags as string[]);
-  } else {
-    if (data.category) {
-      await validateCategory(data.category);
-    }
-
-    if (data.location) {
-      await validateLocation(data.location);
-    }
-
-    if (data.description) {
-      await validateDescription(data.description);
-    }
-
-    if (data.img) {
-      await validateImg(data.img);
-    }
-
-    if (data.spots) {
-      await validateSpots(data.spots);
-    }
-
-    if (data.hashtags) {
-      await validateHashtags(data.hashtags as string[]);
-    }
-  }
-}
-
 export const validateHashtagsSuggestionPrompt = async (prompt: string) => {
   if (!prompt) {
     throw new BadRequestError("프롬프트는 필수입니다");
@@ -495,5 +463,55 @@ export const validateHashtagsSuggestionPrompt = async (prompt: string) => {
 
   if (prompt.length > 128) {
     throw new BadRequestError("프롬프트는 128자 이하여야 합니다");
+  }
+}
+
+export async function safeJSONParse<T>(data: string) {
+  try {
+    return JSON.parse(data) as T;
+  } catch (error) {
+    throw new BadRequestError("잘못된 JSON 형식입니다");
+  }
+}
+
+export async function prepareSpots(
+  formData: FormData
+) {
+  if (!formData.has("spots")) {
+    return [];
+  }
+  const data = await safeJSONParse<ISelectionSpot[]>(String(formData.get("spots")));
+  await restoreSpotImagesToSpots(data, formData);
+  return data;
+}
+
+// FormData에서 spotId에 해당하는 이미지 파일을 추출하여 반환
+async function extractSpotImages(
+  placeId: string,
+  formData: FormData
+): Promise<Array<string | File>> {
+  const keys: string[] = Array.from(formData.keys()).sort();
+
+  return keys
+    .map((key) => {
+      if (key.startsWith(`spots[${placeId}][images]`)) {
+        return formData.get(key);
+      }
+      return null;
+    })
+    .filter((image) => image !== null);
+}
+
+async function restoreSpotImagesToSpots(
+  spots: ISelectionSpot[],
+  formData: FormData
+): Promise<void> {
+  for (let i = 0; i < spots.length; i++) {
+    const images: Array<string | File> = await extractSpotImages(
+      spots[i].placeId,
+      formData
+    );
+
+    spots[i].images = images;
   }
 }

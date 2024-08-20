@@ -5,26 +5,31 @@ import { devtools } from "zustand/middleware";
 
 
 interface ISelectionCreateStore {
+  id: number;
+  isTemporary: boolean;
   title: string;
   description: string;
   category: ISelectionCategory | undefined;
   location: ISelectionCreateStoreLocation | undefined;
   subLocation: ISelectionCreateStoreLocation | undefined;
-  selectionPhoto: File | string | null;
+  selectionImage: File | string | null;
   spots: Array<ISelectionSpot>;
   hashtags: string[];
   spotCategories: { id: number; name: string }[];
+  setId: (id: number) => void;
+  setIsTemporary: (isTemporary: boolean) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
   setCategory: (category: ISelectionCategory) => void;
   setLocation: (location: ISelectionCreateStoreLocation) => void;
   setSubLocation: (subLocation: ISelectionCreateStoreLocation) => void;
-  setSelectionPhoto: (selectionPhoto: File | string) => void;
+  setSelectionImage: (selectionPhoto: File | string) => void;
   addSpot: (spot: ISelectionSpot) => void;
   deleteSpot: (spot: number) => void;
   setSpots: (spots: ISelectionSpot[]) => void;
   addHashtag: (tag: string) => void;
   deleteHashtag: (tag: string) => void;
+  setHashtags: (hashtags: string[]) => void;
   updateSpot: (index: number, spot: ISelectionSpot) => void;
   setSpotCategories: (spotCategories: { id: number; name: string }[]) => void;
   reset: () => void;
@@ -38,10 +43,10 @@ interface ISelectionSpotCreateStore {
   description: string;
   category: ISelectionCategory | null;
   selectedLocation: TPoiWithAddress;
-  spotPhoto: File | string | null;
-  spotPhoto1: File | string | null;
-  spotPhoto2: File | string | null;
-  spotPhoto3: File | string | null;
+  spotImage: File | string | null;
+  spotImage1: File | string | null;
+  spotImage2: File | string | null;
+  spotImage3: File | string | null;
   hashtags: string[];
   setPlaceName: (placeName: string) => void;
   setAddress: (address: string) => void;
@@ -51,10 +56,10 @@ interface ISelectionSpotCreateStore {
   setCategory: (category: ISelectionCategory) => void;
   setSelectedLocation: (selectedLocation: TPoiWithAddress) => void;
   setSpotDescription: (description: string) => void;
-  setSpotPhoto: (spotPhoto: File | string) => void;
-  setSpotPhoto1: (spotPhoto1: File | string) => void;
-  setSpotPhoto2: (spotPhoto2: File | string) => void;
-  setSpotPhoto3: (spotPhoto3: File | string) => void;
+  setSpotImage: (spotImage: File | string) => void;
+  setSpotImage1: (spotImage1: File | string) => void;
+  setSpotImage2: (spotImage2: File | string) => void;
+  setSpotImage3: (spotImage3: File | string) => void;
   addHashtag: (tag: string) => void;
   deleteHashtag: (tag: string) => void;
   reset: () => void;
@@ -67,21 +72,25 @@ interface ISelectionCreateStoreLocation {
 
 export const useSelectionCreateStore = create<ISelectionCreateStore>()(
   devtools((set) => ({
+    id: 0,
+    isTemporary: false,
     title: "",
     description: "",
     category: undefined,
     location: undefined,
     subLocation: undefined,
-    selectionPhoto: null,
+    selectionImage: null,
     spots: [],
     hashtags: [],
     spotCategories: [],
+    setId: (id: number) => set({ id }),
+    setIsTemporary: (isTemporary: boolean) => set({ isTemporary }),
     setTitle: (title: string) => set({ title }),
     setDescription: (description: string) => set({ description }),
     setCategory: (category: ISelectionCategory) => set({ category }),
     setLocation: (location: ISelectionCreateStoreLocation) => set({ location }),
     setSubLocation: (subLocation: ISelectionCreateStoreLocation) => set({ subLocation }),
-    setSelectionPhoto: (selectionPhoto: File | string) => set({ selectionPhoto }),
+    setSelectionImage: (selectionImage: File | string) => set({ selectionImage }),
     addSpot: (spot: ISelectionSpot) => set((state) => ({ spots: [...state.spots, spot] })),
     addHashtag: (hashtag: string) => {
       if (typeof hashtag !== "string") return;
@@ -89,6 +98,7 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
         (state) => ({ hashtags: [...state.hashtags, hashtag] })
       )
     },
+    setHashtags: (hashtags: string[]) => set({ hashtags }),
     deleteSpot: (index: number) => set(
       (state) => ({ spots: state.spots.filter((_, i) => i !== index) })
     ),
@@ -109,7 +119,7 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
       category: undefined,
       location: undefined,
       subLocation: undefined,
-      selectionPhoto: null,
+      selectionImage: null,
       spots: [],
       hashtags: []
     })
@@ -130,10 +140,10 @@ export const useSelectionSpotCreateStore = create<ISelectionSpotCreateStore>()(
       address: "",
       placeId: "",
     },
-    spotPhoto: null,
-    spotPhoto1: null,
-    spotPhoto2: null,
-    spotPhoto3: null,
+    spotImage: null,
+    spotImage1: null,
+    spotImage2: null,
+    spotImage3: null,
     hashtags: [],
     setPlaceName: (placeName: string) => set({ placeName }),
     setAddress: (address: string) => set({ address }),
@@ -143,10 +153,10 @@ export const useSelectionSpotCreateStore = create<ISelectionSpotCreateStore>()(
     setCategory: (category: ISelectionCategory) => set({ category }),
     setSelectedLocation: (selectedLocation: TPoiWithAddress) => set({ selectedLocation }),
     setSpotDescription: (description: string) => set({ description }),
-    setSpotPhoto: (spotPhoto: File | string | null) => set({ spotPhoto }),
-    setSpotPhoto1: (spotPhoto1: File | string | null) => set({ spotPhoto1 }),
-    setSpotPhoto2: (spotPhoto2: File | string | null) => set({ spotPhoto2 }),
-    setSpotPhoto3: (spotPhoto3: File | string | null) => set({ spotPhoto3 }),
+    setSpotImage: (spotImage: File | string | null) => set({ spotImage }),
+    setSpotImage1: (spotImage1: File | string | null) => set({ spotImage1 }),
+    setSpotImage2: (spotImage2: File | string | null) => set({ spotImage2 }),
+    setSpotImage3: (spotImage3: File | string | null) => set({ spotImage3 }),
     addHashtag: (hashtag: string) => {
       if (typeof hashtag !== "string") return;
       set(
@@ -171,10 +181,10 @@ export const useSelectionSpotCreateStore = create<ISelectionSpotCreateStore>()(
         address: "",
         placeId: "",
       },
-      spotPhoto: null,
-      spotPhoto1: null,
-      spotPhoto2: null,
-      spotPhoto3: null,
+      spotImage: null,
+      spotImage1: null,
+      spotImage2: null,
+      spotImage3: null,
       hashtags: []
     })
   }))

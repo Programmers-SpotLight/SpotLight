@@ -19,7 +19,11 @@ export default function ClientRoot({
   const queryClient = useMemo(() => new QueryClient(), []);
   const pathname = usePathname();
   const showFooter = !/^\/(selection\/\d+|other-user\/\d+)$/.test(pathname);
-  const shouldBeFlex = /\/selection\/create$/.test(pathname);
+  const shouldBeFlex = [
+    /\/selection\/create$/,
+    /\/temporary-selections\/\d+\/edit$/,
+    /\/selection\/\d+\/edit$/
+  ].some((regex) => regex.test(pathname));
 
   const [session, setSession] = useState<Session | null>(null);
 

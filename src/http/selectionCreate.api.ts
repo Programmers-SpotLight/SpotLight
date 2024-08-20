@@ -33,12 +33,27 @@ export const fetchHashtagSuggestions : (formData: FormData) => Promise<string[]>
   return response;
 }
 
-export const submitSelection : (selectionData: FormData) => Promise<any> = async (selectionData) => {
+export const submitCompleteSelection : (selectionData: FormData) => Promise<any> = async (selectionData) => {
   const response = await requestHandler<FormData>(
     'post', 
     '/api/selections', 
     selectionData, 
     {headers: {'Content-Type': 'multipart/form-data'}}
   );
+  return response;
+}
+
+export const submitTemporarySelection : (selectionData: FormData) => Promise<any> = async (selectionData) => {
+  const response = await requestHandler<FormData>(
+    'post', 
+    '/api/temporary-selections', 
+    selectionData, 
+    {headers: {'Content-Type': 'multipart/form-data'}}
+  );
+  return response;
+}
+
+export const fetchDataForSelectionEdit : (selectionId: number) => Promise<any> = async (selectionId) => {
+  const response = await requestHandler('get', `/api/selections/${selectionId}`);
   return response;
 }

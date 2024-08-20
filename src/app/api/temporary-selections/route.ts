@@ -1,28 +1,17 @@
 import { dbConnectionPool } from "@/libs/db";
-import { 
-  ISelectionCreateCompleteData, 
-} from "@/models/selection.model";
-import { deleteTemporarySelectionWhereIdEqual } from "@/repositories/selection.repository";
-import { 
-  createSelection,
-} from "@/services/selectionCreate.services";
-import { 
-  prepareAndValidateSelectionCreateFormData,
-} from "@/services/selectionCreate.validation";
+import { ISelectionCreateTemporaryData } from "@/models/selection.model";
+import { createTemporarySelection } from "@/services/selectionCreate.services";
+import { prepareAndValidateTemporarySelectionCreateFormData } from "@/services/selectionCreate.validation";
 import { NextRequest } from "next/server";
 
 
-export const POST = async (request: NextRequest) => {
+export async function POST(request: NextRequest) {
   const transaction = await dbConnectionPool.transaction();
   try {
     const formData : FormData = await request.formData();
     // 데이터 유효성 검사
-    const data : ISelectionCreateCompleteData = await prepareAndValidateSelectionCreateFormData(formData);
-    await createSelection(transaction, data);
-
-    if (data.temp_id) {
-      await deleteTemporarySelectionWhereIdEqual(transaction, data.temp_id);
-    }
+    const data : ISelectionCreateTemporaryData = await prepareAndValidateTemporarySelectionCreateFormData(formData);
+    await createTemporarySelection(transaction, data);
 
     await transaction.commit();
     return new Response(JSON.stringify(data), {
