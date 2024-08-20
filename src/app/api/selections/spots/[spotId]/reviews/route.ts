@@ -25,7 +25,7 @@ export async function GET(
       page
     });
 
-    const count = await countReviews(spotId, "selection");
+    const count = await countReviews(spotId, "spot");
     const result = {
       reviews: reviewList,
       pagination: {

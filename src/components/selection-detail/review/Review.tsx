@@ -10,21 +10,23 @@ import useReview from "@/hooks/queries/useReview";
 import ReveiwError from "./ReveiwError";
 import Spinner from "@/components/common/Spinner";
 import useReviewInfo from "@/hooks/queries/useReviewInfo";
+import { useReviewSortContext } from "@/context/useReviewSortContext";
 
 interface IReviewsProps {
-  reviewType: "selection" | "spot";
+  reviewType: ReviewType;
   sltOrSpotId: number | string;
 };
 
 const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
-  const [sort, setSort] = useState<string>("like");
+  const { sort } = useReviewSortContext();
   const pageEnd = useRef<HTMLDivElement | null>(null);
+  const { openModal } = useModalStore();
 
   const { 
     avg,
     count, 
-    loading: reviewInfoLoading, 
-    error: reviewInfoError 
+    loading, 
+    error 
   } = useReviewInfo({ reviewType, sltOrSpotId });
 
   const { 
@@ -34,6 +36,7 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
     fetchNextPage,
     hasNextPage,
     isFetching,
+    refetch,
     addReview,
     updateReview,
     deleteReview
@@ -52,14 +55,12 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage]);
 
-  const { openModal } = useModalStore();
-
   const openReviewAddModal = () => {
     openModal('review', { onSubmit: addReview }); 
   };
 
-  const handleSortChange = (newSort: string) => {
-    setSort(newSort);
+  const handleRetry = () => {
+    refetch(); 
   };
 
   return (
@@ -67,7 +68,7 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
       {isLoading ? (
         <Spinner size="small" />
       ) : isError ? (
-        <ReveiwError />
+        <ReveiwError onRetry={handleRetry} />
       ) : (
         reviews && reviews.length !== 0 ? (
           <div className="relative flex-grow overflow-x-visible space-y-3">
@@ -78,7 +79,7 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
               </div>
             </div>
 
-            <ReviewOrderButton sort={sort} onSortChange={handleSortChange} />
+            <ReviewOrderButton />
 
             <ReviewList reviewType={reviewType} sltOrSpotId={sltOrSpotId} reviews={reviews} updateReview={updateReview} deleteReview={deleteReview} />
 

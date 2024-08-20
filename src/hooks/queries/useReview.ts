@@ -21,7 +21,8 @@ const useReview = ({
     isLoading,
     isError,
     hasNextPage,
-    isFetching
+    isFetching,
+    refetch
   } = useInfiniteQuery({
     queryKey: ["reviews", sltOrSpotId, sort],
     queryFn: ({ pageParam = 1 }) => fetchReviews({ reviewType, sltOrSpotId, sort, page: pageParam}),
@@ -91,6 +92,7 @@ const useReview = ({
     fetchNextPage,
     hasNextPage,
     isFetching,
+    refetch,
     addReview: addReviewMutation.mutate,
     updateReview: updateReviewMutation.mutate,
     deleteReview: deleteReviewMutation.mutate,

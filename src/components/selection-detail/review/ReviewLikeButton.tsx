@@ -29,18 +29,11 @@ const ReviewLikeButton = ({
     userId
   );
 
-  const [checkLiked, setCheckLiked] = useState(liked);
-  const [likes, setLikes] = useState(likeCount);
-
   const likeToggle = async () => {
     try {
-      if (checkLiked) {
-        setCheckLiked(false);
-        setLikes(likes - 1);
+      if (liked) {
         removeLikeMutate();
       } else {
-        setCheckLiked(true);
-        setLikes(likes + 1);
         addLikeMutate();
       }
     } catch (error) {
@@ -48,7 +41,8 @@ const ReviewLikeButton = ({
     }
   };
 
-  const colorClass = checkLiked ? "text-primary" : "text-grey3";
+
+  const colorClass = liked ? "text-primary" : "text-grey3";
 
   return (
     <div
@@ -59,7 +53,7 @@ const ReviewLikeButton = ({
         className="cursor-pointer"
         onClick={likeToggle}
       />
-      <div className="text-small">{likes}</div>
+      <div className="text-small">{likeCount}</div>
     </div>
   );
 };

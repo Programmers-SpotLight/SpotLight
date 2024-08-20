@@ -7,6 +7,7 @@ import ReviewImages from "./ReviewImages";
 import { MdEdit } from "react-icons/md";
 import { useModalStore } from "@/stores/modalStore";
 import ReviewLikeButton from "./ReviewLikeButton";
+import Link from "next/link";
 
 interface IReviewProps {
   sltOrSpotId: number | string;
@@ -60,6 +61,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
     <div className="block space-y-3 items-center justify-center">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
+          <Link href={`/user/${review.user.userId}`}>
           {review.user.userImage ? (
             <div className="w-[38px] h-[38px] bg-grey1 rounded-full flex items-center justify-center">
               <img
@@ -73,13 +75,14 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
               <IoPersonSharp size={25} className="text-primary" />
             </div>
           )}
+          </Link>
 
           <div className="space-y-1 text-small w-[80px] ml-2">
-            <div>{review.user.userNickname}</div>
+            <Link href={`/user/${review.user.userId}`}>{review.user.userNickname}</Link>
             <div className="text-grey3">{review.createdDate}</div>
           </div>
         </div>
-        <ReviewLikeButton liked={review.user.isLiked} likeCount={review.likeCount} reviewType={reviewType} sltOrSpotId={review.sltOrSpotId} reviewId={review.reviewId} />
+        <ReviewLikeButton liked={review.user.isLiked} likeCount={review.likeCount} reviewType={reviewType} sltOrSpotId={sltOrSpotId} reviewId={review.reviewId} />
       </div>
 
       <div className="flex justify-between">

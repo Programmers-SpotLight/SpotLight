@@ -27,6 +27,7 @@ interface IReviewsInfo {
   reviewAvg : number;
   reviewCount : number;
 };
+
 interface IReviews {
   reviewAvg: number;
   reviewCount: number;
@@ -76,4 +77,10 @@ interface IMyReviews {
     limit: number;
     totalCount: number;
   }
+}
+
+interface IReviewLikeData {
+  reviewId: string;
+  liked: boolean;
+  likeCount: number;
 }
