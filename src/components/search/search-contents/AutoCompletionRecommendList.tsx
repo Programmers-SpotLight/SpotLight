@@ -22,7 +22,8 @@ const AutoCompletionRecommendList = ({setTagValue} : IAutoCompletionRecommendLis
       data &&
       data.map((item : Ihashtags)=>(
         <div className='cursor-pointer hover:scale-105' 
-        onClick={()=>setTagValue(item.htag_name)}><Hashtag size='big' name={item.htag_name} key={item.htag_id}/></div>
+        key={item.htag_id}
+        onClick={()=>setTagValue(item.htag_name)}><Hashtag size='big' name={item.htag_name}/></div>
       ))
     }
     </div>
