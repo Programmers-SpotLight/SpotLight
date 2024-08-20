@@ -21,6 +21,8 @@ import {
 import { TuserSelection } from "@/models/user.model";
 import { ITempCardProps } from "@/components/common/card/TempCard";
 import { IColCardProps } from "@/components/common/card/ColCard";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(
   req: NextRequest,
@@ -29,6 +31,9 @@ export async function GET(
   const url = req.nextUrl;
   const userId = params.userId;
   const query = url.searchParams;
+  let session_userId;
+  const session = await getServerSession(authOptions);
+  if(session) session_userId = session.user.id
 
   const userSelection = query.get(QUERY_STRING_NAME.userSelection) || QUERY_STRING_DEFAULT.userSelection;
   const currentPage = parseInt(query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page);
@@ -91,8 +96,11 @@ export async function GET(
       limit,
       currentPage,
       sort as TsortType,
+      session_userId,      
       isMyPage === "true"
     );
+
+    console.log(pageResult);
 
     const mappedResults = mapSearchResults(pageResult);
     return NextResponse.json({ data: mappedResults, pagination });
@@ -132,7 +140,8 @@ const mapSearchResults = (pageResult: IsearchData[]): IColCardProps[] => {
     title: item.slt_title,
     userName: item.user_nickname,
     userImage: item.user_img,
-    status: item.slt_status
+    status: item.slt_status,
+    booked : item.is_bookmarked
   }));
 };
 

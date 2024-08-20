@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import { GoKebabHorizontal } from "react-icons/go";
 import { IoMdLock } from "react-icons/io";
-import { usePathname } from "next/navigation";
 import { TselectionStatus } from "@/models/searchResult.model";
 import { Ihashtags } from "@/models/hashtag.model";
 import Hashtag from "../Hashtag";
@@ -58,12 +57,9 @@ const ColCard = ({
   isMyPage,
   status = "public",
   booked = false,
-  onClick
 }: IColCardProps) => {
-  const pathname = usePathname();
   const {
     showMenu,
-    setShowMenu,
     selectionMenuRef,
     currentStatus,
     handleIconClick,
@@ -75,7 +71,7 @@ const ColCard = ({
     <Link
       href={`/selection/${selectionId}`}
       className={`flex flex-col w-[248px] ${
-        userImage && userName ? "h-[389px]" : "h-[355px]"
+        userImage && userName ? "h-[389px]" : "h-[389px]"
       } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-95 transition-transform duration-200 bg-white`}
     >
       <div className="relative w-full h-[178px]">
@@ -129,7 +125,7 @@ const ColCard = ({
                       }`}
                       key={menu.title}
                       onClick={(e) => handleMenuItemClick(e, menu.title, selectionId, title)}
-                    >
+                  >
                       {menu.icon}
                       <h1 className="font-medium my-[10px]">{menu.title}</h1>
                     </li>
@@ -140,7 +136,7 @@ const ColCard = ({
           )}
         </div>
 
-        <p className="font-bold mb-3 text-medium line-clamp-1">{title}</p>
+      <p className="font-bold mb-3 text-medium line-clamp-1">{title}</p>
 
         <div className="mb-5 flex overflow-hidden">
           {hashtags.map((tag) => (
@@ -154,7 +150,7 @@ const ColCard = ({
           {description}
         </p>
 
-        {userImage && userName && (
+        {userName && (
           <div className="flex justify-between items-center text-grey4 mt-auto">
             <div className="flex items-center gap-1">
               <div className="relative w-[16px] h-[16px]">
@@ -166,7 +162,7 @@ const ColCard = ({
                     fill
                   />
                 ) : (
-                  <div className="w-full h-full flex justify-center items-center font-bold text-large" />
+                  <div className="w-full h-full flex justify-center items-center font-bold text-large bg-grey2 rounded-full" />
                 )}
               </div>
               <span className="text-extraSmall font-semibold">{userName}</span>

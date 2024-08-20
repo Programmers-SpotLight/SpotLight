@@ -3,10 +3,15 @@ import { ErrorResponse, Ipagination, IsearchData, IsearchResult, TsortType } fro
 import { Ihashtags } from "@/models/hashtag.model";
 import { getSearchResult, getSearchResultCount } from "@/services/selectionSearch.services";
 import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult | ErrorResponse>> {
   const url = req.nextUrl;
   const query = url.searchParams;
+  let userId;
+  const session = await getServerSession(authOptions);
+  if(session) userId = session.user.id
 
   const category_id = query.get(QUERY_STRING_NAME.category_id) || QUERY_STRING_DEFAULT.category_id;
   const region_id = query.get(QUERY_STRING_NAME.region_id) || QUERY_STRING_DEFAULT.region_id;
@@ -15,7 +20,6 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
   const limit = parseInt(query.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit);
   const sort = query.get(QUERY_STRING_NAME.sort) || QUERY_STRING_DEFAULT.sort;
 
-  // 유효성 검사
   const validation = getSearchResultValidator(tags, currentPage, limit);
   if (validation.error) {
     return NextResponse.json({ error: validation.error }, { status: 400 });
@@ -36,8 +40,10 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
       return NextResponse.json({ data: [], pagination });
     }
 
-    const pageResult: IsearchData[] = await getSearchResult(category_id, region_id, tags, sort as TsortType, limit, currentPage);
+    const pageResult: IsearchData[] = await getSearchResult(category_id, region_id, tags, sort as TsortType, limit, currentPage, userId);
     const mappingResults = mapSearchResults(pageResult);
+
+    console.log(pageResult)
 
     const pagination: Ipagination = {
       currentPage,
@@ -85,5 +91,6 @@ const mapSearchResults = (results: IsearchData[]): any[] => {
     userName: item.user_nickname,
     userImage: item.user_img,
     status: item.slt_status,
+    booked : item.is_bookmarked
   }));
 };
