@@ -107,6 +107,8 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
             <div className="flex-0.5 w-2/5">
               <AutoCompletionRecommendList
               setTagValue={setTagValue}
+              setVisibleAutoCompletion={setVisibleAutoCompletion}
+              tagInputRef={tagInputRef}
               />
             </div>
             }

@@ -6,12 +6,20 @@ import { Ihashtags } from '@/models/hashtag.model'
 
 interface IAutoCompletionRecommendList {
   setTagValue : React.Dispatch<React.SetStateAction<string>>
+  setVisibleAutoCompletion : React.Dispatch<React.SetStateAction<boolean>>;
+  tagInputRef : React.RefObject<HTMLInputElement>;
 }
 
-const AutoCompletionRecommendList = ({setTagValue} : IAutoCompletionRecommendList) => {
+const AutoCompletionRecommendList = ({setTagValue, setVisibleAutoCompletion, tagInputRef} : IAutoCompletionRecommendList) => {
   const {data, isError, isLoading} = useFetchRecommendAutoCompletion()
   if(isError) return <div>Error</div>
   if(isLoading) return <SearchLoading height='medium'/>
+
+  const clickRecommendTag = (htagName : string) => {
+    setTagValue(htagName)
+    setVisibleAutoCompletion(false)
+    tagInputRef.current?.focus();
+  }
 
 
   return (
@@ -23,7 +31,7 @@ const AutoCompletionRecommendList = ({setTagValue} : IAutoCompletionRecommendLis
       data.map((item : Ihashtags)=>(
         <div className='cursor-pointer hover:scale-105' 
         key={item.htag_id}
-        onClick={()=>setTagValue(item.htag_name)}><Hashtag size='big' name={item.htag_name}/></div>
+        onClick={()=>clickRecommendTag(item.htag_name)}><Hashtag size='big' name={item.htag_name}/></div>
       ))
     }
     </div>
