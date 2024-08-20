@@ -18,8 +18,14 @@ const Header = () => {
   const [isDropDownVisible, setIsDropDownVisible] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLImageElement>(null);
-  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearchAutoComplete();
-  useClickOutside(dropdownRef, () => setIsDropDownVisible(false))
+  const {
+    tagInputRef,
+    tagACRef,
+    handleKeyDown,
+    visibleAutoCompletion,
+    setVisibleAutoCompletion
+  } = useSearchAutoComplete();
+  useClickOutside(dropdownRef, () => setIsDropDownVisible(false));
   const { openModal } = useModalStore();
   const { data: session, status } = useSession();
 
@@ -39,22 +45,20 @@ const Header = () => {
       toast.error("10글자 이내로 작성해주세요");
       setTagValue("");
       return false;
-  } 
+    }
     setTagValue("");
-    setVisibleAutoCompletion(false)
+    setVisibleAutoCompletion(false);
     router.push(`/search?tags=${tagValue}`);
   };
 
   // SNS Login / Sign in
-  const handleLogin = () => {
-  
-  }
+  const handleLogin = () => {};
   const handleSignout = () => {
     signOut();
-  }
+  };
 
   const handleOpenModal = () => {
-    openModal('login', { name: 'test' });
+    openModal("login", { name: "test" });
   };
 
   return (
@@ -66,11 +70,11 @@ const Header = () => {
       <div className="relative w-[640px]">
         <form onSubmit={onSubmithandler}>
           <input
-            className="w-full h-[50px] border-[0.5px] border-solid border-grey2 rounded-3xl px-12 text-center placeholder:text-grey4 font-bold"
+            className="w-full h-[50px] border-[0.5px] border-solid border-grey2 rounded-3xl px-12 text-center placeholder:text-grey4 font-bold outline-primary"
             placeholder={`혹시 찾으시는 셀렉션이 있으신가요?`}
             value={tagValue}
-            onChange={(e)=>{
-              setTagValue(e.target.value)
+            onChange={(e) => {
+              setTagValue(e.target.value);
               setVisibleAutoCompletion(true);
             }}
             ref={tagInputRef}
@@ -94,26 +98,27 @@ const Header = () => {
 
       {
         /**로그인 X */
-        !session && 
-        <button 
-          className="text-grey2 font-semibold w-[70px] h-[40px] rounded-xl bg-primary"
-          onClick={handleOpenModal}
-        >
-          로그인
-        </button>
+        !session && (
+          <button
+            className="text-grey2 font-semibold w-[70px] h-[40px] rounded-xl bg-primary"
+            onClick={handleOpenModal}
+          >
+            로그인
+          </button>
+        )
       }
       {
         /**로그인 O */
         /** user image가 있으면 */
         !!session && session.user?.image && (
           <Image
-          ref={profileRef}
-          src={""}
-          alt="user"
-          width={55}
-          height={55}
-          className="rounded-full cursor-pointer relative"
-          onClick={onClickHandler}
+            ref={profileRef}
+            src={""}
+            alt="user"
+            width={55}
+            height={55}
+            className="rounded-full cursor-pointer relative"
+            onClick={onClickHandler}
           />
         )
       }
@@ -122,12 +127,12 @@ const Header = () => {
         /** user image가 없으면  */
         !!session && !session.user?.image && (
           <div
-          ref={profileRef}
-          className="w-[55px] h-[55px] rounded-full cursor-pointer bg-grey1 flex items-center justify-center"
-          onClick={onClickHandler}
+            ref={profileRef}
+            className="w-[55px] h-[55px] rounded-full cursor-pointer bg-grey1 flex items-center justify-center"
+            onClick={onClickHandler}
           >
-          <IoPersonSharp size={30} className="text-primary" />
-        </div>
+            <IoPersonSharp size={30} className="text-primary" />
+          </div>
         )
       }
 
@@ -143,7 +148,8 @@ const Header = () => {
             마이페이지
           </Link>
           <hr className="w-full" />
-          <button className="h-1/2 flex items-center text-medium text-grey4 hover:text-primary"
+          <button
+            className="h-1/2 flex items-center text-medium text-grey4 hover:text-primary"
             onClick={handleSignout}
           >
             로그아웃

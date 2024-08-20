@@ -109,6 +109,7 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
             tagACRef={tagACRef}
             tagInputRef={tagInputRef}
             setVisibleAutoCompletion={setVisibleAutoCompletion}
+            isRecommend={true}
           />
         )}
       </form>
