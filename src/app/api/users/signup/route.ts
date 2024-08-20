@@ -25,17 +25,26 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // 유저 중복 체크
+    const isUserExist = await dbConnectionPool('user').select('user_nickname').where('user_nickname', user_nickname);
+    if(isUserExist.length > 0) {
+      return NextResponse.json(
+        { message: "The same nickname already exists", status: 500, code: 'Nickname-duplicate'},
+        { status: 500 }
+      );
+      // throw new Error('The same nickname already exists')
+    }
     // 사용자 정보를 DB에 저장
     await dbConnectionPool('user').insert({
       'user.user_uid' : user_uid,
       'user.user_type': user_type,
       'user.user_nickname' : user_nickname,
     });
-
+    
     const insertedUser = await dbConnectionPool('user')
-      .select('*')
-      .where({ user_uid: user_uid, user_type: user_type });
-
+    .select('*')
+    .where({ user_uid: user_uid, user_type: user_type });
+    
     if (insertedUser.length > 0) {
       // 성공적으로 저장된 경우
       return NextResponse.json(
@@ -44,9 +53,9 @@ export async function POST(req: NextRequest) {
       );
     } else {
       console.error('데이터가 삽입되지 않았습니다.');
+      throw new Error('Fail to insert user');
     }
   } catch (error) {
-    console.error('Database error:', error);
     return NextResponse.json(
       { error: "Failed to register user",
         details: error

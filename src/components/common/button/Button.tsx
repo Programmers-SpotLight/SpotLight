@@ -1,3 +1,4 @@
+import { useModalStore } from "@/stores/modalStore";
 import React, { ReactNode } from "react";
 
 interface IButtonProps {
@@ -7,6 +8,9 @@ interface IButtonProps {
   color?: "white" | "primary" | "danger" | "default";
   size?: "small" | "medium" | "large";
   disabled?: boolean;
+  // 인증 필요시 isRequiredAuthCheck true 후 useSession의 status 값 할당
+  isRequiredAuthCheck?: boolean;
+  authStatus?: 'loading' | 'authenticated' | 'unauthenticated'
 }
 
 const Button = ({ 
@@ -16,6 +20,8 @@ const Button = ({
   color = "primary",
   size = "medium",
   disabled = false,
+  isRequiredAuthCheck = false,
+  authStatus
 }: IButtonProps) => {
   const baseStyles = "h-9 rounded-lg text-small";
 
@@ -34,11 +40,19 @@ const Button = ({
 
   const buttonClass = `${baseStyles} ${colorStyles[color]} ${sizeStyles[size]}`;
 
+  const { openModal } = useModalStore();
+  const handleOnclick = () => {
+    if(isRequiredAuthCheck && authStatus === 'unauthenticated') {
+      openModal;
+    }
+    onClick
+  }
+
   return (
     <button
       type={type}
       className={buttonClass}
-      onClick={onClick}
+      onClick={handleOnclick}
       disabled={disabled}
     >
       {children}
