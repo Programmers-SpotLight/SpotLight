@@ -13,7 +13,7 @@ interface IAutoCompletionRecommendList {
 const AutoCompletionRecommendList = ({setTagValue, setVisibleAutoCompletion, tagInputRef} : IAutoCompletionRecommendList) => {
   const {data, isError, isLoading} = useFetchRecommendAutoCompletion()
   if(isError) return <div>Error</div>
-  if(isLoading) return <SearchLoading height='medium'/>
+  if(isLoading) return <SearchLoading height="full"/>
 
   const clickRecommendTag = (htagName : string) => {
     setTagValue(htagName)

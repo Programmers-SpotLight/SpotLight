@@ -76,7 +76,7 @@ const ColCard = ({
       href={`/selection/${selectionId}`}
       className={`flex flex-col w-[248px] ${
         userImage && userName ? "h-[389px]" : "h-[355px]"
-      } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-95 transition-transform duration-200 bg-white hover:z-10`}
+      } rounded-lg border-[0.5px] border-solid border-grey2 hover:brightness-95 transition-transform duration-200 bg-white`}
     >
       <div className="relative w-full h-[178px]">
         {thumbnail ? (
