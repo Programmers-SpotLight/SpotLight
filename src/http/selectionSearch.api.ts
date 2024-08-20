@@ -35,3 +35,7 @@ export const fetchSearchAutocompletion = async (
   return await requestHandler('get', finalUrl)
 }
 
+export const fetchAutoCompletionRecommendTag = async () => {
+  const url ="api/selections/search/tag-recommend"
+  return await requestHandler('get', url);
+}

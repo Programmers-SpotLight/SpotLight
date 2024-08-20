@@ -5,8 +5,8 @@ export const middleware = async (req: NextRequest) => {
   const token = await getToken({ req });
 
   if (!token) {
-    if (req.nextUrl.pathname.startsWith('/api')) {
-        return NextResponse.json({ error: 'Authentication Required' }, { status: 401 });
+    if (req.nextUrl.pathname === '/api/selections') {
+      return new NextResponse('Authentication Error', { status: 401 });
     }
   }
 
@@ -16,9 +16,6 @@ export const middleware = async (req: NextRequest) => {
 export const config = {
   // 수정 필요
   matcher: [
-    '/api/mypage/:path*',
-    '/api/users/:user-id(\\d+)/:path*',
-    '/api/selections/:path*',
-    '/api/selections/:selection-id(\\d+)',
+    '/api/selections',
   ],
 };

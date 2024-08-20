@@ -1,22 +1,26 @@
 import { useModalStore } from "@/stores/modalStore";
 import { useStore } from "zustand";
 import useModalExtraData from "./useModalExtraData";
-import { IModalCreateSelectionSpotExtraData, ISelectionSpot } from "@/models/selection.model";
-import { useSelectionCreateStore, useSelectionSpotCreateStore } from "@/stores/selectionCreateStore";
-
+import {
+  IModalCreateSelectionSpotExtraData,
+  ISelectionSpot
+} from "@/models/selection.model";
+import {
+  useSelectionCreateStore,
+  useSelectionSpotCreateStore
+} from "@/stores/selectionCreateStore";
+import { toast } from "react-toastify";
 
 const useSaveSelectionSpot = () => {
   const { closeModal } = useStore(useModalStore);
 
-  const { 
-    extraData: data,
-    setExtraData
-  } = useModalExtraData<IModalCreateSelectionSpotExtraData>();
+  const { extraData: data, setExtraData } =
+    useModalExtraData<IModalCreateSelectionSpotExtraData>();
 
-  const { 
-    addSpot, 
+  const {
+    addSpot,
     updateSpot,
-    spots: currentSpots 
+    spots: currentSpots
   } = useStore(useSelectionCreateStore);
 
   const {
@@ -34,17 +38,17 @@ const useSaveSelectionSpot = () => {
 
   const validateAddSelectionSpot = () => {
     if (!placeName) {
-      alert('스팟 이름을 입력해주세요.');
+      toast.error("스팟 이름을 입력해주세요.");
       return;
     }
 
     if (!description) {
-      alert('스팟 설명을 입력해주세요.');
+      toast.error("스팟 설명을 입력해주세요.");
       return;
     }
 
     if (!selectedLocation.placeId) {
-      alert('스팟 위치를 설정해주세요.');
+      toast.error("스팟 위치를 설정해주세요.");
       return;
     }
 
@@ -54,23 +58,23 @@ const useSaveSelectionSpot = () => {
     );
 
     // 수정 모드일 때 아닐 떄는 index가 없음
-    if (typeof data?.index != 'number' && isDuplicated) {
-      alert('이미 등록된 스팟입니다.');
+    if (typeof data?.index != "number" && isDuplicated) {
+      toast.error("이미 등록된 스팟입니다.");
       return;
     }
 
     if (!category) {
-      alert('카테고리를 설정해주세요.');
+      toast.error("카테고리를 설정해주세요.");
       return;
     }
 
     if (!selectedLocation.address) {
-      alert('스팟 주소를 설정해주세요.');
+      toast.error("스팟 주소를 설정해주세요.");
       return;
     }
 
     if (hashtags.length === 0) {
-      alert('태그를 등록해주세요.');
+      toast.error("태그를 등록해주세요.");
       return;
     }
 
@@ -91,13 +95,13 @@ const useSaveSelectionSpot = () => {
     };
 
     // 인덱스가 있으면 수정, 없으면 추가
-    if (typeof data?.index == 'number') {
+    if (typeof data?.index == "number") {
       updateSpot(data.index, spot);
     } else {
       addSpot(spot);
     }
 
-    setExtraData(null); 
+    setExtraData(null);
     closeModal();
     reset();
   };

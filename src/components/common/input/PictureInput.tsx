@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 interface IPictureInputProps {
   inputSize: "small" | "large";
@@ -41,7 +42,9 @@ const PictureInput = ({
       };
       const fileType = file.type;
       if (!fileType.includes("image")) {
-        alert(`해당 파일은 이미지 파일이 아닙니다.\n이미지(JPG,JPEG,GIF,PNG)`);
+        toast.error(
+          `해당 파일은 이미지 파일이 아닙니다.\n이미지(JPG,JPEG,GIF,PNG)`
+        );
         return;
       }
       reader.readAsDataURL(file);
