@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import MapLoading from "@/components/google-map/MapLoading";
 import useSelectionDetail from "@/hooks/queries/useSelectionDetail";
 import useErrorComponents from "@/hooks/useErrorComponents";
+import { useSession } from "next-auth/react";
 
 const SelectionPage = () => {
   const params = useParams();
@@ -28,6 +29,7 @@ const SelectionPage = () => {
 
   const ErrorComponent = useErrorComponents(error);
 
+  useSession();
   useEffect(() => {
     if (selectionData && selectionData.spotList.length > 0) {
       setSelectedSpotId(selectionData.spotList[0].id);

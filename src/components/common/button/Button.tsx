@@ -1,3 +1,5 @@
+"use client";
+
 import { useModalStore } from "@/stores/modalStore";
 import React, { ReactNode } from "react";
 
@@ -10,13 +12,13 @@ interface IButtonProps {
   disabled?: boolean;
   // 인증 필요시 isRequiredAuthCheck true 후 useSession의 status 값 할당
   isRequiredAuthCheck?: boolean;
-  authStatus?: 'loading' | 'authenticated' | 'unauthenticated'
+  authStatus?: "loading" | "authenticated" | "unauthenticated";
 }
 
-const Button = ({ 
-  children, 
-  onClick, 
-  type = "button", 
+const Button = ({
+  children,
+  onClick,
+  type = "button",
   color = "primary",
   size = "medium",
   disabled = false,
@@ -42,11 +44,11 @@ const Button = ({
 
   const { openModal } = useModalStore();
   const handleOnclick = () => {
-    if(isRequiredAuthCheck && authStatus === 'unauthenticated') {
+    if (isRequiredAuthCheck && authStatus === "unauthenticated") {
       openModal;
     }
-    onClick
-  }
+    onClick;
+  };
 
   return (
     <button

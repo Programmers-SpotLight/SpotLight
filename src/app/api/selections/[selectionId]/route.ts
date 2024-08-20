@@ -20,14 +20,18 @@ import {
   serviceDeleteTempSelection
 } from "@/services/selectionUser.services";
 import { getUserInfo } from "@/services/user.services";
+import { getServerSession } from "next-auth";
 
 import { NextRequest, NextResponse } from "next/server";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET(
   req: Request,
   { params }: { params: { selectionId: number } }
 ) {
   const selectionId = params.selectionId;
+
+  const session = await getServerSession(authOptions);
 
   if (!selectionId) {
     return NextResponse.json(
@@ -77,8 +81,7 @@ export async function GET(
     if (spotHashtags.length) spotDetailInfo[i].hashtags = spotHashtags;
   }
 
-  const booked = await getBookMarks(selectionId, 1); //임시로 userId 1로 설정
-
+  const booked = await getBookMarks(selectionId, session?.user.id);
   const selectionWriterInfo = await getUserInfo(
     selecitonDetailInfo.writerId.toString()
   );
