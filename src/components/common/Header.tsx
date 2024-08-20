@@ -10,6 +10,7 @@ import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import useCheckSignUpParams from "@/hooks/useCheckSignUpParams";
 import { toast } from "react-toastify";
 
 const Header = () => {
@@ -28,6 +29,9 @@ const Header = () => {
   useClickOutside(dropdownRef, () => setIsDropDownVisible(false));
   const { openModal } = useModalStore();
   const { data: session, status } = useSession();
+  const imageUrl = session?.user?.image ? session?.user?.image : '';
+  
+  useCheckSignUpParams();
 
   const onClickHandler = () => {
     setIsDropDownVisible((prev) => !prev);
@@ -52,13 +56,12 @@ const Header = () => {
   };
 
   // SNS Login / Sign in
-  const handleLogin = () => {};
   const handleSignout = () => {
     signOut();
   };
 
   const handleOpenModal = () => {
-    openModal("login", { name: "test" });
+    openModal('signin');
   };
 
   return (
@@ -113,7 +116,7 @@ const Header = () => {
         !!session && session.user?.image && (
           <Image
             ref={profileRef}
-            src={""}
+            src={imageUrl}
             alt="user"
             width={55}
             height={55}
@@ -148,8 +151,7 @@ const Header = () => {
             마이페이지
           </Link>
           <hr className="w-full" />
-          <button
-            className="h-1/2 flex items-center text-medium text-grey4 hover:text-primary"
+          <button className="w-full h-1/2 flex items-center text-medium text-grey4 hover:text-primary"
             onClick={handleSignout}
           >
             로그아웃
