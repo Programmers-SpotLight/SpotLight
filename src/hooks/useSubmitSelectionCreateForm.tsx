@@ -1,23 +1,26 @@
-import { submitSelection } from "@/http/selectionCreate.api";
+import { submitCompleteSelection, submitTemporarySelection } from "@/http/selectionCreate.api";
+import { submitSelectionEdit, submitTemporarySelectionEdit } from "@/http/selectionEdit.api";
 import { ISelectionSpot } from "@/models/selection.model";
 import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useStore } from "zustand";
 
-type TTemporarySpotPhotoStorage = Array<Array<File | string>>;
+type TTemporarySpotImageStorage = Array<Array<File | string>>;
 
 const useSubmitSelectionCreateForm = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { 
+  const {
+    id,
+    isTemporary,
     title, 
     description, 
     category, 
     location, 
     subLocation,
-    selectionPhoto, 
+    selectionImage, 
     hashtags, 
     spots, 
     setSpots,
@@ -45,7 +48,7 @@ const useSubmitSelectionCreateForm = () => {
       return false;
     }
 
-    if (!selectionPhoto && !isTemporary) {
+    if (!selectionImage && !isTemporary) {
       alert('썸네일을 등록해주세요.');
       return false;
     }
@@ -64,7 +67,12 @@ const useSubmitSelectionCreateForm = () => {
   }
 
   // 임시저장 버튼 클릭시 제출 로직
-  const submitTemporarySelection = () => {
+  const prepareAndSubmitTemporarySelection = () => {
+    if (!isTemporary && id) {
+      alert('이미 제출된 셀렉션은 임시저장할 수 없습니다.');
+      return;
+    }
+
     const isValidationPassed = validateSelection(true);
     if (!isValidationPassed) {
       return;
@@ -78,43 +86,40 @@ const useSubmitSelectionCreateForm = () => {
       formData.append('description', description);
     }
 
-    if (category) {
+    if (category?.id) {
       formData.append('category', category.id.toString());
     }
 
-    if (location && subLocation) {
+    if (location?.id && subLocation?.id) {
       formData.append('location', JSON.stringify({
         location: location.id,
         subLocation: subLocation.id
       }));
     }
 
-    if (selectionPhoto) {
-      formData.append('img', selectionPhoto);
+    if (selectionImage) {
+      formData.append('img', selectionImage);
     }
 
     if (hashtags.length > 0) {
       formData.append('hashtags', JSON.stringify(hashtags));
     }
 
-    const spotsPhotos: TTemporarySpotPhotoStorage = separateSpotPhotos(spots, formData);
-    formData.append('spots', JSON.stringify(spots));
+    let spotImages: TTemporarySpotImageStorage = [];
+    if (spots.length > 0) { 
+      spotImages = separateSpotImages(spots, formData);
+      formData.append('spots', JSON.stringify(spots));
+    }
 
     setIsSubmitting(true);
-    submitSelection(
-      formData,
-    ).then((res) => {
-      alert('셀렉션 미리저장이 성공적으로 되었습니다.');
-      router.push('/');
-      reset();
-    }).catch((err) => {
-      alert('미리저장에 실패했습니다.');
-      setIsSubmitting(false);
-      restoreSpotPhotos(spots, spotsPhotos);
-    });
+    if (isTemporary && id) {
+      handleSubmitTemporarySelectionEdit(formData, spotImages);
+    } else {
+      handleSubmitTemporarySelection(formData, spotImages);
+    }
   }
 
-  const submitCompleteSelection = () => {
+  const prepareAndSubmitCompleteSelection = () => {
     const isValidationPassed = validateSelection();
     if (!isValidationPassed) {
       return;
@@ -125,9 +130,8 @@ const useSubmitSelectionCreateForm = () => {
     formData.append('title', title);
     formData.append('description', description);
 
-    if (category) {
+    if (category)
       formData.append('category', category.id.toString());
-    }
 
     if (location && subLocation) {
       formData.append('location', JSON.stringify({
@@ -136,18 +140,70 @@ const useSubmitSelectionCreateForm = () => {
       }));
     }
 
-    if (selectionPhoto) {
-      formData.append('img', selectionPhoto);
+    if (selectionImage) {
+      formData.append('img', selectionImage);
     }
 
     formData.append('hashtags', JSON.stringify(hashtags));
 
-    const spotsPhotos: TTemporarySpotPhotoStorage = separateSpotPhotos(spots, formData);
+    const spotImages: TTemporarySpotImageStorage = separateSpotImages(spots, formData);
     formData.append('spots', JSON.stringify(spots));
 
+    if (id && isTemporary)
+      formData.append('temp_id', id.toString());
+
     setIsSubmitting(true);
-    submitSelection(
-      formData, 
+    if (id && !isTemporary) {
+      handleSubmitSelectionEdit(formData, spotImages);
+    } else {
+      handleSubmitSelection(formData, spotImages);
+    }
+  }
+
+  // 바이너리인 사진 파일을 FormData에 추가하고, spots 배열에서 사진을 제거하는 함수
+  function separateSpotImages(
+    spots: ISelectionSpot[], 
+    formData: FormData
+  ) : TTemporarySpotImageStorage {
+    const spotImages: TTemporarySpotImageStorage = [];
+
+    if (spots.length > 0) {
+      const cloneSpots : ISelectionSpot[] = [];
+
+      spots.forEach((spot) => {
+        const images = spot.images;
+        for (let j = 0; j < images.length; j++) {
+          formData.append(`spots[${spot.placeId}][images][${j}]`, images[j]);
+        }
+        spotImages.push(images);
+        const clone = {...spot, images: []};
+        cloneSpots.push(clone);
+      });
+
+      setSpots(cloneSpots);
+    }
+
+    return spotImages;
+  }
+
+  // 서브미션 실패시 FormData로 분리한 사진을 다시 spots 배열에 복원하는 함수
+  function restoreSpotImages (
+    spots: ISelectionSpot[], 
+    spotImages: TTemporarySpotImageStorage
+  ) : void {
+    const cloneSpots = spots.map((spot, i) => {
+      return {...spot, images: spotImages[i]};
+    });
+
+    setSpots(cloneSpots);
+  }
+
+  function handleSubmitSelection(
+    formData: FormData, 
+    spotImages: TTemporarySpotImageStorage
+  ) {
+    submitCompleteSelection(
+      formData,
     ).then((res) => {
       alert('셀렉션이 성공적으로 등록되었습니다.');
       router.push('/');
@@ -155,52 +211,61 @@ const useSubmitSelectionCreateForm = () => {
     }).catch((err) => {
       alert('제출에 실패했습니다.');
       setIsSubmitting(false);
-      restoreSpotPhotos(spots, spotsPhotos);
+      restoreSpotImages(spots, spotImages);
     });
   }
 
-  // 바이너리인 사진 파일을 FormData에 추가하고, spots 배열에서 사진을 제거하는 함수
-  function separateSpotPhotos(
-    spots: ISelectionSpot[], 
-    formData: FormData
-  ) : TTemporarySpotPhotoStorage {
-    const spotsPhotos: TTemporarySpotPhotoStorage = [];
-
-    if (spots.length > 0) {
-      const cloneSpots : ISelectionSpot[] = [];
-
-      spots.forEach((spot) => {
-        const images = spot.photos;
-        for (let j = 0; j < images.length; j++) {
-          formData.append(`spots[${spot.placeId}][photos][${j}]`, images[j]);
-        }
-        spotsPhotos.push(images);
-        const clone = {...spot, photos: []};
-        cloneSpots.push(clone);
-      });
-
-      setSpots(cloneSpots);
-    }
-
-    return spotsPhotos;
+  function handleSubmitSelectionEdit(
+    formData: FormData, 
+    spotImages: TTemporarySpotImageStorage
+  ) {
+    submitSelectionEdit(id, formData).then((res) => {
+      alert('셀렉션 수정이 성공적으로 되었습니다.');
+      router.push('/');
+      reset();
+    }).catch((err) => {
+      alert('수정에 실패했습니다.');
+      setIsSubmitting(false);
+      restoreSpotImages(spots, spotImages);
+    })
   }
 
-  // 서브미션 실패시 FormData로 분리한 사진을 다시 spots 배열에 복원하는 함수
-  function restoreSpotPhotos (
-    spots: ISelectionSpot[], 
-    spotsPhotos: TTemporarySpotPhotoStorage
-  ) : void {
-    const cloneSpots = spots.map((spot, i) => {
-      return {...spot, photos: spotsPhotos[i]};
+  function handleSubmitTemporarySelection(
+    formData: FormData, 
+    spotImages: TTemporarySpotImageStorage
+  ) {
+    submitTemporarySelection(
+      formData,
+    ).then((res) => {
+      alert('셀렉션 미리저장이 성공적으로 되었습니다.');
+      router.push('/');
+      reset();
+    }).catch((err) => {
+      alert('미리저장에 실패했습니다.');
+      setIsSubmitting(false);
+      restoreSpotImages(spots, spotImages);
     });
-
-    setSpots(cloneSpots);
   }
 
+  function handleSubmitTemporarySelectionEdit(
+    formData: FormData, 
+    spotImages: TTemporarySpotImageStorage
+  ) {
+    submitTemporarySelectionEdit(id, formData).then((res) => {
+      alert('셀렉션 미리저장 수정이 성공적으로 되었습니다.');
+      router.push('/');
+      reset();
+    }).catch((err) => {
+      alert('미리저장 수정에 실패했습니다.');
+      setIsSubmitting(false);
+      restoreSpotImages(spots, spotImages);
+    })
+  }
+    
   return {
     isSubmitting,
-    submitCompleteSelection,
-    submitTemporarySelection,
+    prepareAndSubmitTemporarySelection,
+    prepareAndSubmitCompleteSelection
   };
 };
 

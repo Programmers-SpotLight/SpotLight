@@ -25,10 +25,10 @@ const useSaveSelectionSpot = () => {
     description,
     selectedLocation,
     hashtags,
-    spotPhoto,
-    spotPhoto1,
-    spotPhoto2,
-    spotPhoto3,
+    spotImage,
+    spotImage1,
+    spotImage2,
+    spotImage3,
     reset
   } = useStore(useSelectionSpotCreateStore);
 
@@ -74,8 +74,8 @@ const useSaveSelectionSpot = () => {
       return;
     }
 
-    const photos = [spotPhoto, spotPhoto1, spotPhoto2, spotPhoto3].filter(
-      (photo) => photo !== null
+    const images = [spotImage, spotImage1, spotImage2, spotImage3].filter(
+      (image) => image !== null
     );
 
     const spot: ISelectionSpot = {
@@ -87,7 +87,7 @@ const useSaveSelectionSpot = () => {
       latitude: selectedLocation.location.lat,
       longitude: selectedLocation.location.lng,
       hashtags,
-      photos
+      images
     };
 
     // 인덱스가 있으면 수정, 없으면 추가
