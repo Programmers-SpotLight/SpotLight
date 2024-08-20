@@ -218,8 +218,6 @@ export const serviceDeleteSelection = async (userId: string, selectionId: number
 
 export const serviceDeleteTempSelection = async (userId: string, selectionId: number) => {
   try { 
-    // 보류, 삭제를 자식 테이블들을 전부 다 삭제하는 CASCADE로 할지
-    // selection과 같이 상태를 따로 구분할지
     await dbConnectionPool('selection_temporary')
       .where({
         slt_temp_id: selectionId,

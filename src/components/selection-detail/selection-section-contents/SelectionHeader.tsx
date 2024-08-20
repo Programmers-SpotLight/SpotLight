@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaBookmark, FaRegBookmark, FaShareAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 interface SelectionHeaderProps {
   selectionData: ISelectionInfo;
@@ -21,10 +22,10 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
     navigator.clipboard
       .writeText(currentUrl)
       .then(() => {
-        alert("URL이 클립보드에 복사되었습니다!");
+        toast.success("URL이 클립보드에 복사되었습니다!");
       })
       .catch((err) => {
-        console.error("클립보드 복사 실패:", err);
+        toast.error("url을 클립보드에 복사하는데 실패했습니다.");
       });
   };
 

@@ -1,3 +1,4 @@
+import { IAutoCompleteRecommendTagResult } from "@/app/api/selections/search/tag-recommend/route";
 import { dbConnectionPool } from "@/libs/db";
 import { TsortType } from "@/models/searchResult.model";
 
@@ -124,7 +125,7 @@ export const getSearchResult = async (
           'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
         )
       )
-      .select(dbConnectionPool.raw('COALESCE(bc.bookmark_count, 0) AS bookmark_count')) // bookmark 개수 추가
+      .select(dbConnectionPool.raw('COALESCE(bc.bookmark_count, 0) AS bookmark_count'))
       .groupBy("selection.slt_id", "user.user_id")
       .modify((queryBuilder) =>
         searchQueryBuilder(
@@ -155,5 +156,21 @@ export const getAutoCompleteResult = async (tagValue: string) => {
   } catch (error) {
     throw new Error(`Failed to fetch search Result`); // Todo : Error 처리
 
+  }
+};
+
+export const getAutoCompleteRecommendTag = async () : Promise<IAutoCompleteRecommendTagResult[]>=> {
+  try {
+    const recommendedTags = await dbConnectionPool("selection_hashtag")
+      .join("hashtag", "selection_hashtag.htag_id", "hashtag.htag_id")
+      .select("hashtag.htag_name", "hashtag.htag_id", "hashtag.htag_type")
+      .count("* as reference_count") // 카운트
+      .groupBy("hashtag.htag_name", "hashtag.htag_id", "hashtag.htag_type")
+      .orderBy("reference_count", "desc")
+      .limit(8);
+
+    return recommendedTags as unknown as IAutoCompleteRecommendTagResult[];
+  } catch (error) {
+    throw new Error(`Failed to fetch recommended tags: ${error}`); // 에러 메시지 개선
   }
 };

@@ -1,21 +1,21 @@
 import { fetchHashtagSuggestions } from "@/http/selectionCreate.api";
 import { useState } from "react";
-
+import { toast } from "react-toastify";
 
 const useHashtagSuggestion = () => {
-  const [ hashtags, setHashtags ] = useState<string[]>([]);
-  const [ isLoading, setIsLoading ] = useState<boolean>(false);
-  const [ success, setSuccess ] = useState<boolean | null>(null);
-  const [ error, setError ] = useState<boolean | null>(null);
+  const [hashtags, setHashtags] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean | null>(null);
+  const [error, setError] = useState<boolean | null>(null);
 
   const suggestHashtags = async (text: string) => {
     if (!text) {
-      alert('프롬프트를 입력해주세요.');
+      toast.error("프롬프트를 입력해주세요.");
       return;
     }
 
     if (text.length > 128) {
-      alert('프롬프트는 128자 이하로 입력해주세요.');
+      toast.error("프롬프트는 128자 이하로 입력해주세요.");
       return;
     }
 
@@ -25,15 +25,14 @@ const useHashtagSuggestion = () => {
     setError(null);
 
     const formData = new FormData();
-    formData.append('prompt', text);
+    formData.append("prompt", text);
 
     const responseData = await fetchHashtagSuggestions(formData);
 
     if (responseData) {
       setHashtags(responseData);
       setSuccess(true);
-    }
-    else {
+    } else {
       setError(true);
     }
 
@@ -41,8 +40,8 @@ const useHashtagSuggestion = () => {
   };
 
   const deleteHashtag = (hashtag: string) => {
-    setHashtags(hashtags => hashtags.filter((h) => h !== hashtag));
-  }
+    setHashtags((hashtags) => hashtags.filter((h) => h !== hashtag));
+  };
 
   return {
     hashtags,
@@ -50,7 +49,7 @@ const useHashtagSuggestion = () => {
     success,
     error,
     suggestHashtags,
-    deleteHashtag,
+    deleteHashtag
   };
 };
 

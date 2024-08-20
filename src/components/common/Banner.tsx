@@ -23,7 +23,7 @@ const Banner = ({ img, title, subTitle, button, notOpacity, categoryId}: BannerP
         backgroundPosition: 'center',
       }}
     >
-      {!notOpacity && <div className="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>} {/* 반투명 오버레이 추가 */}
+      {!notOpacity && <div className="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>}
       <div className="absolute inset-0 flex flex-col justify-center items-start text-white p-10 leading-9">
         <h2 className="text-extraLarge font-light">{subTitle}</h2>
         <h1 className="text-[32px] font-bold">{title}</h1>

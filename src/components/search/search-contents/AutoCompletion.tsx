@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { IoAdd } from "react-icons/io5";
+import React, { useState } from "react";
 import useFetchSearchAutoCompletion from "@/hooks/queries/useFetchSearchAutoCompletion";
 import useClickOutside from "@/hooks/useClickOutside";
+import AutoCompletionList from "./AutoCompletionList";
+import AutoCompletionRecommendList from "./AutoCompletionRecommendList";
 
 interface IAutoCompletionProps {
   tagValue: string | null;
@@ -9,6 +10,7 @@ interface IAutoCompletionProps {
   setVisibleAutoCompletion: React.Dispatch<React.SetStateAction<boolean>>;
   tagACRef: React.RefObject<HTMLDivElement>;
   tagInputRef: React.RefObject<HTMLInputElement>;
+  isRecommend?: boolean 
 }
 
 const AutoCompletion: React.FC<IAutoCompletionProps> = ({
@@ -17,20 +19,25 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
   setVisibleAutoCompletion,
   tagACRef,
   tagInputRef,
+  isRecommend
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const { data: results, isError, isLoading } = useFetchSearchAutoCompletion(tagValue);
-  
+  const {
+    data: results,
+    isError,
+    isLoading
+  } = useFetchSearchAutoCompletion(tagValue);
+
   useClickOutside(tagACRef, () => {
     setVisibleAutoCompletion(false);
   });
 
-
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, (results?.data.length || 0) - 1));
-
+      setSelectedIndex((prevIndex) =>
+        Math.min(prevIndex + 1, (results?.data.length || 0) - 1)
+      );
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
       setSelectedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
@@ -39,13 +46,13 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
       if (selectedIndex >= 0 && results?.data) {
         setTagValue(results.data[selectedIndex].htag_name);
         setVisibleAutoCompletion(false);
-        if(tagInputRef.current) tagInputRef.current.focus()
+        if (tagInputRef.current) tagInputRef.current.focus();
       }
     } else {
       if (tagInputRef.current) {
         setTimeout(() => {
-          if(tagInputRef.current) tagInputRef.current.focus(); // 2중 조건
-        }, 10); // 100ms 딜레이 추가
+          if (tagInputRef.current) tagInputRef.current.focus();
+        }, 10);
       }
     }
   };
@@ -81,33 +88,29 @@ const AutoCompletion: React.FC<IAutoCompletionProps> = ({
     <>
       {results.data.length > 0 && (
         <div
-          className="flex absolute z-10 w-full bg-white border border-solid border-grey2 rounded-md mt-1 max-h-[300px] overflow-auto focus:border-primary"
+          className="flex absolute z-10 w-full bg-white border border-solid border-grey2 rounded-md mt-1 max-h-[300px] overflow-auto outline-none"
           tabIndex={0}
           onKeyDown={handleKeyDown}
           ref={tagACRef}
         >
-          <ul
-            id="auto-complete-list"
-            className="flex-[0.6] p-5 pb-[15px] box-border max-h-[300px] overflow-auto"
-          >
-            {results.data.map((item: { htag_name: string }, index: number) => (
-              <li
-                key={index}
-                className={`flex p-2 text-grey4 gap-[10px] justify-between hover:bg-grey1 rounded-lg cursor-pointer ${
-                  selectedIndex === index ? "bg-grey1" : ""
-                }`}
-                onMouseEnter={() => setSelectedIndex(index)}
-                onMouseDown={(event) => handleMouseDown(event, index)}
-              >
-                <div className="flex gap-[10px] items-center">
-                  <IoAdd className="fill-grey4 w-[15px] h-[20px] text-grey4" />
-                  <h2 className="text-medium text-grey4 flex">
-                    {highlightMatch(item.htag_name, tagValue || "")}
-                  </h2>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className="flex w-full">
+            <AutoCompletionList
+              autoCompletionList={results.data}
+              selectedIndex={selectedIndex}
+              setSelectedIndex={setSelectedIndex}
+              handleMouseDown={handleMouseDown}
+              highlightMatch={highlightMatch}
+              tagValue={tagValue}
+              isRecommend={isRecommend}
+            />
+            { isRecommend &&
+            <div className="flex-0.5 w-2/5">
+              <AutoCompletionRecommendList
+              setTagValue={setTagValue}
+              />
+            </div>
+            }
+          </div>
         </div>
       )}
     </>
