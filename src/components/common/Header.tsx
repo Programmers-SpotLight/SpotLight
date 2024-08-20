@@ -11,7 +11,6 @@ import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import useCheckSignUpParams from "@/hooks/useCheckSignUpParams";
-import useAuthMonitoring from "@/hooks/useAuthMonitoring";
 
 const Header = () => {
   const router = useRouter();
