@@ -9,8 +9,6 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import MapLoading from "@/components/google-map/MapLoading";
 import NotFound from "@/components/error/NotFound";
-import Forbidden from "@/components/error/Forbidden";
-import InternalServerError from "@/components/error/InternalServerError";
 import useSelectionDetail from "@/hooks/queries/useSelectionDetail";
 
 const SelectionPage = () => {
@@ -62,11 +60,9 @@ const SelectionPage = () => {
     );
 
   if (isError || !selectionData) {
-    console.log(error);
-
     return (
       <div className={`h-[calc(100vh-74px)]`}>
-        <InternalServerError />
+        <NotFound />
       </div>
     );
   }
