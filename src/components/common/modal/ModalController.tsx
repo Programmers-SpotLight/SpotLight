@@ -13,8 +13,9 @@ import ModalFeedbackForm from "./modal-contents/ModalFeedbackForm";
 import ReviewDeleteModal from "./modal-contents/review/ReviewDeleteModal";
 import ReviewModal from "./modal-contents/review/ReviewModal";
 import ModalEditInfo from "./modal-contents/ModalEditInfo";
-import ModalUser from "../../users/ModalUser";
 import ModalSelectionDelete from "./modal-contents/ModalSelectionDelete";
+import ModalSignIn from "../../users/ModalSignIn";
+import ModalSignUp from "@/components/users/ModalSignUp";
 
 interface ImodalDatas {
   type: TmodalType;
@@ -26,11 +27,18 @@ interface ImodalDatas {
 
 const modalDatas: ImodalDatas[] = [
   {
-    type: "login",
+    type: "signin",
     title: "모달 로그인",
     size: "small",
     overlayClose: true,
-    component: ModalUser
+    component: ModalSignIn
+  },
+  {
+    type: "signup",
+    title: "모달 회원가입",
+    size: "small",
+    overlayClose: true,
+    component: ModalSignUp
   },
   {
     type: "GoogleMapsAddSelectionSpot",

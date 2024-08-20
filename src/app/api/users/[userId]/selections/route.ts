@@ -30,35 +30,23 @@ export async function GET(
   const userId = params.userId;
   const query = url.searchParams;
 
-  const userSelection =
-    query.get(QUERY_STRING_NAME.userSelection) ||
-    QUERY_STRING_DEFAULT.userSelection;
-  const currentPage = parseInt(
-    query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page
-  );
-  const limit = parseInt(
-    query.get(QUERY_STRING_NAME.limit) ||
-      QUERY_STRING_DEFAULT.userSelection_limit
-  );
+  const userSelection = query.get(QUERY_STRING_NAME.userSelection) || QUERY_STRING_DEFAULT.userSelection;
+  const currentPage = parseInt(query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page);
+  const limit = parseInt(query.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.userSelection_limit);
   const sort = query.get(QUERY_STRING_NAME.sort) || QUERY_STRING_DEFAULT.sort;
-  const isMyPage =
-    query.get(QUERY_STRING_NAME.is_my_page) || QUERY_STRING_DEFAULT.is_my_page;
+  const isMyPage = query.get(QUERY_STRING_NAME.is_my_page) || QUERY_STRING_DEFAULT.is_my_page;
 
-  if (userSelection === "temp") {
-    try {
+  try {
+    const validation = getUserSelectionValidator(currentPage, limit, userSelection);
+    if (validation.error) {
+      console.log(validation.error);
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
+    if (userSelection === "temp") {
       const countResult = await getUserTempSelectionCount(userId);
       const totalElements = countResult.length > 0 ? countResult.length : 0;
       const totalPages = Math.ceil(totalElements / limit);
-
-      if (totalElements === 0) {
-        const pagination: Ipagination = {
-          currentPage,
-          totalPages,
-          totalElements,
-          limit
-        };
-        return NextResponse.json({ data: [], pagination });
-      }
 
       const pagination: Ipagination = {
         currentPage,
@@ -66,44 +54,34 @@ export async function GET(
         totalElements,
         limit
       };
-      const tempResult = await getUserTempSelection(userId, currentPage, limit);
-      const mappingTempResult: ITempCardProps[] = tempResult.map((item) => ({
-        title: item.slt_temp_title,
-        category: item.slt_category_name,
-        region: item.slt_location_option_name,
-        description: item.slt_temp_description,
-        selectionId: item.slt_temp_id,
-        userId: item.user_id,
-        created_at: item.slt_temp_created_date.toString(),
-        img: item.slt_img
-      }));
-      return NextResponse.json({ data: mappingTempResult, pagination });
-    } catch {
-      return NextResponse.json(
-        { error: "데이터 조회 중 오류 발생" },
-        { status: 500 }
-      ); // Todo : 에러 처리
-    }
-  }
 
-  try {
+      if (totalElements === 0) {
+        return NextResponse.json({ data: [], pagination });
+      }
+
+      const tempResult = await getUserTempSelection(userId, currentPage, limit);
+      const mappedTempResult = mapTempResult(tempResult);
+      return NextResponse.json({ data: mappedTempResult, pagination });
+    }
+
     const countResult = await getUserSelectionQueryCount(
       userSelection as TuserSelection,
       userId,
       sort as TsortType,
-      isMyPage === "true" ? true : false
+      isMyPage === "true"
     );
     const totalElements =
       countResult.length > 0 ? parseInt(countResult.length) : 0;
     const totalPages = Math.ceil(totalElements / limit);
 
+    const pagination: Ipagination = {
+      currentPage,
+      totalPages,
+      totalElements,
+      limit
+    };
+
     if (totalElements === 0) {
-      const pagination: Ipagination = {
-        currentPage,
-        totalPages,
-        totalElements,
-        limit
-      };
       return NextResponse.json({ data: [], pagination });
     }
 
@@ -113,41 +91,60 @@ export async function GET(
       limit,
       currentPage,
       sort as TsortType,
-      isMyPage === "true" ? true : false
+      isMyPage === "true"
     );
 
-    const hashConvert = pageResult.map((item: IsearchData) => ({
-      ...item,
-      slt_hashtags:
-        typeof item.slt_hashtags === "string"
-          ? (JSON.parse(item.slt_hashtags) as Ihashtags[])
-          : item.slt_hashtags
-    }));
-
-    const MappingResults: IColCardProps[] = hashConvert.map((item) => ({
-      thumbnail: item.slt_img,
-      category: item.slt_category_name,
-      region: item.slt_location_option_name,
-      selectionId: item.slt_id,
-      hashtags: item.slt_hashtags,
-      description: item.slt_description,
-      title: item.slt_title,
-      userName: item.user_nickname,
-      userImage: item.user_img,
-      status: item.slt_status
-    }));
-
-    const pagination: Ipagination = {
-      currentPage,
-      totalPages,
-      totalElements,
-      limit
-    };
-    return NextResponse.json({ data: MappingResults, pagination });
+    const mappedResults = mapSearchResults(pageResult);
+    return NextResponse.json({ data: mappedResults, pagination });
   } catch (error) {
     return NextResponse.json(
       { error: "데이터 조회 중 오류 발생" },
       { status: 500 }
-    ); // Todo : 에러 처리
+    ); // 에러 처리
   }
 }
+
+// 매핑 함수 분리
+const mapTempResult = (tempResult: any[]): ITempCardProps[] => {
+  return tempResult.map((item) => ({
+    title: item.slt_temp_title,
+    category: item.slt_category_name,
+    region: item.slt_location_option_name,
+    description: item.slt_temp_description,
+    selectionId: item.slt_temp_id,
+    userId: item.user_id,
+    created_at: item.slt_temp_created_date.toString(),
+    img: item.slt_img
+  }));
+};
+
+const mapSearchResults = (pageResult: IsearchData[]): IColCardProps[] => {
+  return pageResult.map((item) => ({
+    thumbnail: item.slt_img,
+    category: item.slt_category_name,
+    region: item.slt_location_option_name,
+    selectionId: item.slt_id,
+    hashtags:
+      typeof item.slt_hashtags === "string"
+        ? (JSON.parse(item.slt_hashtags) as Ihashtags[])
+        : item.slt_hashtags,
+    description: item.slt_description,
+    title: item.slt_title,
+    userName: item.user_nickname,
+    userImage: item.user_img,
+    status: item.slt_status
+  }));
+};
+
+const getUserSelectionValidator = (currentPage: number, limit: number, userSelection: string) => {
+  if (currentPage < 1) {
+    return { error: "현재 페이지는 1 이상이어야 합니다." };
+  }
+  if (limit < 1 || limit > 12) {
+    return { error: "한 페이지당 항목 수는 1 이상 12 이하이어야 합니다." };
+  }
+  if (userSelection !== "my" && userSelection !== "temp" && userSelection !== "bookmark") {
+    return { error: "선택된 탭이 올바르지 않습니다." };
+  }
+  return { valid: true };
+};

@@ -1,15 +1,17 @@
-import { IModalCreateSelectionSpotExtraData, ISelectionSpot } from "@/models/selection.model";
+import {
+  IModalCreateSelectionSpotExtraData,
+  ISelectionSpot
+} from "@/models/selection.model";
 import { useModalStore } from "@/stores/modalStore";
 import { useStore } from "zustand";
 import useModalExtraData from "./useModalExtraData";
 import { useSelectionSpotCreateStore } from "@/stores/selectionCreateStore";
-
+import { toast } from "react-toastify";
 
 const useOpenSelectionSpotEditModal = () => {
-  const { 
-    openModal,
-  } = useStore(useModalStore);
-  const { setExtraData } = useModalExtraData<IModalCreateSelectionSpotExtraData>();
+  const { openModal } = useStore(useModalStore);
+  const { setExtraData } =
+    useModalExtraData<IModalCreateSelectionSpotExtraData>();
 
   const {
     setPlaceName,
@@ -33,36 +35,36 @@ const useOpenSelectionSpotEditModal = () => {
     index: number
   ) => {
     if (spotCategories.length === 0) {
-      alert('스팟 카테고리가 없습니다. 다시 시도해주세요.');
+      toast.error("스팟 카테고리가 없습니다. 다시 시도해주세요.");
       return;
     }
 
     setExtraData({
       spotCategories: spotCategories,
-      index,
+      index
     });
     setPlaceName(spot.title);
     setAddress(spot.formattedAddress);
     setCurrentCoordinate({
       lat: spot.latitude,
-      lng: spot.longitude,
+      lng: spot.longitude
     });
     setTitle(spot.title);
     setDescription(spot.description);
     setCategory({
       id: spot.category,
-      name: spotCategories.find(
-        (category) => category.id === spot.category
-      )?.name || "",
+      name:
+        spotCategories.find((category) => category.id === spot.category)
+          ?.name || ""
     });
     setSelectedLocation({
-      key: 'User\'s current location',
+      key: "User's current location",
       placeId: spot.placeId,
       address: spot.formattedAddress,
       location: {
         lat: spot.latitude,
-        lng: spot.longitude,
-      },
+        lng: spot.longitude
+      }
     });
     setSpotDescription(spot.description);
 
@@ -78,13 +80,13 @@ const useOpenSelectionSpotEditModal = () => {
     if (spot.images.length > 3) {
       setSpotImage3(spot.images[3]);
     }
-    
+
     spot.hashtags.forEach((hashtag) => {
       addHashtag(hashtag as string);
     });
-    
-    openModal('GoogleMapsAddSelectionSpot');
-  }
+
+    openModal("GoogleMapsAddSelectionSpot");
+  };
 
   return openSpotEditModal;
 };

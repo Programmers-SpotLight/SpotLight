@@ -5,19 +5,16 @@ import useSpotSearch from "@/hooks/useSpotSearch";
 import { useSelectionSpotCreateStore } from "@/stores/selectionCreateStore";
 import { useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { useStore } from "zustand";
-
 
 const ModalCreateSelectionSpotSearchBar = () => {
   const spotSearchResultRef = useRef<HTMLDivElement>(null);
   const geocodingRequested = useRef<boolean>(false);
   const map = useMap();
 
-  const { 
-    selectedLocation, 
-    setSelectedLocation,
-    setCurrentCoordinate
-  } = useStore(useSelectionSpotCreateStore);
+  const { selectedLocation, setSelectedLocation, setCurrentCoordinate } =
+    useStore(useSelectionSpotCreateStore);
 
   // 지오코딩 훅
   const {
@@ -29,24 +26,19 @@ const ModalCreateSelectionSpotSearchBar = () => {
   } = useGeocoding();
 
   // 스팟 검색 훅
-  const { 
-    searchValue, 
-    setSearchValue, 
-    spots, 
-    fetchSpots, 
-    loading, 
-    error 
-  } = useSpotSearch();
+  const { searchValue, setSearchValue, spots, fetchSpots, loading, error } =
+    useSpotSearch();
 
-  const [isSpotSearchResultOpen, setIsSpotSearchResultOpen] = useState<boolean>(false);
-  useClickOutside(spotSearchResultRef, () => setIsSpotSearchResultOpen(false))
+  const [isSpotSearchResultOpen, setIsSpotSearchResultOpen] =
+    useState<boolean>(false);
+  useClickOutside(spotSearchResultRef, () => setIsSpotSearchResultOpen(false));
 
   const handleSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       setIsSpotSearchResultOpen(true);
       fetchSpots();
     }
@@ -69,9 +61,7 @@ const ModalCreateSelectionSpotSearchBar = () => {
       ...selectedLocation,
       placeId: placeId
     });
-    fetchGeocodingData(
-      placeId
-    );
+    fetchGeocodingData(placeId);
   };
 
   // 지오코딩 결과 처리
@@ -82,72 +72,81 @@ const ModalCreateSelectionSpotSearchBar = () => {
     }
     if (geocodingLoading) return;
     if (geocodingError) {
-      alert('주소를 가져오는데 실패했습니다.');
+      toast.error("주소를 가져오는데 실패했습니다.");
       return;
     }
 
     setSelectedLocation({
       ...selectedLocation,
       location: geocodingCoordinates || { lat: 0, lng: 0 },
-      address: geocodingAddress || '',
+      address: geocodingAddress || ""
     });
 
     // 사용자가 선택한 위치로 마커 배치 후 중앙으로 설정
-    setCurrentCoordinate(geocodingCoordinates || { lat: 37.5503, lng: 126.9971 });
+    setCurrentCoordinate(
+      geocodingCoordinates || { lat: 37.5503, lng: 126.9971 }
+    );
     map?.setCenter(geocodingCoordinates || { lat: 37.5503, lng: 126.9971 });
   }, [
-    geocodingLoading, 
-    geocodingError, 
-    geocodingCoordinates, 
-    geocodingAddress,
-  ]);  
+    geocodingLoading,
+    geocodingError,
+    geocodingCoordinates,
+    geocodingAddress
+  ]);
 
   return (
-    <div className='mt-4 relative'>
-      {(selectedLocation.address) && (
-        <div className='mb-4'>
-          <p className='text-small font-bold'>현재 스팟 주소</p>
-          <p className='text-grey4 text-small mt-2'>{selectedLocation.address}</p>
+    <div className="mt-4 relative">
+      {selectedLocation.address && (
+        <div className="mb-4">
+          <p className="text-small font-bold">현재 스팟 주소</p>
+          <p className="text-grey4 text-small mt-2">
+            {selectedLocation.address}
+          </p>
         </div>
       )}
       <OneLineInput
-        placeholder='스팟을 검색해주세요'
-        width='w-full'
+        placeholder="스팟을 검색해주세요"
+        width="w-full"
         value={searchValue}
         onChange={handleSearchValueChange}
         onFocus={handleSearchInputFocus}
         onKeyDown={handleSearchKeyDown}
       />
       {isSpotSearchResultOpen && (
-      <div
-        ref={spotSearchResultRef}
-        className='absolute top-[110%] p-3 border border-solid border-black w-full bg-white rounded-[8px]'
-      >
-        <ul className='text-grey4 w-full max-h-[192px] overflow-y-auto'>
-        {/* 검색 결과 로딩 시 */}
-        {loading && <li className='py-2'>로딩 중...</li>}
+        <div
+          ref={spotSearchResultRef}
+          className="absolute top-[110%] p-3 border border-solid border-black w-full bg-white rounded-[8px]"
+        >
+          <ul className="text-grey4 w-full max-h-[192px] overflow-y-auto">
+            {/* 검색 결과 로딩 시 */}
+            {loading && <li className="py-2">로딩 중...</li>}
 
-        {/* 검색 결과 에러 시 */}
-        {error && <li className='py-2'>에러가 발생했습니다.</li>}
+            {/* 검색 결과 에러 시 */}
+            {error && <li className="py-2">에러가 발생했습니다.</li>}
 
-        {/* 검색 결과 있을 시 */}
-        {(Array.isArray(spots) && spots.length > 0) && spots?.map((spot) => (
-          <li key={spot.id} className='py-2 cursor-pointer hover:bg-grey1'>
-            <button onClick={() => handleGeocodingClick(spot.id)}>
-              {spot.displayName.text}
-            </button>
-          </li>
-        ))}
+            {/* 검색 결과 있을 시 */}
+            {Array.isArray(spots) &&
+              spots.length > 0 &&
+              spots?.map((spot) => (
+                <li
+                  key={spot.id}
+                  className="py-2 cursor-pointer hover:bg-grey1"
+                >
+                  <button onClick={() => handleGeocodingClick(spot.id)}>
+                    {spot.displayName.text}
+                  </button>
+                </li>
+              ))}
 
-        {/* 검색 결과 없을 시 */}
-        {(Array.isArray(spots) && spots.length === 0) && (
-          <li className='py-2'>검색 결과가 없습니다.</li>
-        )}
-        </ul>
-      </div>
+            {/* 검색 결과 없을 시 */}
+            {Array.isArray(spots) && spots.length === 0 && (
+              <li className="py-2">검색 결과가 없습니다.</li>
+            )}
+          </ul>
+        </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default ModalCreateSelectionSpotSearchBar;

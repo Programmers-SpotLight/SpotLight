@@ -3,8 +3,12 @@ import { dbConnectionPool } from "@/libs/db";
 import { Ihashtags } from "@/models/hashtag.model";
 import { ISelectionCreateCompleteData, ISelectionDetailInfo, ISelectionInfo } from "@/models/selection.model";
 import { ISpotImage, ISpotInfo } from "@/models/spot.model";
-import { ErrorResponse, SuccessResponse, TuserSelection } from "@/models/user.model";
 import { prepareAndValidateSelectionCreateFormData } from "@/services/selectionCreate.validation";
+import {
+  ErrorResponse,
+  SuccessResponse,
+  TuserSelection
+} from "@/models/user.model";
 import {
   getBookMarks,
   getSelectionDetailInfo,
@@ -14,7 +18,10 @@ import {
   getSpotImages
 } from "@/services/selectionDetail.services";
 import { editSelection } from "@/services/selectionEdit.services";
-import { serviceDeleteSelection, serviceDeleteTempSelection } from "@/services/selectionUser.services";
+import {
+  serviceDeleteSelection,
+  serviceDeleteTempSelection
+} from "@/services/selectionUser.services";
 import { getUserInfo } from "@/services/user.services";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -91,18 +98,26 @@ export async function GET(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { selectionId: number; user_selection: TuserSelection } }
+  {
+    params
+  }: { params: { selectionId: number; user_selection: TuserSelection } }
 ): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
   try {
     const url = req.nextUrl;
     const query = url.searchParams;
     const selectionId = params.selectionId;
-    const selectionType = query.get(QUERY_STRING_NAME.userSelection) as TuserSelection;
+    const selectionType = query.get(
+      QUERY_STRING_NAME.userSelection
+    ) as TuserSelection;
 
-    console.log(selectionId, selectionType)
+    console.log(selectionId, selectionType);
     const userId = "1"; // temp
 
-    const validationError = deleteSelectionValidator(selectionId, selectionType, userId);
+    const validationError = deleteSelectionValidator(
+      selectionId,
+      selectionType,
+      userId
+    );
     if (validationError) return validationError;
 
     if (selectionType === "temp") {
@@ -131,7 +146,6 @@ const deleteSelectionValidator = (
   selectionType: TuserSelection,
   userId: string
 ): NextResponse<ErrorResponse> | null => {
-
   const validSelectionTypes: TuserSelection[] = ["temp", "my", "bookmark"];
   if (!validSelectionTypes.includes(selectionType)) {
     return NextResponse.json(
