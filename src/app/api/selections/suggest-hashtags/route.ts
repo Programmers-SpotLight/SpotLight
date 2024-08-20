@@ -1,12 +1,12 @@
-import { requestHashtagsSuggestionFromAI, validateHashtagsSuggestionPrompt } from "@/services/selection.services";
-import { BadRequestError } from "@/utils/errors";
+import { requestHashtagsSuggestionFromAI } from "@/services/selection.services";
+import { validateHashtagsSuggestionPrompt } from "@/services/selectionCreate.validation";
 import { NextRequest } from "next/server";
 
 
 export const POST = async (request: NextRequest) => {
   const formData : FormData = await request.formData();
   
-  if (!formData.has('prompt')) {
+  if (formData.has('prompt') === false) {
     return new Response('프롬프트가 필요합니다.', {
       status: 400,
       headers: {
@@ -14,7 +14,6 @@ export const POST = async (request: NextRequest) => {
       }
     });
   }
-
 
   try {
     const prompt = formData.get('prompt') as string;

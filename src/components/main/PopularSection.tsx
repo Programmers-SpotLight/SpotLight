@@ -4,7 +4,7 @@ import Link from "next/link";
 import { IsearchData } from "@/models/searchResult.model";
 
 interface IPopularSectionProps {
-  selections : IsearchData[];
+  selections : IRowCardProps[];
 
 }
 const PopularSection = ( {selections} : IPopularSectionProps) => {
@@ -21,15 +21,8 @@ const PopularSection = ( {selections} : IPopularSectionProps) => {
       </div>
       <div className="grid grid-cols-2 gap-4">
       {selections.map((selection, index) => (
-        <RowCard key={selection.slt_id}
-        thumbnail={selection.slt_img}
-        title={selection.slt_title}
-        category={selection.slt_category_name}
-        region={selection.slt_location_option_name}
-        description={selection.slt_description}
-        userName={selection.user_nickname}
-        userImage={selection.user_img}
-        selectionId={selection.slt_id}
+        <RowCard key={selection.selectionId}
+        {...selection}
         ranking={index+1}
         ></RowCard>
       ))}

@@ -1,4 +1,6 @@
 import { requestHandler } from "@/http/http";
+import { handleHttpError } from "@/utils/errors";
+import axios from "axios";
 
 export const fetchSelectionDetailInfo = async (selectionId: number) => {
   try {
@@ -7,8 +9,8 @@ export const fetchSelectionDetailInfo = async (selectionId: number) => {
       `/api/selections/${selectionId}`
     );
     return response;
-  } catch (error) {
-    console.error("Failed to fetch selection:", error);
-    return null;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) handleHttpError(error);
+    else throw new Error("An unexpected error occured");
   }
 };

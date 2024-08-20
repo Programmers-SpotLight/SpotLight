@@ -14,13 +14,13 @@ const Footer = () => {
     openModal("feedback");
   };
   return (
-    <div className="none:container py-10 border-solid border-2 border-gray-200 bg-gray-100">
-      <div className="footer-content text-slate-500 font-sans">
-        <h2 className="pb-3 text-2xl text-center font-bold">Spotlight</h2>
-        <p className="text-lg text-center font-medium pb-3">
+    <div className="none:container h-[118px] border-solid border-2 border-gray-200 bg-gray-100">
+      <div className="footer-content text-slate-500">
+        <h2 className="mt-5 pb-[5px] text-[22px] text-center font-bold">Spotlight</h2>
+        <p className="text-sm text-center font-medium pb-2.5">
           Spotlight를 통해 일상 속 특별함을 더하세요!
         </p>
-        <div className="flex link-box">
+        <div className="mb-5 flex link-box">
           <div className="m-auto flex items-center">
             <Link
               href={"https://github.com/Programmers-SpotLight/SpotLight"}
@@ -46,11 +46,14 @@ const Footer = () => {
                 height={20}
               />
             </Link>
-            <BiMessageEdit
-              size={25}
-              onClick={openFeedbackForm}
-              className="cursor-pointer"
-            />
+            <span className="text-xl pb-1">&nbsp;|&nbsp;&nbsp;</span>
+            <div onClick={openFeedbackForm} className="flex items-center">
+              <BiMessageEdit
+                size={25}
+                className="cursor-pointer pr-[2px]"
+              /> 
+              <span className="text-sm pb-[3px]">문의하기</span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { IsearchResult, TsortType } from "@/models/searchResult.model";
 import { fetchSearchResult } from "@/http/selectionSearch.api";
+import { AxiosError } from "axios";
 
 interface IuseFetchSearchResult {
     category_id? : string,
@@ -12,9 +13,9 @@ interface IuseFetchSearchResult {
 }
 
 const useFetchSearchResult = ({category_id, region_id, tags, sort, page, limit} : IuseFetchSearchResult) : UseQueryResult<IsearchResult> => {
-    return useQuery<IsearchResult>({
+    return useQuery<IsearchResult, AxiosError>({
         queryKey: ['searchResult', category_id, region_id, tags, sort, page, limit],
-        queryFn : () => fetchSearchResult(category_id, region_id, tags, sort, page, limit)
+        queryFn : () => fetchSearchResult(category_id, region_id, tags, sort, page, limit),
     })
 }
 

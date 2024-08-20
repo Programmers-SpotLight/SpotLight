@@ -9,8 +9,15 @@ const userSelectionQueryBuilder = async (
   sort?: TsortType,
   isMyPage?: boolean
 ) => {
+  const bookmarkCountSubquery = dbConnectionPool('bookmark')
+  .select('slt_id')
+  .count('slt_id as bookmark_count')
+  .groupBy('slt_id')
+  .as('bc');
+
   queryBuilder
     .join("user", "selection.user_id", "=", "user.user_id")
+    .leftJoin(bookmarkCountSubquery, 'selection.slt_id', '=', 'bc.slt_id')
     .join(
       "selection_hashtag",
       "selection.slt_id",
@@ -31,31 +38,29 @@ const userSelectionQueryBuilder = async (
     )
     .join("hashtag", "selection_hashtag.htag_id", "=", "hashtag.htag_id");
 
-  if (!isMyPage) {
-    queryBuilder.whereNot("selection.slt_status", "private");
-  }
-
   if (sort) {
     if (sort === "latest") {
       queryBuilder.orderBy("selection.slt_created_date", "desc");
     } else if (sort === "asc") {
       queryBuilder.orderBy("selection.slt_title", "asc");
     } else if (sort === "popular") {
-      // Todo : 인기 순 리뷰 기능 구현 시 추가 구현
+      queryBuilder.orderBy("bookmark_count", "desc");
     }
   }
 
   if (userSelectionType) {
     if (userSelectionType === "my") {
-      queryBuilder.where("selection.user_id", userId); // 수정된 부분
+      queryBuilder.where("selection.user_id", userId);
     } else if (userSelectionType === "bookmark") {
       queryBuilder
         .innerJoin("bookmark as b", "b.slt_id", "selection.slt_id")
-        .where("b.user_id", userId); // user_id를 올바르게 참조
+        .where("b.user_id", userId);
     }
   }
-  
-  queryBuilder.where("selection.slt_status", "<>", "delete");
+  if (!isMyPage) {
+    queryBuilder.whereNot("selection.slt_status", "private");
+  }
+  queryBuilder.whereNot("selection.slt_status", "delete");
   return queryBuilder;
 };
 
@@ -77,6 +82,7 @@ export const getUserSelectionQueryCount = async (
           'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
         )
       )
+      .select(dbConnectionPool.raw('COALESCE(bc.bookmark_count, 0) AS bookmark_count')) // bookmark 개수 추가
       .groupBy("selection.slt_id", "user.user_id")
       .modify((queryBuilder) =>
         userSelectionQueryBuilder(
@@ -114,6 +120,7 @@ export const getUserSelectionResult = async (
           'JSON_ARRAYAGG(JSON_OBJECT("htag_id", hashtag.htag_id, "htag_name", hashtag.htag_name, "htag_type", hashtag.htag_type)) AS slt_hashtags'
         )
       )
+      .select(dbConnectionPool.raw('COALESCE(bc.bookmark_count, 0) AS bookmark_count')) // bookmark 개수 추가
       .groupBy("selection.slt_id", "user.user_id")
       .modify((queryBuilder) =>
         userSelectionQueryBuilder(
@@ -211,8 +218,6 @@ export const serviceDeleteSelection = async (userId: string, selectionId: number
 
 export const serviceDeleteTempSelection = async (userId: string, selectionId: number) => {
   try { 
-    // 보류, 삭제를 자식 테이블들을 전부 다 삭제하는 CASCADE로 할지
-    // selection과 같이 상태를 따로 구분할지
     await dbConnectionPool('selection_temporary')
       .where({
         slt_temp_id: selectionId,

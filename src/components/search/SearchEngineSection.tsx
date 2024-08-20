@@ -21,22 +21,22 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
   const searchParams = useSearchParams();
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
-  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion} = useSearchAutoComplete();
+  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion, searchValidator} = useSearchAutoComplete();
 
   useEffect(() => {
     if (tagInputRef.current) tagInputRef.current?.focus();
     const addtagList = [];
-    const HeaderSearchTag = searchParams.get(QUERY_STRING_NAME.tags); // 검색을 통해 접근하는 경우 태그 불러오기
+    const HeaderSearchTag = searchParams.get(QUERY_STRING_NAME.tags);
     if (HeaderSearchTag) {addtagList.push(HeaderSearchTag);}
-    const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags); // 세션 스토리지에 저장된 태그 불러오기
-    if (storedTags) { // 세션에 저장된 데이터가 있는 경우 태그리스트에 추가
+    const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags);
+    if (storedTags) {
       const parseStoredTags = JSON.parse(storedTags);
       parseStoredTags.forEach((tag: string) => {
       addtagList.push(tag);
       });
     }
 
-    if (addtagList.length > 0) { // 태그리스트에 값이 있는 경우 쿼리스트링에 추가
+    if (addtagList.length > 0) {
       addtagList.forEach((tag: string) => {
       addQueryString(QUERY_STRING_NAME.tags, tag);
     });
@@ -46,18 +46,21 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (tagValue.trim()) {
       const addTag = tagValue.replace(/\s+/g, "");
-      const updatedTagList = [...tagList, addTag];
-      setTagList(updatedTagList);
-      sessionStorage.setItem(
-        QUERY_STRING_NAME.tags,
-        JSON.stringify(updatedTagList)
-      );
-      addQueryString(QUERY_STRING_NAME.tags, addTag);
-      setVisibleAutoCompletion(false);
-      setTagValue("");
-    }
+      if(searchValidator(addTag, tagList)){
+        const updatedTagList = [...tagList, addTag];
+        setTagList(updatedTagList);
+        sessionStorage.setItem(
+          QUERY_STRING_NAME.tags,
+          JSON.stringify(updatedTagList)
+        );
+        addQueryString(QUERY_STRING_NAME.tags, addTag);
+        setVisibleAutoCompletion(false);
+      } else {
+        setTagValue("");
+        setVisibleAutoCompletion(false);
+
+      }
   };
 
   const cancelHashtag = (tag: string, index: number) => {
@@ -106,6 +109,7 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
             tagACRef={tagACRef}
             tagInputRef={tagInputRef}
             setVisibleAutoCompletion={setVisibleAutoCompletion}
+            isRecommend={true}
           />
         )}
       </form>

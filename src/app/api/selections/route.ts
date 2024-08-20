@@ -7,8 +7,11 @@ import {
 import { 
   createSelection,
   createTemporarySelection,
+} from "@/services/selection.services";
+import { 
   prepareSelectionCreateFormData, 
-  validateData } from "@/services/selection.services";
+  validateData 
+} from "@/services/selectionCreate.validation";
 import { NextRequest } from "next/server";
 
 
@@ -23,10 +26,10 @@ export const POST = async (request: NextRequest) => {
     await validateData(data);
     const status = data.status;
 
-    if (status != 'temp') {
-      await createSelection(transaction, data as ISelectionCreateCompleteData);
-    } else {
+    if (status === 'temp') {
       await createTemporarySelection(transaction, data as ISelectionCreateTemporaryData);
+    } else {
+      await createSelection(transaction, data as ISelectionCreateCompleteData);
     }
 
     await transaction.commit();
