@@ -86,7 +86,6 @@ const searchQueryBuilder = (
 
   return queryBuilder;
 } catch(error) {
-  console.log("쿼리빌더 에러", error)
 }
 };
 
