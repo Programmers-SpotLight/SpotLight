@@ -37,7 +37,6 @@ const RowCard = ({
     e.preventDefault();
     e.stopPropagation();
     booked ? removeBookMarksMutate() : addBookMarksMutate();
-    console.log("bookmark 클릭");
   };
 
   return (
