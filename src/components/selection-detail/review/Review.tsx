@@ -6,12 +6,13 @@ import { useModalStore } from "@/stores/modalStore";
 import ReviewEmpty from "./ReviewEmpty";
 import ReviewOrderButton from "./ReviewOrderButton";
 import { useEffect, useRef, useState } from "react";
-import useReview from "@/hooks/queries/useReview";
 import ReveiwError from "./ReveiwError";
 import Spinner from "@/components/common/Spinner";
 import useReviewInfo from "@/hooks/queries/useReviewInfo";
 import { useReviewSortContext } from "@/context/useReviewSortContext";
 import { useSession } from "next-auth/react";
+import { useReviewQuery } from "@/hooks/queries/useReviewQuery";
+import { useReviewMutations } from "@/hooks/mutations/useReviewMutations";
 
 interface IReviewsProps {
   reviewType: ReviewType;
@@ -32,7 +33,7 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
     error 
   } = useReviewInfo({ reviewType, sltOrSpotId });
 
-  const { 
+  const {
     reviews,
     isLoading,
     isError,
@@ -40,10 +41,13 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
     hasNextPage,
     isFetching,
     refetch,
-    addReview,
-    updateReview,
-    deleteReview
-  } = useReview({ reviewType, sltOrSpotId, sort });
+  } = useReviewQuery({ reviewType, sltOrSpotId, sort });
+
+  const { addReview, updateReview, deleteReview } = useReviewMutations({
+    reviewType,
+    sltOrSpotId,
+    sort
+  });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -84,7 +88,7 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
 
             <ReviewOrderButton />
 
-            <ReviewList reviewType={reviewType} sltOrSpotId={sltOrSpotId} reviews={reviews} updateReview={updateReview} deleteReview={deleteReview} />
+            <ReviewList reviewType={reviewType} sltOrSpotId={sltOrSpotId} reviews={reviews} />
 
             <div className="p-3" ref={pageEnd}>
               {isFetching && <Spinner size="small" />}

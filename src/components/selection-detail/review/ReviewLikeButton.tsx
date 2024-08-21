@@ -1,4 +1,4 @@
-import { useReviewsLikes } from "@/hooks/queries/useReviewsLikes";
+import { useReviewsLikes } from "@/hooks/mutations/useReviewsLikes";
 import { AiFillLike } from "react-icons/ai";
 
 interface ILikeButton {

@@ -9,20 +9,27 @@ import ReviewLikeButton from "./ReviewLikeButton";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { AiFillLike } from "react-icons/ai";
+import { useReviewMutations } from "@/hooks/mutations/useReviewMutations";
+import { useReviewSortContext } from "@/context/useReviewSortContext";
 
 interface IReviewProps {
   sltOrSpotId: number | string;
   review: IReview;
   reviewType: ReviewType;
-  updateReview: (data: IReviewUpdateFormData) => void;
-  deleteReview: (reviewId: string) => void; 
 }
 
-const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteReview }: IReviewProps) => {
+const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModalStore();
   const { data: session, status } = useSession();
   const user = session?.user;
+  const { sort } = useReviewSortContext();
+
+  const { updateReview, deleteReview } = useReviewMutations({
+    reviewType,
+    sltOrSpotId,
+    sort
+  });
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);

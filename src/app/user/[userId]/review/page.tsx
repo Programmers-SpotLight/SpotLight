@@ -4,7 +4,7 @@ import SearchLoading from "@/components/search/search-contents/SearchLoading";
 import MyReviewList from "@/components/user/my/review/MyReviewList";
 import MyReviewPagination from "@/components/user/my/review/MyReviewPagination";
 import MyReviewTab from "@/components/user/my/review/MyReviewTab";
-import useMyReview from "@/hooks/queries/useMyReview";
+import useMyReview from "@/hooks/mutations/useMyReview";
 import React, { useState } from 'react'
 
 const UserSelectionPage = () => {
@@ -18,7 +18,6 @@ const UserSelectionPage = () => {
     updateReviewMutation, 
     deleteReviewMutation
   } = useMyReview({ reviewType: currentTab, page: page.toString() });
-
 
   const handleTabData = (tabData: ReviewType) => {
     setCurrentTab(tabData);
