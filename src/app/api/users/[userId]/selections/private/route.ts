@@ -3,8 +3,7 @@ import { SuccessResponse } from "@/models/user.model";
 import { servicePutUserSelectionPrivate } from "@/services/selectionUser.services";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req: NextRequest): Promise<NextResponse<SuccessResponse | ErrorResponse >> {
-    console.log('요청확인')
+export async function PUT(req: NextRequest, { params }: { params: { userId: string }}): Promise<NextResponse<SuccessResponse | ErrorResponse >> {
     try {
         const { data } = await req.json();
         const validationError = updateUserSelectionPrivateValidator(data);

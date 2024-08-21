@@ -100,8 +100,6 @@ export async function GET(
       isMyPage === "true"
     );
 
-    console.log(pageResult);
-
     const mappedResults = mapSearchResults(pageResult);
     return NextResponse.json({ data: mappedResults, pagination });
   } catch (error) {

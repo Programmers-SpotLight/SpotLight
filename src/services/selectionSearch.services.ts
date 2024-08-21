@@ -115,7 +115,6 @@ export const getSearchResultCount = async (
 
     return countQuery;
   } catch (error) {
-    console.log("카운트 쿼리 에러", error)
     throw new Error(`Failed to fetch search Result`); // Todo : Error 처리
   }
 };

@@ -19,7 +19,7 @@ export const updateUserDescription = async (
   description: string
 ) => {
   const url = `/api/users/${userId}/description`;
-  return await requestHandler("put", url, { data: { description, userId } });
+  return await requestHandler("put", url, {description});
 };
 
 export const addUserHashTag = async (userId: string, hashtag: string) => {
