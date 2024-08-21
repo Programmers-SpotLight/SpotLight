@@ -5,6 +5,7 @@ import { Knex } from "knex";
 import { ISelectSpot } from "./spot.repository";
 
 interface IInsertSelection {
+  user_id: number;
   slt_title: string;
   slt_status: string;
   slt_category_id: number;
@@ -14,6 +15,7 @@ interface IInsertSelection {
 }
 
 interface IInsertSelectionTemporary {
+  user_id: number;
   slt_temp_title: string;
   slt_category_id: number | null;
   slt_location_option_id: number | null;
@@ -42,6 +44,7 @@ export const insertSelectionGetId = async (
   selection: IInsertSelection
 ) : Promise<number[]> => {
   const {
+    user_id,
     slt_title,
     slt_status,
     slt_category_id,
@@ -53,6 +56,7 @@ export const insertSelectionGetId = async (
   try {
     return await transaction('selection')
       .insert({
+        user_id,
         slt_title,
         slt_status,
         slt_category_id,
@@ -71,6 +75,7 @@ export const insertSelectionTemporary = async (
   selection: IInsertSelectionTemporary
 ) : Promise<number[]> => {
   const {
+    user_id,
     slt_temp_title,
     slt_category_id,
     slt_location_option_id,
@@ -81,6 +86,7 @@ export const insertSelectionTemporary = async (
   try {
     return await transaction('selection_temporary')
       .insert({
+        user_id,
         slt_temp_title,
         slt_category_id,
         slt_location_option_id,
@@ -320,6 +326,7 @@ export async function updateSelectionWhereIdEqual(
   selection: IInsertSelection
 ): Promise<void> {
   const {
+    user_id,
     slt_title,
     slt_status,
     slt_category_id,
@@ -332,6 +339,7 @@ export async function updateSelectionWhereIdEqual(
     const updated = await transaction("selection")
       .where("slt_id", '=', selectionId)
       .update({
+        user_id,
         slt_title,
         slt_status,
         slt_category_id,
@@ -372,7 +380,10 @@ export async function updateTemporarySelectionWhereIdEqual(
         slt_temp_description,
         slt_temp_img
       });
-    console.log(updated);
+
+    if (!updated) {
+      throw new InternalServerError('임시 셀렉션 수정에 실패했습니다');
+    }
   } catch (error) {
     console.error(error);
     throw new InternalServerError('임시 셀렉션 수정에 실패했습니다');

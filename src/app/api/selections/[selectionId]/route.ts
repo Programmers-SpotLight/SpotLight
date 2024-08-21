@@ -30,6 +30,9 @@ import { getUserInfo } from "@/services/user.services";
 import { getServerSession } from "next-auth";
 
 import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { UnauthorizedError } from "@/utils/errors";
+import { getTokenForAuthentication } from "@/utils/authUtils";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET(
@@ -204,12 +207,23 @@ export async function PUT(
 
   const transaction = await dbConnectionPool.transaction();
   try {
-    const formData: FormData = await request.formData();
+    const token = await getTokenForAuthentication(request);
+    if (!token.userId) {
+      throw new UnauthorizedError("userId가 token에 없습니다.");
+    }
+
+    const formData : FormData = await request.formData();
     // 데이터 유효성 검사
     const data: ISelectionCreateCompleteData =
       await prepareAndValidateSelectionCreateFormData(formData);
     // add logic for updating temporary selection
-    await editSelection(transaction, selectionId, data);
+    
+    await editSelection(
+      transaction,
+      token.userId as number, 
+      selectionId, 
+      data
+    );
 
     await transaction.commit();
     return new Response(JSON.stringify(data), {

@@ -1,5 +1,6 @@
 import { ISelectionCreateCompleteData, ISelectionCreateTemporaryData } from "@/models/selection.model";
 import { 
+  deleteAllTemporarySelectionHashtagBySelectionId,
   deleteMultipleSelectionHashtagNotIn,
   deleteMultipleTemporarySelectionHashtagNotIn,
   insertHashtagsGetIds,
@@ -17,23 +18,29 @@ import {
   updateTemporarySelectionWhereIdEqual
 } from "@/repositories/selection.repository";
 import { 
+  deleteAllSpotTemporaryBySelectionId,
   selectMultipleSpotBySelectionId, 
   selectMultipleSpotImageBySelectionId, 
   selectMultipleSpotTemporaryBySelectionId, 
   selectMultipleSpotTemporaryImageBySelectionId
 } from "@/repositories/spot.repository";
-import { NotFoundError } from "@/utils/errors";
+import { ForbiddenError, NotFoundError } from "@/utils/errors";
 import { createHashtagsForSpots, saveSelectionImage } from "./selectionCreate.services";
 import { Knex } from "knex";
 import { upsertSpots, upsertTemporarySpots } from "./spot.services";
 
 
 export async function getTemporarySelectionForEdit(
+  userId: number,
   selectionId: number
 ) {
   const selection = await selectTemporarySelectionWhereIdEqual(selectionId);
   if (!selection) {
-    throw new NotFoundError("해당 셀렉션을 찾을 수 없습니다");
+    throw new NotFoundError("해당 미리저장 셀렉션을 찾을 수 없습니다");
+  }
+
+  if (selection.userId !== userId) {
+    throw new ForbiddenError("해당 미리저장 셀렉션을 조회할 권한이 없습니다");
   }
 
   selection.hashtags = (await selectMultipleTemporarySelectionHashtags(selectionId)).map(
@@ -69,11 +76,16 @@ export async function getTemporarySelectionForEdit(
 }
 
 export async function getSelectionForEdit(
+  userId: number,
   selectionId: number
 ) {
   const selection = await selectSelectionWhereIdEqual(selectionId);
   if (!selection) {
     throw new NotFoundError("해당 셀렉션을 찾을 수 없습니다");
+  }
+
+  if (selection.userId !== userId) {
+    throw new ForbiddenError("해당 셀렉션을 조회할 권한이 없습니다");
   }
 
   selection.hashtags = (await selectMultipleSelectionHashtags(selectionId)).map(
@@ -104,12 +116,17 @@ export async function getSelectionForEdit(
 
 export async function editSelection(
   transaction: Knex.Transaction<any, any[]>,
+  userId: number,
   selectionId: number,
   formData: ISelectionCreateCompleteData
 ) {
   const selection = await selectSelectionWhereIdEqual(selectionId);
   if (!selection) {
     throw new NotFoundError("해당 셀렉션을 찾을 수 없습니다");
+  }
+
+  if (selection.userId !== userId) {
+    throw new ForbiddenError("해당 셀렉션을 수정할 권한이 없습니다");
   }
 
   if (formData.img instanceof File) {
@@ -128,13 +145,13 @@ export async function editSelection(
 
   // 각 spot에 대해 해시태그 생성
   // 셀렉션에 포함된 spot들의 해시태그를 생성할 해시테그 id 배열로 변환
-  if (formData.spots && formData.spots.length > 0)
-    await createHashtagsForSpots(transaction, formData.spots);  
+  await createHashtagsForSpots(transaction, formData.spots);  
 
   await updateSelectionWhereIdEqual(
     transaction, 
     selectionId, 
     {
+      user_id: userId,
       slt_title: formData.title,
       slt_status: formData.status,
       slt_category_id: formData.category,
@@ -169,12 +186,17 @@ export async function editSelection(
 
 export async function editSelectionTemporary(
   transaction: Knex.Transaction<any, any[]>,
+  userId: number,
   selectionId: number,
   formData: ISelectionCreateTemporaryData
 ) {
   const selection = await selectTemporarySelectionWhereIdEqual(selectionId);
   if (!selection) {
     throw new NotFoundError("해당 셀렉션을 찾을 수 없습니다");
+  }
+
+  if (selection.userId !== userId) {
+    throw new ForbiddenError("해당 셀렉션을 수정할 권한이 없습니다");
   }
 
   if (formData.img instanceof File) {
@@ -200,6 +222,7 @@ export async function editSelectionTemporary(
     transaction, 
     selectionId, 
     {
+      user_id: userId,
       slt_temp_title: formData.title,
       slt_category_id: formData.category || null,
       slt_location_option_id: formData.location?.subLocation || null,
@@ -220,6 +243,8 @@ export async function editSelectionTemporary(
       selectionId, 
       formData.hashtags as number[]
     );
+  } else {
+    await deleteAllTemporarySelectionHashtagBySelectionId(transaction, selectionId);
   }
 
   if (formData.spots && formData.spots.length > 0) {
@@ -228,5 +253,7 @@ export async function editSelectionTemporary(
       selectionId, 
       formData.spots
     );
+  } else {
+    await deleteAllSpotTemporaryBySelectionId(transaction, selectionId);
   }
 }
