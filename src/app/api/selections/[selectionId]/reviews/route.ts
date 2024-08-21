@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { countReviews, getSelectionReviews, postSelectionReviews, putSelectionReviews } from "@/services/selection-review.services";
+import { countReviews, getSelectionReviews, postSelectionReviews } from "@/services/selectionReview.services";
 import { uuidToBinary } from "@/utils/uuidToBinary";
 import { getServerSession, Session } from "next-auth";
 
