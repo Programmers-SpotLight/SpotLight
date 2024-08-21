@@ -1,7 +1,11 @@
 import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import { dbConnectionPool } from "@/libs/db";
 import { Ihashtags } from "@/models/hashtag.model";
-import { ISelectionCreateCompleteData, ISelectionDetailInfo, ISelectionInfo } from "@/models/selection.model";
+import {
+  ISelectionCreateCompleteData,
+  ISelectionDetailInfo,
+  ISelectionInfo
+} from "@/models/selection.model";
 import { ISpotImage, ISpotInfo } from "@/models/spot.model";
 import { prepareAndValidateSelectionCreateFormData } from "@/services/selectionCreate.validation";
 import {
@@ -84,7 +88,7 @@ export async function GET(
     if (spotHashtags.length) spotDetailInfo[i].hashtags = spotHashtags;
   }
 
-  const booked = await getBookMarks(selectionId, session?.user.id);
+  const bookMark = await getBookMarks(selectionId, session?.user.id);
   const selectionWriterInfo = await getUserInfo(
     selecitonDetailInfo.writerId.toString()
   );
@@ -94,7 +98,7 @@ export async function GET(
     writer: selectionWriterInfo,
     hashtags,
     spotList: spotDetailInfo,
-    booked: booked.length ? true : false
+    booked: bookMark ? true : false
   };
   return NextResponse.json(selectionData);
 }
@@ -181,40 +185,31 @@ export async function PUT(
   const selectionId = params.selectionId;
 
   if (!selectionId) {
-    return new Response(
-      JSON.stringify({ error: "Invalid selection ID" }),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json"
-        }
+    return new Response(JSON.stringify({ error: "Invalid selection ID" }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json"
       }
-    );
+    });
   }
 
   if (isNaN(selectionId)) {
-    return new Response(
-      JSON.stringify({ error: "Invalid selection ID" }),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json"
-        }
+    return new Response(JSON.stringify({ error: "Invalid selection ID" }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json"
       }
-    );
+    });
   }
 
   const transaction = await dbConnectionPool.transaction();
   try {
-    const formData : FormData = await request.formData();
+    const formData: FormData = await request.formData();
     // 데이터 유효성 검사
-    const data : ISelectionCreateCompleteData = await prepareAndValidateSelectionCreateFormData(formData);
+    const data: ISelectionCreateCompleteData =
+      await prepareAndValidateSelectionCreateFormData(formData);
     // add logic for updating temporary selection
-    await editSelection(
-      transaction, 
-      selectionId, 
-      data
-    );
+    await editSelection(transaction, selectionId, data);
 
     await transaction.commit();
     return new Response(JSON.stringify(data), {
@@ -232,5 +227,5 @@ export async function PUT(
         "Content-Type": "text/plain"
       }
     });
-  } 
+  }
 }

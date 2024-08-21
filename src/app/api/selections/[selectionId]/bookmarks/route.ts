@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    addBookMarks(selectionId, userId);
+    await addBookMarks(selectionId, userId);
     return NextResponse.json(
       { message: "Bookmark added successfully" },
       { status: 200 }

@@ -4,7 +4,11 @@ import UserNavigation from "@/components/user/my/UserNavigation";
 import PrivateUser from "@/components/user/other-user/PrivateUser";
 import UserInfoWidget from "@/components/user/UserInfoWidget";
 import { UserPageProvider } from "@/context/UserPageContext";
-import { useFetchUserHashtag, useFetchUserInfo } from "@/hooks/queries/useFetchUserInfo";
+import {
+  useFetchUserHashtag,
+  useFetchUserInfo
+} from "@/hooks/queries/useFetchUserInfo";
+import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -15,9 +19,19 @@ export default function RootLayout({
 }) {
   const params = useParams();
   const userId = params.userId.toString();
-  const isMyPage = true;
-  const { data : infoData, isLoading : infoLoading, isError: infoError } = useFetchUserInfo(userId);
-  const { data : hashData, isLoading : hashLoading, isError : hashError} = useFetchUserHashtag(userId);
+  const { data: session } = useSession();
+
+  const isMyPage = session?.user.id === parseInt(userId, 10);
+  const {
+    data: infoData,
+    isLoading: infoLoading,
+    isError: infoError
+  } = useFetchUserInfo(userId);
+  const {
+    data: hashData,
+    isLoading: hashLoading,
+    isError: hashError
+  } = useFetchUserHashtag(userId);
 
   if (infoLoading || hashLoading)
     return (
@@ -43,7 +57,11 @@ export default function RootLayout({
   return (
     <UserPageProvider isMyPage={isMyPage}>
       <div className="w-[1024px] flex flex-col m-auto border border-solid border-grey2 bg-grey0">
-        <UserInfoWidget {...infoData} userId={userId} hashtags={hashData.data} />
+        <UserInfoWidget
+          {...infoData}
+          userId={userId}
+          hashtags={hashData.data}
+        />
         <div className="flex">
           {isMyPage && <UserNavigation />}
           {children}

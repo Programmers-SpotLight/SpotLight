@@ -1,20 +1,21 @@
-import 'server-only';
+import "server-only";
 import { dbConnectionPool } from "@/libs/db";
-import { 
-  ISelectionCategory, 
-  ISelectionCategoryQueryResultRow, 
-  ISelectionLocation, 
-  ISelectionLocationQueryResultRow, 
-} from "@/models/selection.model";
 import {
-  InternalServerError,
-} from "@/utils/errors";
-import { selectAllSelectionCategories, selectAllSelectionLocations } from '@/repositories/selection.repository';
-
+  ISelectionCategory,
+  ISelectionCategoryQueryResultRow,
+  ISelectionLocation,
+  ISelectionLocationQueryResultRow
+} from "@/models/selection.model";
+import { BadRequestError, InternalServerError } from "@/utils/errors";
+import {
+  selectAllSelectionCategories,
+  selectAllSelectionLocations
+} from "@/repositories/selection.repository";
 
 export async function getSelectionCategories(): Promise<ISelectionCategory[]> {
   try {
-    const queryResult: ISelectionCategoryQueryResultRow[] = await selectAllSelectionCategories();
+    const queryResult: ISelectionCategoryQueryResultRow[] =
+      await selectAllSelectionCategories();
 
     const categories: ISelectionCategory[] = queryResult.map((row) => {
       return {
@@ -32,7 +33,8 @@ export async function getSelectionCategories(): Promise<ISelectionCategory[]> {
 
 export async function getSelectionLocations(): Promise<ISelectionLocation[]> {
   try {
-    const queryResult: ISelectionLocationQueryResultRow[] = await selectAllSelectionLocations();
+    const queryResult: ISelectionLocationQueryResultRow[] =
+      await selectAllSelectionLocations();
 
     const locations: Array<ISelectionLocation> = [];
     queryResult.forEach((row: ISelectionLocationQueryResultRow) => {
@@ -70,17 +72,31 @@ export async function getSelectionLocations(): Promise<ISelectionLocation[]> {
 
 export const addBookMarks = async (selectionId: number, userId: number) => {
   try {
+    const existingBookmark = await dbConnectionPool("bookmark")
+      .select("*")
+      .where("slt_id", selectionId)
+      .andWhere("user_id", userId);
+
+    if (existingBookmark.length) throw new Error("Failed to add bookmark");
+
     await dbConnectionPool("bookmark").insert({
       user_id: userId,
       slt_id: selectionId
     });
   } catch (error) {
-    throw new Error("Failed to add bookmark");
+    throw error;
   }
 };
 
 export const removeBookMarks = async (selectionId: number, userId: number) => {
   try {
+    const existingBookmark = await dbConnectionPool("bookmark")
+      .select("*")
+      .where("slt_id", selectionId)
+      .andWhere("user_id", userId);
+
+    if (!existingBookmark.length) throw new Error("Failed to remove bookmark");
+
     await dbConnectionPool("bookmark")
       .where({
         user_id: userId,
@@ -88,6 +104,6 @@ export const removeBookMarks = async (selectionId: number, userId: number) => {
       })
       .del();
   } catch (error) {
-    throw new Error("Failed to add bookmark");
+    throw error;
   }
 };
