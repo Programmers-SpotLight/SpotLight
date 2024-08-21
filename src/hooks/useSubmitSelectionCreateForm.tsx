@@ -154,9 +154,6 @@ const useSubmitSelectionCreateForm = () => {
     const spotImages: TTemporarySpotImageStorage = separateSpotImages(spots, formData);
     formData.append('spots', JSON.stringify(spots));
 
-    if (id && isTemporary)
-      formData.append('temp_id', id.toString());
-
     setIsSubmitting(true);
     if (id && !isTemporary) {
       handleSubmitSelectionEdit(formData, spotImages);
@@ -203,10 +200,14 @@ const useSubmitSelectionCreateForm = () => {
     setSpots(cloneSpots);
   }
 
+  // 셀렉션 추가 함수
   function handleSubmitSelection(
     formData: FormData, 
     spotImages: TTemporarySpotImageStorage
   ) {
+    if (id && isTemporary)
+      formData.append('temp_id', id.toString());
+
     submitCompleteSelection(
       formData,
     ).then((res) => {
@@ -220,6 +221,7 @@ const useSubmitSelectionCreateForm = () => {
     });
   }
 
+  // 셀렉션 수정 제출 함수
   function handleSubmitSelectionEdit(
     formData: FormData, 
     spotImages: TTemporarySpotImageStorage
@@ -235,6 +237,7 @@ const useSubmitSelectionCreateForm = () => {
     })
   }
 
+  // 미리저장 셀렉션 추가 함수
   function handleSubmitTemporarySelection(
     formData: FormData, 
     spotImages: TTemporarySpotImageStorage
@@ -252,6 +255,7 @@ const useSubmitSelectionCreateForm = () => {
     });
   }
 
+  // 미리저장 셀렉션 수정 제출 함수
   function handleSubmitTemporarySelectionEdit(
     formData: FormData, 
     spotImages: TTemporarySpotImageStorage
