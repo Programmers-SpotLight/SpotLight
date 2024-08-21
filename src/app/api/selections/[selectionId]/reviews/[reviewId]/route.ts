@@ -1,5 +1,7 @@
-import { deleteSelectionReviews, putSelectionReviews } from "@/services/selection-review.services";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { deleteSelectionReviews, putSelectionReviews } from "@/services/selectionReview.services";
 import { uuidToBinary } from "@/utils/uuidToBinary";
+import { getServerSession } from "next-auth";
 
 export async function PUT (
   req: Request,
@@ -9,10 +11,11 @@ export async function PUT (
     const selectionId = parseInt(params.selectionId, 10);
     const reviewId = params.reviewId;
     
-    const userId = 1;
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
     if (!userId) {
-      return;
+      return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
 
     const data:IReviewFormData = await req.json();
@@ -60,9 +63,11 @@ export async function DELETE (
 ) {
   try {
     const reviewId = params.reviewId;
-    const userId = 1;
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
     if (!userId) {
-      return;
+      return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
 
     await deleteSelectionReviews(reviewId);

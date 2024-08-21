@@ -18,7 +18,8 @@ const ReviewModal = ({ review, sltOrSpotId, onSubmit }: ImodalProps) => {
         reviewScore: data.reviewScore,
         reviewDescription: data.reviewDescription,
         reviewImg: data.reviewImg,
-        reviewId: review ? review.reviewId : undefined
+        reviewId: review.reviewId,
+        sltOrSpotId
       }
     :
       {

@@ -142,6 +142,45 @@ export const countMyReviews = async (
   }
 };
 
+export const getLike = async (
+  reviewId: string,
+  reviewType: ReviewType,
+  userId: number
+): Promise<IReviewLikeData> => {
+  try {
+    let result;
+
+    if (reviewType === "selection") {
+      result = await dbConnectionPool('selection_review_like')
+        .select([
+          dbConnectionPool.raw('COUNT(*) as likeCount'),
+          dbConnectionPool.raw('MAX(CASE WHEN user_id = ? THEN 1 ELSE 0 END) as isLiked', [userId])
+        ])
+        .where('slt_review_id', dbConnectionPool.raw('UNHEX(?)', [reviewId]));
+    } else if (reviewType === "spot") {
+      result = await dbConnectionPool('spot_review_like')
+        .select([
+          dbConnectionPool.raw('COUNT(*) as likeCount'),
+          dbConnectionPool.raw('MAX(CASE WHEN user_id = ? THEN 1 ELSE 0 END) as isLiked', [userId])
+        ])
+        .where('spot_review_id', dbConnectionPool.raw('UNHEX(?)', [reviewId]));
+    } else {
+      throw new Error("Invalid review type");
+    }
+
+    const [{ likeCount, isLiked }] = result || [{ likeCount: 0, isLiked: 0 }];
+
+    return {
+      reviewId,
+      liked: !!isLiked, 
+      likeCount
+    };
+  } catch (error) {
+    console.error("Error details:", error);
+    throw new Error("Failed to add review like");
+  }
+};
+
 export const addLike = async (
   reviewId: string,
   reviewType: ReviewType,

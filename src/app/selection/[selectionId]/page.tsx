@@ -2,8 +2,6 @@
 
 import GoogleMap from "@/components/google-map/GoogleMap";
 import Drawer from "@/components/selection-detail/Drawer";
-import ReviewModal from "@/components/selection-detail/review/ReviewModal";
-import ReviewDeleteModal from "@/components/selection-detail/review/ReviewDeleteModal";
 import ReviewImageModal from "@/components/selection-detail/review/ReviewImageModal";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -93,8 +91,6 @@ const SelectionPage = () => {
           selectedSpotId={selectedSpotId}
         />
       )}
-      <ReviewModal />
-      <ReviewDeleteModal />
       <ReviewImageModal />
     </div>
   );

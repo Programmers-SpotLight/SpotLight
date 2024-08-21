@@ -4,6 +4,7 @@ import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
 import Review from "./review/Review";
 import { ISpotInfo } from "@/models/spot.model";
+import { SortProvider } from "@/context/useReviewSortContext";
 
 interface ISpotSectionProps {
   isSelectionDrawerOpen: boolean;
@@ -54,8 +55,12 @@ const SpotSection = ({
       component: <SpotInfo description={spotData.description} />
     },
     {
-      title: "유저 리뷰",
-      component: <Review reviewType="spot" sltOrSpotId={spotIdHex} />
+      title: "스팟 리뷰",
+      component: (
+        <SortProvider>
+          <Review reviewType="spot" sltOrSpotId={spotIdHex} />
+        </SortProvider>
+      )
     }
   ];
 

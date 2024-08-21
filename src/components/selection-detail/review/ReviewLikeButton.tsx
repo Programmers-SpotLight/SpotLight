@@ -1,8 +1,5 @@
-import { useReviewsLikes } from "@/hooks/queries/useReviewsLikes";
-import { useState } from "react";
+import { useReviewsLikes } from "@/hooks/mutations/useReviewsLikes";
 import { AiFillLike } from "react-icons/ai";
-
-const userId = 1;
 
 interface ILikeButton {
   liked: boolean;
@@ -10,6 +7,7 @@ interface ILikeButton {
   reviewType: ReviewType;
   sltOrSpotId: string | number;
   reviewId: string;
+  userId: number;
 }
 
 const ReviewLikeButton = ({
@@ -17,7 +15,8 @@ const ReviewLikeButton = ({
   likeCount,
   reviewType,
   sltOrSpotId,
-  reviewId
+  reviewId,
+  userId
 }: ILikeButton) => {
   const { 
     addLikeMutate, 
@@ -29,18 +28,11 @@ const ReviewLikeButton = ({
     userId
   );
 
-  const [checkLiked, setCheckLiked] = useState(liked);
-  const [likes, setLikes] = useState(likeCount);
-
   const likeToggle = async () => {
     try {
-      if (checkLiked) {
-        setCheckLiked(false);
-        setLikes(likes - 1);
+      if (liked) {
         removeLikeMutate();
       } else {
-        setCheckLiked(true);
-        setLikes(likes + 1);
         addLikeMutate();
       }
     } catch (error) {
@@ -48,7 +40,8 @@ const ReviewLikeButton = ({
     }
   };
 
-  const colorClass = checkLiked ? "text-primary" : "text-grey3";
+
+  const colorClass = liked ? "text-primary" : "text-grey3";
 
   return (
     <div
@@ -59,7 +52,7 @@ const ReviewLikeButton = ({
         className="cursor-pointer"
         onClick={likeToggle}
       />
-      <div className="text-small">{likes}</div>
+      <div className="text-small">{likeCount}</div>
     </div>
   );
 };

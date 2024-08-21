@@ -4,27 +4,23 @@ interface ISelectionReviews {
   sltOrSpotId: number;
   sort: string;
   page: number;
+  userId: number;
 }
 
 export async function getSelectionReviews({
   sltOrSpotId,
   sort,
-  page
+  page,
+  userId
 }: ISelectionReviews) {
-  const userId = 1;
   const maxResults = 5;
   const offset = maxResults * (page - 1);
 
   const orderByClause = sort === 'like'
-    ? [
-        { column: 'likeCount', order: 'desc' },
-      ]
-    : [
-        { column: 'slt_review_created_date', order: 'desc' }
-      ];
-      
-  const queryResult = await dbConnectionPool
-  .select([
+    ? [{ column: 'likeCount', order: 'desc' }]
+    : [{ column: 'slt_review_created_date', order: 'desc' }];
+
+  const selectColumns = [
     dbConnectionPool.raw('HEX(r.slt_review_id) AS reviewId'),
     'r.slt_id AS sltOrSpotId',
     'r.slt_review_description AS reviewDescription',
@@ -46,20 +42,28 @@ export async function getSelectionReviews({
     dbConnectionPool.raw(`
       (SELECT COUNT(*) FROM spotlight.selection_review_like l 
         WHERE HEX(l.slt_review_id) = HEX(r.slt_review_id)) AS likeCount
-    `),
-    dbConnectionPool.raw(`
-      (SELECT COUNT(*) FROM spotlight.selection_review_like l 
-        WHERE HEX(l.slt_review_id) = HEX(r.slt_review_id) AND l.user_id = ?) > 0 AS isLiked
-    `, [userId])
-  ])
-  .from('spotlight.selection_review AS r')
-  .leftJoin('spotlight.user AS u', 'r.user_id', 'u.user_id')
-  .leftJoin('spotlight.selection_review_image AS i', 'r.slt_review_id', 'i.slt_review_id')
-  .where('r.slt_id', sltOrSpotId)
-  .groupBy('r.slt_review_id', 'r.slt_id', 'r.slt_review_description', 'r.slt_review_score', 'r.slt_review_created_date', 'u.user_id', 'u.user_nickname', 'u.user_img')
-  .orderBy(orderByClause)
-  .offset(offset)  
-  .limit(maxResults); 
+    `)
+  ];
+
+  if (userId) {
+    selectColumns.push(
+      dbConnectionPool.raw(`
+        (SELECT COUNT(*) FROM spotlight.selection_review_like l 
+          WHERE HEX(l.slt_review_id) = HEX(r.slt_review_id) AND l.user_id = ?) > 0 AS isLiked
+      `, [userId])
+    );
+  }
+
+  const queryResult = await dbConnectionPool
+    .select(selectColumns)
+    .from('spotlight.selection_review AS r')
+    .leftJoin('spotlight.user AS u', 'r.user_id', 'u.user_id')
+    .leftJoin('spotlight.selection_review_image AS i', 'r.slt_review_id', 'i.slt_review_id')
+    .where('r.slt_id', sltOrSpotId)
+    .groupBy('r.slt_review_id', 'r.slt_id', 'r.slt_review_description', 'r.slt_review_score', 'r.slt_review_created_date', 'u.user_id', 'u.user_nickname', 'u.user_img')
+    .orderBy(orderByClause)
+    .offset(offset)  
+    .limit(maxResults);
 
   const reviews = queryResult.map(review => ({
     reviewId: review.reviewId,
@@ -72,14 +76,14 @@ export async function getSelectionReviews({
       userId: review.userId,
       userNickname: review.userNickname,
       userImage: review.userImage,
-      isLiked: review.isLiked
+      isLiked: userId ? review.isLiked : null
     },
     reviewImg: review.reviewImg ? JSON.parse(`[${review.reviewImg}]`) : null,
     likeCount: review.likeCount
   }));
 
   return reviews;
-};
+}
 
 export async function countReviews(
   sltOrSpotId: number | string, 

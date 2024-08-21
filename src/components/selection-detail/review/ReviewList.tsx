@@ -4,11 +4,9 @@ interface IReviewListProps {
   sltOrSpotId: number | string;
   reviews: IReview[];
   reviewType: ReviewType;
-  updateReview: (data: IReviewUpdateFormData) => void;
-  deleteReview: (reviewId: string) => void; 
 }
 
-const ReviewList = ({ sltOrSpotId, reviews, reviewType, updateReview, deleteReview }: IReviewListProps) => {
+const ReviewList = ({ sltOrSpotId, reviews, reviewType }: IReviewListProps) => {
   return (
     <div className="space-y-4">
       {
@@ -18,8 +16,6 @@ const ReviewList = ({ sltOrSpotId, reviews, reviewType, updateReview, deleteRevi
             sltOrSpotId={sltOrSpotId} 
             review={review} 
             reviewType={reviewType}
-            updateReview={updateReview}
-            deleteReview={deleteReview}
           />
         ))
       }
