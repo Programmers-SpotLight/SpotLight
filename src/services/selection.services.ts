@@ -70,21 +70,6 @@ export async function getSelectionLocations(): Promise<ISelectionLocation[]> {
   }
 }
 
-export const getBookMarks = async (selectionId: number, userId: number) => {
-  if (!userId) return null;
-  try {
-    const bookmarks = await dbConnectionPool("bookmark")
-      .select("*")
-      .where("slt_id", selectionId)
-      .andWhere("user_id", userId)
-      .first();
-
-    return bookmarks ? bookmarks : null;
-  } catch (error) {
-    throw new Error("Failed to getBookMarks");
-  }
-};
-
 export const addBookMarks = async (selectionId: number, userId: number) => {
   try {
     const existingBookmark = await dbConnectionPool("bookmark")

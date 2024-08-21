@@ -145,6 +145,20 @@ export const getSpotImages = async (spotId: Buffer) => {
   }
 };
 
+export const getBookMarks = async (selectionId: number, userId: number) => {
+  if (!userId) return null;
+  try {
+    const bookmarks = await dbConnectionPool("bookmark")
+      .select("*")
+      .where("slt_id", selectionId)
+      .andWhere("user_id", userId)
+      .first();
+    return bookmarks;
+  } catch (error) {
+    throw new Error("Failed to getBookMarks");
+  }
+};
+
 export const getSpotCategories = async (spotId: string) => {
   try {
     const SpotCategory = await dbConnectionPool();

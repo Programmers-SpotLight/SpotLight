@@ -14,6 +14,7 @@ import {
   TuserSelection
 } from "@/models/user.model";
 import {
+  getBookMarks,
   getSelectionDetailInfo,
   getSelectionHashTags,
   getSpotDetailInfo,
@@ -87,6 +88,7 @@ export async function GET(
     if (spotHashtags.length) spotDetailInfo[i].hashtags = spotHashtags;
   }
 
+  const bookMark = await getBookMarks(selectionId, session?.user.id);
   const selectionWriterInfo = await getUserInfo(
     selecitonDetailInfo.writerId.toString()
   );
@@ -95,7 +97,8 @@ export async function GET(
     ...selecitonDetailInfo,
     writer: selectionWriterInfo,
     hashtags,
-    spotList: spotDetailInfo
+    spotList: spotDetailInfo,
+    booked: bookMark ? true : false
   };
   return NextResponse.json(selectionData);
 }

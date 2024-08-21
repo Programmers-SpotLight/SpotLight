@@ -100,6 +100,7 @@ export interface ISelectionDetailInfo {
 export interface ISelectionInfo extends ISelectionDetailInfo {
   writer: IUserInfoData;
   spotList: ISpotInfo[];
+  booked: boolean;
 }
 
 export interface IModalCreateSelectionSpotExtraData {

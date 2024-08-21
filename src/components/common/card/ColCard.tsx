@@ -27,6 +27,7 @@ export interface IColCardProps extends IBaseCardProps {
   hashtags: Ihashtags[];
   status: TselectionStatus;
   isMyPage?: boolean;
+  booked?: boolean;
   onClick?: () => void;
 }
 
@@ -57,11 +58,14 @@ const ColCard = ({
   selectionId,
   isMyPage,
   status = "public",
+  booked = false,
   onClick
 }: IColCardProps) => {
   const { data } = useSession();
-  const { isBookmarked, addBookMarksMutate, removeBookMarksMutate } =
-    useBookMarks(selectionId, data?.user.id);
+  const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
+    selectionId,
+    data?.user.id
+  );
   const {
     showMenu,
     setShowMenu,
@@ -74,7 +78,7 @@ const ColCard = ({
   const handleBookMarkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    isBookmarked ? removeBookMarksMutate() : addBookMarksMutate();
+    booked ? removeBookMarksMutate() : addBookMarksMutate();
   };
 
   return (
@@ -181,7 +185,7 @@ const ColCard = ({
             </div>
 
             <div>
-              {isBookmarked ? (
+              {booked ? (
                 <FaBookmark
                   className="w-5 h-5 fill-red-600 cursor-pointer"
                   onClick={handleBookMarkClick}
