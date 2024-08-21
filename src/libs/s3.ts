@@ -1,5 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { GetObjectCommandOutput } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand, GetObjectCommandOutput, ObjectCannedACL } from '@aws-sdk/client-s3';
 
 // AWS S3 설정
 const s3 = new S3Client({
@@ -13,16 +12,15 @@ const s3 = new S3Client({
 interface UploadFileParams {
   fileName: string;
   fileType: string;
-  fileContent: Buffer | ArrayBuffer | string; // 파일 내용의 타입
+  fileContent: Buffer | string;
 }
-
 export const uploadFileToS3 = async ({ fileName, fileType, fileContent }: UploadFileParams) => {
   const s3Params = {
     Bucket: process.env.S3_BUCKET_NAME as string,
     Key: fileName,
-    Body: fileContent,
+    Body: fileContent instanceof Buffer ? fileContent : Buffer.from(fileContent), // Buffer로 변환
     ContentType: fileType,
-    ACL: 'public-read', // 파일을 공개적으로 읽을 수 있도록 설정
+    ACL: ObjectCannedACL.public_read,
   };
 
   try {
