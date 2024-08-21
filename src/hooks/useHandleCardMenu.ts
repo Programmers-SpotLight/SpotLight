@@ -26,7 +26,6 @@ const useHandleCardMenu = (status: TselectionStatus) => {
     selectionId: number,
     title: string
   ) => {
-    console.log(`${action} 클릭됨!`);
     e.preventDefault();
     e.stopPropagation();
     if (action === "비공개 설정하기") {

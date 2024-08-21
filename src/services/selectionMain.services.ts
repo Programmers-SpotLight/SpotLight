@@ -45,7 +45,6 @@ export const getPopularSelection = async () => {
     
     return results;
   } catch (error) {
-    console.log(error)
     throw new Error(`Failed to fetch search Result`); // Todo : Error 처리
   }
 };

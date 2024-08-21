@@ -19,12 +19,13 @@ export const updateUserDescription = async (
   description: string
 ) => {
   const url = `/api/users/${userId}/description`;
-  return await requestHandler("put", url, {description});
+  return await requestHandler("put", url, { description });
 };
 
 export const addUserHashTag = async (userId: string, hashtag: string) => {
   const url = `/api/users/${userId}/hashtag`;
-  return await requestHandler("post", url, { data: { userId, hashtag } });
+  console.log(hashtag)
+  return await requestHandler("post", url, { data : {hashtag}});
 };
 
 export const updateUserSelectionPrivate = async (

@@ -2,6 +2,8 @@ import { getToken, JWT } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import { UnauthorizedError } from "./errors";
 import { ErrorResponse } from "@/models/user.model";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const getTokenForAuthentication = async (req: NextRequest) : Promise<JWT> => {
   const token = await getToken({req});
@@ -11,10 +13,13 @@ export const getTokenForAuthentication = async (req: NextRequest) : Promise<JWT>
   return token;
 };
 
-export const userIdValidator = (userId: string, session_userId: number | null): NextResponse<ErrorResponse> | null => {
-  console.log(userId, session_userId)
-  if (parseInt(userId) !== session_userId) {
-      return NextResponse.json({ error: "사용자 ID가 일치하지 않습니다." }, { status: 403 });
+export const userIdValidator = async (userId: string): Promise<NextResponse<ErrorResponse> | null> => {
+  const session = await getServerSession(authOptions);
+  const session_userId = session ? session.user.id : null;
+  console.log(session_userId);
+  if (session_userId === null || parseInt(userId) !== session_userId) {
+    return NextResponse.json({ error: "사용자 ID가 일치하지 않습니다." }, { status: 403 });
   }
+
   return null;
 };
