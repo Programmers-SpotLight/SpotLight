@@ -7,6 +7,7 @@ const searchQueryBuilder = (
   category_id: string,
   region_id: string,
   tags: string[],
+  user_id?: string,
   sort?: TsortType
 ) => {
   try {
@@ -15,6 +16,14 @@ const searchQueryBuilder = (
     .count('slt_id as bookmark_count')
     .groupBy('slt_id')
     .as('bc');
+
+    let userBookmarkSubquery;
+    if (user_id) {
+      userBookmarkSubquery = dbConnectionPool('bookmark')
+        .select('slt_id')
+        .where('user_id', user_id)
+        .as('ub');
+    }
     
     queryBuilder
     .join("user", "selection.user_id", "=", "user.user_id")
@@ -68,9 +77,15 @@ const searchQueryBuilder = (
   queryBuilder.where("selection.slt_status", "<>", "private");
   queryBuilder.where("selection.slt_status", "<>", "delete");
 
+  if (user_id) {
+    queryBuilder.leftJoin(userBookmarkSubquery, 'selection.slt_id', '=', 'ub.slt_id');
+    queryBuilder.select(dbConnectionPool.raw('CASE WHEN ub.slt_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_bookmarked'));
+  } else {
+    queryBuilder.select(dbConnectionPool.raw('FALSE AS is_bookmarked'));
+  }
+
   return queryBuilder;
 } catch(error) {
-  console.log("쿼리빌더 에러", error)
 }
 };
 
@@ -111,7 +126,9 @@ export const getSearchResult = async (
   tags: string[],
   sort: TsortType,
   limit: number,
-  currentPage: number
+  currentPage: number,
+  user_id?: string,
+
 ) => {
   try {
     const resultQuery = dbConnectionPool("selection")
@@ -133,6 +150,7 @@ export const getSearchResult = async (
           category_id,
           region_id,
           tags,
+          user_id,
           sort as TsortType
         )
       )
