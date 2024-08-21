@@ -25,6 +25,7 @@ export interface IsearchData {
 	user_id: number,
 	user_nickname : string,
 	user_img : string
+	is_bookmarked : boolean
 }
 
 export interface ItempSelectionData {

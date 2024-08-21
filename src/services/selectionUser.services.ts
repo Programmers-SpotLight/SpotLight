@@ -7,13 +7,22 @@ const userSelectionQueryBuilder = async (
   userSelectionType: TuserSelection,
   userId: string,
   sort?: TsortType,
-  isMyPage?: boolean
+  isMyPage?: boolean,
+  session_userId? : number
 ) => {
   const bookmarkCountSubquery = dbConnectionPool('bookmark')
   .select('slt_id')
   .count('slt_id as bookmark_count')
   .groupBy('slt_id')
   .as('bc');
+
+  let userBookmarkSubquery;
+  if (session_userId) {
+    userBookmarkSubquery = dbConnectionPool('bookmark')
+      .select('slt_id')
+      .where('user_id', session_userId)
+      .as('ub');
+  }
 
   queryBuilder
     .join("user", "selection.user_id", "=", "user.user_id")
@@ -57,6 +66,14 @@ const userSelectionQueryBuilder = async (
         .where("b.user_id", userId);
     }
   }
+  
+  if (session_userId) {
+    queryBuilder.leftJoin(userBookmarkSubquery, 'selection.slt_id', '=', 'ub.slt_id');
+    queryBuilder.select(dbConnectionPool.raw('CASE WHEN ub.slt_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_bookmarked'));
+  } else {
+    queryBuilder.select(dbConnectionPool.raw('FALSE AS is_bookmarked'));
+  }
+
   if (!isMyPage) {
     queryBuilder.whereNot("selection.slt_status", "private");
   }
@@ -106,6 +123,7 @@ export const getUserSelectionResult = async (
   limit: number,
   currentPage: number,
   sort?: TsortType,
+  session_userId? : number,
   isMyPage?: boolean
 ) => {
   try {
@@ -128,7 +146,8 @@ export const getUserSelectionResult = async (
           userSelectionType,
           userId,
           sort,
-          isMyPage
+          isMyPage,
+          session_userId
         )
       )
       .limit(limit)
