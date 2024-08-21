@@ -9,6 +9,8 @@ import Hashtag from "../Hashtag";
 import { BiSolidPencil } from "react-icons/bi";
 import { FaBookmark, FaRegBookmark, FaTrash } from "react-icons/fa";
 import useHandleCardMenu from "@/hooks/useHandleCardMenu";
+import { useSession } from "next-auth/react";
+import { useBookMarks } from "@/hooks/queries/useBookMarks";
 
 export interface IBaseCardProps {
   thumbnail: string;
@@ -53,19 +55,29 @@ const ColCard = ({
   userName,
   userImage,
   hashtags,
-  selectionId, 
+  selectionId,
   isMyPage,
   status = "public",
   booked = false,
 }: IColCardProps) => {
+  const { data } = useSession();
+  const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
+    selectionId,
+    data?.user.id
+  );
   const {
     showMenu,
     selectionMenuRef,
     currentStatus,
     handleIconClick,
-    handleMenuItemClick,
-    handleBookMarkClick
+    handleMenuItemClick
   } = useHandleCardMenu(status);
+
+  const handleBookMarkClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    booked ? removeBookMarksMutate() : addBookMarksMutate();
+  };
 
   return (
     <Link
@@ -124,8 +136,10 @@ const ColCard = ({
                         menu.title === "삭제하기" ? "text-red-500" : ""
                       }`}
                       key={menu.title}
-                      onClick={(e) => handleMenuItemClick(e, menu.title, selectionId, title)}
-                  >
+                      onClick={(e) =>
+                        handleMenuItemClick(e, menu.title, selectionId, title)
+                      }
+                    >
                       {menu.icon}
                       <h1 className="font-medium my-[10px]">{menu.title}</h1>
                     </li>

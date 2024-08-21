@@ -104,6 +104,7 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
                     src={selectionData.writer.user_img}
                     alt="userImg"
                     fill
+                    className="rounded-full"
                   />
                 </div>
               ) : (

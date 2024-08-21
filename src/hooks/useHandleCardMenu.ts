@@ -51,19 +51,12 @@ const useHandleCardMenu = (status: TselectionStatus) => {
     }
   };
 
-  const handleBookMarkClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("bookmark 클릭");
-  };
-
   return {
     showMenu,
     setShowMenu,
     handleIconClick,
     handleMenuItemClick,
     selectionMenuRef,
-    handleBookMarkClick,
     currentStatus
   };
 };

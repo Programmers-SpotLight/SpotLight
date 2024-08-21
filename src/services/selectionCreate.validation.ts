@@ -265,6 +265,10 @@ export async function validateSpots(
     );
   }
 
+  if (spots.length > 20) {
+    throw new BadRequestError("최대 20개의 스팟만 허용됩니다");
+  }
+
   // 스팟의 placeId는 고유해야 스팟을 식별할 수 있음
   const placeIds: string[] = [];
 

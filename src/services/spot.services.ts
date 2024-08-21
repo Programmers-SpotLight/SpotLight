@@ -5,6 +5,7 @@ import { ISelectionSpot, ISelectionSpotCategory } from "@/models/selection.model
 import { deleteMultipleSpotHashtagNotIn, deleteMultipleSpotTemporaryHashtagNotIn, insertMultipleSpotHashtag, insertMultipleSpotTemporaryHashtag } from "@/repositories/hashtag.repository";
 import { 
   deleteAllSpotImageBySelectionId,
+  deleteAllSpotTemporaryBySelectionId,
   deleteMultipleSpotBySelectionIdAndNotInPlaceId,
   deleteMultipleSpotImageBySelectionIdAndNotInImageUrl,
   deleteMultipleSpotTemporaryBySelectionIdAndNotInPlaceId,
@@ -278,13 +279,11 @@ export async function upsertTemporarySpots(
   if (spotsToUpdateFiltered.length > 0)
     await updateMultipleSpotTemporary(transaction, spotsToUpdateFiltered);
 
-  if (spotPlaceIds.length > 0) {
-    await deleteMultipleSpotTemporaryBySelectionIdAndNotInPlaceId(
-      transaction,
-      selectionId,
-      spotPlaceIds
-    );
-  }
+  await deleteMultipleSpotTemporaryBySelectionIdAndNotInPlaceId(
+    transaction,
+    selectionId,
+    spotPlaceIds
+  );
 
   // 이미지 타입이 File인 경우 파일을 저장하고, 파일 경로로 변경
   for (let i = 0; i < spotsIdsImages.length; i++) {

@@ -129,16 +129,11 @@ export async function insertTemporarySelectionHashtags(
     };
   });
 
-  let queryResult : number[];
   try {
-    queryResult = await transaction('selection_temporary_hashtag')
+    await transaction('selection_temporary_hashtag')
       .insert(hashtagsToInsert, ['slt_temp_id'])
       .onConflict(['slt_temp_id', 'htag_id'])
       .ignore();
-
-    if (queryResult.length === 0) {
-      throw new InternalServerError('임시 셀렉션 해시태그 생성에 실패했습니다');
-    }
   } catch (error) {
     console.error(error);
     throw new InternalServerError('임시 셀렉션 해시태그 생성에 실패했습니다');
@@ -293,6 +288,20 @@ export async function deleteMultipleSelectionHashtagNotIn(
   } catch (error) {
     console.error(error);
     throw new InternalServerError('셀렉션 해시태그를 삭제하는데 실패했습니다');
+  }
+}
+
+export async function deleteAllTemporarySelectionHashtagBySelectionId(
+  transaction: Knex.Transaction<any, any[]>,
+  selectionId: number
+) {
+  try {
+    await transaction('selection_temporary_hashtag')
+      .where('slt_temp_id', selectionId)
+      .delete();
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('임시 셀렉션 해시태그를 삭제하는데 실패했습니다');
   }
 }
 

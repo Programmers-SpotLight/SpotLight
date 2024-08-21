@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 export const useBookMarks = (selectionId: number, userId: number) => {
   const queryClient = useQueryClient();
-  const { data } = useSession();
+  const { data: session } = useSession();
 
   const { mutate: addBookMarksMutate } = useMutation({
     mutationKey: ["bookmark", selectionId],
@@ -22,10 +22,12 @@ export const useBookMarks = (selectionId: number, userId: number) => {
         queryKey: ["selection", selectionId]
       });
 
-      queryClient.setQueryData(["selection", selectionId], {
-        ...previousSelection,
-        booked: true
-      });
+      if (session?.user) {
+        queryClient.setQueryData(["selection", selectionId], {
+          ...previousSelection,
+          booked: true
+        });
+      }
 
       return { previousSelection };
     },
@@ -36,7 +38,7 @@ export const useBookMarks = (selectionId: number, userId: number) => {
         ["selection", selectionId],
         context?.previousSelection
       );
-      if (!data?.user) toast.info("로그인이 필요한 서비스입니다.");
+      if (!session?.user) toast.info("로그인이 필요한 서비스입니다.");
       else toast.error("북마크에 추가하는 데 실패했습니다.");
     },
     onSuccess: (data, variables, context) => {

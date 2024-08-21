@@ -386,6 +386,34 @@ export async function updateMultipleSpot(
   }
 }
 
+export async function deleteAllSpotBySelectionId(
+  transaction: Knex.Transaction<any, any[]>,
+  selectionId: number
+) : Promise<void> {
+  try {
+    await transaction('spot')
+      .where('slt_id', selectionId)
+      .delete();
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('스팟 삭제에 실패했습니다');
+  }
+}
+
+export async function deleteAllSpotTemporaryBySelectionId(
+  transaction: Knex.Transaction<any, any[]>,
+  selectionId: number
+) : Promise<void> {
+  try {
+    await transaction('spot_temporary')
+      .where('slt_temp_id', selectionId)
+      .delete();
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('스팟 삭제에 실패했습니다');
+  }
+}
+
 export async function deleteMultipleSpotBySelectionIdAndNotInPlaceId(
   transaction: Knex.Transaction<any, any[]>,
   selectionId: number,
