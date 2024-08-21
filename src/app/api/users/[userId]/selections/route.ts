@@ -44,7 +44,6 @@ export async function GET(
   try {
     const validation = getUserSelectionValidator(currentPage, limit, userSelection);
     if (validation.error) {
-      console.log(validation.error);
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
@@ -99,8 +98,6 @@ export async function GET(
       session_userId,      
       isMyPage === "true"
     );
-
-    console.log(pageResult);
 
     const mappedResults = mapSearchResults(pageResult);
     return NextResponse.json({ data: mappedResults, pagination });

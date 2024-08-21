@@ -11,6 +11,7 @@ import { FaBookmark, FaRegBookmark, FaTrash } from "react-icons/fa";
 import useHandleCardMenu from "@/hooks/useHandleCardMenu";
 import { useSession } from "next-auth/react";
 import { useBookMarks } from "@/hooks/queries/useBookMarks";
+import { TuserSelection } from "@/models/user.model";
 
 export interface IBaseCardProps {
   thumbnail: string;
@@ -28,6 +29,7 @@ export interface IColCardProps extends IBaseCardProps {
   status: TselectionStatus;
   isMyPage?: boolean;
   booked?: boolean;
+  userSelectionType? : TuserSelection;
   onClick?: () => void;
 }
 
@@ -59,6 +61,7 @@ const ColCard = ({
   isMyPage,
   status = "public",
   booked = false,
+  userSelectionType
 }: IColCardProps) => {
   const { data } = useSession();
   const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
@@ -78,7 +81,6 @@ const ColCard = ({
     e.stopPropagation();
     booked ? removeBookMarksMutate() : addBookMarksMutate();
   };
-
   return (
     <Link
       href={`/selection/${selectionId}`}
@@ -117,7 +119,7 @@ const ColCard = ({
             {category}
             {region && ` / ${region}`}
           </p>
-          {isMyPage && (
+          {(isMyPage && userSelectionType==="my") && (
             <div className="relative">
               <GoKebabHorizontal
                 fill="#7C7C7C"

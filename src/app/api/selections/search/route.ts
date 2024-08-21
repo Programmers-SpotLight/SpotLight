@@ -43,8 +43,6 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
     const pageResult: IsearchData[] = await getSearchResult(category_id, region_id, tags, sort as TsortType, limit, currentPage, userId);
     const mappingResults = mapSearchResults(pageResult);
 
-    console.log(pageResult)
-
     const pagination: Ipagination = {
       currentPage,
       totalPages,

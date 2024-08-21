@@ -89,8 +89,7 @@ export const getUserSelectionList = async (
   if (sort) params.append(QUERY_STRING_NAME.sort, sort);
   if (page) params.append(QUERY_STRING_NAME.page, page);
   if (limit) params.append(QUERY_STRING_NAME.limit, limit);
-  if (isMyPage !== undefined)
-    params.append(QUERY_STRING_NAME.is_my_page, isMyPage ? "true" : "false");
+  if (isMyPage !== undefined) params.append(QUERY_STRING_NAME.is_my_page, isMyPage ? "true" : "false");
 
   const finalUrl = `${url}?${params.toString()}`;
   return await requestHandler("get", finalUrl);
