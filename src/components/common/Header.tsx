@@ -29,8 +29,8 @@ const Header = () => {
   useClickOutside(dropdownRef, () => setIsDropDownVisible(false));
   const { openModal } = useModalStore();
   const { data: session, status } = useSession();
-  const imageUrl = session?.user?.image ? session?.user?.image : '';
-  
+  const imageUrl = session?.user?.image ? session?.user?.image : "";
+
   useCheckSignUpParams();
 
   const onClickHandler = () => {
@@ -61,7 +61,7 @@ const Header = () => {
   };
 
   const handleOpenModal = () => {
-    openModal('signin');
+    openModal("signin");
   };
 
   return (
@@ -145,13 +145,13 @@ const Header = () => {
           className="w-[200px] h-[100px] border-[0.5px] bg-grey0 border-solid border-grey2 absolute top-20 right-5 shadow-xl px-3 rounded-xl text-medium text-grey4 z-20"
         >
           <Link
-            href={"/mypage"}
+            href={`/user/${session?.user.id}`}
             className="h-1/2 flex items-center text-medium text-grey4 hover:text-primary"
           >
             마이페이지
           </Link>
           <hr className="w-full" />
-          <button 
+          <button
             className="w-full h-1/2 flex items-center text-medium text-grey4 hover:text-primary"
             onClick={handleSignout}
           >
