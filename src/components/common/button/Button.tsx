@@ -47,7 +47,7 @@ const Button = ({
     if (isRequiredAuthCheck && authStatus === "unauthenticated") {
       openModal;
     }
-    onClick;
+    if(onClick) onClick(); // 버튼 온클릭 호출이 안돼서 수정했습니다.
   };
 
   return (

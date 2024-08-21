@@ -29,11 +29,11 @@ export const addUserHashTag = async (userId: string, hashtag: string) => {
 };
 
 export const updateUserSelectionPrivate = async (
-  userId: string,
+  userId: number,
   selectionId: number
 ) => {
   const url = `/api/users/${userId}/selections/private`;
-  return await requestHandler("put", url, { data: { userId, selectionId } });
+  return await requestHandler("put", url, { selectionId });
 };
 
 export const deleteSelection = async (
@@ -41,8 +41,7 @@ export const deleteSelection = async (
   selectionType?: TuserSelection
 ) => {
   const params = new URLSearchParams();
-  if (selectionType)
-    params.append(QUERY_STRING_NAME.userSelection, selectionType);
+  if (selectionType) params.append(QUERY_STRING_NAME.userSelection, selectionType);
   const url = `/api/selections/${selectionId}`;
   const finalUrl = `${url}?${params.toString()}`;
   return await requestHandler("delete", finalUrl);

@@ -68,13 +68,14 @@ const ColCard = ({
     selectionId,
     data?.user.id
   );
+
   const {
     showMenu,
     selectionMenuRef,
     currentStatus,
     handleIconClick,
     handleMenuItemClick
-  } = useHandleCardMenu(status);
+  } = useHandleCardMenu(status, data?.user.id);
 
   const handleBookMarkClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -139,7 +140,7 @@ const ColCard = ({
                       }`}
                       key={menu.title}
                       onClick={(e) =>
-                        handleMenuItemClick(e, menu.title, selectionId, title, data?.user.id)
+                        handleMenuItemClick(e, menu.title, selectionId, title)
                       }
                     >
                       {menu.icon}

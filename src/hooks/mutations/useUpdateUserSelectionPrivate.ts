@@ -2,9 +2,9 @@ import { updateUserSelectionPrivate } from "@/http/user.api";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
-const useUpdateUserSelectionPrivate = (userId: string) => {
+const useUpdateUserSelectionPrivate = (userId: number) => {
   const { mutate: selectionPrivate } = useMutation({
-    mutationKey: ["userSelectionPrivate", userId],
+    mutationKey: ["userSelectionPrivate"],
     mutationFn: (selectionId: number) =>
       updateUserSelectionPrivate(userId, selectionId),
     onError: () => {
