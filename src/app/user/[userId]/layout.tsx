@@ -8,6 +8,7 @@ import {
   useFetchUserHashtag,
   useFetchUserInfo
 } from "@/hooks/queries/useFetchUserInfo";
+import useErrorComponents from "@/hooks/useErrorComponents";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import React from "react";
@@ -25,13 +26,21 @@ export default function RootLayout({
   const {
     data: infoData,
     isLoading: infoLoading,
-    isError: infoError
+    isError: isInfoError,
+    error: infoError
   } = useFetchUserInfo(userId);
   const {
     data: hashData,
     isLoading: hashLoading,
-    isError: hashError
+    isError: isHashError,
+    error: hashError
   } = useFetchUserHashtag(userId);
+
+  const infoErrorComponent = useErrorComponents(infoError);
+
+  if (isInfoError || isHashError) {
+    return infoErrorComponent;
+  }
 
   if (infoLoading || hashLoading)
     return (
@@ -44,8 +53,6 @@ export default function RootLayout({
     );
 
   if (!infoData || !hashData) return null;
-
-  if (infoError || hashError) return <div>에러페이지입니다</div>;
 
   if (infoData.is_private)
     return (
