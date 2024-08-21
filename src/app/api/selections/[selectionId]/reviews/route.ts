@@ -1,7 +1,7 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { countReviews, getSelectionReviews, postSelectionReviews, putSelectionReviews } from "@/services/selection-review.services";
 import { uuidToBinary } from "@/utils/uuidToBinary";
 import { getServerSession, Session } from "next-auth";
-import { GET as authOptions } from '@/app/api/auth/[...nextauth]/route'; 
 
 export async function GET(
   req: Request,
@@ -15,13 +15,13 @@ export async function GET(
     page = Number(page);
     
     const session: Session | null = await getServerSession(authOptions);
-    console.log(session);
-    const userId = session?.user?.id || 1;
+    const userId = session?.user?.id;
 
     const reviewList = await getSelectionReviews({
       sltOrSpotId: selectionId,
       sort,
-      page
+      page,
+      userId
     });
 
     const count = await countReviews(selectionId, "selection");
@@ -48,7 +48,8 @@ export async function POST (
   try {
     const selectionId = parseInt(params.selectionId, 10);
     
-    const userId = 1;
+    const session: Session | null = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
     if (!userId) {
       return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });

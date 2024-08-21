@@ -8,7 +8,7 @@ interface ImodalProps {
   onSubmit: (data: IReviewFormData) => void;
 }
 
-const ReviewModal = ({ review, onSubmit }: ImodalProps) => {
+const ReviewModal = ({ review, sltOrSpotId, onSubmit }: ImodalProps) => {
   const closeModal = useModalStore((state) => state.closeModal);
 
   const handleSubmit = (data: IReviewFormData) => {
@@ -18,7 +18,8 @@ const ReviewModal = ({ review, onSubmit }: ImodalProps) => {
         reviewScore: data.reviewScore,
         reviewDescription: data.reviewDescription,
         reviewImg: data.reviewImg,
-        reviewId: review ? review.reviewId : undefined
+        reviewId: review.reviewId,
+        sltOrSpotId
       }
     :
       {

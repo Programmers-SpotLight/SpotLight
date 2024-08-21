@@ -2,7 +2,7 @@ interface IUser {
   userId: number;
   userNickname: string;
   userImage: string | null;
-  isLiked: boolean;
+  isLiked: boolean | null;
 }
 
 interface IReviewImage {

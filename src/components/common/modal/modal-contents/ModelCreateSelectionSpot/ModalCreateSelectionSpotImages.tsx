@@ -5,14 +5,14 @@ import ModalCreateSelectionSpotImagesInput from "./ModalCreateSelectionSpotImage
 
 const ModalCreateSelectionSpotImages = () => {
   const {
-    spotPhoto,
-    spotPhoto1,
-    spotPhoto2,
-    spotPhoto3,
-    setSpotPhoto,
-    setSpotPhoto1,
-    setSpotPhoto2,
-    setSpotPhoto3,
+    spotImage,
+    spotImage1,
+    spotImage2,
+    spotImage3,
+    setSpotImage,
+    setSpotImage1,
+    setSpotImage2,
+    setSpotImage3,
   } = useStore(useSelectionSpotCreateStore);
 
   return (
@@ -20,20 +20,20 @@ const ModalCreateSelectionSpotImages = () => {
       <p className='mt-8 font-bold text-medium mb-4'>이미지 등록 (선택)</p>
       <div className='flex gap-2'>
         <ModalCreateSelectionSpotImagesInput 
-          spotPhoto={spotPhoto} 
-          setSpotPhoto={setSpotPhoto} 
+          spotImage={spotImage} 
+          setSpotImage={setSpotImage} 
         />
         <ModalCreateSelectionSpotImagesInput 
-          spotPhoto={spotPhoto1} 
-          setSpotPhoto={setSpotPhoto1} 
+          spotImage={spotImage1} 
+          setSpotImage={setSpotImage1} 
         />
         <ModalCreateSelectionSpotImagesInput 
-          spotPhoto={spotPhoto2} 
-          setSpotPhoto={setSpotPhoto2} 
+          spotImage={spotImage2} 
+          setSpotImage={setSpotImage2} 
         />
         <ModalCreateSelectionSpotImagesInput 
-          spotPhoto={spotPhoto3} 
-          setSpotPhoto={setSpotPhoto3} 
+          spotImage={spotImage3} 
+          setSpotImage={setSpotImage3} 
         />
       </div>
     </div>

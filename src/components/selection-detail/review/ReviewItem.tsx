@@ -8,6 +8,7 @@ import { useModalStore } from "@/stores/modalStore";
 import ReviewLikeButton from "./ReviewLikeButton";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { AiFillLike } from "react-icons/ai";
 
 interface IReviewProps {
   sltOrSpotId: number | string;
@@ -45,7 +46,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
   };
 
   const openReviewEditModal = () => {
-    openModal('review', { review, sltOrSpotId, onSubmit: updateReview }); 
+    openModal("review", { review, sltOrSpotId, onSubmit: updateReview }); 
   };
 
   const openReviewDeleteModal = () => {
@@ -80,14 +81,22 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
             <div className="text-grey3">{review.createdDate}</div>
           </div>
         </div>
-        <ReviewLikeButton 
-          liked={review.user.isLiked} 
-          likeCount={review.likeCount} 
-          reviewType={reviewType} 
-          sltOrSpotId={sltOrSpotId} 
-          reviewId={review.reviewId} 
-          userId={user.id} 
-        />
+
+        {
+          review.user.isLiked !== null && user
+          ?  <ReviewLikeButton 
+              liked={review.user.isLiked} 
+              likeCount={review.likeCount} 
+              reviewType={reviewType} 
+              sltOrSpotId={sltOrSpotId} 
+              reviewId={review.reviewId} 
+              userId={user.id} 
+            />
+          : <div className={"text-grey3 flex items-center space-x-1 text-bold left-0"}>
+              <AiFillLike size={15} />
+              <div className="text-small">{review.likeCount}</div>
+            </div>
+        }
       </div>
 
       <div className="flex justify-between">
@@ -102,7 +111,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
           ))}
         </div>
 
-        {user.userId === review.user.userId && (
+        {user && user.id === review.user.userId && (
           <div className="flex text-grey4">
             <MdEdit
               className="cursor-pointer mr-1"

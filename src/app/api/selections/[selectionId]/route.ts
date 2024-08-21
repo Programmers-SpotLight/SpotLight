@@ -1,7 +1,13 @@
 import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
+import { dbConnectionPool } from "@/libs/db";
 import { Ihashtags } from "@/models/hashtag.model";
-import { ISelectionDetailInfo, ISelectionInfo } from "@/models/selection.model";
+import {
+  ISelectionCreateCompleteData,
+  ISelectionDetailInfo,
+  ISelectionInfo
+} from "@/models/selection.model";
 import { ISpotImage, ISpotInfo } from "@/models/spot.model";
+import { prepareAndValidateSelectionCreateFormData } from "@/services/selectionCreate.validation";
 import {
   ErrorResponse,
   SuccessResponse,
@@ -15,19 +21,24 @@ import {
   getSpotHashTags,
   getSpotImages
 } from "@/services/selectionDetail.services";
+import { editSelection } from "@/services/selectionEdit.services";
 import {
   serviceDeleteSelection,
   serviceDeleteTempSelection
 } from "@/services/selectionUser.services";
 import { getUserInfo } from "@/services/user.services";
+import { getServerSession } from "next-auth";
 
 import { NextRequest, NextResponse } from "next/server";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET(
   req: Request,
   { params }: { params: { selectionId: number } }
 ) {
   const selectionId = params.selectionId;
+
+  const session = await getServerSession(authOptions);
 
   if (!selectionId) {
     return NextResponse.json(
@@ -77,8 +88,7 @@ export async function GET(
     if (spotHashtags.length) spotDetailInfo[i].hashtags = spotHashtags;
   }
 
-  const booked = await getBookMarks(selectionId, 1); //임시로 userId 1로 설정
-
+  const bookMark = await getBookMarks(selectionId, session?.user.id);
   const selectionWriterInfo = await getUserInfo(
     selecitonDetailInfo.writerId.toString()
   );
@@ -88,7 +98,7 @@ export async function GET(
     writer: selectionWriterInfo,
     hashtags,
     spotList: spotDetailInfo,
-    booked: booked.length ? true : false
+    booked: bookMark ? true : false
   };
   return NextResponse.json(selectionData);
 }
@@ -167,3 +177,55 @@ const deleteSelectionValidator = (
 
   return null;
 };
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { selectionId: number } }
+) {
+  const selectionId = params.selectionId;
+
+  if (!selectionId) {
+    return new Response(JSON.stringify({ error: "Invalid selection ID" }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  }
+
+  if (isNaN(selectionId)) {
+    return new Response(JSON.stringify({ error: "Invalid selection ID" }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  }
+
+  const transaction = await dbConnectionPool.transaction();
+  try {
+    const formData: FormData = await request.formData();
+    // 데이터 유효성 검사
+    const data: ISelectionCreateCompleteData =
+      await prepareAndValidateSelectionCreateFormData(formData);
+    // add logic for updating temporary selection
+    await editSelection(transaction, selectionId, data);
+
+    await transaction.commit();
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  } catch (error: any) {
+    await transaction.rollback();
+    console.error(error);
+    return new Response(error.message, {
+      status: error.statusCode || 500,
+      headers: {
+        "Content-Type": "text/plain"
+      }
+    });
+  }
+}

@@ -13,15 +13,11 @@ const MyReviewItem = ({ review, updateReviewMutation, deleteReviewMutation }: IR
   const { openModal } = useModalStore();
  
   const openReviewEditModal = () => {
-    openModal('review',{ review, sltOrSpotId: review.sltOrSpotId, onSubmit: updateReviewMutation });
+    openModal("review",{ review, sltOrSpotId: review.sltOrSpotId, onSubmit: updateReviewMutation });
   };
   
   const openReviewDeleteModal = () => {
-    console.log(review.reviewId);
     openModal("review-delete", { reviewId: review.reviewId , onSubmit: deleteReviewMutation });
-    return review.reviewDescription.length > 90
-      ? review.reviewDescription.slice(0, 90) + "..."
-      : review.reviewDescription;
   };
 
   return (

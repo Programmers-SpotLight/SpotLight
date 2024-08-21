@@ -6,6 +6,8 @@ import React from "react";
 import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 import { IBaseCardProps } from "./ColCard";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { useBookMarks } from "@/hooks/queries/useBookMarks";
+import { useSession } from "next-auth/react";
 
 export interface IRowCardProps extends IBaseCardProps {
   userName: string;
@@ -26,10 +28,15 @@ const RowCard = ({
   booked,
   selectionId
 }: IRowCardProps) => {
+  const { data } = useSession();
+  const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
+    selectionId,
+    data?.user.id
+  );
   const handleBookMarkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log("bookmark 클릭");
+    booked ? removeBookMarksMutate() : addBookMarksMutate();
   };
 
   return (
