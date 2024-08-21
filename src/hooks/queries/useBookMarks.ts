@@ -1,6 +1,10 @@
-import { addBookMarks, removeBookMarks } from "@/http/bookmarks.api";
+import {
+  addBookMarks,
+  getBookMarks,
+  removeBookMarks
+} from "@/http/bookmarks.api";
 import { ISelectionInfo } from "@/models/selection.model";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
@@ -8,22 +12,27 @@ export const useBookMarks = (selectionId: number, userId: number) => {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
 
+  const { data: isBookmarked } = useQuery({
+    queryKey: ["bookmark", selectionId],
+    queryFn: () => getBookMarks(selectionId)
+  });
+
   const { mutate: addBookMarksMutate } = useMutation({
     mutationKey: ["bookmark", selectionId],
     mutationFn: () => addBookMarks(selectionId, userId),
 
     onMutate: async () => {
       const previousSelection = queryClient.getQueryData<ISelectionInfo>([
-        "selection",
+        "bookmark",
         selectionId
       ]);
 
       await queryClient.cancelQueries({
-        queryKey: ["selection", selectionId]
+        queryKey: ["bookmark", selectionId]
       });
 
       if (session?.user) {
-        queryClient.setQueryData(["selection", selectionId], {
+        queryClient.setQueryData(["bookmark", selectionId], {
           ...previousSelection,
           booked: true
         });
@@ -35,18 +44,21 @@ export const useBookMarks = (selectionId: number, userId: number) => {
     onError: (error, variables, context) => {
       // 에러 발생 시 롤백 (이전 데이터로 복구)
       queryClient.setQueryData(
-        ["selection", selectionId],
+        ["bookmark", selectionId],
         context?.previousSelection
       );
       if (!session?.user) toast.info("로그인이 필요한 서비스입니다.");
       else toast.error("북마크에 추가하는 데 실패했습니다.");
     },
-    onSuccess: (data, variables, context) => {
+    onSettled: () => {
       // API 요청이 성공하면 데이터 수동으로 업데이트
-      queryClient.setQueryData(["selection", selectionId], {
-        ...context?.previousSelection,
-        booked: true
+      queryClient.invalidateQueries({
+        queryKey: ["bookmark", selectionId]
       });
+      // queryClient.setQueryData(["bookmark", selectionId], {
+      //   ...context?.previousSelection,
+      //   booked: true
+      // });
 
       toast.success("북마크에 추가했습니다.");
     }
@@ -58,14 +70,14 @@ export const useBookMarks = (selectionId: number, userId: number) => {
 
     onMutate: async () => {
       const previousSelection = queryClient.getQueryData<ISelectionInfo>([
-        "selection",
+        "bookmark",
         selectionId
       ]);
 
       await queryClient.cancelQueries({
-        queryKey: ["selection", selectionId]
+        queryKey: ["bookmark", selectionId]
       });
-      queryClient.setQueryData(["selection", selectionId], {
+      queryClient.setQueryData(["bookmark", selectionId], {
         ...previousSelection,
         booked: false
       });
@@ -76,21 +88,23 @@ export const useBookMarks = (selectionId: number, userId: number) => {
     onError: (error, variables, context) => {
       // 에러 발생 시 롤백 (이전 데이터로 복구)
       queryClient.setQueryData(
-        ["selection", selectionId],
+        ["bookmark", selectionId],
         context?.previousSelection
       );
       toast.success("북마크에서 제거하는 데 실패했습니다.");
     },
-    onSuccess: (data, variables, context) => {
+    onSettled: () => {
       // API 요청이 성공하면 데이터 수동으로 업데이트
-      queryClient.setQueryData(["selection", selectionId], {
-        ...context?.previousSelection,
-        booked: false
+      // queryClient.setQueryData(["bookmark", selectionId], {
+      //   ...context?.previousSelection,
+      //   booked: false
+      // });
+      queryClient.invalidateQueries({
+        queryKey: ["bookmark", selectionId]
       });
-
       toast.success("북마크에서 제거했습니다.");
     }
   });
 
-  return { addBookMarksMutate, removeBookMarksMutate };
+  return { isBookmarked, addBookMarksMutate, removeBookMarksMutate };
 };

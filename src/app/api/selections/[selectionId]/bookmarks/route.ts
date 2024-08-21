@@ -1,5 +1,30 @@
-import { addBookMarks, removeBookMarks } from "@/services/selection.services";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import {
+  addBookMarks,
+  getBookMarks,
+  removeBookMarks
+} from "@/services/selection.services";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+
+export async function GET(
+  req: Request,
+  { params }: { params: { selectionId: number } }
+) {
+  const session = await getServerSession(authOptions);
+  const selectionId = params.selectionId;
+
+  if (!selectionId) {
+    return NextResponse.json(
+      { error: "Invalid selection ID" },
+      { status: 400 }
+    );
+  }
+
+  const response = await getBookMarks(selectionId, session?.user.id);
+
+  return NextResponse.json(response);
+}
 
 export async function POST(req: Request) {
   const { selectionId, userId } = await req.json();

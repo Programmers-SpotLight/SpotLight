@@ -13,7 +13,6 @@ export interface IRowCardProps extends IBaseCardProps {
   userName: string;
   userImage: string;
   ranking?: number;
-  booked?: boolean;
 }
 
 const RowCard = ({
@@ -25,18 +24,15 @@ const RowCard = ({
   userName,
   userImage,
   ranking,
-  booked,
   selectionId
 }: IRowCardProps) => {
   const { data } = useSession();
-  const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
-    selectionId,
-    data?.user.id
-  );
+  const { isBookmarked, addBookMarksMutate, removeBookMarksMutate } =
+    useBookMarks(selectionId, data?.user.id);
   const handleBookMarkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    booked ? removeBookMarksMutate() : addBookMarksMutate();
+    isBookmarked ? removeBookMarksMutate() : addBookMarksMutate();
   };
 
   return (
@@ -64,7 +60,7 @@ const RowCard = ({
       </div>
 
       <div className="absolute top-2 right-2">
-        {booked ? (
+        {isBookmarked ? (
           <FaBookmark
             className="w-5 h-5 fill-red-600 cursor-pointer"
             onClick={handleBookMarkClick}

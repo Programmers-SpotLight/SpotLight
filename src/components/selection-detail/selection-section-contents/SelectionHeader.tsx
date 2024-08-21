@@ -16,10 +16,8 @@ interface SelectionHeaderProps {
 
 const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
   const { data } = useSession();
-  const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
-    selectionData.id,
-    data?.user.id
-  );
+  const { isBookmarked, addBookMarksMutate, removeBookMarksMutate } =
+    useBookMarks(selectionData.id, data?.user.id);
   const { openModal } = useModalStore();
 
   const shareClickHandler = () => {
@@ -41,7 +39,7 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
       openModal("signin");
     }
     //북마크 추가 삭제
-    if (selectionData.booked) {
+    if (isBookmarked) {
       removeBookMarksMutate();
     } else {
       addBookMarksMutate();
@@ -70,7 +68,7 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
               className="w-5 h-5 fill-grey3 cursor-pointer"
               onClick={shareClickHandler}
             />
-            {selectionData.booked ? (
+            {isBookmarked ? (
               <FaBookmark
                 className="w-5 h-5 fill-red-600 cursor-pointer"
                 onClick={bookMarkClickHandler}

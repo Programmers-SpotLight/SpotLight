@@ -17,7 +17,7 @@ export async function GET(
       description: item.slt_description,
       userName: item.user_nickname,
       userImage: item.user_img,
-      booked: false, // 추가 로직 필요,
+      // booked: false, // 추가 로직 필요,
       selectionId: item.slt_id
     }));
     return NextResponse.json(MappingResults);
