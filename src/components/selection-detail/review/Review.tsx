@@ -11,6 +11,7 @@ import ReveiwError from "./ReveiwError";
 import Spinner from "@/components/common/Spinner";
 import useReviewInfo from "@/hooks/queries/useReviewInfo";
 import { useReviewSortContext } from "@/context/useReviewSortContext";
+import { useSession } from "next-auth/react";
 
 interface IReviewsProps {
   reviewType: ReviewType;
@@ -21,6 +22,8 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
   const { sort } = useReviewSortContext();
   const pageEnd = useRef<HTMLDivElement | null>(null);
   const { openModal } = useModalStore();
+  const { data: session, status } = useSession();
+  const isLoggedIn = session?.user ? "authenticated" : "unauthenticated";
 
   const { 
     avg,
@@ -88,7 +91,7 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
             </div>
 
             <div className="absolute sticky bottom-4 w-full flex justify-center z-10">
-              <Button type="button" onClick={openReviewAddModal}>리뷰 등록하기 +</Button>
+              <Button type="button" onClick={openReviewAddModal} isRequiredAuthCheck={true} authStatus={isLoggedIn}>리뷰 등록하기 +</Button>
             </div>
           </div>
         ) : (

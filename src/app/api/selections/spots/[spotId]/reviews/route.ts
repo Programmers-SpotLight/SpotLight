@@ -12,7 +12,7 @@ export async function GET(
     let page = searchParams.get("page") ?? 1;
     let sort = searchParams.get("sort") ?? "like";
     page = Number(page);
-    
+
     const userId = 1;
 
     if (!userId) {

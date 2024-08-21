@@ -1,8 +1,5 @@
 import { useReviewsLikes } from "@/hooks/queries/useReviewsLikes";
-import { useState } from "react";
 import { AiFillLike } from "react-icons/ai";
-
-const userId = 1;
 
 interface ILikeButton {
   liked: boolean;
@@ -10,6 +7,7 @@ interface ILikeButton {
   reviewType: ReviewType;
   sltOrSpotId: string | number;
   reviewId: string;
+  userId: number;
 }
 
 const ReviewLikeButton = ({
@@ -17,7 +15,8 @@ const ReviewLikeButton = ({
   likeCount,
   reviewType,
   sltOrSpotId,
-  reviewId
+  reviewId,
+  userId
 }: ILikeButton) => {
   const { 
     addLikeMutate, 

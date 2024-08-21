@@ -1,3 +1,4 @@
+"use client"
 import { useModalStore } from "@/stores/modalStore";
 import React, { ReactNode } from "react";
 
@@ -43,9 +44,10 @@ const Button = ({
   const { openModal } = useModalStore();
   const handleOnclick = () => {
     if(isRequiredAuthCheck && authStatus === 'unauthenticated') {
-      openModal;
+      openModal("signin");
+    } else if (onClick) {
+      onClick(); 
     }
-    onClick
   }
 
   return (

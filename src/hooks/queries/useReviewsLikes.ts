@@ -2,6 +2,7 @@ import { useReviewSortContext } from "@/context/useReviewSortContext";
 import { addReviewLike, removeReviewLike } from "@/http/review.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface IReviewCash {
   pageParams: number[];
@@ -65,6 +66,7 @@ export const useReviewsLikes = (
         pages: context?.previousPages || [],
         pageParams: queryClient.getQueryData<IReviewCash>(["reviews", sltOrSpotId, sort])?.pageParams || [],
       });
+      toast.error("좋아요에 실패했습니다.");
       console.error("onError - Error:", error);
     },
     
@@ -82,6 +84,7 @@ export const useReviewsLikes = (
         pages: updatedPages,
         pageParams: queryClient.getQueryData<IReviewCash>(["reviews", sltOrSpotId, sort])?.pageParams || [],
       });
+      toast.success("좋아요가 추가 되었습니다.");
     }
   });
 
@@ -116,6 +119,7 @@ export const useReviewsLikes = (
         pages: context?.previousPages || [],
         pageParams: queryClient.getQueryData<IReviewCash>(["reviews", sltOrSpotId, sort])?.pageParams || [],
       });
+      toast.error("좋아요 삭제에 실패했습니다.");
       console.error("onError - Error:", error);
     },
 
@@ -133,6 +137,7 @@ export const useReviewsLikes = (
         pages: updatedPages,
         pageParams: queryClient.getQueryData<IReviewCash>(["reviews", sltOrSpotId, sort])?.pageParams || [],
       });
+      toast.success("좋아요가 삭제 되었습니다.");
     }
   });
 

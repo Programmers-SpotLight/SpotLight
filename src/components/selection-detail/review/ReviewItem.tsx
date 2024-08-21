@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { AiFillLike } from "react-icons/ai";
 import { FaStar } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp, IoMdTrash } from "react-icons/io";
 import { IoPersonSharp } from "react-icons/io5";
@@ -8,6 +7,7 @@ import { MdEdit } from "react-icons/md";
 import { useModalStore } from "@/stores/modalStore";
 import ReviewLikeButton from "./ReviewLikeButton";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 interface IReviewProps {
   sltOrSpotId: number | string;
@@ -17,13 +17,11 @@ interface IReviewProps {
   deleteReview: (reviewId: string) => void; 
 }
 
-const user = {
-  userId: 1
-}
-
 const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteReview }: IReviewProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModalStore();
+  const { data: session, status } = useSession();
+  const user = session?.user;
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -82,7 +80,14 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
             <div className="text-grey3">{review.createdDate}</div>
           </div>
         </div>
-        <ReviewLikeButton liked={review.user.isLiked} likeCount={review.likeCount} reviewType={reviewType} sltOrSpotId={sltOrSpotId} reviewId={review.reviewId} />
+        <ReviewLikeButton 
+          liked={review.user.isLiked} 
+          likeCount={review.likeCount} 
+          reviewType={reviewType} 
+          sltOrSpotId={sltOrSpotId} 
+          reviewId={review.reviewId} 
+          userId={user.id} 
+        />
       </div>
 
       <div className="flex justify-between">
