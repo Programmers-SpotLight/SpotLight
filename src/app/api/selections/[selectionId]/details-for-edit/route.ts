@@ -1,4 +1,6 @@
 import { getSelectionForEdit } from "@/services/selectionEdit.services";
+import { getTokenForAuthentication } from "@/utils/authUtils";
+import { UnauthorizedError } from "@/utils/errors";
 import { NextRequest } from "next/server";
 
 
@@ -33,7 +35,15 @@ export async function GET(
   }
 
   try {
-    const selectionDetail = await getSelectionForEdit(selectionId);
+    const token = await getTokenForAuthentication(request);
+    if (!token.userId) {
+      throw new UnauthorizedError("userId가 token에 없습니다.");
+    }
+
+    const selectionDetail = await getSelectionForEdit(
+      token.userId as number,
+      selectionId
+    );
     return new Response(
       JSON.stringify(selectionDetail),
       {
