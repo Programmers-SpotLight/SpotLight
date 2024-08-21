@@ -1,4 +1,4 @@
-import { addLike, removeLike } from "@/services/review.services";
+import { addLike, getLike, removeLike } from "@/services/review.services";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -13,8 +13,10 @@ export async function POST(req: Request) {
 
   try {
     addLike(reviewId, reviewType, userId);
+    const likeData = await getLike(reviewId, "selection", userId);
+
     return NextResponse.json(
-      { message: "Review like added successfully" },
+      { message: "Review like added successfully", data: likeData },
       { status: 200 }
     );
   } catch (error) {
@@ -38,9 +40,10 @@ export async function DELETE(req: Request) {
     }
 
     await removeLike(reviewId, reviewType, userId);
+    const likeData = await getLike(reviewId, "selection", userId);
 
     return NextResponse.json(
-      { message: "Review like removed successfully" },
+      { message: "Review like removed successfully", data: likeData },
       { status: 200 }
     );
   } catch (error) {

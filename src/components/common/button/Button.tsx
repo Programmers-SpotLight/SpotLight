@@ -1,5 +1,4 @@
 "use client"
-
 import { useModalStore } from "@/stores/modalStore";
 import React, { ReactNode } from "react";
 
@@ -44,12 +43,14 @@ const Button = ({
 
   const { openModal } = useModalStore();
   const handleOnclick = () => {
-    if (isRequiredAuthCheck && authStatus === "unauthenticated") {
-      openModal;
+    if(isRequiredAuthCheck && authStatus === 'unauthenticated') {
+      openModal("signin");
+    } else if (onClick) {
+      onClick(); 
     }
     if(onClick) onClick(); // 버튼 온클릭 호출이 안돼서 수정했습니다.
   };
-
+  
   return (
     <button
       type={type}

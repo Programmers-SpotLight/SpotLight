@@ -4,14 +4,15 @@ interface ISpotReviews {
   sltOrSpotId: string;
   sort: string;
   page: number;
+  userId: number;
 }
 
 export async function getSpotReviews({
   sltOrSpotId,
   sort,
-  page
+  page,
+  userId
 }: ISpotReviews) {
-  const userId = 1;
   const maxResults = 5;
   const offset = maxResults * (page - 1);
 
@@ -24,8 +25,7 @@ export async function getSpotReviews({
         { column: 'spot_review_created_date', order: 'desc' }
       ];
       
-  const queryResult = await dbConnectionPool
-  .select([
+  const selectColumns = [
     dbConnectionPool.raw('HEX(r.spot_review_id) AS reviewId'),
     'r.spot_id AS sltOrSpotId',
     'r.spot_review_description AS reviewDescription',
@@ -47,20 +47,28 @@ export async function getSpotReviews({
     dbConnectionPool.raw(`
       (SELECT COUNT(*) FROM spotlight.spot_review_like l 
         WHERE HEX(l.spot_review_id) = HEX(r.spot_review_id)) AS likeCount
-    `),
-    dbConnectionPool.raw(`
-      (SELECT COUNT(*) FROM spotlight.spot_review_like l 
-        WHERE HEX(l.spot_review_id) = HEX(r.spot_review_id) AND l.user_id = ?) > 0 AS isLiked
-    `, [userId])
-  ])
-  .from('spotlight.spot_review AS r')
-  .leftJoin('spotlight.user AS u', 'r.user_id', 'u.user_id')
-  .leftJoin('spotlight.spot_review_image AS i', 'r.spot_review_id', 'i.spot_review_id')
-  .whereRaw('r.spot_id = UNHEX(?)', [sltOrSpotId])
-  .groupBy('r.spot_review_id', 'r.spot_id', 'r.spot_review_description', 'r.spot_review_score', 'r.spot_review_created_date', 'u.user_id', 'u.user_nickname', 'u.user_img')
-  .orderBy(orderByClause)
-  .offset(offset)  
-  .limit(maxResults); 
+    `)
+  ];
+
+  if (userId) {
+    selectColumns.push(
+      dbConnectionPool.raw(`
+        (SELECT COUNT(*) FROM spotlight.spot_review_like l 
+          WHERE HEX(l.spot_review_id) = HEX(r.spot_review_id) AND l.user_id = ?) > 0 AS isLiked
+      `, [userId])
+    );
+  }
+
+  const queryResult = await dbConnectionPool
+    .select(selectColumns)
+    .from('spotlight.spot_review AS r')
+    .leftJoin('spotlight.user AS u', 'r.user_id', 'u.user_id')
+    .leftJoin('spotlight.spot_review_image AS i', 'r.spot_review_id', 'i.spot_review_id')
+    .whereRaw('r.spot_id = UNHEX(?)', [sltOrSpotId])
+    .groupBy('r.spot_review_id', 'r.spot_id', 'r.spot_review_description', 'r.spot_review_score', 'r.spot_review_created_date', 'u.user_id', 'u.user_nickname', 'u.user_img')
+    .orderBy(orderByClause)
+    .offset(offset)  
+    .limit(maxResults); 
 
   const reviews = queryResult.map(review => ({
     reviewId: review.reviewId,
@@ -73,14 +81,14 @@ export async function getSpotReviews({
       userId: review.userId,
       userNickname: review.userNickname,
       userImage: review.userImage,
-      isLiked: review.isLiked
+      isLiked: userId ? review.isLiked : null
     },
     reviewImg: review.reviewImg ? JSON.parse(`[${review.reviewImg}]`) : null,
     likeCount: review.likeCount
   }));
 
   return reviews;
-};
+}
 
 export async function postSpotReviews(review: IReviewInsertData) {
   try {

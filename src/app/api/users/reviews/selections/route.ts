@@ -1,4 +1,6 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { countMyReviews, getMyReviews } from "@/services/review.services";
+import { getServerSession } from "next-auth";
 
 export async function GET(
   req: Request
@@ -8,10 +10,11 @@ export async function GET(
     let page = searchParams.get("page") ?? 1;
     page = Number(page);
     
-    const userId = 1;
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
     if (!userId) {
-      return;
+      return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
     
     const reviewList = await getMyReviews(
