@@ -31,6 +31,7 @@ import { insertSelectionGetId, insertSelectionTemporary } from '@/repositories/s
 
 export async function createSelection(
   transaction: Knex.Transaction<any, any[]>,
+  userId: number,
   formData: ISelectionCreateCompleteData
 ) : Promise<void> {
   // 이미지 파일이 FormData로 전송된 경우 파일을 저장하고 파일 경로를 formData.img에 대입
@@ -51,6 +52,7 @@ export async function createSelection(
   await createHashtagsForSpots(transaction, formData.spots);
 
   const queryResult : number[] = await insertSelectionGetId(transaction, {
+    user_id: userId,
     slt_title: formData.title,
     slt_status: formData.status,
     slt_category_id: formData.category,
@@ -75,6 +77,7 @@ export async function createSelection(
 
 export async function createTemporarySelection(
   transaction: Knex.Transaction<any, any[]>,
+  userId: number,
   formData: ISelectionCreateTemporaryData
 ) : Promise<void> {
   // 이미지 파일이 FormData로 전송된 경우 파일을 저장하고 파일 경로를 formData.img에 대입
@@ -98,6 +101,7 @@ export async function createTemporarySelection(
     await createHashtagsForSpots(transaction, formData.spots);
 
   const queryResult: number[] = await insertSelectionTemporary(transaction, {
+    user_id: userId,
     slt_temp_title: formData.title,
     slt_category_id: formData.category || null,
     slt_location_option_id: formData.location?.subLocation || null,
