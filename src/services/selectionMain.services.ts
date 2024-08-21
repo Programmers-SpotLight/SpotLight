@@ -56,6 +56,18 @@ export const getPopularSelection = async () => {
           "selection_location_option.slt_location_option_name"
         )
         .join("user", "selection.user_id", "=", "user.user_id")
+        .join(
+          "selection_category",
+          "selection.slt_category_id",
+          "=",
+          "selection_category.slt_category_id"
+        )
+        .join(
+          "selection_location_option",
+          "selection.slt_location_option_id",
+          "=",
+          "selection_location_option.slt_location_option_id"
+        )
         .whereNotIn("selection.slt_status", ["private", "delete"])
         .limit(remainingCount);
 
@@ -65,6 +77,7 @@ export const getPopularSelection = async () => {
 
     return results;
   } catch (error) {
+    console.log(error);
     throw new Error(`Failed to fetch search Result`); // Todo : Error 처리
   }
 };
