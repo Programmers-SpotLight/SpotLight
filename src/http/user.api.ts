@@ -19,20 +19,21 @@ export const updateUserDescription = async (
   description: string
 ) => {
   const url = `/api/users/${userId}/description`;
-  return await requestHandler("put", url, { data: { description, userId } });
+  return await requestHandler("put", url, { description });
 };
 
 export const addUserHashTag = async (userId: string, hashtag: string) => {
   const url = `/api/users/${userId}/hashtag`;
-  return await requestHandler("post", url, { data: { userId, hashtag } });
+  console.log(hashtag)
+  return await requestHandler("post", url, { data : {hashtag}});
 };
 
 export const updateUserSelectionPrivate = async (
-  userId: string,
+  userId: number,
   selectionId: number
 ) => {
   const url = `/api/users/${userId}/selections/private`;
-  return await requestHandler("put", url, { data: { userId, selectionId } });
+  return await requestHandler("put", url, { selectionId });
 };
 
 export const deleteSelection = async (
@@ -40,8 +41,7 @@ export const deleteSelection = async (
   selectionType?: TuserSelection
 ) => {
   const params = new URLSearchParams();
-  if (selectionType)
-    params.append(QUERY_STRING_NAME.userSelection, selectionType);
+  if (selectionType) params.append(QUERY_STRING_NAME.userSelection, selectionType);
   const url = `/api/selections/${selectionId}`;
   const finalUrl = `${url}?${params.toString()}`;
   return await requestHandler("delete", finalUrl);
@@ -89,8 +89,7 @@ export const getUserSelectionList = async (
   if (sort) params.append(QUERY_STRING_NAME.sort, sort);
   if (page) params.append(QUERY_STRING_NAME.page, page);
   if (limit) params.append(QUERY_STRING_NAME.limit, limit);
-  if (isMyPage !== undefined)
-    params.append(QUERY_STRING_NAME.is_my_page, isMyPage ? "true" : "false");
+  if (isMyPage !== undefined) params.append(QUERY_STRING_NAME.is_my_page, isMyPage ? "true" : "false");
 
   const finalUrl = `${url}?${params.toString()}`;
   return await requestHandler("get", finalUrl);

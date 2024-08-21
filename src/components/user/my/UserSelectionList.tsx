@@ -41,12 +41,11 @@ const UserSelectionList: React.FC<IUserSelectionList> = ({
   if (data.data.length === 0) return <SearchEmptyResults />;
 
   const selectionList = data as unknown as IsearchResult;
-
   return (
     <>
       <div className="grid grid-cols-3 gap-[20px]">
         {selectionList.data.map((item) => (
-          <ColCard key={item.selectionId} {...item} isMyPage={isMyPage} />
+          <ColCard key={item.selectionId} {...item} isMyPage={isMyPage} userSelectionType={userSelectionType} />
         ))}
       </div>
       <Pagination pagination={selectionList.pagination} />

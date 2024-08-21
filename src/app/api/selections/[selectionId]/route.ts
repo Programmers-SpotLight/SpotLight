@@ -113,31 +113,30 @@ export async function DELETE(
   }: { params: { selectionId: number; user_selection: TuserSelection } }
 ): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
   try {
+    console.log('동작')
     const url = req.nextUrl;
     const query = url.searchParams;
     const selectionId = params.selectionId;
-    const selectionType = query.get(
-      QUERY_STRING_NAME.userSelection
-    ) as TuserSelection;
+    const selectionType = query.get(QUERY_STRING_NAME.userSelection) as TuserSelection;
 
-    console.log(selectionId, selectionType);
-    const userId = "1"; // temp
+    const session = await getServerSession(authOptions);
+    const session_userId = session ? session.user.id : null;
 
     const validationError = deleteSelectionValidator(
       selectionId,
       selectionType,
-      userId
+      session_userId
     );
     if (validationError) return validationError;
 
     if (selectionType === "temp") {
-      await serviceDeleteTempSelection(userId, selectionId);
+      await serviceDeleteTempSelection(session_userId, selectionId);
       return NextResponse.json(
         { message: "성공적으로 임시 데이터를 삭제하였습니다." },
         { status: 200 }
       );
     } else {
-      await serviceDeleteSelection(userId, selectionId);
+      await serviceDeleteSelection(session_userId, selectionId);
       return NextResponse.json(
         { message: "성공적으로 데이터를 삭제하였습니다." },
         { status: 200 }
@@ -146,7 +145,7 @@ export async function DELETE(
   } catch (error) {
     return NextResponse.json(
       { error: "서버에서 오류가 발생했습니다." },
-      { status: 500 } // Internal Server Error
+      { status: 500 }
     );
   }
 }
@@ -174,7 +173,7 @@ const deleteSelectionValidator = (
   if (!userId) {
     return NextResponse.json(
       { error: "유효하지 않은 사용자입니다." },
-      { status: 401 } // Unauthorized
+      { status: 401 }
     );
   }
 

@@ -48,8 +48,9 @@ const Button = ({
     } else if (onClick) {
       onClick(); 
     }
-  }
-
+    if(onClick) onClick(); // 버튼 온클릭 호출이 안돼서 수정했습니다.
+  };
+  
   return (
     <button
       type={type}
