@@ -1,4 +1,5 @@
 import { SELECTION_STATUS } from "@/constants/selection.constants";
+import { checkIfFileExistsInS3 } from "@/libs/s3";
 import { 
   ISelectionCategoryQueryResultRow, 
   ISelectionCreateCompleteData, 
@@ -13,9 +14,8 @@ import {
   selectTemporarySelectionWhereIdEqual
 } from "@/repositories/selection.repository";
 import { BadRequestError, InternalServerError } from "@/utils/errors";
-import { checkIfDirectoryOrFileExists } from "@/utils/fileStorage";
+import { extractFileNameFromS3Url } from "@/utils/fileStorage";
 import { fileTypeFromBlob } from "file-type";
-import path from "path/posix";
 
 
 export async function prepareAndValidateSelectionCreateFormData(
@@ -241,14 +241,11 @@ export async function validateImg(
     }
     // if the image is a string (URL), check if it exists in the database
   } else {
-    const imgPath: string = path.join(
-      ".",
-      "public",
-      "images",
-      "selections",
-      img
-    );
-    await checkIfDirectoryOrFileExists(imgPath);
+    const fileName = extractFileNameFromS3Url(img);
+    if (!fileName) {
+      throw new BadRequestError("유효하지 않은 이미지 URL입니다");
+    }
+    await checkIfFileExistsInS3(fileName);
   }
 }
 
@@ -380,9 +377,7 @@ export async function validateSpotImages(
     } else {
       // check for invalid characters in the file name
       const imageFileName = image as string;
-      if (imageFileName.includes("/")) {
-        throw new BadRequestError(`파일 이름에 / 문자가 포함되어 있습니다.`);
-      }
+      console.log(imageFileName);
       if (imageFileName.includes("..")) {
         throw new BadRequestError(`파일 이름에 .. 문자가 포함되어 있습니다.`);
       }
@@ -391,15 +386,12 @@ export async function validateSpotImages(
       }
 
       try {
-        const imgPath: string = path.join(
-          ".",
-          "public",
-          "images",
-          "selections",
-          "spots",
-          imageFileName
-        );
-        await checkIfDirectoryOrFileExists(imgPath);
+        const fileName = extractFileNameFromS3Url(imageFileName);
+        if (!fileName) {
+          throw new BadRequestError("유효하지 않은 사진 URL입니다");
+        }
+
+        await checkIfFileExistsInS3(fileName);
       } catch (error) {
         console.error(error);
         throw new BadRequestError(

@@ -7,17 +7,12 @@ import {
 import { Knex } from "knex";
 import { fileTypeFromBlob, FileTypeResult } from "file-type";
 import { v4 as uuidv4 } from "uuid";
-import path from "path";
-import {
-  createDirectory,
-  saveFile
-} from "@/utils/fileStorage";
+import { posix } from "path";
 import { createSpots, createTemporarySpots } from "./spot.services";
 import {
   InternalServerError,
   NotFoundError
 } from "@/utils/errors";
-
 import axios from "axios";
 import { 
   insertHashtagsGetIds, 
@@ -26,6 +21,7 @@ import {
   insertTemporarySelectionHashtags 
 } from '@/repositories/hashtag.repository';
 import { insertSelectionGetId, insertSelectionTemporary } from '@/repositories/selection.repository';
+import { uploadFileToS3 } from '@/libs/s3';
 
 
 export async function createSelection(
@@ -157,29 +153,25 @@ export async function saveSelectionImage(imageFile: File) : Promise<string> {
   const filePath : string = `${newFileName}.${fileType?.mime.split('/')[1]}`;
 
   try {
-    // 디렉토리가 존재하지 않으면 생성
-    const directoryPath: string = path.join(
-      ".",
-      "public",
-      "images",
-      "selections"
-    );
-    await createDirectory(directoryPath);
-
     // 파일을 public/images/selections 디렉토리에 저장
-    const savePath: string = path.join(
-      ".",
-      "public",
-      "images",
-      "selections",
+    const savePath: string = posix.join(
+      "public/images/selections",
       filePath
     );
-    await saveFile(savePath, imageFile);
+    const arrayBuffer : ArrayBuffer = await imageFile.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
+
+    await uploadFileToS3({
+      fileName: savePath, 
+      fileType: fileType?.mime || '',
+      fileContent: buffer
+    });
+
+    return `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${savePath}`;
   } catch (error) {
     console.error(error);
     throw new InternalServerError("셀렉션 이미지 저장에 실패했습니다");
   }
-  return filePath;
 }
 
 export const requestHashtagsSuggestionFromAI = async (prompt: string) => {
