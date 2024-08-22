@@ -1,7 +1,12 @@
 import { useGetSearchParams } from "@/components/search/SearchResultSection";
+import { useGetUserSelectionListParams } from "@/components/user/my/UserSelectionSection";
 import { QUERY_KEY } from "@/constants/queryKey.constants";
 import { addBookMarks, removeBookMarks } from "@/http/bookmarks.api";
-import { IsearchResult, TsortType } from "@/models/searchResult.model";
+import {
+  IsearchResult,
+  ItempResult,
+  TsortType
+} from "@/models/searchResult.model";
 import { ISelectionInfo } from "@/models/selection.model";
 import {
   QueryClient,
@@ -18,6 +23,14 @@ export const useBookMarks = (
 ) => {
   const { category_id, region_id, tags, sort, page, limit } =
     useGetSearchParams();
+  const {
+    userId: userSelectionUserId,
+    userSelectionType,
+    sort: userSelectionSort,
+    page: userSelectionPage,
+    limit: userSelectionLimit
+  } = useGetUserSelectionListParams();
+
   const { data: session } = useSession();
   const queryClient = useQueryClient();
 
@@ -29,6 +42,15 @@ export const useBookMarks = (
     sort,
     page,
     limit
+  ];
+
+  const userSelectionQueryKey = [
+    QUERY_KEY.SELECTION,
+    userSelectionUserId,
+    userSelectionType,
+    userSelectionSort,
+    userSelectionPage,
+    userSelectionLimit
   ];
 
   const { mutate: addBookMarksMutate } = useMutation({
@@ -55,7 +77,18 @@ export const useBookMarks = (
           true
         );
 
-        return { previousSelectionDetail, previousSearchResult };
+        const previousUserSelection = updateUserSelectionData(
+          queryClient,
+          userSelectionQueryKey,
+          selectionId,
+          true
+        );
+
+        return {
+          previousSelectionDetail,
+          previousSearchResult,
+          previousUserSelection
+        };
       }
     },
 
@@ -69,6 +102,11 @@ export const useBookMarks = (
       queryClient.setQueryData(
         searchResultQueryKey,
         context?.previousSearchResult
+      );
+
+      queryClient.setQueryData(
+        userSelectionQueryKey,
+        context?.previousUserSelection
       );
 
       if (!session?.user) toast.info("로그인이 필요한 서비스입니다.");
@@ -114,7 +152,18 @@ export const useBookMarks = (
         false
       );
 
-      return { previousSelectionDetail, previousSearchResult };
+      const previousUserSelection = updateUserSelectionData(
+        queryClient,
+        userSelectionQueryKey,
+        selectionId,
+        false
+      );
+
+      return {
+        previousSelectionDetail,
+        previousSearchResult,
+        previousUserSelection
+      };
     },
 
     onError: (error, variables, context) => {
@@ -127,6 +176,11 @@ export const useBookMarks = (
       queryClient.setQueryData(
         searchResultQueryKey,
         context?.previousSearchResult
+      );
+
+      queryClient.setQueryData(
+        userSelectionQueryKey,
+        context?.previousUserSelection
       );
       toast.error("북마크에서 제거하는 데 실패했습니다.");
     },
@@ -194,4 +248,30 @@ const updateSearchResultData = (
   }
 
   return previousSearchResult;
+};
+
+const updateUserSelectionData = (
+  queryClient: QueryClient,
+  userSelectionQueryKey: (string | number)[],
+  selectionId: number,
+  booked: boolean
+) => {
+  const previousUserSelection = queryClient.getQueryData<
+    IsearchResult | ItempResult
+  >(userSelectionQueryKey);
+
+  if (previousUserSelection) {
+    const updatedSearchResult = {
+      ...previousUserSelection,
+      data: previousUserSelection.data.map((selection) =>
+        selection.selectionId === selectionId
+          ? { ...selection, booked }
+          : selection
+      )
+    };
+
+    queryClient.setQueryData(userSelectionQueryKey, updatedSearchResult);
+  }
+
+  return previousUserSelection;
 };

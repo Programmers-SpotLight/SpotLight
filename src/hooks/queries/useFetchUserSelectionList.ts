@@ -42,7 +42,8 @@ const useFetchUserSelectionList = ({
         page,
         limit,
         isMyPage
-      )
+      ),
+    staleTime: 300000
   });
 };
 
