@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { AiFillLike } from "react-icons/ai";
 import { FaStar } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp, IoMdTrash } from "react-icons/io";
 import { IoPersonSharp } from "react-icons/io5";
@@ -7,22 +6,30 @@ import ReviewImages from "./ReviewImages";
 import { MdEdit } from "react-icons/md";
 import { useModalStore } from "@/stores/modalStore";
 import ReviewLikeButton from "./ReviewLikeButton";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { AiFillLike } from "react-icons/ai";
+import { useReviewMutations } from "@/hooks/mutations/useReviewMutations";
+import { useReviewSortContext } from "@/context/useReviewSortContext";
 
 interface IReviewProps {
   sltOrSpotId: number | string;
   review: IReview;
   reviewType: ReviewType;
-  updateReview: (data: IReviewUpdateFormData) => void;
-  deleteReview: (reviewId: string) => void; 
 }
 
-const user = {
-  userId: 1
-}
-
-const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteReview }: IReviewProps) => {
+const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModalStore();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const { sort } = useReviewSortContext();
+
+  const { updateReview, deleteReview } = useReviewMutations({
+    reviewType,
+    sltOrSpotId,
+    sort
+  });
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -46,7 +53,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
   };
 
   const openReviewEditModal = () => {
-    openModal('review', { review, sltOrSpotId, onSubmit: updateReview }); 
+    openModal("review", { review, sltOrSpotId, onSubmit: updateReview }); 
   };
 
   const openReviewDeleteModal = () => {
@@ -60,6 +67,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
     <div className="block space-y-3 items-center justify-center">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
+          <Link href={`/user/${review.user.userId}`}>
           {review.user.userImage ? (
             <div className="w-[38px] h-[38px] bg-grey1 rounded-full flex items-center justify-center">
               <img
@@ -73,13 +81,29 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
               <IoPersonSharp size={25} className="text-primary" />
             </div>
           )}
+          </Link>
 
           <div className="space-y-1 text-small w-[80px] ml-2">
-            <div>{review.user.userNickname}</div>
+            <Link href={`/user/${review.user.userId}`}>{review.user.userNickname}</Link>
             <div className="text-grey3">{review.createdDate}</div>
           </div>
         </div>
-        <ReviewLikeButton liked={review.user.isLiked} likeCount={review.likeCount} reviewType={reviewType} sltOrSpotId={review.sltOrSpotId} reviewId={review.reviewId} />
+
+        {
+          review.user.isLiked !== null && user
+          ?  <ReviewLikeButton 
+              liked={review.user.isLiked} 
+              likeCount={review.likeCount} 
+              reviewType={reviewType} 
+              sltOrSpotId={sltOrSpotId} 
+              reviewId={review.reviewId} 
+              userId={user.id} 
+            />
+          : <div className={"text-grey3 flex items-center space-x-1 text-bold left-0"}>
+              <AiFillLike size={15} />
+              <div className="text-small">{review.likeCount}</div>
+            </div>
+        }
       </div>
 
       <div className="flex justify-between">
@@ -94,7 +118,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType, updateReview, deleteRevie
           ))}
         </div>
 
-        {user.userId === review.user.userId && (
+        {user && user.id === review.user.userId && (
           <div className="flex text-grey4">
             <MdEdit
               className="cursor-pointer mr-1"

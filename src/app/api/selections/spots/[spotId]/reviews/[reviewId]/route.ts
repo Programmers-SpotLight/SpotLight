@@ -1,5 +1,7 @@
-import { deleteSpotReviews, putSpotReviews } from "@/services/spot-review.services";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { deleteSpotReviews, putSpotReviews } from "@/services/spotReview.services";
 import { uuidToBinary } from "@/utils/uuidToBinary";
+import { getServerSession } from "next-auth";
 
 export async function PUT (
   req: Request,
@@ -8,12 +10,13 @@ export async function PUT (
   try {
     const spotId = params.spotId;
     const reviewId = params.reviewId;
-    const userId = 1;
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
     if (!userId) {
-      return;
+      return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
-
+    
     const data:IReviewFormData = await req.json();
 
     const reviewImg: IReviewImage[] | null = data.reviewImg?.map((img, index) => ({
@@ -59,9 +62,11 @@ export async function DELETE (
 ) {
   try {
     const reviewId = params.reviewId;
-    const userId = 1;
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
     if (!userId) {
-      return;
+      return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
 
     await deleteSpotReviews(reviewId);

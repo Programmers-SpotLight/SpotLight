@@ -103,22 +103,35 @@ export const fetchReviewsDelete = async ({
   return await requestHandler('delete', url);
 };
 
+export const fetchReviewLike = async (
+  selectionId: number,
+  reviewId: string,
+  spotId: string | null,
+) => {
+  const url = spotId
+      ? `/api/selections/${selectionId}/spots/${spotId}/reviews/${reviewId}/likes`
+      : `/api/selections/${selectionId}/reviews/${reviewId}/likes`;
+
+  return await requestHandler('get', url);
+};
+
 export const addReviewLike = async (
   selectionId: number,
   reviewId: string,
   spotId: string | null,
   userId: number
-) => {
+): Promise<IReviewLikeData> => {
   try {
     const url = spotId
       ? `/api/selections/${selectionId}/spots/${spotId}/reviews/${reviewId}/likes`
       : `/api/selections/${selectionId}/reviews/${reviewId}/likes`;
 
-    await requestHandler("post", url, {
+    const result = await requestHandler("post", url, {
       reviewId,
       reviewType: spotId ? "spot" : "selection",
       userId
     });
+    return result.data;
   } catch (error) {
     throw new Error("Failed to add review like");
   }
@@ -129,19 +142,20 @@ export const removeReviewLike = async (
   reviewId: string,
   spotId: string | null,
   userId: number
-) => {
+): Promise<IReviewLikeData> => {
   try {
     const url = spotId
       ? `/api/selections/${selectionId}/spots/${spotId}/reviews/${reviewId}/likes`
       : `/api/selections/${selectionId}/reviews/${reviewId}/likes`;
 
-    await axios.delete(url, {
+    const result = await axios.delete(url, {
       data: {
         reviewId,
         reviewType: spotId ? "spot" : "selection",
         userId
       }
     });
+    return result.data.data;
   } catch (error) {
     throw new Error("Failed to remove review like");
   }

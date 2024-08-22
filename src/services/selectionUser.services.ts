@@ -244,7 +244,6 @@ export const serviceDeleteTempSelection = async (userId: string, selectionId: nu
       })
       .del();
   } catch (error) {
-    console.log(error)
     throw new Error('임시 선택 데이터를 삭제하는 중 오류가 발생했습니다.');
   }
 };

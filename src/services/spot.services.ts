@@ -2,20 +2,23 @@
 
 import { dbConnectionPool } from "@/libs/db";
 import { ISelectionSpot, ISelectionSpotCategory } from "@/models/selection.model";
-import { deleteMultipleSpotHashtagNotIn, deleteMultipleSpotTemporaryHashtagNotIn, insertMultipleSpotHashtag, insertMultipleSpotTemporaryHashtag } from "@/repositories/hashtag.repository";
+import { 
+  deleteMultipleSpotHashtagNotIn, 
+  deleteMultipleSpotTemporaryHashtagNotIn, 
+  insertMultipleSpotHashtag, 
+  insertMultipleSpotTemporaryHashtag 
+} from "@/repositories/hashtag.repository";
 import { 
   deleteAllSpotImageBySelectionId,
-  deleteAllSpotTemporaryBySelectionId,
   deleteMultipleSpotBySelectionIdAndNotInPlaceId,
-  deleteMultipleSpotImageBySelectionIdAndNotInImageUrl,
   deleteMultipleSpotTemporaryBySelectionIdAndNotInPlaceId,
   deleteMultipleSpotTemporaryImageBySelectionIdAndNotInImageUrl,
   insertMultipleSpot, 
   insertMultipleSpotImage, 
   insertMultipleSpotTemporary, 
   insertMultipleSpotTemporaryImage, 
-  selectMultipleExistingSpotByInPlaceId, 
-  selectMultipleExistingSpotTemporaryByInPlaceId, 
+  selectMultipleSpotTemporaryByInPlaceId, 
+  selectMultipleSpotByInPlaceId, 
   updateMultipleSpot, 
   updateMultipleSpotTemporary
 } from "@/repositories/spot.repository";
@@ -196,7 +199,7 @@ export async function upsertTemporarySpots(
   spots: ISelectionSpot[]
 ) {
   const spotPlaceIds = spots.map((spot) => spot.placeId);
-  const existingSpots = await selectMultipleExistingSpotTemporaryByInPlaceId(
+  const existingSpots = await selectMultipleSpotTemporaryByInPlaceId(
     selectionId,
     spotPlaceIds
   );
@@ -330,7 +333,7 @@ export async function upsertSpots(
   spots: ISelectionSpot[]
 ) {
   const spotPlaceIds = spots.map((spot) => spot.placeId);
-  const existingSpots = await selectMultipleExistingSpotByInPlaceId(
+  const existingSpots = await selectMultipleSpotByInPlaceId(
     selectionId,
     spotPlaceIds
   )

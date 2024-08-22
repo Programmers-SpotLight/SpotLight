@@ -1,3 +1,4 @@
+import { Knex } from "knex";
 import { Ihashtags } from "./hashtag.model";
 
 export type SpotCategory = "관광지" | "맛집" | "쇼핑" | "카페" | "기타";
@@ -25,7 +26,7 @@ export interface ISpotInfo {
 }
 
 export interface IInsertSpot {
-  spot_id: Buffer;
+  spot_id: Knex.Raw<any>;
   slt_id: number;
   spot_order: number;
   spot_title: string;
@@ -38,7 +39,7 @@ export interface IInsertSpot {
 };
 
 export interface IInsertSpotTemporary {
-  spot_temp_id: Buffer;
+  spot_temp_id: Knex.Raw<any>;
   slt_temp_id: number;
   spot_temp_order: number;
   spot_category_id: number;
@@ -52,14 +53,14 @@ export interface IInsertSpotTemporary {
 
 export interface IInsertSpotImage {
   spot_img_id: Buffer;
-  spot_id: Buffer;
+  spot_id: Knex.Raw<any>;
   spot_img_url: string;
   spot_img_order: number;
 }
 
 export interface IInsertSpotTemporaryImage {
   spot_temp_img_id: Buffer;
-  spot_temp_id: Buffer;
+  spot_temp_id: Knex.Raw<any>;
   spot_temp_img_url: string;
   spot_temp_img_order: number;
 }

@@ -1,39 +1,15 @@
 import { dbConnectionPool } from "@/libs/db";
+import { 
+  IInsertHashtag, 
+  IInsertSelectionHashtag, 
+  IInsertSpotHashtag, 
+  IInsertTemporarySelectionHashtag, 
+  IInsertTemporarySpotHashtag, 
+  ISelectSelectionHashtag 
+} from "@/models/hashtag.model";
 import { InternalServerError } from "@/utils/errors";
 import { Knex } from "knex";
 
-
-interface IInsertHashtag {
-  htag_name: string;
-}
-
-interface IInsertSelectionHashtag {
-  slt_htag_id: Knex.Raw<any>;
-  slt_id: number;
-  htag_id: number;
-}
-
-interface IInsertTemporarySelectionHashtag {
-  slt_temp_htag_id: Knex.Raw<any>;
-  slt_temp_id: number;
-  htag_id: number;
-}
-
-interface IInsertSpotHashtag {
-  spot_htag_id: Knex.Raw<any>;
-  spot_id: Knex.Raw<any>;
-  htag_id: number;
-}
-
-interface IInsertTemporarySpotHashtag {
-  spot_temp_htag_id: Knex.Raw<any>;
-  spot_temp_id: Knex.Raw<any>;
-  htag_id: number;
-}
-
-interface ISelectSelectionHashtag {
-  name: string;
-}
 
 export const insertHashtagsGetIds = async (
   transaction: Knex.Transaction<any, any[]>,
@@ -275,6 +251,71 @@ export async function selectMultipleSpotTemporaryHashtagBySelectionId(
   }
 }
 
+export async function selectSelectionHashtagBySelectionPopularity(
+  transaction: Knex.Transaction<any, any[]>,
+  limit: number,
+  excludeUserIds: number[]
+) : Promise<Array<{ selectionId: number, hashtags: string }>> {
+  try {
+    const queryResult = await transaction('selection_hashtag')
+      .select([
+          'selection_hashtag.slt_id as selectionId',
+          transaction.raw('GROUP_CONCAT(hashtag.htag_name SEPARATOR " ") as hashtags')
+      ])
+      .leftJoin('hashtag', 'selection_hashtag.htag_id', 'hashtag.htag_id')
+      .leftJoin('selection', 'selection_hashtag.slt_id', 'selection.slt_id')
+      .groupBy('selection_hashtag.slt_id') // Grouping by selectionId to aggregate
+      .whereRaw(`
+          (SELECT COUNT (*) FROM bookmark WHERE bookmark.slt_id = selection_hashtag.slt_id) > 10
+      `)
+      .andWhereRaw(`selection.user_id NOT IN (${excludeUserIds.join(',')})`)
+      .limit(limit);
+    
+    return queryResult;
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('인기 셀렉션 해시태그를 가져오는데 실패했습니다');
+  }
+}
+
+export async function selectAllSelectionHashtag(
+  transaction: Knex.Transaction<any, any[]>,
+  limit: number,
+  excludeUserIds: number[]
+) : Promise<Array<{ selectionId: number, hashtags: string }>> {
+  try {
+    return await transaction('selection_hashtag')
+      .select([
+        'selection_hashtag.slt_id as selectionId',
+        transaction.raw('GROUP_CONCAT(hashtag.htag_name SEPARATOR " ") as hashtags')
+      ])
+      .whereNotIn('selection.user_id', excludeUserIds)
+      .leftJoin('hashtag', 'selection_hashtag.htag_id', 'hashtag.htag_id')
+      .leftJoin('selection', 'selection_hashtag.slt_id', 'selection.slt_id')
+      .groupBy('selection_hashtag.slt_id')
+      .limit(limit);
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('모든 셀렉션 해시태그를 가져오는데 실패했습니다');
+  }
+}
+
+export async function selectAllUserHashtagByUserId(
+  userId: number
+) : Promise<{ hashtag: string }[]> {
+  try {
+    const queryResult = await dbConnectionPool('user_hashtag')
+      .select('hashtag.htag_name as hashtag')
+      .leftJoin('hashtag', 'user_hashtag.htag_id', 'hashtag.htag_id')
+      .where('user_hashtag.user_id', userId);
+
+    return queryResult;
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('유저 해시태그를 가져오는데 실패했습니다');
+  }
+}
+
 export async function deleteMultipleSelectionHashtagNotIn(
   transaction: Knex.Transaction<any, any[]>,
   selectionId: number,
@@ -294,7 +335,7 @@ export async function deleteMultipleSelectionHashtagNotIn(
 export async function deleteAllTemporarySelectionHashtagBySelectionId(
   transaction: Knex.Transaction<any, any[]>,
   selectionId: number
-) {
+) : Promise<void> {
   try {
     await transaction('selection_temporary_hashtag')
       .where('slt_temp_id', selectionId)

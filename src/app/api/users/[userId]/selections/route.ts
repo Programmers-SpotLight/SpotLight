@@ -56,7 +56,6 @@ export async function GET(
       userSelection
     );
     if (validation.error) {
-      console.log(validation.error);
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 

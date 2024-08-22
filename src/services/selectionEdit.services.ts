@@ -136,12 +136,10 @@ export async function editSelection(
 
   // 해당 해시태그가 존재하지 않으면 새로 생성
   // 셀렉션 해시태그를 생성할 해시테그 id 배열로 변환
-  if (formData.hashtags && formData.hashtags.length > 0) {
-    formData.hashtags = await insertHashtagsGetIds(
-      transaction, 
-      formData.hashtags as string[]
-    ) as number[];
-  }
+  formData.hashtags = await insertHashtagsGetIds(
+    transaction, 
+    formData.hashtags as string[]
+  ) as number[];
 
   // 각 spot에 대해 해시태그 생성
   // 셀렉션에 포함된 spot들의 해시태그를 생성할 해시테그 id 배열로 변환
@@ -161,27 +159,23 @@ export async function editSelection(
     }
   );
 
-  if (formData.hashtags && formData.hashtags.length > 0) {
-    await insertSelectionHashtags(
-      transaction, 
-      selectionId, 
-      formData.hashtags as number[]
-    );
+  await insertSelectionHashtags(
+    transaction, 
+    selectionId, 
+    formData.hashtags as number[]
+  );
 
-    await deleteMultipleSelectionHashtagNotIn(
-      transaction, 
-      selectionId, 
-      formData.hashtags as number[]
-    );
-  }
+  await deleteMultipleSelectionHashtagNotIn(
+    transaction, 
+    selectionId, 
+    formData.hashtags as number[]
+  );
 
-  if (formData.spots && formData.spots.length > 0) {
-    await upsertSpots(
-      transaction, 
-      selectionId, 
-      formData.spots
-    );
-  }
+  await upsertSpots(
+    transaction, 
+    selectionId, 
+    formData.spots
+  );
 }
 
 export async function editSelectionTemporary(

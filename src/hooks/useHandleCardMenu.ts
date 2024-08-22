@@ -5,15 +5,14 @@ import { useModalStore } from "@/stores/modalStore";
 import { toast } from "react-toastify";
 import useUpdateUserSelectionPrivate from "./mutations/useUpdateUserSelectionPrivate";
 
-const useHandleCardMenu = (status: TselectionStatus) => {
+const useHandleCardMenu = (status: TselectionStatus, userId: number) => {
   const [showMenu, setShowMenu] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<TselectionStatus>(status);
-  const { selectionPrivate } = useUpdateUserSelectionPrivate("1");
+  const { selectionPrivate } = useUpdateUserSelectionPrivate(userId);
   const { openModal } = useModalStore();
 
   const selectionMenuRef = useRef<HTMLUListElement>(null);
   useClickOutside(selectionMenuRef, () => setShowMenu(false));
-
   const handleIconClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -24,9 +23,8 @@ const useHandleCardMenu = (status: TselectionStatus) => {
     e: React.MouseEvent,
     action: string,
     selectionId: number,
-    title: string
+    title: string,
   ) => {
-    console.log(`${action} 클릭됨!`);
     e.preventDefault();
     e.stopPropagation();
     if (action === "비공개 설정하기") {

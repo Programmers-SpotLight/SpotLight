@@ -5,6 +5,7 @@ import SelectionInfo from "./selection-section-contents/SelectionInfo";
 import SpotList from "./selection-section-contents/SpotList";
 import SelectionHeader from "./selection-section-contents/SelectionHeader";
 import { ISelectionInfo } from "@/models/selection.model";
+import { SortProvider } from "@/context/useReviewSortContext";
 
 interface ISelectionSectionProps {
   isSelectionDrawerOpen: boolean;
@@ -35,9 +36,11 @@ const SelectionSection = ({
       )
     },
     {
-      title: "유저 리뷰",
+      title: "셀렉션 리뷰",
       component: (
-        <Review reviewType="selection" sltOrSpotId={selectionData.id} />
+        <SortProvider>
+          <Review reviewType="selection" sltOrSpotId={selectionData.id} />
+        </SortProvider>
       )
     }
   ];

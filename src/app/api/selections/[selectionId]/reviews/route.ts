@@ -1,5 +1,7 @@
-import { countReviews, getSelectionReviews, postSelectionReviews, putSelectionReviews } from "@/services/selection-review.services";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { countReviews, getSelectionReviews, postSelectionReviews } from "@/services/selectionReview.services";
 import { uuidToBinary } from "@/utils/uuidToBinary";
+import { getServerSession, Session } from "next-auth";
 
 export async function GET(
   req: Request,
@@ -12,16 +14,14 @@ export async function GET(
     let sort = searchParams.get("sort") ?? "like";
     page = Number(page);
     
-    const userId = 1;
-
-    if (!userId) {
-      return;
-    }
+    const session: Session | null = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
     const reviewList = await getSelectionReviews({
       sltOrSpotId: selectionId,
       sort,
-      page
+      page,
+      userId
     });
 
     const count = await countReviews(selectionId, "selection");
@@ -48,10 +48,11 @@ export async function POST (
   try {
     const selectionId = parseInt(params.selectionId, 10);
     
-    const userId = 1;
+    const session: Session | null = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
     if (!userId) {
-      return;
+      return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
 
     const data:IReviewFormData = await req.json();

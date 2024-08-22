@@ -45,6 +45,7 @@ const UserSelectionSection = () => {
       ? userSelectionType
       : (QUERY_STRING_DEFAULT.userSelection as TuserSelection)
   );
+
   const {
     setIsSortClicked,
     toggleSortOptions,

@@ -20,9 +20,9 @@ interface ISelectionCreateStore {
   setIsTemporary: (isTemporary: boolean) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  setCategory: (category: ISelectionCategory) => void;
-  setLocation: (location: ISelectionCreateStoreLocation) => void;
-  setSubLocation: (subLocation: ISelectionCreateStoreLocation) => void;
+  setCategory: (category: ISelectionCategory | undefined) => void;
+  setLocation: (location: ISelectionCreateStoreLocation | undefined) => void;
+  setSubLocation: (subLocation: ISelectionCreateStoreLocation | undefined) => void;
   setSelectionImage: (selectionPhoto: File | string) => void;
   addSpot: (spot: ISelectionSpot) => void;
   deleteSpot: (spot: number) => void;
@@ -41,7 +41,7 @@ interface ISelectionSpotCreateStore {
   currentCoordinate: google.maps.LatLngLiteral;
   title: string;
   description: string;
-  category: ISelectionCategory | null;
+  category: ISelectionCategory | undefined;
   selectedLocation: TPoiWithAddress;
   spotImage: File | string | null;
   spotImage1: File | string | null;
@@ -53,7 +53,7 @@ interface ISelectionSpotCreateStore {
   setCurrentCoordinate: (currentCoordinate: google.maps.LatLngLiteral) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  setCategory: (category: ISelectionCategory) => void;
+  setCategory: (category: ISelectionCategory | undefined) => void;
   setSelectedLocation: (selectedLocation: TPoiWithAddress) => void;
   setSpotDescription: (description: string) => void;
   setSpotImage: (spotImage: File | string) => void;
@@ -87,9 +87,9 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
     setIsTemporary: (isTemporary: boolean) => set({ isTemporary }),
     setTitle: (title: string) => set({ title }),
     setDescription: (description: string) => set({ description }),
-    setCategory: (category: ISelectionCategory) => set({ category }),
-    setLocation: (location: ISelectionCreateStoreLocation) => set({ location }),
-    setSubLocation: (subLocation: ISelectionCreateStoreLocation) => set({ subLocation }),
+    setCategory: (category: ISelectionCategory | undefined) => set({ category }),
+    setLocation: (location: ISelectionCreateStoreLocation | undefined) => set({ location }),
+    setSubLocation: (subLocation: ISelectionCreateStoreLocation | undefined) => set({ subLocation }),
     setSelectionImage: (selectionImage: File | string) => set({ selectionImage }),
     addSpot: (spot: ISelectionSpot) => set((state) => ({ spots: [...state.spots, spot] })),
     addHashtag: (hashtag: string) => {
@@ -133,7 +133,7 @@ export const useSelectionSpotCreateStore = create<ISelectionSpotCreateStore>()(
     currentCoordinate: { lat: 37.5503, lng: 126.9971 },
     title: "",
     description: "",
-    category: null,
+    category: undefined,
     selectedLocation: {
       key: "User's current location",
       location: { lat: 37.5503, lng: 126.9971 },
@@ -150,7 +150,7 @@ export const useSelectionSpotCreateStore = create<ISelectionSpotCreateStore>()(
     setCurrentCoordinate: (currentCoordinate: google.maps.LatLngLiteral) => set({ currentCoordinate }),
     setTitle: (title: string) => set({ title }),
     setDescription: (description: string) => set({ description }),
-    setCategory: (category: ISelectionCategory) => set({ category }),
+    setCategory: (category: ISelectionCategory | undefined) => set({ category }),
     setSelectedLocation: (selectedLocation: TPoiWithAddress) => set({ selectedLocation }),
     setSpotDescription: (description: string) => set({ description }),
     setSpotImage: (spotImage: File | string | null) => set({ spotImage }),

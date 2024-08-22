@@ -23,7 +23,6 @@ const ModalEditInfo = ({ description, userId }: ModalEditInfoProps) => {
       return;
     }
     if (text.length > 50) {
-      console.log(text.length);
       toast.error("50자 이내로 작성해주세요");
       return;
     }

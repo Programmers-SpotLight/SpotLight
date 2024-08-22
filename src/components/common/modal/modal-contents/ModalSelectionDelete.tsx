@@ -22,6 +22,7 @@ const ModalSelectionDelete = ({
   const searchParams = useSearchParams();
   const selectionType =(searchParams.get(QUERY_STRING_NAME.userSelection) as TuserSelection) ||(QUERY_STRING_DEFAULT.userSelection as TuserSelection);
   const handleDelete = (selectionId : number) => {
+    console.log('동작', selectionId)
     if(selectionType) handleDeleteSelection({selectionId, selectionType})
     closeModal();
   }
@@ -38,7 +39,7 @@ const ModalSelectionDelete = ({
       </h2>
       <div className="m-auto flex gap-[10px]">
       <Button size="small" color="white" onClick={closeModal}>취소</Button>
-      <Button size="small" color="danger" onClick={()=> handleDelete(selectionId)}>삭제</Button>
+      <Button size="small" color="danger" onClick={() => handleDelete(selectionId)}>삭제</Button>
       </div>
     </div>
   );

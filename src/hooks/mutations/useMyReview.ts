@@ -1,5 +1,6 @@
-import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchMyReview, fetchReviewsDelete, fetchReviewsUpdate } from "@/http/review.api";
+import { toast } from "react-toastify";
 
 interface IMyReviewProps {
   reviewType: ReviewType;
@@ -34,11 +35,13 @@ const useMyReview = ({ reviewType, page } : IMyReviewProps) => {
 
     onError: (error, variables, context) => {
       queryClient.setQueryData(['myReview', reviewType, page], context?.previousReview);
+      toast.error("리뷰 수정에 실패했습니다.");
       console.error('Error updating review:', error);
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myReview', reviewType, page] });
+      toast.success("리뷰가 수정 되었습니다.");
     }
   });
 
@@ -57,11 +60,13 @@ const useMyReview = ({ reviewType, page } : IMyReviewProps) => {
 
     onError: (error, variables, context) => {
       queryClient.setQueryData(['myReview', reviewType, page], context?.previousReview);
+      toast.error("리뷰 삭제에 실패했습니다.");
       console.error('Error deleting review:', error);
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myReview', reviewType, page] });
+      toast.success("리뷰가 삭제 되었습니다.");
     }
   });
 

@@ -14,7 +14,6 @@ import {
 } from "@/utils/fileStorage";
 import { createSpots, createTemporarySpots } from "./spot.services";
 import {
-  BadRequestError,
   InternalServerError,
   NotFoundError
 } from "@/utils/errors";
