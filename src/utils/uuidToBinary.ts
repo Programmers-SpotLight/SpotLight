@@ -12,3 +12,15 @@ export function uuidToBinary(uuid?: string): Buffer {
   
   return Buffer.from(uuid.replace(/-/g, ''), 'hex');
 }
+
+// UUID를 문자열로 변환
+export function uuidToString(uuidBuffer: Buffer): string {
+  const uuidHex = uuidBuffer.toString('hex');
+  return [
+    uuidHex.slice(0, 8),
+    uuidHex.slice(8, 12),
+    uuidHex.slice(12, 16),
+    uuidHex.slice(16, 20),
+    uuidHex.slice(20)
+  ].join('-');
+}

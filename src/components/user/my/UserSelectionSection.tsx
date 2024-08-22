@@ -37,25 +37,8 @@ const UserSelectionSection = () => {
           ]
         : [])
     ];
-
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const userIdMatch = pathname.match(/user\/(\d+)/);
-
-  if (!userIdMatch) return null;
-  const userId = userIdMatch[1];
-
-  const userSelectionType =
-    (searchParams.get(QUERY_STRING_NAME.userSelection) as TuserSelection) ||
-    (QUERY_STRING_DEFAULT.userSelection as TuserSelection);
-  const sort =
-    (searchParams.get(QUERY_STRING_NAME.sort) as TsortType) ||
-    (QUERY_STRING_DEFAULT.sort as TsortType);
-  const page =
-    searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
-  const limit =
-    searchParams.get(QUERY_STRING_NAME.limit) ||
-    QUERY_STRING_DEFAULT.userSelection_limit;
+  const { userId, userSelectionType, sort, page, limit } =
+    useGetUserSelectionListParams();
 
   const [currentSelection, setCurrentSelection] = useState<TuserSelection>(
     userSelectionType
@@ -127,3 +110,25 @@ const UserSelectionSection = () => {
 };
 
 export default UserSelectionSection;
+
+export const useGetUserSelectionListParams = () => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const userIdMatch = pathname.match(/user\/(\d+)/);
+
+  const userId = !userIdMatch ? "" : userIdMatch[1];
+
+  const userSelectionType =
+    (searchParams.get(QUERY_STRING_NAME.userSelection) as TuserSelection) ||
+    (QUERY_STRING_DEFAULT.userSelection as TuserSelection);
+  const sort =
+    (searchParams.get(QUERY_STRING_NAME.sort) as TsortType) ||
+    (QUERY_STRING_DEFAULT.sort as TsortType);
+  const page =
+    searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
+  const limit =
+    searchParams.get(QUERY_STRING_NAME.limit) ||
+    QUERY_STRING_DEFAULT.userSelection_limit;
+
+  return { userId, userSelectionType, sort, page, limit };
+};

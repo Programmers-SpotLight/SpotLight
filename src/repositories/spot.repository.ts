@@ -1,68 +1,16 @@
 import { dbConnectionPool } from "@/libs/db";
+import { 
+  IInsertSpot, 
+  IInsertSpotImage, 
+  IInsertSpotTemporary, 
+  IInsertSpotTemporaryImage, 
+  ISelectSpot, 
+  ISelectSpotImage 
+} from "@/models/spot.model";
 import { InternalServerError } from "@/utils/errors";
 import { Knex } from "knex";
 import { v4 as uuidv4 } from 'uuid';
 
-
-interface IInsertSpot {
-  spot_id: Knex.Raw<any>;
-  slt_id: number;
-  spot_order: number;
-  spot_title: string;
-  spot_description: string;
-  spot_category_id: number;
-  spot_gmap_id: string;
-  spot_gmap_address: string;
-  spot_gmap_latitude: number;
-  spot_gmap_longitude: number;
-};
-
-interface IInsertSpotTemporary {
-  spot_temp_id: Knex.Raw<any>;
-  slt_temp_id: number;
-  spot_temp_order: number;
-  spot_category_id: number;
-  spot_temp_title: string;
-  spot_temp_description: string;
-  spot_temp_gmap_id: string;
-  spot_temp_gmap_address: string;
-  spot_temp_gmap_latitude: number;
-  spot_temp_gmap_longitude: number;
-}
-
-interface IInsertSpotImage {
-  spot_img_id: Buffer;
-  spot_id: Knex.Raw<any>;
-  spot_img_url: string;
-  spot_img_order: number;
-}
-
-interface IInsertSpotTemporaryImage {
-  spot_temp_img_id: Buffer;
-  spot_temp_id: Knex.Raw<any>;
-  spot_temp_img_url: string;
-  spot_temp_img_order: number;
-}
-
-export interface ISelectSpot {
-  id: string;
-  selectionId: string;
-  order: number;
-  title: string;
-  description: string;
-  categoryId: number;
-  gmapId: string;
-  gmapAddress: string;
-  gmapLatitude: number;
-  gmapLongitude: number;
-  hashtags: string[];
-  images: string[];
-}
-
-interface ISelectSpotImage {
-  spotId: string;
-  imageUrl: string;
-}
 
 export const insertMultipleSpotTemporary = async (
   transaction: Knex.Transaction<any, any[]>,
@@ -149,13 +97,13 @@ export async function insertMultipleSpotTemporaryImage(
 }
 
 /**
- * 
- * @param selectionId 
- * @param spotPlaceIds 
+ * #### 반환된 spot_id는 UUID로 변환된 후 하이픈(-)이 제거된 문자열
+ * #### EX) 550e8400e29b41d4a716446655440000
+ * @param selectionId - 셀렉션 고유 ID
+ * @param spotPlaceIds - spot_gmap_id의 배열
  * @returns Promise<Array<{spot_id: string, spot_gmap_id: string}>>
- * ##### spot_id는 UUID로 변환된 후 하이픈(-)이 제거된 문자열
  */
-export async function selectMultipleExistingSpotByInPlaceId(
+export async function selectMultipleSpotByInPlaceId(
   selectionId: number,
   spotPlaceIds: string[]
 ) : Promise<Array<{spot_id: string, spot_gmap_id: string}>> {
@@ -168,7 +116,7 @@ export async function selectMultipleExistingSpotByInPlaceId(
     .andWhere('slt_id', selectionId);
 }
 
-export async function selectMultipleExistingSpotTemporaryByInPlaceId(
+export async function selectMultipleSpotTemporaryByInPlaceId(
   selectionId: number,
   spotPlaceIds: string[]
 ) : Promise<Array<{spot_temp_id: string, spot_temp_gmap_id: string}>> {

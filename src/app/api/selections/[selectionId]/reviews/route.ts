@@ -1,9 +1,9 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { uploadFileToS3 } from "@/libs/s3";
 import { countReviews, getSelectionReviews, postSelectionReviews } from "@/services/selectionReview.services";
-import { uploadImage } from "@/utils/s3Utils";
-import { uuidToBinary } from "@/utils/uuidToBinary";
+import { uuidToBinary, uuidToString } from "@/utils/uuidToBinary";
 import { getServerSession, Session } from "next-auth";
+import { posix } from "path";
 
 export async function GET(
   req: Request,
@@ -59,36 +59,35 @@ export async function POST (
 
     const data: IReviewFormData = await req.json();
     const reviewId = uuidToBinary();
-
+    
     // 이미지 업로드 처리
     const reviewImgPromises = data.reviewImg?.map(async (img, index) => {
+      const reviewImgId = uuidToBinary();
       const [meta, base64Data] = img.reviewImgSrc.split(',');
       const fileType = meta.split(';')[0].split(':')[1];
       const fileContent = Buffer.from(base64Data, 'base64');
-      const fileName = `reviews/${reviewId}_${index}`;
-
-      console.log(fileName);
-
-      const s3Url = await uploadFileToS3({
-        fileName,
+      const fileName = `public/images/reviews/selection/${uuidToString(reviewImgId)}.${fileType.split('/')[1]}`;
+      const fileDirectory = posix.join(fileName);
+      
+      await uploadFileToS3({
+        fileName: fileDirectory,
         fileType, 
         fileContent,
       });
 
+      const s3Url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileDirectory}`;
+
       const reviewImage: IReviewImageFormData = {
-        reviewImgId: uuidToBinary(),
+        reviewImgId,
         reviewImgSrc: s3Url, // S3 URL
         reviewImageOrder: img.reviewImageOrder,
       };
-
-      console.log(reviewImage);
 
       return reviewImage;
     }) || [];
 
     const reviewImages = await Promise.all(reviewImgPromises);
     
-
     const review = {
       reviewId,
       userId: userId,

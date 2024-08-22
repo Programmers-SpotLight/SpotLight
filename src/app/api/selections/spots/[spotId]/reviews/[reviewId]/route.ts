@@ -1,7 +1,10 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { deleteSpotReviews, putSpotReviews } from "@/services/spotReview.services";
-import { uuidToBinary } from "@/utils/uuidToBinary";
+import { checkIfFileExistsInS3, deleteFileFromS3, uploadFileToS3 } from "@/libs/s3";
+import { extractFilePathFromUrl } from "@/services/selectionReview.services";
+import { deleteSpotReviews, getSpotReviewImages, putSpotReviews } from "@/services/spotReview.services";
+import { uuidToBinary, uuidToString } from "@/utils/uuidToBinary";
 import { getServerSession } from "next-auth";
+import { posix } from "path";
 
 export async function PUT (
   req: Request,
@@ -19,11 +22,55 @@ export async function PUT (
     
     const data:IReviewFormData = await req.json();
 
-    const reviewImg: IReviewImage[] | null = data.reviewImg?.map((img, index) => ({
-      reviewImgId: uuidToBinary(),
-      reviewImgSrc: img.reviewImgSrc,
-      reviewImageOrder: index,
-    })) || null;
+    const oldReviewImages = await getSpotReviewImages(reviewId);
+    const newImageUrls = data.reviewImg?.map((img) => img.reviewImgSrc);
+
+    // 기존 이미지를 S3에서 삭제
+    await Promise.all(
+      oldReviewImages.map(async (img) => {
+        if (!newImageUrls || !newImageUrls.includes(img.reviewImgSrc)) {
+          const fileName = extractFilePathFromUrl(img.reviewImgSrc);
+          const fileExists = await checkIfFileExistsInS3(fileName);
+          if (fileExists) {
+            await deleteFileFromS3(fileName);
+          }
+        }
+      })
+    );
+
+    // 새 이미지 업로드 또는 기존 이미지 유지
+    const reviewImgPromises = data.reviewImg?.map(async (img, index) => {
+      const reviewImgId = uuidToBinary();
+      if (!(img.reviewImgSrc.startsWith('https://') || img.reviewImgSrc.startsWith('http://'))) {
+        const [meta, base64Data] = img.reviewImgSrc.split(",");
+        const fileType = meta.split(";")[0].split(":")[1];
+        const fileContent = Buffer.from(base64Data, "base64");
+        const fileName = `public/images/reviews/spot/${uuidToString(reviewImgId)}.${fileType.split("/")[1]}`;
+        const fileDirectory = posix.join(fileName);
+
+        await uploadFileToS3({
+          fileName: fileDirectory,
+          fileType,
+          fileContent,
+        });
+
+        const s3Url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileDirectory}`;
+
+        return {
+          reviewImgId,
+          reviewImgSrc: s3Url,
+          reviewImageOrder: index,
+        };
+      } else {
+        return {
+          reviewImgId,
+          reviewImgSrc: img.reviewImgSrc,
+          reviewImageOrder: index,
+        };
+      }
+    }) || [];
+
+    const reviewImages = await Promise.all(reviewImgPromises);
 
     const review = {
       reviewId: reviewId,
@@ -31,7 +78,7 @@ export async function PUT (
       sltOrSpotId: spotId,
       reviewDescription: data.reviewDescription,
       reviewScore: data.reviewScore,
-      reviewImg: reviewImg
+      reviewImg: reviewImages
     };
 
     await putSpotReviews(review);
@@ -68,6 +115,16 @@ export async function DELETE (
     if (!userId) {
       return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
+
+    const reviewImg = await getSpotReviewImages(reviewId);
+
+    await Promise.all(reviewImg.map(async (img) => {
+      const fileName = extractFilePathFromUrl(img.reviewImgSrc);
+      const fileExists = await checkIfFileExistsInS3(fileName);
+      if (fileExists) {
+        await deleteFileFromS3(fileName);
+      }
+    }));
 
     await deleteSpotReviews(reviewId);
 

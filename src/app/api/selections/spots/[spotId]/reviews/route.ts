@@ -1,8 +1,10 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { uploadFileToS3 } from "@/libs/s3";
 import { countReviews } from "@/services/selectionReview.services";
 import { getSpotReviews, postSpotReviews } from "@/services/spotReview.services";
-import { uuidToBinary } from "@/utils/uuidToBinary";
+import { uuidToBinary, uuidToString } from "@/utils/uuidToBinary";
 import { getServerSession } from "next-auth";
+import { posix } from "path";
 
 export async function GET(
   req: Request,
@@ -56,20 +58,42 @@ export async function POST (
     }
 
     const data:IReviewFormData = await req.json();
+    const reviewId = uuidToBinary();
 
-    const reviewImg: IReviewImage[] | null = data.reviewImg?.map((img, index) => ({
-      reviewImgId: uuidToBinary(),
-      reviewImgSrc: img.reviewImgSrc,
-      reviewImageOrder: index,
-    })) || null;
+    // 이미지 업로드 처리
+    const reviewImgPromises = data.reviewImg?.map(async (img, index) => {
+      const reviewImgId = uuidToBinary();
+      const [meta, base64Data] = img.reviewImgSrc.split(',');
+      const fileType = meta.split(';')[0].split(':')[1];
+      const fileContent = Buffer.from(base64Data, 'base64');
+      const fileName = `public/images/reviews/spot/${uuidToString(reviewImgId)}.${fileType.split('/')[1]}`;
+      const fileDirectory = posix.join(fileName);
 
+      await uploadFileToS3({
+        fileName: fileDirectory,
+        fileType,
+        fileContent,
+      });
+
+      const s3Url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileDirectory}`;
+
+      const reviewImage: IReviewImageFormData = {
+        reviewImgId,
+        reviewImgSrc: s3Url, // S3 URL
+        reviewImageOrder: index,
+      };
+
+      return reviewImage;
+    }) || [];
+
+    const reviewImages = await Promise.all(reviewImgPromises);
     const review = {
-      reviewId: uuidToBinary(),
+      reviewId,
       userId: userId,
       sltOrSpotId: spotId,
       reviewDescription: data.reviewDescription,
       reviewScore: data.reviewScore,
-      reviewImg: reviewImg
+      reviewImg: reviewImages
     };
 
     await postSpotReviews(review);

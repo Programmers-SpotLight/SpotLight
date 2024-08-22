@@ -63,6 +63,7 @@ const SelectionPage = () => {
   if (isError) {
     return ErrorComponent;
   }
+  if (!selectionData) return null;
 
   return (
     <div className={`relative h-[calc(100vh-74px)]`}>

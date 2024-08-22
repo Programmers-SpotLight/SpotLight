@@ -32,7 +32,6 @@ const ReviewForm = ({
       reviewImageOrder: prevPictures.length, 
       reviewImgSrc: image,
     }]);
-    console.log(pictures);
   };
 
   const handlePictureChange = (index: number, newPicture: string) => {
