@@ -1,43 +1,14 @@
 import { dbConnectionPool } from "@/libs/db";
-import { ISelectionCategoryQueryResultRow, ISelectionLocationQueryResultRow } from "@/models/selection.model";
+import { 
+  IInsertSelection, 
+  IInsertSelectionTemporary, 
+  ISelectionCategoryQueryResultRow, 
+  ISelectionLocationQueryResultRow, 
+  ISelectSelection 
+} from "@/models/selection.model";
 import { InternalServerError } from "@/utils/errors";
 import { Knex } from "knex";
-import { ISelectSpot } from "./spot.repository";
 
-interface IInsertSelection {
-  user_id: number;
-  slt_title: string;
-  slt_status: string;
-  slt_category_id: number;
-  slt_location_option_id: number;
-  slt_description: string;
-  slt_img: string;
-}
-
-interface IInsertSelectionTemporary {
-  user_id: number;
-  slt_temp_title: string;
-  slt_category_id: number | null;
-  slt_location_option_id: number | null;
-  slt_temp_description: string | null;
-  slt_temp_img: string | null;
-}
-
-interface ISelectSelection {
-  title: string;
-  status?: string;
-  userId: number;
-  categoryId: number;
-  categoryName: string;
-  locationId: number;
-  locationName: string;
-  subLocationId: number;
-  subLocationName: string;
-  description: string;
-  image: string;
-  hashtags: string[];
-  spots: ISelectSpot[];
-}
 
 export const insertSelectionGetId = async (
   transaction: Knex.Transaction<any, any[]>,
@@ -98,6 +69,27 @@ export const insertSelectionTemporary = async (
     throw new InternalServerError('임시 셀렉션 생성에 실패했습니다');
   }
 }
+
+export async function sortSelectionIdByBookmarkCountDesc(
+  transaction: Knex.Transaction<any, any[]>,
+  selectionIds: number[]
+): Promise<Array<{selectionId: number, bookmarkCount: number}>> {
+  try {
+    return await transaction("selection")
+      .select([
+        "selection.slt_id as selectionId",
+        transaction.raw(`COUNT(bookmark.slt_id) as bookmarkCount`)
+      ])
+      .leftJoin("bookmark", "selection.slt_id", "bookmark.slt_id")
+      .groupBy("selection.slt_id")
+      .orderBy("bookmarkCount", "desc");
+    
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerError('셀렉션 북마크 수로 정렬하는데 실패했습니다');
+  }
+}
+
 
 export async function selectAllSelectionCategoriesWhereIdIn(
   categoryIds: number[]

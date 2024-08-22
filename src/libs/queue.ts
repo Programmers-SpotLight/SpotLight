@@ -11,3 +11,14 @@ export const recommendationQueue = new Queue('recommendationQueue', {
     }
   }
 });
+
+export const manualRecommendationQueue = new Queue('manualRecommendationQueue', {
+  connection,
+  defaultJobOptions: {
+    attempts: 3,
+    backoff: {
+      type: 'exponential',
+      delay: 5000
+    }
+  }
+});
