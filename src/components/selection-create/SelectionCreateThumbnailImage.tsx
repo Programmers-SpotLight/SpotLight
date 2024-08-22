@@ -35,7 +35,7 @@ const SelectionCreateThumbnailImage : React.FC = () => {
         )} 
         {typeof selectionImage === 'string' && (
           <Image
-            src={`/images/selections/${selectionImage}`}
+            src={selectionImage}
             width={200}
             height={100}
             className='object-fill absolute w-full'

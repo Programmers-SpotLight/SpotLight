@@ -1,4 +1,13 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, GetObjectCommandOutput, ObjectCannedACL, GetBucketAclCommand } from '@aws-sdk/client-s3';
+import { 
+  S3Client, 
+  PutObjectCommand, 
+  GetObjectCommand, 
+  GetObjectCommandOutput, 
+  ObjectCannedACL, 
+  HeadObjectCommand, 
+  GetBucketAclCommand 
+} from '@aws-sdk/client-s3';
+
 
 // AWS S3 설정
 const s3 = new S3Client({
@@ -12,7 +21,7 @@ const s3 = new S3Client({
 interface UploadFileParams {
   fileName: string;
   fileType: string;
-  fileContent: Buffer | string;
+  fileContent: Buffer | string | Uint8Array;
 }
 
 const getBucketAcl = async () => {
@@ -34,10 +43,20 @@ const getBucketAcl = async () => {
 };
 
 export const uploadFileToS3 = async ({ fileName, fileType, fileContent }: UploadFileParams) => {
+  let body;
+
+  if (fileContent instanceof Buffer) {
+    body = fileContent;
+  } else if (fileContent instanceof Uint8Array) {
+    body = Buffer.from(fileContent);
+  } else {
+    body = Buffer.from(fileContent, 'base64');
+  }
+  
   const s3Params: any = {
     Bucket: process.env.S3_BUCKET_NAME as string,
     Key: fileName,
-    Body: fileContent instanceof Buffer ? fileContent : Buffer.from(fileContent), // Buffer로 변환
+    Body: body,
     ContentType: fileType,
   };
 
@@ -80,5 +99,20 @@ export const getFileFromS3 = async (fileName: string): Promise<GetObjectCommandO
     }
   }
 };
+
+export const checkIfFileExistsInS3 = async (fileName: string): Promise<boolean> => {
+  const s3Params = {
+    Bucket: process.env.S3_BUCKET_NAME as string,
+    Key: fileName,
+  };
+
+  try {
+    const command = new HeadObjectCommand(s3Params);
+    await s3.send(command);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 export default s3;
