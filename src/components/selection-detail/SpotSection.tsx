@@ -1,9 +1,9 @@
 import { Tab, Tabs } from "@/components/common/Tabs";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
 import Review from "./review/Review";
-import { ISpotInfo } from "@/models/spot.model";
+import { ISpotImage, ISpotInfo } from "@/models/spot.model";
 import { SortProvider } from "@/context/useReviewSortContext";
 
 interface ISpotSectionProps {
@@ -22,30 +22,31 @@ const SpotSection = ({
   isSelectionDrawerOpen,
   spotData
 }: ISpotSectionProps) => {
+  const [images, setImages] = useState<ISpotImage[]>(spotData.images || []);
+
   const getImages = async () => {
     const { Place } = (await google.maps.importLibrary(
       "places"
     )) as google.maps.PlacesLibrary;
 
-    if (spotData.images !== undefined) return;
-
-    spotData.images = [];
+    if (images.length > 0) return;
 
     const place = new Place({ id: spotData.gmapId });
 
     await place.fetchFields({ fields: ["photos"] });
 
     if (place.photos && place.photos.length) {
-      for (let i = 0; i < place.photos.length; i++) {
-        if (i === 3) break;
-        spotData.images.push({ url: place.photos[i].getURI(), order: i });
-      }
+      const newImages = place.photos.slice(0, 3).map((photo, index) => ({
+        url: photo.getURI(),
+        order: index
+      }));
+      setImages(newImages);
     }
   };
 
   useEffect(() => {
     getImages();
-  }, []);
+  }, [spotData]);
 
   const spotIdHex = bufferDataToHexString(spotData.id);
 
@@ -78,7 +79,7 @@ border-[0.5px] border-grey2 border-solid w-[375px] overflow-y-scroll scrollbar-h
       style={{ height: "calc(100vh - 74px)" }}
     >
       <SpotHeader
-        images={spotData.images}
+        images={images}
         categoryName={spotData.categoryName}
         title={spotData.title}
         address={spotData.address}
