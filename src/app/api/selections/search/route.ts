@@ -1,23 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ErrorResponse, Ipagination, IsearchData, IsearchResult, TsortType } from "@/models/searchResult.model";
+import {
+  ErrorResponse,
+  Ipagination,
+  IsearchData,
+  IsearchResult,
+  TsortType
+} from "@/models/searchResult.model";
 import { Ihashtags } from "@/models/hashtag.model";
-import { getSearchResult, getSearchResultCount } from "@/services/selectionSearch.services";
-import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
+import {
+  getSearchResult,
+  getSearchResultCount
+} from "@/services/selectionSearch.services";
+import {
+  QUERY_STRING_DEFAULT,
+  QUERY_STRING_NAME
+} from "@/constants/queryString.constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
-export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult | ErrorResponse>> {
+export async function GET(
+  req: NextRequest
+): Promise<NextResponse<IsearchResult | ErrorResponse>> {
   const url = req.nextUrl;
   const query = url.searchParams;
   let userId;
   const session = await getServerSession(authOptions);
-  if(session) userId = session.user.id
+  if (session) userId = session.user.id;
 
-  const category_id = query.get(QUERY_STRING_NAME.category_id) || QUERY_STRING_DEFAULT.category_id;
-  const region_id = query.get(QUERY_STRING_NAME.region_id) || QUERY_STRING_DEFAULT.region_id;
-  const tags = query.getAll(QUERY_STRING_NAME.tags) || QUERY_STRING_DEFAULT.tags;
-  const currentPage = parseInt(query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page);
-  const limit = parseInt(query.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit);
+  const category_id =
+    query.get(QUERY_STRING_NAME.category_id) ||
+    QUERY_STRING_DEFAULT.category_id;
+  const region_id =
+    query.get(QUERY_STRING_NAME.region_id) || QUERY_STRING_DEFAULT.region_id;
+  const tags =
+    query.getAll(QUERY_STRING_NAME.tags) || QUERY_STRING_DEFAULT.tags;
+  const currentPage = parseInt(
+    query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page
+  );
+  const limit = parseInt(
+    query.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit
+  );
   const sort = query.get(QUERY_STRING_NAME.sort) || QUERY_STRING_DEFAULT.sort;
 
   const validation = getSearchResultValidator(tags, currentPage, limit);
@@ -26,8 +48,14 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
   }
 
   try {
-    const countResult = await getSearchResultCount(category_id, region_id, tags, sort as TsortType);
-    const totalElements = countResult.length > 0 ? parseInt(countResult.length) : 0;
+    const countResult = await getSearchResultCount(
+      category_id,
+      region_id,
+      tags,
+      sort as TsortType
+    );
+    const totalElements =
+      countResult.length > 0 ? parseInt(countResult.length) : 0;
     const totalPages = Math.ceil(totalElements / limit);
 
     if (totalElements === 0) {
@@ -40,10 +68,16 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
       return NextResponse.json({ data: [], pagination });
     }
 
-    const pageResult: IsearchData[] = await getSearchResult(category_id, region_id, tags, sort as TsortType, limit, currentPage, userId);
+    const pageResult: IsearchData[] = await getSearchResult(
+      category_id,
+      region_id,
+      tags,
+      sort as TsortType,
+      limit,
+      currentPage,
+      userId
+    );
     const mappingResults = mapSearchResults(pageResult);
-
-    console.log(pageResult)
 
     const pagination: Ipagination = {
       currentPage,
@@ -53,11 +87,18 @@ export async function GET(req: NextRequest): Promise<NextResponse<IsearchResult 
     };
     return NextResponse.json({ data: mappingResults, pagination });
   } catch (error) {
-    return NextResponse.json({ error: "데이터 조회 중 오류 발생" }, { status: 500 });
+    return NextResponse.json(
+      { error: "데이터 조회 중 오류 발생" },
+      { status: 500 }
+    );
   }
 }
 
-const getSearchResultValidator = (tags: string[], currentPage: number, limit: number) => {
+const getSearchResultValidator = (
+  tags: string[],
+  currentPage: number,
+  limit: number
+) => {
   if (tags.length > 8) {
     return { error: "해시태그는 최대 8개까지 등록할 수 있습니다." };
   }
@@ -85,12 +126,15 @@ const mapSearchResults = (results: IsearchData[]): any[] => {
     category: item.slt_category_name,
     region: item.slt_location_option_name,
     selectionId: item.slt_id,
-    hashtags: typeof item.slt_hashtags === 'string' ? JSON.parse(item.slt_hashtags) as Ihashtags[] : item.slt_hashtags,
+    hashtags:
+      typeof item.slt_hashtags === "string"
+        ? (JSON.parse(item.slt_hashtags) as Ihashtags[])
+        : item.slt_hashtags,
     description: item.slt_description,
     title: item.slt_title,
     userName: item.user_nickname,
     userImage: item.user_img,
     status: item.slt_status,
-    booked : item.is_bookmarked
+    booked: item.is_bookmarked
   }));
 };

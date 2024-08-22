@@ -33,16 +33,28 @@ export async function GET(
   const query = url.searchParams;
   let session_userId;
   const session = await getServerSession(authOptions);
-  if(session) session_userId = session.user.id
+  if (session) session_userId = session.user.id;
 
-  const userSelection = query.get(QUERY_STRING_NAME.userSelection) || QUERY_STRING_DEFAULT.userSelection;
-  const currentPage = parseInt(query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page);
-  const limit = parseInt(query.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.userSelection_limit);
+  const userSelection =
+    query.get(QUERY_STRING_NAME.userSelection) ||
+    QUERY_STRING_DEFAULT.userSelection;
+  const currentPage = parseInt(
+    query.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page
+  );
+  const limit = parseInt(
+    query.get(QUERY_STRING_NAME.limit) ||
+      QUERY_STRING_DEFAULT.userSelection_limit
+  );
   const sort = query.get(QUERY_STRING_NAME.sort) || QUERY_STRING_DEFAULT.sort;
-  const isMyPage = query.get(QUERY_STRING_NAME.is_my_page) || QUERY_STRING_DEFAULT.is_my_page;
+  const isMyPage =
+    query.get(QUERY_STRING_NAME.is_my_page) || QUERY_STRING_DEFAULT.is_my_page;
 
   try {
-    const validation = getUserSelectionValidator(currentPage, limit, userSelection);
+    const validation = getUserSelectionValidator(
+      currentPage,
+      limit,
+      userSelection
+    );
     if (validation.error) {
       console.log(validation.error);
       return NextResponse.json({ error: validation.error }, { status: 400 });
@@ -96,11 +108,9 @@ export async function GET(
       limit,
       currentPage,
       sort as TsortType,
-      session_userId,      
+      session_userId,
       isMyPage === "true"
     );
-
-    console.log(pageResult);
 
     const mappedResults = mapSearchResults(pageResult);
     return NextResponse.json({ data: mappedResults, pagination });
@@ -141,18 +151,26 @@ const mapSearchResults = (pageResult: IsearchData[]): IColCardProps[] => {
     userName: item.user_nickname,
     userImage: item.user_img,
     status: item.slt_status,
-    booked : item.is_bookmarked
+    booked: item.is_bookmarked
   }));
 };
 
-const getUserSelectionValidator = (currentPage: number, limit: number, userSelection: string) => {
+const getUserSelectionValidator = (
+  currentPage: number,
+  limit: number,
+  userSelection: string
+) => {
   if (currentPage < 1) {
     return { error: "현재 페이지는 1 이상이어야 합니다." };
   }
   if (limit < 1 || limit > 12) {
     return { error: "한 페이지당 항목 수는 1 이상 12 이하이어야 합니다." };
   }
-  if (userSelection !== "my" && userSelection !== "temp" && userSelection !== "bookmark") {
+  if (
+    userSelection !== "my" &&
+    userSelection !== "temp" &&
+    userSelection !== "bookmark"
+  ) {
     return { error: "선택된 탭이 올바르지 않습니다." };
   }
   return { valid: true };

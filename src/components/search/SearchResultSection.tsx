@@ -10,22 +10,31 @@ import useFetchSearchResult from "@/hooks/queries/useFetchSearchResult";
 import Pagination from "./Pagination";
 import SearchLoading from "./search-contents/SearchLoading";
 import SearchEmptyResults from "./search-contents/SearchEmptyResults";
-import { QUERY_STRING_DEFAULT, QUERY_STRING_NAME } from "@/constants/queryString.constants";
+import {
+  QUERY_STRING_DEFAULT,
+  QUERY_STRING_NAME
+} from "@/constants/queryString.constants";
 import useSelectionSort from "@/hooks/useSelectionSort";
 import { isAxiosError } from "axios";
 import SearchErrorPage from "./search-contents/SearchErrorPage";
 
 const SearchResultSection = () => {
-  const searchParams = useSearchParams();
-  const tags = searchParams.getAll(QUERY_STRING_NAME.tags);
-  const category_id = searchParams.get(QUERY_STRING_NAME.category_id) || QUERY_STRING_DEFAULT.category_id;
-  const region_id = searchParams.get(QUERY_STRING_NAME.region_id) || QUERY_STRING_DEFAULT.region_id;
-  const sort = (searchParams.get(QUERY_STRING_NAME.sort) as TsortType) || QUERY_STRING_DEFAULT.sort as TsortType;
-  const page = searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
-  const limit = searchParams.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit;
+  const { category_id, region_id, tags, sort, page, limit } =
+    useGetSearchParams();
 
-  const { data: results, isError, isLoading, error } = useFetchSearchResult({category_id, region_id, tags, sort, page, limit});
-  const { setIsSortClicked, toggleSortOptions, currentSortOption, sortRender, sortRef } = useSelectionSort();
+  const {
+    data: results,
+    isError,
+    isLoading,
+    error
+  } = useFetchSearchResult({ category_id, region_id, tags, sort, page, limit });
+  const {
+    setIsSortClicked,
+    toggleSortOptions,
+    currentSortOption,
+    sortRender,
+    sortRef
+  } = useSelectionSort();
   useClickOutside(sortRef, () => setIsSortClicked(false));
 
   useEffect(() => {
@@ -33,11 +42,14 @@ const SearchResultSection = () => {
   }, [page]);
 
   if (isLoading) return <SearchLoading height="search" />;
-  if (isError && isAxiosError(error))  return <SearchErrorPage message={error.response?.data.error}/>
+  if (isError && isAxiosError(error))
+    return <SearchErrorPage message={error.response?.data.error} />;
   if (!results) return null;
   if (results.data.length === 0) return <SearchEmptyResults />;
 
-  const filteredResults = results.data.filter(item => item.status !== 'private');
+  const filteredResults = results.data.filter(
+    (item) => item.status !== "private"
+  );
 
   return (
     <div className="px-5">
@@ -65,3 +77,23 @@ const SearchResultSection = () => {
 };
 
 export default SearchResultSection;
+
+export const useGetSearchParams = () => {
+  const searchParams = useSearchParams();
+  const tags = searchParams.getAll(QUERY_STRING_NAME.tags);
+  const category_id =
+    searchParams.get(QUERY_STRING_NAME.category_id) ||
+    QUERY_STRING_DEFAULT.category_id;
+  const region_id =
+    searchParams.get(QUERY_STRING_NAME.region_id) ||
+    QUERY_STRING_DEFAULT.region_id;
+  const sort =
+    (searchParams.get(QUERY_STRING_NAME.sort) as TsortType) ||
+    (QUERY_STRING_DEFAULT.sort as TsortType);
+  const page =
+    searchParams.get(QUERY_STRING_NAME.page) || QUERY_STRING_DEFAULT.page;
+  const limit =
+    searchParams.get(QUERY_STRING_NAME.limit) || QUERY_STRING_DEFAULT.limit;
+
+  return { tags, category_id, region_id, sort, page, limit };
+};

@@ -58,7 +58,7 @@ const ColCard = ({
   selectionId,
   isMyPage,
   status = "public",
-  booked = false,
+  booked = false
 }: IColCardProps) => {
   const { data } = useSession();
   const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
@@ -89,7 +89,7 @@ const ColCard = ({
       <div className="relative w-full h-[178px]">
         {thumbnail ? (
           <Image
-            src={thumbnail}
+            src={`/${thumbnail}`}
             alt={title}
             fill
             priority
@@ -150,7 +150,7 @@ const ColCard = ({
           )}
         </div>
 
-      <p className="font-bold mb-3 text-medium line-clamp-1">{title}</p>
+        <p className="font-bold mb-3 text-medium line-clamp-1">{title}</p>
 
         <div className="mb-5 flex overflow-hidden">
           {hashtags.map((tag) => (
