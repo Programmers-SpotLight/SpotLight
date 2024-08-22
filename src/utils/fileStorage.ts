@@ -40,3 +40,13 @@ export const saveFile : (filePath: string, file: File) => Promise<void> = async 
     throw new Error(`Error: ${error}`);
   }
 };
+
+export const extractFileNameFromS3Url : (url: string) => string | null = (url: string) => {
+  const regex = /^https:\/\/.*?\.amazonaws\.com(.*)/;
+  const match = url.match(regex);
+  if (match && match[1]) {
+    return match[1]; // This is the captured group containing the path after `.s3`
+  } else {
+    return null; // No match found or no path exists after `.s3`
+  }
+}
