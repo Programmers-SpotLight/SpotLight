@@ -1,5 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { uploadFileToS3 } from "@/libs/s3";
 import { countReviews, getSelectionReviews, postSelectionReviews } from "@/services/selectionReview.services";
+import { uploadImage } from "@/utils/s3Utils";
 import { uuidToBinary } from "@/utils/uuidToBinary";
 import { getServerSession, Session } from "next-auth";
 
@@ -55,21 +57,45 @@ export async function POST (
       return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
 
-    const data:IReviewFormData = await req.json();
+    const data: IReviewFormData = await req.json();
+    const reviewId = uuidToBinary();
 
-    const reviewImg: IReviewImage[] | null = data.reviewImg?.map((img, index) => ({
-      reviewImgId: uuidToBinary(),
-      reviewImgSrc: img.reviewImgSrc,
-      reviewImageOrder: index,
-    })) || null;
+    // 이미지 업로드 처리
+    const reviewImgPromises = data.reviewImg?.map(async (img, index) => {
+      const [meta, base64Data] = img.reviewImgSrc.split(',');
+      const fileType = meta.split(';')[0].split(':')[1];
+      const fileContent = Buffer.from(base64Data, 'base64');
+      const fileName = `reviews/${reviewId}_${index}`;
+
+      console.log(fileName);
+
+      const s3Url = await uploadFileToS3({
+        fileName,
+        fileType, 
+        fileContent,
+      });
+
+      const reviewImage: IReviewImageFormData = {
+        reviewImgId: uuidToBinary(),
+        reviewImgSrc: s3Url, // S3 URL
+        reviewImageOrder: img.reviewImageOrder,
+      };
+
+      console.log(reviewImage);
+
+      return reviewImage;
+    }) || [];
+
+    const reviewImages = await Promise.all(reviewImgPromises);
+    
 
     const review = {
-      reviewId: uuidToBinary(),
+      reviewId,
       userId: userId,
       sltOrSpotId: selectionId,
       reviewDescription: data.reviewDescription,
       reviewScore: data.reviewScore,
-      reviewImg: reviewImg
+      reviewImg: reviewImages
     };
 
     await postSelectionReviews(review);

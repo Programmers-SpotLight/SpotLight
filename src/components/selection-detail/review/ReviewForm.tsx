@@ -28,7 +28,11 @@ const ReviewForm = ({
   }, [review]);
 
   const handlePictureAdd = (image: string) => {
-    setPictures((prevPictures) => [...prevPictures, { reviewImgId: uuidv4(), reviewImageOrder: prevPictures.length, reviewImgSrc: image }]);
+    setPictures((prevPictures) => [...prevPictures, { 
+      reviewImageOrder: prevPictures.length, 
+      reviewImgSrc: image,
+    }]);
+    console.log(pictures);
   };
 
   const handlePictureChange = (index: number, newPicture: string) => {

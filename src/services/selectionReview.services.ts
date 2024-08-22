@@ -1,4 +1,5 @@
 import { dbConnectionPool } from "@/libs/db";
+import { getFileFromS3 } from "@/libs/s3";
 
 interface ISelectionReviews {
   sltOrSpotId: number;
@@ -65,7 +66,29 @@ export async function getSelectionReviews({
     .offset(offset)  
     .limit(maxResults);
 
-  const reviews = queryResult.map(review => ({
+  const reviews = await Promise.all(queryResult.map(async review => {
+    const reviewImg = review.reviewImg ? JSON.parse(`[${review.reviewImg}]`) : null;
+    const images = await Promise.all(
+      reviewImg?.map(async (img: { reviewImgSrc: string }) => {
+        try {
+          const imageBuffer = await getFileFromS3(img.reviewImgSrc);
+          if (imageBuffer) {
+            console.log("result:   ",`data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
+            return {
+              ...img,
+              reviewImgSrc: `data:image/jpeg;base64,${imageBuffer.toString('base64')}` // Base64로 인코딩하여 URL로 사용
+            };
+          } else {
+            return img; // Buffer가 undefined인 경우 원본 URL 반환
+          }
+        } catch (error) {
+          console.error(`Error fetching image from S3: ${img.reviewImgSrc}`, error);
+          return img; // 실패한 경우 원본 URL 반환
+        }
+      }) || []
+    );
+
+    return {
     reviewId: review.reviewId,
     sltOrSpotId: review.sltOrSpotId,
     reviewDescription: review.reviewDescription,
@@ -80,6 +103,7 @@ export async function getSelectionReviews({
     },
     reviewImg: review.reviewImg ? JSON.parse(`[${review.reviewImg}]`) : null,
     likeCount: review.likeCount
+    };
   }));
 
   return reviews;
@@ -140,12 +164,13 @@ export async function postSelectionReviews(review: IReviewInsertData) {
         const reviewImage = review.reviewImg.map((img) => ({
           slt_review_img_id: img.reviewImgId,
           slt_review_id: review.reviewId,
-          slt_reivew_img_url: img.reviewImgSrc,
+          slt_review_img_url: img.reviewImgSrc,
           slt_review_img_order: img.reviewImageOrder,
         }));
 
         await trx('selection_review_image').insert(reviewImage);
       }
+      console.log(review.reviewImg);
     });
   } catch (error) {
     console.error("Error inserting review:", error);

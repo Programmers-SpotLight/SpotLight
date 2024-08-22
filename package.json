@@ -11,11 +11,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.635.0",
+    "@aws-sdk/lib-storage": "^3.635.0",
     "@googlemaps/js-api-loader": "^1.16.8",
     "@tanstack/react-query": "^5.51.15",
     "@types/google.maps": "^3.55.12",
     "@types/react-slick": "^0.23.13",
     "@vis.gl/react-google-maps": "^1.1.0",
+    "aws-sdk": "^2.1679.0",
     "axios": "^1.7.3",
     "bullmq": "^5.12.5",
     "daisyui": "^4.12.10",

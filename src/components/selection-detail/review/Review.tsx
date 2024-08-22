@@ -43,7 +43,7 @@ const Review = ({ reviewType, sltOrSpotId } : IReviewsProps) => {
     refetch,
   } = useReviewQuery({ reviewType, sltOrSpotId, sort });
 
-  const { addReview, updateReview, deleteReview } = useReviewMutations({
+  const { addReview } = useReviewMutations({
     reviewType,
     sltOrSpotId,
     sort

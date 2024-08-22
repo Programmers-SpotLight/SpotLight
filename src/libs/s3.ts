@@ -1,32 +1,42 @@
-import AWS from 'aws-sdk';
+import { S3Client, PutObjectCommand, GetObjectCommand, GetObjectCommandOutput, ObjectCannedACL } from '@aws-sdk/client-s3';
+import { Readable } from "stream";
 
 // AWS S3 설정
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3 = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+  },
 });
 
-const s3 = new AWS.S3();
+function sanitizeFilename(filename: string): string {
+  return filename.replace(/[^a-zA-Z0-9_\u0600-\u06FF.]/g, '_');
+}
 
 interface UploadFileParams {
   fileName: string;
   fileType: string;
-  fileContent: Buffer | ArrayBuffer | string; // 파일 내용의 타입
+  fileContent: Buffer | string;
 }
 
-export const uploadFileToS3 = async ({ fileName, fileType, fileContent }: UploadFileParams) => {
+export const uploadFileToS3 = async ({ fileName, fileType, fileContent }: UploadFileParams): Promise<string> => {
+  const sanitizedFileName = sanitizeFilename(fileName); // 파일명 안전하게 변환
   const s3Params = {
     Bucket: process.env.S3_BUCKET_NAME as string,
-    Key: fileName,
-    Body: fileContent,
+    Key: sanitizedFileName,
+    Body: fileContent instanceof Buffer ? fileContent : Buffer.from(fileContent), // Buffer로 변환
     ContentType: fileType,
-    ACL: 'public-read', // 파일을 공개적으로 읽을 수 있도록 설정
+    // ACL: ObjectCannedACL.public_read,
   };
 
   try {
-    const uploadResponse = await s3.upload(s3Params).promise();
-    return uploadResponse; // 업로드된 파일의 정보 반환
+    const command = new PutObjectCommand(s3Params);
+    await s3.send(command);
+
+    // S3 URL 생성
+    const s3Url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${sanitizedFileName}`;
+    return s3Url; // 생성된 S3 URL 반환
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error('S3 Upload Error: ' + error.message);
@@ -37,15 +47,26 @@ export const uploadFileToS3 = async ({ fileName, fileType, fileContent }: Upload
 };
 
 // S3에서 파일 읽기 함수
-export const getFileFromS3 = async (fileName: string) => {
+export const getFileFromS3 = async (fileName: string): Promise<Buffer> => {
   const s3Params = {
     Bucket: process.env.S3_BUCKET_NAME as string,
-    Key: fileName,
+    Key: sanitizeFilename(fileName),
   };
 
   try {
-    const data = await s3.getObject(s3Params).promise();
-    return data.Body; // 파일 내용 반환
+    const command = new GetObjectCommand(s3Params);
+    const data = await s3.send(command);
+
+    // data.Body를 Buffer로 변환
+    if (data.Body instanceof Readable) {
+      const chunks: Buffer[] = [];
+      for await (const chunk of data.Body) {
+        chunks.push(chunk);
+      }
+      return Buffer.concat(chunks);
+    } else {
+      throw new Error('S3 Read Error: Invalid data stream.');
+    }
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error('S3 Read Error: ' + error.message);
