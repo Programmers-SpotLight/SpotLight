@@ -1,31 +1,40 @@
-import AWS from 'aws-sdk';
+import { S3Client, PutObjectCommand, GetObjectCommand, GetObjectCommandOutput, ObjectCannedACL, HeadObjectCommand } from '@aws-sdk/client-s3';
 
 // AWS S3 설정
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3 = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+  },
 });
-
-const s3 = new AWS.S3();
 
 interface UploadFileParams {
   fileName: string;
   fileType: string;
-  fileContent: Buffer | ArrayBuffer | string; // 파일 내용의 타입
+  fileContent: Buffer | string | Uint8Array;
 }
-
 export const uploadFileToS3 = async ({ fileName, fileType, fileContent }: UploadFileParams) => {
+  let body;
+
+  if (fileContent instanceof Buffer) {
+    body = fileContent;
+  } else if (fileContent instanceof Uint8Array) {
+    body = Buffer.from(fileContent);
+  } else {
+    body = Buffer.from(fileContent, 'base64');
+  }
+
   const s3Params = {
     Bucket: process.env.S3_BUCKET_NAME as string,
     Key: fileName,
-    Body: fileContent,
+    Body: body,
     ContentType: fileType,
-    ACL: 'public-read', // 파일을 공개적으로 읽을 수 있도록 설정
   };
 
   try {
-    const uploadResponse = await s3.upload(s3Params).promise();
+    const command = new PutObjectCommand(s3Params);
+    const uploadResponse = await s3.send(command);
     return uploadResponse; // 업로드된 파일의 정보 반환
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -37,14 +46,15 @@ export const uploadFileToS3 = async ({ fileName, fileType, fileContent }: Upload
 };
 
 // S3에서 파일 읽기 함수
-export const getFileFromS3 = async (fileName: string) => {
+export const getFileFromS3 = async (fileName: string): Promise<GetObjectCommandOutput['Body']> => {
   const s3Params = {
     Bucket: process.env.S3_BUCKET_NAME as string,
     Key: fileName,
   };
 
   try {
-    const data = await s3.getObject(s3Params).promise();
+    const command = new GetObjectCommand(s3Params);
+    const data = await s3.send(command);
     return data.Body; // 파일 내용 반환
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -54,5 +64,20 @@ export const getFileFromS3 = async (fileName: string) => {
     }
   }
 };
+
+export const checkIfFileExistsInS3 = async (fileName: string): Promise<boolean> => {
+  const s3Params = {
+    Bucket: process.env.S3_BUCKET_NAME as string,
+    Key: fileName,
+  };
+
+  try {
+    const command = new HeadObjectCommand(s3Params);
+    await s3.send(command);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 export default s3;
