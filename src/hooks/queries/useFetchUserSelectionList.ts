@@ -6,6 +6,7 @@ import {
 } from "@/models/searchResult.model";
 import { TuserSelection } from "@/models/user.model";
 import { getUserSelectionList } from "@/http/user.api";
+import { QUERY_KEY } from "@/constants/queryKey.constants";
 
 interface IuseFetchUserSelectionList {
   userId: string;
@@ -25,7 +26,14 @@ const useFetchUserSelectionList = ({
   isMyPage
 }: IuseFetchUserSelectionList): UseQueryResult<IsearchResult | ItempResult> => {
   return useQuery<IsearchResult | ItempResult>({
-    queryKey: ["userSelectionList", userId, userSelectionType, sort, page, limit],
+    queryKey: [
+      QUERY_KEY.SELECTION,
+      userId,
+      userSelectionType,
+      sort,
+      page,
+      limit
+    ],
     queryFn: () =>
       getUserSelectionList(
         userId,

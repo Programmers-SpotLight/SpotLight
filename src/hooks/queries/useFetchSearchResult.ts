@@ -23,7 +23,7 @@ const useFetchSearchResult = ({
 }: IuseFetchSearchResult): UseQueryResult<IsearchResult> => {
   return useQuery<IsearchResult, AxiosError>({
     queryKey: [
-      QUERY_KEY.SEARCH_RESULT,
+      QUERY_KEY.SELECTION,
       category_id,
       region_id,
       tags,

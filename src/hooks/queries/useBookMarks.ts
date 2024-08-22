@@ -3,18 +3,26 @@ import { QUERY_KEY } from "@/constants/queryKey.constants";
 import { addBookMarks, removeBookMarks } from "@/http/bookmarks.api";
 import { IsearchResult, TsortType } from "@/models/searchResult.model";
 import { ISelectionInfo } from "@/models/selection.model";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient
+} from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
-export const useBookMarks = (selectionId: number, userId: number) => {
+export const useBookMarks = (
+  selectionId: number,
+  userId: number,
+  pageName?: string
+) => {
   const { category_id, region_id, tags, sort, page, limit } =
     useGetSearchParams();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
 
   const searchResultQueryKey = [
-    QUERY_KEY.SEARCH_RESULT,
+    QUERY_KEY.SELECTION,
     category_id,
     region_id,
     tags,
@@ -28,50 +36,34 @@ export const useBookMarks = (selectionId: number, userId: number) => {
     mutationFn: () => addBookMarks(selectionId, userId),
 
     onMutate: async () => {
-      const previousSelection = queryClient.getQueryData<ISelectionInfo>([
-        QUERY_KEY.SELECTION,
-        selectionId
-      ]);
-
-      const previousSearchResult =
-        queryClient.getQueryData<IsearchResult>(searchResultQueryKey);
-
       await queryClient.cancelQueries({
-        queryKey: [QUERY_KEY.SELECTION, selectionId]
-      });
-
-      await queryClient.cancelQueries({
-        queryKey: searchResultQueryKey
+        queryKey: [QUERY_KEY.SELECTION],
+        exact: false
       });
 
       if (session?.user) {
-        queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
-          ...previousSelection,
-          booked: true
-        });
+        const previousSelectionDetail = updateSelectionDetailData(
+          queryClient,
+          selectionId,
+          true
+        );
 
-        if (previousSearchResult) {
-          const updatedSearchResult = {
-            ...previousSearchResult,
-            data: previousSearchResult.data.map((selection) =>
-              selection.selectionId === selectionId
-                ? { ...selection, booked: true }
-                : selection
-            )
-          };
+        const previousSearchResult = updateSearchResultData(
+          queryClient,
+          searchResultQueryKey,
+          selectionId,
+          true
+        );
 
-          queryClient.setQueryData(searchResultQueryKey, updatedSearchResult);
-        }
+        return { previousSelectionDetail, previousSearchResult };
       }
-
-      return { previousSelection, previousSearchResult };
     },
 
     onError: (error, variables, context) => {
       // 에러 발생 시 롤백 (이전 데이터로 복구)
       queryClient.setQueryData(
         [QUERY_KEY.SELECTION, selectionId],
-        context?.previousSelection
+        context?.previousSelectionDetail
       );
 
       queryClient.setQueryData(
@@ -85,14 +77,17 @@ export const useBookMarks = (selectionId: number, userId: number) => {
     onSuccess: (data, variables, context) => {
       // API 요청이 성공하면 데이터 수동으로 업데이트
       queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
-        ...context?.previousSelection,
+        ...context?.previousSelectionDetail,
         booked: true
       });
       toast.success("북마크에 추가했습니다.");
     },
     onSettled: () => {
+      if (pageName && pageName === "detail") return;
+
       queryClient.invalidateQueries({
-        queryKey: searchResultQueryKey
+        queryKey: [QUERY_KEY.SELECTION],
+        exact: false
       });
     }
   });
@@ -102,48 +97,31 @@ export const useBookMarks = (selectionId: number, userId: number) => {
     mutationFn: () => removeBookMarks(selectionId, userId),
 
     onMutate: async () => {
-      const previousSelection = queryClient.getQueryData<ISelectionInfo>([
-        QUERY_KEY.SELECTION,
-        selectionId
-      ]);
-
-      const previousSearchResult =
-        queryClient.getQueryData<IsearchResult>(searchResultQueryKey);
-
       await queryClient.cancelQueries({
-        queryKey: [QUERY_KEY.SELECTION, selectionId]
+        queryKey: [QUERY_KEY.SELECTION]
       });
 
-      await queryClient.cancelQueries({
-        queryKey: searchResultQueryKey
-      });
+      const previousSelectionDetail = updateSelectionDetailData(
+        queryClient,
+        selectionId,
+        false
+      );
 
-      queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
-        ...previousSelection,
-        booked: false
-      });
+      const previousSearchResult = updateSearchResultData(
+        queryClient,
+        searchResultQueryKey,
+        selectionId,
+        false
+      );
 
-      if (previousSearchResult) {
-        const updatedSearchResult = {
-          ...previousSearchResult,
-          data: previousSearchResult.data.map((selection) =>
-            selection.selectionId === selectionId
-              ? { ...selection, booked: false }
-              : selection
-          )
-        };
-
-        queryClient.setQueryData(searchResultQueryKey, updatedSearchResult);
-      }
-
-      return { previousSelection, previousSearchResult };
+      return { previousSelectionDetail, previousSearchResult };
     },
 
     onError: (error, variables, context) => {
       // 에러 발생 시 롤백 (이전 데이터로 복구)
       queryClient.setQueryData(
         [QUERY_KEY.SELECTION, selectionId],
-        context?.previousSelection
+        context?.previousSelectionDetail
       );
 
       queryClient.setQueryData(
@@ -155,17 +133,65 @@ export const useBookMarks = (selectionId: number, userId: number) => {
     onSuccess: (data, variables, context) => {
       // API 요청이 성공하면 데이터 수동으로 업데이트
       queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
-        ...context?.previousSelection,
+        ...context?.previousSelectionDetail,
         booked: false
       });
       toast.success("북마크에서 제거했습니다.");
     },
     onSettled: () => {
+      if (pageName && pageName === "detail") return;
+
       queryClient.invalidateQueries({
-        queryKey: searchResultQueryKey
+        queryKey: [QUERY_KEY.SELECTION],
+        exact: false
       });
     }
   });
 
   return { addBookMarksMutate, removeBookMarksMutate };
+};
+
+const updateSelectionDetailData = (
+  queryClient: QueryClient,
+  selectionId: number,
+  booked: boolean
+) => {
+  const previousSelectionDetail = queryClient.getQueryData<ISelectionInfo>([
+    QUERY_KEY.SELECTION,
+    selectionId
+  ]);
+
+  if (previousSelectionDetail) {
+    queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
+      ...previousSelectionDetail,
+      booked
+    });
+  }
+
+  return previousSelectionDetail;
+};
+
+const updateSearchResultData = (
+  queryClient: QueryClient,
+  searchResultQueryKey: (string | string[])[],
+  selectionId: number,
+  booked: boolean
+) => {
+  const previousSearchResult =
+    queryClient.getQueryData<IsearchResult>(searchResultQueryKey);
+
+  if (previousSearchResult) {
+    const updatedSearchResult = {
+      ...previousSearchResult,
+      data: previousSearchResult.data.map((selection) =>
+        selection.selectionId === selectionId
+          ? { ...selection, booked }
+          : selection
+      )
+    };
+
+    queryClient.setQueryData(searchResultQueryKey, updatedSearchResult);
+  }
+
+  return previousSearchResult;
 };
