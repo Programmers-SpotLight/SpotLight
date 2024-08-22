@@ -19,8 +19,7 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
   const { data } = useSession();
   const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
     selectionData.id,
-    data?.user.id,
-    "detail"
+    data?.user.id
   );
   const { openModal } = useModalStore();
 

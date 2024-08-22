@@ -2,11 +2,7 @@ import { useGetSearchParams } from "@/components/search/SearchResultSection";
 import { useGetUserSelectionListParams } from "@/components/user/my/UserSelectionSection";
 import { QUERY_KEY } from "@/constants/queryKey.constants";
 import { addBookMarks, removeBookMarks } from "@/http/bookmarks.api";
-import {
-  IsearchResult,
-  ItempResult,
-  TsortType
-} from "@/models/searchResult.model";
+import { IsearchResult, ItempResult } from "@/models/searchResult.model";
 import { ISelectionInfo } from "@/models/selection.model";
 import {
   QueryClient,
@@ -16,11 +12,7 @@ import {
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
-export const useBookMarks = (
-  selectionId: number,
-  userId: number,
-  pageName?: string
-) => {
+export const useBookMarks = (selectionId: number, userId: number) => {
   const { category_id, region_id, tags, sort, page, limit } =
     useGetSearchParams();
   const {
@@ -113,16 +105,9 @@ export const useBookMarks = (
       else toast.error("북마크에 추가하는 데 실패했습니다.");
     },
     onSuccess: (data, variables, context) => {
-      // API 요청이 성공하면 데이터 수동으로 업데이트
-      // queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
-      //   ...context?.previousSelectionDetail,
-      //   booked: true
-      // });
       toast.success("북마크에 추가했습니다.");
     },
     onSettled: () => {
-      // if (pageName && pageName === "detail") return;
-
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.SELECTION],
         exact: false
@@ -185,16 +170,9 @@ export const useBookMarks = (
       toast.error("북마크에서 제거하는 데 실패했습니다.");
     },
     onSuccess: (data, variables, context) => {
-      // API 요청이 성공하면 데이터 수동으로 업데이트
-      // queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
-      //   ...context?.previousSelectionDetail,
-      //   booked: false
-      // });
       toast.success("북마크에서 제거했습니다.");
     },
     onSettled: () => {
-      // if (pageName && pageName === "detail") return;
-
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.SELECTION],
         exact: false
