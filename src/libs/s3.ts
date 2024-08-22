@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, GetObjectCommandOutput, ObjectCannedACL } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand, GetObjectCommandOutput, ObjectCannedACL, GetBucketAclCommand } from '@aws-sdk/client-s3';
 
 // AWS S3 설정
 const s3 = new S3Client({
@@ -14,16 +14,41 @@ interface UploadFileParams {
   fileType: string;
   fileContent: Buffer | string;
 }
-export const uploadFileToS3 = async ({ fileName, fileType, fileContent }: UploadFileParams) => {
+
+const getBucketAcl = async () => {
   const s3Params = {
+    Bucket: process.env.S3_BUCKET_NAME as string,
+  };
+
+  try {
+    const command = new GetBucketAclCommand(s3Params);
+    const aclResponse = await s3.send(command);
+    return aclResponse.Grants; // ACL 정보 반환
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error('Get Bucket ACL Error: ' + error.message);
+    } else {
+      throw new Error('Get Bucket ACL Error: An unknown error occurred.');
+    }
+  }
+};
+
+export const uploadFileToS3 = async ({ fileName, fileType, fileContent }: UploadFileParams) => {
+  const s3Params: any = {
     Bucket: process.env.S3_BUCKET_NAME as string,
     Key: fileName,
     Body: fileContent instanceof Buffer ? fileContent : Buffer.from(fileContent), // Buffer로 변환
     ContentType: fileType,
-    ACL: ObjectCannedACL.public_read,
   };
 
   try {
+    const acl = await getBucketAcl();
+    
+    // S3Params에 ACL 설정이 존재하고 READ할 수 있는 경우에만 추가
+    if (acl?.some(grant => grant.Permission === 'READ')) {
+      s3Params.ACL = ObjectCannedACL.public_read;
+    }
+
     const command = new PutObjectCommand(s3Params);
     const uploadResponse = await s3.send(command);
     return uploadResponse; // 업로드된 파일의 정보 반환
