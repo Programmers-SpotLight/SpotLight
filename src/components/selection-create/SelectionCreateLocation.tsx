@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import Dropdown from "../common/Dropdown";
+import React from "react";
 import { ISelectionLocation } from "@/models/selection.model";
 import { useStore } from "zustand";
 import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
+import DoubleDropdown from "../common/DoubleDropdown";
 
 
 interface ISelectionCreateLocation {
@@ -12,26 +12,32 @@ interface ISelectionCreateLocation {
 const SelectionCreateLocation : React.FC<ISelectionCreateLocation> = ({
   selectionLocations, 
 }) => {
-  const [location, setLocation] = useState<{
-    location: {id: number, name: string} | undefined,
-    subLocation: {id: number, name: string} | undefined
-  }>({location: undefined, subLocation: undefined});
-
   const { 
+    location,
+    subLocation,
     setLocation : setSelectionCreateLocation,
     setSubLocation: setSelectionCreateSubLocation
   } = useStore(useSelectionCreateStore);
 
-  useEffect(() => {
-    if (location.location && location.subLocation) {
-      setSelectionCreateLocation(location.location);
-      setSelectionCreateSubLocation(location.subLocation);
+  const handleFirstOptionClick = (id: number | string, name: string) => {
+    if (typeof id === "string") {
+      return setSelectionCreateLocation(undefined);
     }
-  }, [
-    location, 
-    setSelectionCreateLocation, 
-    setSelectionCreateSubLocation
-  ]);
+    setSelectionCreateLocation({
+      id,
+      name
+    });
+  }
+
+  const handleSecondOptionClick = (id: number | string, name: string) => {
+    if (typeof id === "string") {
+      return setSelectionCreateSubLocation(undefined);
+    }
+    setSelectionCreateSubLocation({
+      id,
+      name
+    });
+  }
 
   return (
     <div className="flex items-start gap-6 py-6">
@@ -39,10 +45,12 @@ const SelectionCreateLocation : React.FC<ISelectionCreateLocation> = ({
         <label htmlFor="location" className="w-1/4 text-medium font-bold">
           지역 설정
         </label>
-        <Dropdown 
-          title="지역" 
+        <DoubleDropdown
+          title="지역"
           contents={selectionLocations}
-          setLocation={setLocation} 
+          onFirstOptionClick={handleFirstOptionClick}
+          onSecondOptionClick={handleSecondOptionClick}
+          initialValue={subLocation?.name || location?.name}
         />
       </div>
       <p className="text-grey4 text-small w-1/3">

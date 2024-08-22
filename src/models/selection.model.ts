@@ -17,6 +17,20 @@ export interface ISelectionLocation {
   }>;
 }
 
+export interface ISingleDropdownOption {
+  id: number | string;
+  name: string;
+}
+
+export interface IDoubleDropdownOption {
+  id: number;
+  name: string;
+  options: Array<{
+    id: number;
+    name: string;
+  }>;
+}
+
 export interface ISelectionSpotSearchResult {
   name: string;
   id: string;
@@ -133,6 +147,7 @@ export interface ISelectionCreateTemporaryData {
 }
 
 export interface IInsertSelection {
+  user_id: number;
   slt_title: string;
   slt_status: string;
   slt_category_id: number;
@@ -142,6 +157,7 @@ export interface IInsertSelection {
 }
 
 export interface IInsertSelectionTemporary {
+  user_id: number;
   slt_temp_title: string;
   slt_category_id: number | null;
   slt_location_option_id: number | null;
