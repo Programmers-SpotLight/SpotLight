@@ -114,14 +114,14 @@ export const useBookMarks = (
     },
     onSuccess: (data, variables, context) => {
       // API 요청이 성공하면 데이터 수동으로 업데이트
-      queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
-        ...context?.previousSelectionDetail,
-        booked: true
-      });
+      // queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
+      //   ...context?.previousSelectionDetail,
+      //   booked: true
+      // });
       toast.success("북마크에 추가했습니다.");
     },
     onSettled: () => {
-      if (pageName && pageName === "detail") return;
+      // if (pageName && pageName === "detail") return;
 
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.SELECTION],
@@ -186,14 +186,14 @@ export const useBookMarks = (
     },
     onSuccess: (data, variables, context) => {
       // API 요청이 성공하면 데이터 수동으로 업데이트
-      queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
-        ...context?.previousSelectionDetail,
-        booked: false
-      });
+      // queryClient.setQueryData([QUERY_KEY.SELECTION, selectionId], {
+      //   ...context?.previousSelectionDetail,
+      //   booked: false
+      // });
       toast.success("북마크에서 제거했습니다.");
     },
     onSettled: () => {
-      if (pageName && pageName === "detail") return;
+      // if (pageName && pageName === "detail") return;
 
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.SELECTION],
