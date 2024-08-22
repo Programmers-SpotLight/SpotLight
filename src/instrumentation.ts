@@ -3,7 +3,7 @@ interface IRecommendationInputData {
 }
 
 export const register = async () => {
-  if (process.env.NEXT_RUNTIME === 'nodejs') {
+  if (process.env.NEXT_RUNTIME != 'nodejs') {
     const { Worker } = await import('bullmq');
     const { connection } = await import('./libs/redis');
     const { 
