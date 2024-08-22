@@ -48,7 +48,6 @@ const Button = ({
     } else if (onClick) {
       onClick(); 
     }
-    if (onClick) onClick();
   };
   
   return (

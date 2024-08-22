@@ -1,4 +1,6 @@
 import { dbConnectionPool } from "@/libs/db";
+import { getFileFromS3 } from "@/libs/s3";
+import { Readable } from "stream";
 
 interface ISelectionReviews {
   sltOrSpotId: number;
@@ -6,6 +8,11 @@ interface ISelectionReviews {
   page: number;
   userId: number;
 }
+
+export const extractFilePathFromUrl = (url: string): string => {
+  const urlObject = new URL(url);
+  return decodeURIComponent(urlObject.pathname.slice(1)); // Remove the leading '/'
+};
 
 export async function getSelectionReviews({
   sltOrSpotId,
@@ -140,7 +147,7 @@ export async function postSelectionReviews(review: IReviewInsertData) {
         const reviewImage = review.reviewImg.map((img) => ({
           slt_review_img_id: img.reviewImgId,
           slt_review_id: review.reviewId,
-          slt_reivew_img_url: img.reviewImgSrc,
+          slt_review_img_url: img.reviewImgSrc,
           slt_review_img_order: img.reviewImageOrder,
         }));
 
@@ -156,9 +163,6 @@ export async function postSelectionReviews(review: IReviewInsertData) {
 export async function putSelectionReviews(review: IReviewInsertData) {
   try {
     await dbConnectionPool.transaction(async (trx) => {
-      const [unhexReviewIdResult] = await trx.raw('SELECT UNHEX(?) AS unhexId', [review.reviewId]);
-      const unhexReviewId = unhexReviewIdResult.unhexId;
-
       await trx('selection_review')
         .whereRaw('slt_review_id = UNHEX(?)', [review.reviewId])
         .update({
@@ -166,14 +170,14 @@ export async function putSelectionReviews(review: IReviewInsertData) {
           slt_review_score: review.reviewScore,
         });
 
-      await trx('selection_review_image')
-        .whereRaw('slt_review_id = UNHEX(?)', [review.reviewId])
-        .del();
-
+        await trx('selection_review_image')
+          .whereRaw('slt_review_id = UNHEX(?)', [review.reviewId])
+          .del();
+        
       if (review.reviewImg && review.reviewImg.length > 0) {
         const reviewImage = review.reviewImg.map((img) => ({
           slt_review_img_id: img.reviewImgId,
-          slt_review_id: unhexReviewId, 
+          slt_review_id: trx.raw('UNHEX(?)', [review.reviewId]), 
           slt_review_img_url: img.reviewImgSrc,
           slt_review_img_order: img.reviewImageOrder,
         }));
@@ -186,6 +190,24 @@ export async function putSelectionReviews(review: IReviewInsertData) {
     throw new Error('Failed to update selection review');
   }
 }
+
+export async function getSelectionReviewImages(reviewId: string) {
+  try {    
+    const images = await dbConnectionPool('selection_review_image')
+      .select('slt_review_img_id as reviewImgId', 'slt_review_img_url as reviewImgSrc', 'slt_review_img_order as reviewImageOrder')
+      .whereRaw('slt_review_id = UNHEX(?)', [reviewId]);
+    
+    return images.map(img => ({
+      reviewImgId: img.reviewImgId,
+      reviewImgSrc: img.reviewImgSrc,
+      reviewImageOrder: img.reviewImageOrder,
+    }));
+  } catch (error) {
+    console.error("Error fetching review images:", error);
+    throw new Error('Failed to fetch selection review images');
+  }
+}
+
 
 
 export async function deleteSelectionReviews(reviewId: string) {

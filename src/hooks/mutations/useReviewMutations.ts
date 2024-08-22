@@ -49,7 +49,8 @@ export const useReviewMutations = ({ reviewType, sltOrSpotId, sort }: IReviewPro
     onError: (error) => {
       toast.error("리뷰 삭제에 실패했습니다.");
       console.error('Error deleting review:', error);
-    }
+    },
+    retry: 0
   });
 
   return {

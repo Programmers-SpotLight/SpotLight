@@ -1,4 +1,3 @@
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Slider from "react-slick";
 import React, { useState } from "react";
 import "slick-carousel/slick/slick.css";

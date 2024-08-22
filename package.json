@@ -17,6 +17,7 @@
     "@types/google.maps": "^3.55.12",
     "@types/react-slick": "^0.23.13",
     "@vis.gl/react-google-maps": "^1.1.0",
+    "aws-sdk": "^2.1679.0",
     "axios": "^1.7.3",
     "bullmq": "^5.12.5",
     "daisyui": "^4.12.10",

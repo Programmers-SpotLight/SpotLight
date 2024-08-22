@@ -6,6 +6,11 @@ interface IUser {
 }
 
 interface IReviewImage {
+  reviewImgSrc: string;
+  reviewImageOrder: number;
+}
+
+interface IReviewImageFormData {
   reviewImgId: string | Buffer;
   reviewImgSrc: string;
   reviewImageOrder: number;
@@ -52,7 +57,7 @@ interface IReviewInsertData {
   sltOrSpotId: string | number;
   reviewDescription: string;
   reviewScore: number;
-  reviewImg: IReviewImage[] | null;
+  reviewImg: IReviewImageFormData[] | null;
 }
 
 type ReviewType = "selection" | "spot";

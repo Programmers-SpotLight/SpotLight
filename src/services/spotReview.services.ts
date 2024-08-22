@@ -105,7 +105,7 @@ export async function postSpotReviews(review: IReviewInsertData) {
         const reviewImage = review.reviewImg.map((img) => ({
           spot_review_img_id: img.reviewImgId,
           spot_review_id: review.reviewId,
-          spot_reivew_img_url: img.reviewImgSrc,
+          spot_review_img_url: img.reviewImgSrc,
           spot_review_img_order: img.reviewImageOrder,
         }));
 
@@ -121,9 +121,6 @@ export async function postSpotReviews(review: IReviewInsertData) {
 export async function putSpotReviews(review: IReviewInsertData) {
   try {
     await dbConnectionPool.transaction(async (trx) => {
-      const [unhexReviewIdResult] = await trx.raw('SELECT UNHEX(?) AS unhexId', [review.reviewId]);
-      const unhexReviewId = unhexReviewIdResult.unhexId;
-
       await trx('spot_review')
         .whereRaw('spot_review_id = UNHEX(?)', [review.reviewId])
         .update({
@@ -138,7 +135,7 @@ export async function putSpotReviews(review: IReviewInsertData) {
       if (review.reviewImg && review.reviewImg.length > 0) {
         const reviewImage = review.reviewImg.map((img) => ({
           spot_review_img_id: img.reviewImgId,
-          spot_review_id: unhexReviewId, 
+          spot_review_id: trx.raw('UNHEX(?)', [review.reviewId]), 
           spot_review_img_url: img.reviewImgSrc,
           spot_review_img_order: img.reviewImageOrder,
         }));
@@ -149,6 +146,23 @@ export async function putSpotReviews(review: IReviewInsertData) {
   } catch (error) {
     console.error("Error updating review:", error);
     throw new Error('Failed to update spot review');
+  }
+}
+
+export async function getSpotReviewImages(reviewId: string) {
+  try {    
+    const images = await dbConnectionPool('spot_review_image')  
+      .select('spot_review_img_id as reviewImgId', 'spot_review_img_url as reviewImgSrc', 'spot_review_img_order as reviewImageOrder')
+      .whereRaw('spot_review_id = UNHEX(?)', [reviewId]);
+    
+    return images.map(img => ({
+      reviewImgId: img.reviewImgId,
+      reviewImgSrc: img.reviewImgSrc,
+      reviewImageOrder: img.reviewImageOrder,
+    }));
+  } catch (error) {
+    console.error("Error fetching spot review images:", error);
+    throw new Error('Failed to fetch spot review images');
   }
 }
 

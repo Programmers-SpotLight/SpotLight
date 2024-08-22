@@ -1,5 +1,6 @@
 import { 
   S3Client, 
+  DeleteObjectCommand, 
   PutObjectCommand, 
   GetObjectCommand, 
   GetObjectCommandOutput, 
@@ -114,5 +115,23 @@ export const checkIfFileExistsInS3 = async (fileName: string): Promise<boolean> 
     return false;
   }
 }
+
+export const deleteFileFromS3 = async (fileName: string) => {
+  const s3Params = {
+    Bucket: process.env.S3_BUCKET_NAME as string,
+    Key: fileName,
+  };
+
+  try {
+    const command = new DeleteObjectCommand(s3Params);
+    await s3.send(command);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error('S3 Delete Error: ' + error.message);
+    } else {
+      throw new Error('S3 Delete Error: An unknown error occurred.');
+    }
+  }
+};
 
 export default s3;
