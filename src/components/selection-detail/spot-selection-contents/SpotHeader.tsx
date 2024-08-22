@@ -80,11 +80,9 @@ const SpotHeader = ({
       >
         {images && images.length ? (
           <>
-            <img
-              src={images[0].url}
-              alt="spot image"
-              className="w-full h-[194px] cursor-pointer object-cover"
-            />
+            <div className="w-full h-[194px] cursor-pointer relative">
+              <Image src={images[0].url} alt="spot image" fill />
+            </div>
             <div className="absolute bottom-0 right-0 rounded-tl-md bg-black w-11 h-7 text-white flex items-center justify-center text-medium font-bold">
               + {images.length - 1}
             </div>

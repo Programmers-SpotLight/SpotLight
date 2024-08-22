@@ -29,7 +29,7 @@ const SelectionPage = () => {
 
   useEffect(() => {
     if (selectionData && selectionData.spotList.length > 0) {
-      setSelectedSpotId(selectionData.spotList[0].id);
+      if (!selectedSpotId) setSelectedSpotId(selectionData.spotList[0].id);
     }
   }, [selectionData]);
 
