@@ -1,6 +1,6 @@
 import Button from "../common/button/Button";
 import Link from "next/link";
-import bg from "../../../public/imgs/403.jpeg";
+import bg from "../../../public/imgs/error/403.jpeg";
 import Image from "next/image";
 
 const Forbidden = () => {

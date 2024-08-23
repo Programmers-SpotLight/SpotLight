@@ -1,5 +1,5 @@
 import Image from "next/image";
-import bg from "../../../public/imgs/404.jpeg";
+import bg from "../../../public/imgs/error/404.jpeg";
 import Button from "../common/button/Button";
 import Link from "next/link";
 const NotFound = () => {
