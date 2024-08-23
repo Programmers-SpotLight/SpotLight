@@ -33,6 +33,7 @@ const Drawer = ({
       </div>
       <div className={`absolute -left-[375px] top-0`}>
         {/**spot drawer */}
+
         <SpotSection
           isSelectionDrawerOpen={isSelectionDrawerOpen}
           isSpotDrawerOpen={isSpotDrawerOpen}

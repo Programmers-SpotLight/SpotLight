@@ -4,7 +4,7 @@ import { ISpotImage, SpotCategory } from "@/models/spot.model";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { LuMapPin } from "react-icons/lu";
 import { useStore } from "zustand";
 
@@ -64,7 +64,6 @@ const SpotHeader = ({
   hashtags
 }: ISpotHeaderProps) => {
   const { openModal } = useStore(useModalStore);
-
   images && images.sort((a, b) => b.order - a.order);
 
   const imageClickHandler = () => {
@@ -81,7 +80,12 @@ const SpotHeader = ({
         {images && images.length ? (
           <>
             <div className="w-full h-[194px] cursor-pointer relative">
-              <Image src={images[0].url} alt="spot image" fill />
+              <Image
+                src={images[0].url}
+                alt="spot image"
+                fill
+                sizes="width:375px height:194px"
+              />
             </div>
             <div className="absolute bottom-0 right-0 rounded-tl-md bg-black w-11 h-7 text-white flex items-center justify-center text-medium font-bold">
               + {images.length - 1}
