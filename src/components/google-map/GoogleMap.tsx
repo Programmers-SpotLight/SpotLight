@@ -78,7 +78,7 @@ const GoogleMap = ({
       });
     };
     initializeMap();
-  }, [lat, lng, spots]);
+  }, [lat, lng]);
   return (
     <div
       ref={mapRef}
@@ -87,5 +87,4 @@ const GoogleMap = ({
     ></div>
   );
 };
-
 export default GoogleMap;
