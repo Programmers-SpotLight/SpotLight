@@ -13,6 +13,7 @@ import {
   selectAllSelectionLocationOptionsWhereIdIn, 
   selectTemporarySelectionWhereIdEqual
 } from "@/repositories/selection.repository";
+import { verifyCaptchaUsingToken } from "@/utils/captcha";
 import { BadRequestError, InternalServerError } from "@/utils/errors";
 import { extractFileNameFromS3Url } from "@/utils/fileStorage";
 import { fileTypeFromBlob } from "file-type";
@@ -22,6 +23,7 @@ export async function prepareAndValidateSelectionCreateFormData(
   formData: FormData
 ) : Promise<ISelectionCreateCompleteData> {
   let data: ISelectionCreateCompleteData = {
+    reCaptchaV3Token: String(formData.get("reCaptchaV3Token")),
     temp_id: Number(formData.get("temp_id")) || undefined,
     title: String(formData.get("title")),
     status: String(formData.get("status")) as "public" | "private",
@@ -41,6 +43,7 @@ export async function prepareAndValidateTemporarySelectionCreateFormData(
   formData: FormData
 ): Promise<ISelectionCreateTemporaryData> {
   let data: ISelectionCreateTemporaryData = {
+    reCaptchaV3Token: String(formData.get("reCaptchaV3Token")),
     title: formData.get("title") as string,
     status: "temp",
     img: formData.get("img") as File | string || undefined,
@@ -58,6 +61,7 @@ export async function prepareAndValidateTemporarySelectionCreateFormData(
 export async function validateData(data: TSelectionCreateFormData) : Promise<void> {
   await validateTitle(data.title);
   await validateStatus(data.status);
+  await validateReCAPTCHAV3Token(data.reCaptchaV3Token);
 
   // 미리저장이 아닌 경우 모든 필수 데이터를 검증
   if (data.status != "temp") {
@@ -95,6 +99,18 @@ export async function validateData(data: TSelectionCreateFormData) : Promise<voi
       await validateHashtags(data.hashtags as string[]);
     }
   }
+}
+
+export async function validateReCAPTCHAV3Token(token: string): Promise<void> {
+  if (!token) {
+    throw new BadRequestError("리캡차 토큰은 필수입니다");
+  }
+
+  if (typeof token !== "string") {
+    throw new BadRequestError("유효하지 않은 리캡차 토큰입니다");
+  }
+
+  await verifyCaptchaUsingToken(token);
 }
 
 // 임시저장한 셀렉션 ID가 유효한지 확인
@@ -377,7 +393,6 @@ export async function validateSpotImages(
     } else {
       // check for invalid characters in the file name
       const imageFileName = image as string;
-      console.log(imageFileName);
       if (imageFileName.includes("..")) {
         throw new BadRequestError(`파일 이름에 .. 문자가 포함되어 있습니다.`);
       }

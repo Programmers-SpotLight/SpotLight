@@ -125,6 +125,7 @@ export interface IModalCreateSelectionSpotExtraData {
 
 export interface ISelectionCreateCompleteData {
   temp_id?: number;
+  reCaptchaV3Token: string;
   status: "public" | "private";
   title: string;
   description: string;
@@ -136,6 +137,7 @@ export interface ISelectionCreateCompleteData {
 }
 
 export interface ISelectionCreateTemporaryData {
+  reCaptchaV3Token: string;
   status: "temp";
   title: string;
   description?: string;
