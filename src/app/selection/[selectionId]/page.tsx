@@ -4,11 +4,10 @@ import GoogleMap from "@/components/google-map/GoogleMap";
 import Drawer from "@/components/selection-detail/Drawer";
 import ReviewImageModal from "@/components/selection-detail/review/ReviewImageModal";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import MapLoading from "@/components/google-map/MapLoading";
 import useSelectionDetail from "@/hooks/queries/useSelectionDetail";
 import useErrorComponents from "@/hooks/useErrorComponents";
-import { useSession } from "next-auth/react";
 
 const SelectionPage = () => {
   const params = useParams();
@@ -17,6 +16,7 @@ const SelectionPage = () => {
   const [isSpotDrawerOpen, setIsSpotDrawerOpen] = useState<boolean>(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedSpotId, setSelectedSpotId] = useState<Buffer | null>(null);
+  const prevSelectedSpotId = useRef<Buffer | null>(null);
 
   const {
     data: selectionData,
@@ -28,24 +28,35 @@ const SelectionPage = () => {
   const ErrorComponent = useErrorComponents(error);
 
   useEffect(() => {
-    if (selectionData && selectionData.spotList.length > 0) {
+    if (prevSelectedSpotId.current)
+      setSelectedSpotId(prevSelectedSpotId.current);
+    else if (selectionData && selectionData.spotList.length > 0) {
       setSelectedSpotId(selectionData.spotList[0].id);
     }
   }, [selectionData]);
 
-  const toggleDrawer = () => {
+  useEffect(() => {
+    if (selectedSpotId !== prevSelectedSpotId.current) {
+      prevSelectedSpotId.current = selectedSpotId;
+    }
+  }, [selectedSpotId]);
+
+  const toggleDrawer = useCallback(() => {
     if (isSpotDrawerOpen) setIsSpotDrawerOpen((prev) => !prev);
     else if (!isSpotDrawerOpen) setIsSelectionDrawerOpen((prev) => !prev);
-  };
+  }, [isSpotDrawerOpen]);
 
-  const spotClickHandler = (spotId: Buffer, lat?: number, lng?: number) => {
-    setIsSelectionDrawerOpen(true);
-    setIsSpotDrawerOpen(true);
-    if (map && lat && lng) {
-      map.panTo({ lat, lng });
-    }
-    setSelectedSpotId(spotId);
-  };
+  const spotClickHandler = useCallback(
+    (spotId: Buffer, lat?: number, lng?: number) => {
+      setIsSelectionDrawerOpen(true);
+      setIsSpotDrawerOpen(true);
+      if (map && lat && lng) {
+        map.panTo({ lat, lng });
+      }
+      setSelectedSpotId(spotId);
+    },
+    [map]
+  );
 
   if (isPending)
     return (

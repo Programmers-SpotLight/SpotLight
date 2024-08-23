@@ -29,7 +29,7 @@ export interface IColCardProps extends IBaseCardProps {
   status: TselectionStatus;
   isMyPage?: boolean;
   booked?: boolean;
-  userSelectionType? : TuserSelection;
+  userSelectionType?: TuserSelection;
   onClick?: () => void;
 }
 
@@ -92,7 +92,7 @@ const ColCard = ({
       <div className="relative w-full h-[178px]">
         {thumbnail ? (
           <Image
-            src={`/${thumbnail}`}
+            src={thumbnail}
             alt={title}
             fill
             priority
@@ -120,7 +120,7 @@ const ColCard = ({
             {category}
             {region && ` / ${region}`}
           </p>
-          {(isMyPage && userSelectionType==="my") && (
+          {isMyPage && userSelectionType === "my" && (
             <div className="relative">
               <GoKebabHorizontal
                 fill="#7C7C7C"

@@ -1,9 +1,9 @@
 import { Tab, Tabs } from "@/components/common/Tabs";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import SpotHeader from "./spot-selection-contents/SpotHeader";
 import SpotInfo from "./spot-selection-contents/SpotInfo";
 import Review from "./review/Review";
-import { ISpotImage, ISpotInfo } from "@/models/spot.model";
+import { ISpotInfo } from "@/models/spot.model";
 import { SortProvider } from "@/context/useReviewSortContext";
 
 interface ISpotSectionProps {
@@ -22,32 +22,6 @@ const SpotSection = ({
   isSelectionDrawerOpen,
   spotData
 }: ISpotSectionProps) => {
-  const [images, setImages] = useState<ISpotImage[]>(spotData.images || []);
-
-  const getImages = async () => {
-    const { Place } = (await google.maps.importLibrary(
-      "places"
-    )) as google.maps.PlacesLibrary;
-
-    if (images.length > 0) return;
-
-    const place = new Place({ id: spotData.gmapId });
-
-    await place.fetchFields({ fields: ["photos"] });
-
-    if (place.photos && place.photos.length) {
-      const newImages = place.photos.slice(0, 3).map((photo, index) => ({
-        url: photo.getURI(),
-        order: index
-      }));
-      setImages(newImages);
-    }
-  };
-
-  useEffect(() => {
-    getImages();
-  }, [spotData]);
-
   const spotIdHex = bufferDataToHexString(spotData.id);
 
   const spotTab = [
@@ -79,7 +53,7 @@ border-[0.5px] border-grey2 border-solid w-[375px] overflow-y-scroll scrollbar-h
       style={{ height: "calc(100vh - 74px)" }}
     >
       <SpotHeader
-        images={images}
+        images={spotData.images}
         categoryName={spotData.categoryName}
         title={spotData.title}
         address={spotData.address}
