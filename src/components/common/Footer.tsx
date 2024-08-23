@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
-import githubIcon from "../../../public/gitsvg.svg";
-import notionIcon from "../../../public/notionsvg.svg";
+import githubIcon from "../../../public/icons/gitsvg.svg";
+import notionIcon from "../../../public/icons/notionsvg.svg";
 import Link from "next/link";
 import { BiMessageEdit } from "react-icons/bi";
 import { useStore } from "zustand";
@@ -16,7 +16,9 @@ const Footer = () => {
   return (
     <div className="none:container h-[118px] border-solid border-2 border-gray-200 bg-gray-100">
       <div className="footer-content text-slate-500">
-        <h2 className="mt-5 pb-[5px] text-[22px] text-center font-bold">Spotlight</h2>
+        <h2 className="mt-5 pb-[5px] text-[22px] text-center font-bold">
+          Spotlight
+        </h2>
         <p className="text-sm text-center font-medium pb-2.5">
           Spotlight를 통해 일상 속 특별함을 더하세요!
         </p>
@@ -48,10 +50,7 @@ const Footer = () => {
             </Link>
             <span className="text-xl pb-1">&nbsp;|&nbsp;&nbsp;</span>
             <div onClick={openFeedbackForm} className="flex items-center">
-              <BiMessageEdit
-                size={25}
-                className="cursor-pointer pr-[2px]"
-              /> 
+              <BiMessageEdit size={25} className="cursor-pointer pr-[2px]" />
               <span className="text-sm pb-[3px]">문의하기</span>
             </div>
           </div>

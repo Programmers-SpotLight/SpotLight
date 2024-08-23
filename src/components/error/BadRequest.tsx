@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import bg from "../../../public/imgs/400.jpeg";
+import bg from "../../../public/imgs/error/400.jpeg";
 import Link from "next/link";
 import Button from "../common/button/Button";
 

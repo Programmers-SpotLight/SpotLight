@@ -10,8 +10,8 @@ import { BiSolidPencil } from "react-icons/bi";
 import { FaBookmark, FaRegBookmark, FaTrash } from "react-icons/fa";
 import useHandleCardMenu from "@/hooks/useHandleCardMenu";
 import { useSession } from "next-auth/react";
-import { useBookMarks } from "@/hooks/queries/useBookMarks";
 import { TuserSelection } from "@/models/user.model";
+import { useBookMarks } from "@/hooks/mutations/useBookMarks";
 
 export interface IBaseCardProps {
   thumbnail: string;

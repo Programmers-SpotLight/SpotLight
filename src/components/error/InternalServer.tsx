@@ -2,7 +2,7 @@ import Button from "../common/button/Button";
 import { useStore } from "zustand";
 import { useModalStore } from "@/stores/modalStore";
 import Image from "next/image";
-import bg from "../../../public/imgs/500.jpeg";
+import bg from "../../../public/imgs/error/500.jpeg";
 import Link from "next/link";
 
 const InternalServer = () => {

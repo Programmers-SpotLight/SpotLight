@@ -6,8 +6,8 @@ import React from "react";
 import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 import { IBaseCardProps } from "./ColCard";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
-import { useBookMarks } from "@/hooks/queries/useBookMarks";
 import { useSession } from "next-auth/react";
+import { useBookMarks } from "@/hooks/mutations/useBookMarks";
 
 export interface IRowCardProps extends IBaseCardProps {
   userName: string;

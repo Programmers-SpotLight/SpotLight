@@ -1,6 +1,6 @@
 import Hashtag from "@/components/common/Hashtag";
 import { QUERY_KEY } from "@/constants/queryKey.constants";
-import { useBookMarks } from "@/hooks/queries/useBookMarks";
+import { useBookMarks } from "@/hooks/mutations/useBookMarks";
 import { ISelectionInfo } from "@/models/selection.model";
 import { useModalStore } from "@/stores/modalStore";
 import { useSession } from "next-auth/react";
