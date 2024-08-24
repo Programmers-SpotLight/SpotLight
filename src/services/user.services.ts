@@ -1,4 +1,5 @@
 import { dbConnectionPool } from "@/libs/db";
+import { checkIfFileExistsInS3, deleteFileFromS3 } from "@/libs/s3";
 import { Ihashtags, ThtagType } from "@/models/hashtag.model";
 import { IUserInfoData } from "@/models/user.model";
 
@@ -95,6 +96,23 @@ export const serviceUserUpdateProfile = async (userId: string, imgUrl: string) =
     console.error("Error updating user updateProfile:", error);
     throw error;
   }
+};
+
+export const deleteUserProfileImage = async (userId: string) => {
+    try {
+        const imgUrl = await serviceGetUserProfile(userId);
+
+        if (imgUrl) {
+            const fileName = imgUrl.split('/').slice(3).join('/');
+            const exists = await checkIfFileExistsInS3(fileName);
+            if (exists) {
+                await deleteFileFromS3(fileName);
+            }
+        }
+    } catch (error) {
+        console.error("Error deleting user image:", error);
+        throw error;
+    }
 };
 
 export const serviceGetUserProfile = async (userId: string): Promise<string | null> => {

@@ -1,9 +1,13 @@
 import authOptions from "@/libs/authOptions";
 import { countMyReviews, getMyReviews } from "@/services/review.services";
 import { getServerSession } from "next-auth";
+import { NextRequest } from "next/server";
+
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
-  req: Request
+  req: NextRequest
 ) {
   try {
     const { searchParams } = new URL(req.url);
