@@ -16,7 +16,6 @@ export const getTokenForAuthentication = async (req: NextRequest) : Promise<JWT>
 export const userIdValidator = async (userId: string): Promise<NextResponse<ErrorResponse> | null> => {
   const session = await getServerSession(authOptions);
   const session_userId = session ? session.user.id : null;
-  console.log(session_userId);
   if (session_userId === null || parseInt(userId) !== session_userId) {
     return NextResponse.json({ error: "사용자 ID가 일치하지 않습니다." }, { status: 403 });
   }

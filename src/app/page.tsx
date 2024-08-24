@@ -8,7 +8,7 @@ import { fetchHandler } from "@/http/http";
 
 export default async function Home() {
   try {
-  const popularSelections = await fetchHandler('api/selections/popular');
+  const popularSelections = await fetchHandler('api/selections/popular', 600);
   return (
     <main className="w-[1086px] bg-grey0 border border-solid border-grey2 m-auto pt-10 flex flex-col gap-10 box-border h-auto">
       <BannerSection />
