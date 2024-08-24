@@ -94,7 +94,7 @@ const ModalCreateSelectionSpotSearchMap = () => {
     >
       <div className="absolute bottom-[8%] left-[2%] flex flex-col items-stretch gap-2">
         <button
-          className="btn btn-primary text-white font-medium block w-[142px]"
+          className="bg-primary p-3 text-white font-medium block w-[142px] rounded-lg text-sm"
           onClick={handleMoveToMarkerClick}
         >
           마커로 이동
@@ -102,7 +102,7 @@ const ModalCreateSelectionSpotSearchMap = () => {
         {(selectedLocation.location.lat !== currentCoordinate.lat ||
           selectedLocation.location.lng !== currentCoordinate.lng) && (
           <button
-            className="btn btn-primary text-white font-medium block w-[142px]"
+            className="bg-primary p-3 text-white font-medium block w-[142px] rounded-lg text-sm"
             onClick={handleReverseGeocodingClick}
           >
             현재 위치 주소 설정
