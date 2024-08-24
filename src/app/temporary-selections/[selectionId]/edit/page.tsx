@@ -5,7 +5,7 @@ import SelectionCreateFormLoadingSpinner from "@/components/selection-create/Sel
 import useFetchSelectionDetailForEdit from "@/hooks/useFetchSelectionTemporaryDetailForEdit";
 
 
-const editTemporarySelectionPage = ({ params }: { params: { selectionId: string } }) => {
+const EditTemporarySelectionPage = ({ params }: { params: { selectionId: string } }) => {
   const {
     loading,
     error,
@@ -32,4 +32,4 @@ const editTemporarySelectionPage = ({ params }: { params: { selectionId: string 
   );
 }
 
-export default editTemporarySelectionPage;
+export default EditTemporarySelectionPage;

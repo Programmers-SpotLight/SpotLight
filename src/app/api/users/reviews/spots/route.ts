@@ -1,16 +1,20 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import authOptions from "@/libs/authOptions";
 import { countMyReviews, getMyReviews } from "@/services/review.services";
 import { getServerSession } from "next-auth";
+import { NextRequest } from "next/server";
+
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
-  req: Request
+  req: NextRequest
 ) {
   try {
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = req.nextUrl;
     let page = searchParams.get("page") ?? 1;
     page = Number(page);
     
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions());
     const userId = session?.user?.id;
 
     if (!userId) {

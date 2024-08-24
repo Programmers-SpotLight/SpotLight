@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import authOptions from "@/libs/authOptions";
 import { checkIfFileExistsInS3, deleteFileFromS3, uploadFileToS3 } from "@/libs/s3";
 import { extractFilePathFromUrl } from "@/services/selectionReview.services";
 import { deleteSpotReviews, getSpotReviewImages, putSpotReviews } from "@/services/spotReview.services";
@@ -13,7 +13,7 @@ export async function PUT (
   try {
     const spotId = params.spotId;
     const reviewId = params.reviewId;
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions());
     const userId = session?.user?.id;
 
     if (!userId) {
@@ -109,7 +109,7 @@ export async function DELETE (
 ) {
   try {
     const reviewId = params.reviewId;
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions());
     const userId = session?.user?.id;
 
     if (!userId) {

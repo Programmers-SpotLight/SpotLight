@@ -16,7 +16,7 @@ import SelectionCreateForm from "@/components/selection-create/SelectionCreateFo
 import SelectionCreateFormLoadingSpinner from "@/components/selection-create/SelectionCreateFormLoadingSpinner";
 import useFetchSelectionDetailForEdit from "@/hooks/useFetchSelectionTemporaryDetailForEdit";
 
-const editSelectionPage = (
+const EditSelectionPage = (
   { params }: { params: { selectionId: string } }
 ) => {
   const {
@@ -44,4 +44,4 @@ const editSelectionPage = (
   );
 }
 
-export default editSelectionPage;
+export default EditSelectionPage;

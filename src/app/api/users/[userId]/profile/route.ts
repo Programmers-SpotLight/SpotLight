@@ -1,7 +1,7 @@
-import { checkIfFileExistsInS3, deleteFileFromS3, uploadFileToS3 } from "@/libs/s3";
+import { uploadFileToS3 } from "@/libs/s3";
 import { ErrorResponse } from "@/models/searchResult.model";
 import { SuccessResponse } from "@/models/user.model";
-import { serviceGetUserProfile, serviceUserUpdateProfile } from "@/services/user.services";
+import { deleteUserProfileImage, serviceUserUpdateProfile } from "@/services/user.services";
 import { userIdValidator } from "@/utils/authUtils";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -55,21 +55,4 @@ const validateProfileUpdate = async (
     }
 
     return null;
-};
-
-export const deleteUserProfileImage = async (userId: string) => {
-    try {
-        const imgUrl = await serviceGetUserProfile(userId);
-
-        if (imgUrl) {
-            const fileName = imgUrl.split('/').slice(3).join('/');
-            const exists = await checkIfFileExistsInS3(fileName);
-            if (exists) {
-                await deleteFileFromS3(fileName);
-            }
-        }
-    } catch (error) {
-        console.error("Error deleting user image:", error);
-        throw error;
-    }
 };

@@ -16,7 +16,8 @@ import {
   QUERY_STRING_NAME
 } from "@/constants/queryString.constants";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import authOptions from "@/libs/authOptions";
+
 
 export async function GET(
   req: NextRequest
@@ -24,7 +25,7 @@ export async function GET(
   const url = req.nextUrl;
   const query = url.searchParams;
   let userId;
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions());
   if (session) userId = session.user.id;
 
   const category_id =

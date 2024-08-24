@@ -1,12 +1,10 @@
 'use client';
 
 import SelectionCreateForm from "@/components/selection-create/SelectionCreateForm";
-import { useSearchParams } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
 
 const SelectionCreatePage = () => {
-  const params = useSearchParams();
 
   return (
     <div className="grow flex flex-col w-[1086px] m-auto py-16 px-14 bg-grey0 border-[1px] border-solid border-grey2">

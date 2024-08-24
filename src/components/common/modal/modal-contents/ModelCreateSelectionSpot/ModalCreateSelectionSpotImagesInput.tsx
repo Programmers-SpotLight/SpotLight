@@ -9,11 +9,10 @@ interface ModalCreateSelectionSpotImagesInputProps {
 const ModalCreateSelectionSpotImagesInput = ({
   spotImage,
   setSpotImage
-} : ModalCreateSelectionSpotImagesInputProps) => {
-
+}: ModalCreateSelectionSpotImagesInputProps) => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+    if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
       setSpotImage(file);
     } else {
       toast.error("png, jpg, jpeg 파일만 업로드 가능합니다.");
@@ -23,10 +22,10 @@ const ModalCreateSelectionSpotImagesInput = ({
   return (
     <button className="relative border border-solid border-grey2 w-3/4 h-[155px] rounded-[8px] bg-white flex flex-col items-center justify-center">
       {/* 이미지가 string이면 이미지를 보여주고, File이면 URL.createObjectURL로 보여준다. */}
-      {typeof spotImage === 'string' && (
-        <Image 
-          src={spotImage} 
-          className="w-auto h-full object-cover" 
+      {typeof spotImage === "string" && (
+        <Image
+          src={spotImage}
+          className="w-auto h-full object-cover"
           alt="thumbnail"
           width={200}
           height={200}
@@ -34,10 +33,10 @@ const ModalCreateSelectionSpotImagesInput = ({
       )}
       {/* 이미지가 File이면 URL.createObjectURL로 보여준다. */}
       {spotImage instanceof File && (
-        <img 
-          src={
-            URL.createObjectURL(spotImage)
-          }
+        <Image
+          src={URL.createObjectURL(spotImage)}
+          width={200}
+          height={200}
           className="w-auto h-full object-cover"
           alt="thumbnail"
         />
