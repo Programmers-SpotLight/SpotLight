@@ -1,3 +1,4 @@
+import { IReCAPTCHAContextType, useReCAPTCHA } from "@/context/ReCAPTCHAProvider";
 import {
   submitCompleteSelection,
   submitTemporarySelection
@@ -18,6 +19,8 @@ type TTemporarySpotImageStorage = Array<Array<File | string>>;
 const useSubmitSelectionCreateForm = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { execute } = useReCAPTCHA() as IReCAPTCHAContextType;
 
   const {
     id,
@@ -76,7 +79,7 @@ const useSubmitSelectionCreateForm = () => {
   // 임시저장 버튼 클릭시 제출 로직
   const prepareAndSubmitTemporarySelection = async () => {
     if (!isTemporary && id) {
-      alert("이미 제출된 셀렉션은 임시저장할 수 없습니다.");
+      toast.error("이미 제출된 셀렉션은 임시저장할 수 없습니다.");
       return;
     }
 
@@ -86,6 +89,14 @@ const useSubmitSelectionCreateForm = () => {
     }
 
     const formData = new FormData();
+
+    const token = await execute('submit');
+    if (!token) {
+      toast.error("ReCAPTCHA 검증에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
+
+    formData.append("reCaptchaV3Token", token);
     formData.append("status", "temp");
     formData.append("title", title);
 
@@ -136,6 +147,14 @@ const useSubmitSelectionCreateForm = () => {
     }
 
     const formData = new FormData();
+
+    const token = await execute('submit');
+    if (!token) {
+      toast.error("ReCAPTCHA 검증에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
+
+    formData.append("reCaptchaV3Token", token);
     formData.append("status", "public");
     formData.append("title", title);
     formData.append("description", description);

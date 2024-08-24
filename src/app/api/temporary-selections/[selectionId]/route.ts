@@ -4,7 +4,6 @@ import { prepareAndValidateTemporarySelectionCreateFormData } from "@/services/s
 import { editSelectionTemporary, getTemporarySelectionForEdit } from "@/services/selectionEdit.services";
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import { UnauthorizedError } from "@/utils/errors";
-import { getToken } from "next-auth/jwt";
 import { NextRequest } from "next/server";
 
 

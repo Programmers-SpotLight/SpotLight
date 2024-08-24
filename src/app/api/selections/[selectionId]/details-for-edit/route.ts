@@ -44,6 +44,7 @@ export async function GET(
       token.userId as number,
       selectionId
     );
+
     return new Response(
       JSON.stringify(selectionDetail),
       {
