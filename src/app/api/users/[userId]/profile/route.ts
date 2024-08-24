@@ -49,7 +49,7 @@ const validateProfileUpdate = async (
         return NextResponse.json({ error: "파일이 제공되지 않았습니다." }, { status: 400 });
     }
 
-    const validFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const validFileTypes = ['image/jpeg', 'image/png', 'image/svg'];
     if (!validFileTypes.includes(file.type)) {
         return NextResponse.json({ error: "유효하지 않은 파일 형식입니다." }, { status: 400 });
     }
