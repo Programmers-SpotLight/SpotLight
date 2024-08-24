@@ -22,7 +22,6 @@ const ModalSelectionDelete = ({
   const searchParams = useSearchParams();
   const selectionType =(searchParams.get(QUERY_STRING_NAME.userSelection) as TuserSelection) ||(QUERY_STRING_DEFAULT.userSelection as TuserSelection);
   const handleDelete = (selectionId : number) => {
-    console.log('동작', selectionId)
     if(selectionType) handleDeleteSelection({selectionId, selectionType})
     closeModal();
   }

@@ -10,7 +10,7 @@ export async function PUT(
   { params }: { params: { userId: string } }
 ): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
     try {
-        const formData = await req.formData();
+        const formData : FormData = await req.formData();
         const img = formData.get('image') as File | null;
 
         if (!img) return NextResponse.json({ error: "파일이 제공되지 않았습니다." }, { status: 400 });

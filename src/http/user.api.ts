@@ -24,7 +24,6 @@ export const updateUserDescription = async (
 
 export const addUserHashTag = async (userId: string, hashtag: string) => {
   const url = `/api/users/${userId}/hashtag`;
-  console.log(hashtag)
   return await requestHandler("post", url, { data : {hashtag}});
 };
 
@@ -96,9 +95,11 @@ export const getUserSelectionList = async (
 };
 
 export const updateUserProfileImage = async (
-  userId : number,
-  imgUrl : string
+  userId: string,
+  imgFile: File
 ) => {
   const url = `api/users/${userId}/profile`;
-  return await requestHandler("put", url, {imgUrl})
+  const formData = new FormData();
+  formData.append('image', imgFile);
+  return await requestHandler("put", url, formData, {headers: {'Content-Type': 'multipart/form-data'}} );
 }
