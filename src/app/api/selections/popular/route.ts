@@ -1,7 +1,10 @@
 import { IRowCardProps } from "@/components/common/card/RowCard";
-import { ErrorResponse, SuccessResponse } from "@/models/user.model";
+import { ErrorResponse } from "@/models/user.model";
 import { getPopularSelection } from "@/services/selectionMain.services";
 import { NextRequest, NextResponse } from "next/server";
+
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
   req: NextRequest

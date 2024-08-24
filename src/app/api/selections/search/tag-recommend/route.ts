@@ -6,6 +6,8 @@ export interface IAutoCompleteRecommendTagResult extends Ihashtags{
     reference_count : number
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest): Promise<NextResponse<Ihashtags[]> > {
   const searchResult: IAutoCompleteRecommendTagResult[] = await getAutoCompleteRecommendTag();
   const mappingResult = mapAutoCompleteRecommendTagResult(searchResult)
