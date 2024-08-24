@@ -3,7 +3,6 @@ import { useUserPage } from "@/context/UserPageContext";
 import { Ihashtags } from "@/models/hashtag.model";
 import { IUserInfoMapping } from "@/models/user.model";
 import { useModalStore } from "@/stores/modalStore";
-import { hash } from "crypto";
 import Image from "next/image";
 import React from "react";
 import { FaHeart } from "react-icons/fa";
@@ -74,7 +73,7 @@ const UserInfoWidget = ({
               className="rounded-full object-cover"
             />
           ) : (
-            <div className="w-full h-full rounded-full bg-grey3" />
+            <div className="w-full h-full rounded-full bg-grey3 hover:scale-105 transition-transform transform cursor-pointer" />
           )}
         </div>
         <div className="flex flex-col items-start justify-end gap-2">

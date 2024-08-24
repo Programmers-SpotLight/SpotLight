@@ -41,8 +41,8 @@ export const requestHandler = async <T>(
   return response.data;
 };
 
-export const fetchHandler = async (endpoint: string) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/`+endpoint);
+export const fetchHandler = async (endpoint: string, refetch : number | false) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/`+endpoint, {next : {revalidate : refetch}});
 
   if (!response.ok) {
     const errorText = await response.text();
