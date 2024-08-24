@@ -3,6 +3,7 @@ import useHashtagSuggestion from "@/hooks/useHashtagSuggestion";
 import SelectionCreateHashtagsSuggestionListSpinner from "./SelectionCreateHashtagsSuggestionListSpinner";
 import { useStore } from "zustand";
 import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
+import Button from "../common/button/Button";
 
 
 const SelectionCreateHashtagsSuggestionList = () => {
@@ -19,8 +20,7 @@ const SelectionCreateHashtagsSuggestionList = () => {
     deleteHashtag
   } = useHashtagSuggestion();
 
-  const handleSuggestHashtagsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleSuggestHashtagsClick = () => {
     suggestHashtags(title);
   };
 
@@ -38,7 +38,7 @@ const SelectionCreateHashtagsSuggestionList = () => {
       { /* isLoading이 true일 때만 로딩 스피너를 렌더링 */ }
       { isLoading && ( 
         <button 
-          className="text-small btn btn-primary text-white mt-4"
+          className="text-small text-white mt-3 p-3 "
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => e.preventDefault()}
         >
           <SelectionCreateHashtagsSuggestionListSpinner />
@@ -60,12 +60,15 @@ const SelectionCreateHashtagsSuggestionList = () => {
 
       { /* success가 false이고 isLoading이 false일 때만 추천 받기 버튼을 렌더링 */ }
       { (!success && !isLoading) && (
-        <button 
-          className="text-small btn btn-primary mt-4 text-white"
-          onClick={handleSuggestHashtagsClick}
-        >
-          해시태그 추천 받기
-        </button>
+        <div className="mt-3">
+          <Button
+            color="primary"
+            size="large"
+            onClick={handleSuggestHashtagsClick}
+          >
+            해시태그 추천 받기
+          </Button>
+        </div>
         )
       }
     </div>
