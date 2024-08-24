@@ -28,19 +28,19 @@ const UserSelectionTempList: React.FC<IUserSelectionList> = ({
   if (!tempSelectionList) return null;
 
   return (
-    <div className="flex flex-col justify-center gap-5">
+    <>
       {tempSelectionList.data.length > 0 ? (
-        <>
+        <div className="min-h-[380px] flex flex-col gap-5">
           {tempSelectionList.data.map((item, index) => (
             <TempCard key={item.selectionId} {...item} />
           ))}
-        </>
+        </div>
       ) : (
         <SearchEmptyResults/>
       )}
 
       <Pagination pagination={tempSelectionList.pagination} />
-    </div>
+    </>
   );
 };
 

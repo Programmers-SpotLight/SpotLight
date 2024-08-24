@@ -10,7 +10,7 @@ import { TsortType } from "@/models/searchResult.model";
 import { TuserSelection } from "@/models/user.model";
 import { addQueryString, deleteQueryString } from "@/utils/updateQueryString";
 import { usePathname, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import UserSelectionList from "./UserSelectionList";
 import UserSelectionTempList from "./UserSelectionTempList";
@@ -18,6 +18,7 @@ import { useUserPage } from "@/context/UserPageContext";
 
 const UserSelectionSection = () => {
   const { isMyPage } = useUserPage();
+
   const userSelectiontabDatas: Array<{ title: string; query: TuserSelection }> =
     [
       {
@@ -46,6 +47,10 @@ const UserSelectionSection = () => {
       : (QUERY_STRING_DEFAULT.userSelection as TuserSelection)
   );
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentSelection]);
+  
   const {
     setIsSortClicked,
     toggleSortOptions,
@@ -61,6 +66,8 @@ const UserSelectionSection = () => {
     deleteQueryString(QUERY_STRING_NAME.page);
     addQueryString(QUERY_STRING_NAME.userSelection, tabData);
   };
+
+  
 
   return (
     <div className="h-auto m-auto px-[20px] box-border w-full w-max-[600px]">

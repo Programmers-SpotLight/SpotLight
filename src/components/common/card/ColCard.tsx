@@ -12,6 +12,7 @@ import useHandleCardMenu from "@/hooks/useHandleCardMenu";
 import { useSession } from "next-auth/react";
 import { TuserSelection } from "@/models/user.model";
 import { useBookMarks } from "@/hooks/mutations/useBookMarks";
+import { CARD_MENU } from "@/constants/selection.constants";
 
 export interface IBaseCardProps {
   thumbnail: string;
@@ -35,15 +36,15 @@ export interface IColCardProps extends IBaseCardProps {
 
 const menuList = [
   {
-    title: "수정하기",
+    title: CARD_MENU.modify,
     icon: <BiSolidPencil />
   },
   {
-    title: "비공개 설정하기",
+    title: CARD_MENU.prviate,
     icon: <IoMdLock />
   },
   {
-    title: "삭제하기",
+    title: CARD_MENU.delete,
     icon: <FaTrash />
   }
 ];
@@ -136,7 +137,7 @@ const ColCard = ({
                   {menuList.map((menu, index) => (
                     <li
                       className={`cursor-pointer border-b border-solid border-grey2 hover:bg-grey1 flex gap-[10px] items-center text-grey4 px-5 box-border py-[5px] ${
-                        menu.title === "삭제하기" ? "text-red-500" : ""
+                        menu.title === CARD_MENU.delete ? "text-red-500" : ""
                       }`}
                       key={menu.title}
                       onClick={(e) =>

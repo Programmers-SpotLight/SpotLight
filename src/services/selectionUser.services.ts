@@ -184,14 +184,14 @@ export const getUserTempSelection = async (
         "selection_location_option.slt_location_option_name"
       )
       .where("selection_temporary.user_id", userId)
-      .join("user", "selection_temporary.user_id", "=", "user.user_id")
-      .join(
+      .leftJoin("user", "selection_temporary.user_id", "=", "user.user_id") 
+      .leftJoin(
         "selection_category",
         "selection_temporary.slt_category_id",
         "=",
         "selection_category.slt_category_id"
-      )
-      .join(
+      ) 
+      .leftJoin(
         "selection_location_option",
         "selection_temporary.slt_location_option_id",
         "=",

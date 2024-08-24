@@ -26,7 +26,7 @@ const TempCard = ({
   return (
     <div className="flex gap-5 cursor-pointer">
       <Link
-      href={`/selection/create/${selectionId}`}
+      href={`/temporary-selections/${selectionId}/edit`}
       className="flex-[0.8] h-[110px] p-5 bg-white border border-solid border-grey2 rounded-lg flex flex-col gap-[5px]  hover:scale-105 transition-transform duration-200">
         <div className="flex justify-between">
           <h1 className="w-[400px] font-bold text-medium text-black overflow-hidden overflow-ellipsis line-clamp-1 h-[16px]">

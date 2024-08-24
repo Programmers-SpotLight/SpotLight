@@ -23,6 +23,7 @@ import { ITempCardProps } from "@/components/common/card/TempCard";
 import { IColCardProps } from "@/components/common/card/ColCard";
 import { getServerSession } from "next-auth";
 import authOptions from "@/libs/authOptions";
+import { SELECTION_TAB_TYPE } from "@/constants/myPage.constants";
 
 export async function GET(
   req: NextRequest,
@@ -59,7 +60,7 @@ export async function GET(
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    if (userSelection === "temp") {
+    if (userSelection === SELECTION_TAB_TYPE.temp) {
       const countResult = await getUserTempSelectionCount(userId);
       const totalElements = countResult.length > 0 ? countResult.length : 0;
       const totalPages = Math.ceil(totalElements / limit);
@@ -114,6 +115,7 @@ export async function GET(
     const mappedResults = mapSearchResults(pageResult);
     return NextResponse.json({ data: mappedResults, pagination });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "데이터 조회 중 오류 발생" },
       { status: 500 }
@@ -121,7 +123,6 @@ export async function GET(
   }
 }
 
-// 매핑 함수 분리
 const mapTempResult = (tempResult: any[]): ITempCardProps[] => {
   return tempResult.map((item) => ({
     title: item.slt_temp_title,
@@ -166,9 +167,9 @@ const getUserSelectionValidator = (
     return { error: "한 페이지당 항목 수는 1 이상 12 이하이어야 합니다." };
   }
   if (
-    userSelection !== "my" &&
-    userSelection !== "temp" &&
-    userSelection !== "bookmark"
+    userSelection !== SELECTION_TAB_TYPE.my &&
+    userSelection !== SELECTION_TAB_TYPE.temp &&
+    userSelection !== SELECTION_TAB_TYPE.bookmark
   ) {
     return { error: "선택된 탭이 올바르지 않습니다." };
   }

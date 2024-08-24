@@ -1,7 +1,6 @@
 import React from "react";
 import RowCard, { IRowCardProps } from "../common/card/RowCard";
 import Link from "next/link";
-import { IsearchData } from "@/models/searchResult.model";
 
 interface IPopularSectionProps {
   selections : IRowCardProps[];

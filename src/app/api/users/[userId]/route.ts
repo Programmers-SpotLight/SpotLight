@@ -25,6 +25,6 @@ export async function GET(
     } catch (error) {
       return NextResponse.json(
         { error: "데이터 조회 중 오류 발생" },{ status: 500 }
-      ); // Todo : 에러 처리
+      );
     }
   };
