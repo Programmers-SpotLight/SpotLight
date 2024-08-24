@@ -56,12 +56,15 @@ const ModalSignIn = () => {
       <Image
         src={googleButtonImg}
         alt="google sign in button"
+        width={267}
+        height={40}
         className="m-auto mb-2 cursor-pointer relative"
         onClick={() => handleSignin("google")}
       />
       <Image
         src={kakaoButtonImg}
         alt="kakao sign in button"
+        width={267}
         height={40}
         className="m-auto cursor-pointer relative"
         onClick={() => handleSignin("kakao")}

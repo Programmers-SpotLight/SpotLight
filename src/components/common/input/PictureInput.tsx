@@ -60,6 +60,7 @@ const PictureInput = ({
         <Image
           src={image as string}
           alt="Uploaded"
+          fill
           className="w-full h-full object-fill rounded-lg"
         />
       ) : (

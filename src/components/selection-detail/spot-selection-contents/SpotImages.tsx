@@ -34,7 +34,14 @@ const SpotImages = ({ images, title }: ISpotImagesProps) => {
       <p className="text-white absolute top-10 left-10 text-extraLarge">
         {imgIndex + 1}/{images.length}
       </p>
-      <Image src={images[imgIndex].url} alt="spot image" />
+      <div className="w-screen h-screen relative">
+        <Image
+          src={images[imgIndex].url}
+          alt="spot image"
+          fill
+          className="object-scale-down"
+        />
+      </div>
 
       <button
         className="absolute top-1/2 right-10 transform -translate-y-1/2 hover:scale-110 transition-transform duration-200"

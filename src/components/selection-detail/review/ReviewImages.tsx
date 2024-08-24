@@ -24,7 +24,9 @@ const ReviewImages = ({ images }: IReveiewImageProps) => {
     beforeChange: (current: number, next: number) => setCurrentSlide(next),
     afterChange: (current: number) => setCurrentSlide(current),
     prevArrow: <PrevArrow show={currentSlide !== 0} onClick={() => {}} />,
-    nextArrow: <NextArrow show={currentSlide < images.length - 2} onClick={() => {}} />,
+    nextArrow: (
+      <NextArrow show={currentSlide < images.length - 2} onClick={() => {}} />
+    )
   };
 
   const openReviewImageModal = (index: number) => {
@@ -36,38 +38,47 @@ const ReviewImages = ({ images }: IReveiewImageProps) => {
 
   return (
     <div className="slider-container relative w-full h-[160px]">
-      
-        { images.length === 1 
-          ? 
-          <div className="px-1 cursor-pointer" onClick={() => openReviewImageModal(0)}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <Image
-              src={images[0].reviewImgSrc}
-              alt={"Image 1"}
-              className={"w-[160px] h-[160px] object-cover rounded-lg"}
-            />
-          </div>
-          :
-          <Slider {...settings}> 
-            {images.map((img, index) => (
-              <div key={index} className="px-1 cursor-pointer" onClick={() => openReviewImageModal(index)}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <Image
-                  src={img.reviewImgSrc}
-                  alt={`Image ${index + 1}`}
-                  className={`w-[160px] h-[160px] object-cover 
+      {images.length === 1 ? (
+        <div
+          className="px-1 cursor-pointer"
+          onClick={() => openReviewImageModal(0)}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <Image
+            src={images[0].reviewImgSrc}
+            alt={"Image 1"}
+            width={180}
+            height={180}
+            className={"object-cover rounded-lg"}
+          />
+        </div>
+      ) : (
+        <Slider {...settings}>
+          {images.map((img, index) => (
+            <div
+              key={index}
+              className="px-1 cursor-pointer"
+              onClick={() => openReviewImageModal(index)}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <Image
+                src={img.reviewImgSrc}
+                alt={`Image ${index + 1}`}
+                width={160}
+                height={160}
+                className={`w-[160px] h-[160px] object-cover 
                   ${
-                    index === 0 
-                    ? "rounded-tl-lg rounded-bl-lg" 
-                    : index === images.length - 1 
-                      ? "rounded-tr-lg rounded-br-lg" 
+                    index === 0
+                      ? "rounded-tl-lg rounded-bl-lg"
+                      : index === images.length - 1
+                      ? "rounded-tr-lg rounded-br-lg"
                       : ""
                   }`}
-                />
-              </div>
-            ))}
-          </Slider>
-        }  
+              />
+            </div>
+          ))}
+        </Slider>
+      )}
     </div>
   );
 };
