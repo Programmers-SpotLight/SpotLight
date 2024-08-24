@@ -94,3 +94,11 @@ export const getUserSelectionList = async (
   const finalUrl = `${url}?${params.toString()}`;
   return await requestHandler("get", finalUrl);
 };
+
+export const updateUserProfileImage = async (
+  userId : number,
+  imgUrl : string
+) => {
+  const url = `api/users/${userId}/profile`;
+  return await requestHandler("put", url, {imgUrl})
+}

@@ -11,6 +11,7 @@ import { IoPencil } from "react-icons/io5";
 import { MdChatBubble } from "react-icons/md";
 import { PiCardsFill } from "react-icons/pi";
 import { useStore } from "zustand";
+import UserProfileImage from "./UserProfileImage";
 
 interface UserInfoWidgetProps extends IUserInfoMapping {
   userId: string;
@@ -60,22 +61,12 @@ const UserInfoWidget = ({
   const filteredWidgetData = isMyPage
     ? userInfoWidgetDatas
     : userInfoWidgetDatas.filter((item) => item.type === "public");
+  
 
   return (
     <div className="w-[1024px] m-auto flex flex-col justify-center items-center mb-10">
       <div className="flex w-[380px] gap-5 justify-center mt-10">
-        <div className="w-[100px] h-[100px] relative rounded-full flex-shrink-0">
-          {image ? (
-            <Image
-              src={image}
-              fill
-              alt={nickname}
-              className="rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full rounded-full bg-grey3 hover:scale-105 transition-transform transform cursor-pointer" />
-          )}
-        </div>
+        <UserProfileImage image={image} userId={userId} nickname={nickname} isMypage={isMyPage}/>
         <div className="flex flex-col items-start justify-end gap-2">
           <span className="font-extrabold text-large">{nickname}님</span>
           <div className="flex w-[250px] items-center text-grey4 break-keep relative text-small">
