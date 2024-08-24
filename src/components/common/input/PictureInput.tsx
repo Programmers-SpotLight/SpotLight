@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -56,7 +57,7 @@ const PictureInput = ({
       className={`${sizeStyles[inputSize]} relative border border-solid border-grey2 text-grey4 text-large rounded-lg flex flex-col items-center justify-center`}
     >
       {image ? (
-        <img
+        <Image
           src={image as string}
           alt="Uploaded"
           className="w-full h-full object-fill rounded-lg"

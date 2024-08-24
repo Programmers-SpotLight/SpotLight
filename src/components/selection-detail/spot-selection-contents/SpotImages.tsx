@@ -1,5 +1,6 @@
 "use client";
 import { ISpotImage } from "@/models/spot.model";
+import Image from "next/image";
 import React, { useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 
@@ -33,7 +34,7 @@ const SpotImages = ({ images, title }: ISpotImagesProps) => {
       <p className="text-white absolute top-10 left-10 text-extraLarge">
         {imgIndex + 1}/{images.length}
       </p>
-      <img src={images[imgIndex].url} alt="spot image" />
+      <Image src={images[imgIndex].url} alt="spot image" />
 
       <button
         className="absolute top-1/2 right-10 transform -translate-y-1/2 hover:scale-110 transition-transform duration-200"

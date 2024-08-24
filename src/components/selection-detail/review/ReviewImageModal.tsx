@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { TmodalType } from "@/models/modal.model";
+import Image from "next/image";
 
 const PrevArrow = (props: any) => {
   const { onClick, show } = props;
@@ -96,7 +97,7 @@ const ReviewImageModal = () => {
             {images.map((img, index) => (
               <div key={index} className="flex items-center justify-center w-full h-full">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={img.reviewImgSrc}
                   alt={`Image ${index + 1}`}
                   className="max-w-full max-h-full object-contain"

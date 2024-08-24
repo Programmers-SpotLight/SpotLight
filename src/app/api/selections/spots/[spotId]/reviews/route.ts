@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import authOptions from "@/libs/authOptions";
 import { uploadFileToS3 } from "@/libs/s3";
 import { countReviews } from "@/services/selectionReview.services";
 import { getSpotReviews, postSpotReviews } from "@/services/spotReview.services";
@@ -17,7 +17,7 @@ export async function GET(
     let sort = searchParams.get("sort") ?? "like";
     page = Number(page);
 
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions());
     const userId = session?.user?.id;
 
     const reviewList = await getSpotReviews({
@@ -50,7 +50,7 @@ export async function POST (
 ) {
   try {
     const spotId = params.spotId;
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions());
     const userId = session?.user?.id;
 
     if (!userId) {

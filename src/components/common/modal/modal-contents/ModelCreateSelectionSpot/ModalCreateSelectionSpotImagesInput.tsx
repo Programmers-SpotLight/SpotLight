@@ -34,7 +34,7 @@ const ModalCreateSelectionSpotImagesInput = ({
       )}
       {/* 이미지가 File이면 URL.createObjectURL로 보여준다. */}
       {spotImage instanceof File && (
-        <img 
+        <Image
           src={
             URL.createObjectURL(spotImage)
           }

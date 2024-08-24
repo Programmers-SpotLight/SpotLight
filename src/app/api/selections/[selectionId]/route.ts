@@ -33,7 +33,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { UnauthorizedError } from "@/utils/errors";
 import { getTokenForAuthentication } from "@/utils/authUtils";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import authOptions from "@/libs/authOptions";
 
 export async function GET(
   req: Request,
@@ -41,7 +41,7 @@ export async function GET(
 ) {
   const selectionId = params.selectionId;
 
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions());
 
   if (!selectionId) {
     return NextResponse.json(
@@ -119,7 +119,7 @@ export async function DELETE(
     const selectionId = params.selectionId;
     const selectionType = query.get(QUERY_STRING_NAME.userSelection) as TuserSelection;
 
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions());
     const session_userId = session ? session.user.id : null;
 
     const validationError = deleteSelectionValidator(

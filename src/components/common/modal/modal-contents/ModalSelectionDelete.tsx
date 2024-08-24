@@ -29,7 +29,7 @@ const ModalSelectionDelete = ({
   return (
     <div className="flex justify-center items-center flex-col">
       <h1 className="font-bold text-medium text-center mt-5">
-        "{title}" <br />
+      &quot;{title}&quot; <br />
         셀렉션을 정말로 삭제하시겠습니까?
       </h1>
       <h2 className="text-center font-medium text-small text-grey4 my-5">

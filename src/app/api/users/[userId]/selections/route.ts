@@ -22,7 +22,7 @@ import { TuserSelection } from "@/models/user.model";
 import { ITempCardProps } from "@/components/common/card/TempCard";
 import { IColCardProps } from "@/components/common/card/ColCard";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import authOptions from "@/libs/authOptions";
 
 export async function GET(
   req: NextRequest,
@@ -32,7 +32,7 @@ export async function GET(
   const userId = params.userId;
   const query = url.searchParams;
   let session_userId;
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions());
   if (session) session_userId = session.user.id;
 
   const userSelection =

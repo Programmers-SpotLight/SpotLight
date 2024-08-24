@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import authOptions from "@/libs/authOptions";
 import { uploadFileToS3 } from "@/libs/s3";
 import { countReviews, getSelectionReviews, postSelectionReviews } from "@/services/selectionReview.services";
 import { uuidToBinary, uuidToString } from "@/utils/uuidToBinary";
@@ -16,7 +16,7 @@ export async function GET(
     let sort = searchParams.get("sort") ?? "like";
     page = Number(page);
     
-    const session: Session | null = await getServerSession(authOptions);
+    const session: Session | null = await getServerSession(authOptions());
     const userId = session?.user?.id;
 
     const reviewList = await getSelectionReviews({
@@ -50,7 +50,7 @@ export async function POST (
   try {
     const selectionId = parseInt(params.selectionId, 10);
     
-    const session: Session | null = await getServerSession(authOptions);
+    const session: Session | null = await getServerSession(authOptions());
     const userId = session?.user?.id;
 
     if (!userId) {

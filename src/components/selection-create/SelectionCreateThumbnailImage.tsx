@@ -25,7 +25,7 @@ const SelectionCreateThumbnailImage : React.FC = () => {
         </label>
         <button className="relative border border-solid border-grey2 w-3/4 h-[190px] rounded-[8px] bg-white flex flex-col items-center justify-center overflow-hidden">
         {selectionImage instanceof File && (
-          <img 
+          <Image
             src={
               URL.createObjectURL(selectionImage)
             } 

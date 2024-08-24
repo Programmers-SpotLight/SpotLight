@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useModalStore } from "@/stores/modalStore";
 import { PrevArrow, NextArrow } from "./ReviewImageSlideButton";
+import Image from "next/image";
 
 interface IReveiewImageProps {
   images: IReviewImage[];
@@ -40,7 +41,7 @@ const ReviewImages = ({ images }: IReveiewImageProps) => {
           ? 
           <div className="px-1 cursor-pointer" onClick={() => openReviewImageModal(0)}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={images[0].reviewImgSrc}
               alt={"Image 1"}
               className={"w-[160px] h-[160px] object-cover rounded-lg"}
@@ -51,7 +52,7 @@ const ReviewImages = ({ images }: IReveiewImageProps) => {
             {images.map((img, index) => (
               <div key={index} className="px-1 cursor-pointer" onClick={() => openReviewImageModal(index)}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={img.reviewImgSrc}
                   alt={`Image ${index + 1}`}
                   className={`w-[160px] h-[160px] object-cover 

@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import authOptions from "@/libs/authOptions";
 import { countMyReviews, getMyReviews } from "@/services/review.services";
 import { getServerSession } from "next-auth";
 
@@ -10,7 +10,7 @@ export async function GET(
     let page = searchParams.get("page") ?? 1;
     page = Number(page);
     
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions());
     const userId = session?.user?.id;
 
     if (!userId) {
