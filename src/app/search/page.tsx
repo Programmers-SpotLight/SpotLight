@@ -1,9 +1,12 @@
+import PageError from "@/components/common/PageError";
 import PageLoading from "@/components/common/PageLoading";
 import SearchBannerSection from "@/components/search/SearchBannerSection";
 import SearchEngineSection from "@/components/search/SearchEngineSection";
 import SearchResultSection from "@/components/search/SearchResultSection";
 import { fetchHandler } from "@/http/http";
 import React, { Suspense } from "react";
+
+export const dynamic = "force-dynamic";
 
 const SearchPage = async () => {
   try {
@@ -29,7 +32,8 @@ const SearchPage = async () => {
       </Suspense>
     );
   } catch (error) {
-    return <div>오류가 발생했습니다. 다시 시도해 주세요.</div>;
+    console.log(error)
+    return <PageError/>
   }
 };
 

@@ -7,6 +7,9 @@ import "slick-carousel/slick/slick-theme.css";
 import { fetchHandler } from "@/http/http";
 import { Suspense } from "react";
 import PageLoading from "@/components/common/PageLoading";
+import PageError from "@/components/common/PageError";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   try {
@@ -22,6 +25,7 @@ export default async function Home() {
       </Suspense>
     );
   } catch (error) {
-    return <div>오류가 발생했습니다. 다시 시도해 주세요.</div>;
+    console.log(error)
+    return <PageError/>
   }
 }
