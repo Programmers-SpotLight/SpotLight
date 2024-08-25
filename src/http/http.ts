@@ -42,12 +42,12 @@ export const requestHandler = async <T>(
 };
 
 export const fetchHandler = async (endpoint: string, refetch : number | false) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/`+endpoint, {next : {revalidate : refetch}});
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/`+endpoint);
 
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Fetch error: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
-  return response.json();
+  return await response.json();
 };
