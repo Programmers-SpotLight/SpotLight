@@ -1,4 +1,4 @@
-import { requestHandler } from "@/http/http";
+import { fetchHandler, requestHandler } from "@/http/http";
 import { useEffect, useState } from "react";
 
 
@@ -8,10 +8,11 @@ const usePopularSelections = () => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchPopularSelections = async () => {
+    setPopularSelections([]);
     setIsLoading(true);
     setError(null);
     try {
-      const data = await requestHandler("get", "/api/selections/popular");
+      const data = await fetchHandler("api/selections/popular", 600);
       setPopularSelections(data);
     } catch (error: any) {
       setError(error.message);

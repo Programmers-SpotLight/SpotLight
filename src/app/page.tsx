@@ -1,3 +1,5 @@
+'use client';
+
 import BannerSection from "@/components/main/BannerSection";
 import PopularSection from "@/components/main/PopularSection";
 import RecommendationSection from "@/components/main/RecommendationSection";
@@ -8,7 +10,8 @@ import { Suspense } from "react";
 import SearchLoading from "@/components/search/search-contents/SearchLoading";
 import usePopularSelections from "@/hooks/usePopularSelections";
 
-export default async function Home() {
+
+export default function Home() {
   const {
     popularSelections,
     isLoading,
