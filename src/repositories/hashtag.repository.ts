@@ -35,7 +35,6 @@ export const insertHashtagsGetIds = async (
 
     return querySelectResult.map((row) => row.htag_id);
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('해시태그를 생성하는데 실패했습니다');
   }
 }
@@ -62,7 +61,6 @@ export const insertHashtagsGetIdsNames = async (
 
     return querySelectResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('해시태그를 생성하는데 실패했습니다');
   }
 }
@@ -86,7 +84,6 @@ export async function insertSelectionHashtags(
       .onConflict(["slt_id", "htag_id"])
       .ignore();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError("셀렉션 해시태그 생성에 실패했습니다");
   }
 }
@@ -111,7 +108,6 @@ export async function insertTemporarySelectionHashtags(
       .onConflict(['slt_temp_id', 'htag_id'])
       .ignore();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('임시 셀렉션 해시태그 생성에 실패했습니다');
   }
 }
@@ -137,7 +133,6 @@ export async function insertMultipleSpotHashtag(
       .onConflict(['spot_id', 'htag_id'])
       .merge();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 해시태그를 생성하는데 실패했습니다');
   }
 }
@@ -164,7 +159,6 @@ export async function insertMultipleSpotTemporaryHashtag(
       .onConflict(['spot_temp_id', 'htag_id'])
       .ignore();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 해시태그를 생성하는데 실패했습니다');
   }
 }
@@ -183,7 +177,6 @@ export async function selectMultipleSelectionHashtags(
 
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션 해시태그를 가져오는데 실패했습니다');
   }
 }
@@ -202,7 +195,6 @@ export async function selectMultipleTemporarySelectionHashtags(
 
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('임시 셀렉션 해시태그를 가져오는데 실패했습니다');
   }
 }
@@ -221,7 +213,6 @@ export async function selectMultipleSpotHashtagBySelectionId(
       .orderBy('hashtag.htag_name', 'asc');
 
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 해시태그를 가져오는데 실패했습니다');
   }
 }
@@ -246,7 +237,6 @@ export async function selectMultipleSpotTemporaryHashtagBySelectionId(
 
     return queryResult[0];
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 해시태그를 가져오는데 실패했습니다');
   }
 }
@@ -273,7 +263,6 @@ export async function selectSelectionHashtagBySelectionPopularity(
     
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('인기 셀렉션 해시태그를 가져오는데 실패했습니다');
   }
 }
@@ -295,7 +284,6 @@ export async function selectAllSelectionHashtag(
       .groupBy('selection_hashtag.slt_id')
       .limit(limit);
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('모든 셀렉션 해시태그를 가져오는데 실패했습니다');
   }
 }
@@ -311,7 +299,6 @@ export async function selectAllUserHashtagByUserId(
 
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('유저 해시태그를 가져오는데 실패했습니다');
   }
 }
@@ -327,7 +314,6 @@ export async function deleteMultipleSelectionHashtagNotIn(
       .whereNotIn('htag_id', hashtags)
       .delete();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션 해시태그를 삭제하는데 실패했습니다');
   }
 }
@@ -341,7 +327,6 @@ export async function deleteAllTemporarySelectionHashtagBySelectionId(
       .where('slt_temp_id', selectionId)
       .delete();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('임시 셀렉션 해시태그를 삭제하는데 실패했습니다');
   }
 }
@@ -357,7 +342,6 @@ export async function deleteMultipleTemporarySelectionHashtagNotIn(
       .whereNotIn('htag_id', hashtags)
       .delete();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('임시 셀렉션 해시태그를 삭제하는데 실패했습니다');
   }
 }
@@ -374,10 +358,8 @@ export async function deleteMultipleSpotHashtagNotIn(
       .delete();
 
     if (deleted > 0) {
-      console.log('Deleted spot hashtags:', deleted);
     }
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 해시태그를 삭제하는데 실패했습니다');
   }
 }
@@ -394,10 +376,8 @@ export async function deleteMultipleSpotTemporaryHashtagNotIn(
       .delete();
 
     if (deleted > 0) {
-      console.log('Deleted spot temporary hashtags:', deleted);
     }
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 해시태그를 삭제하는데 실패했습니다');
   }
 }

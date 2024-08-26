@@ -31,9 +31,11 @@ import { getServerSession } from "next-auth";
 
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { UnauthorizedError } from "@/utils/errors";
+import { ForbiddenError, UnauthorizedError } from "@/utils/errors";
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import authOptions from "@/libs/authOptions";
+import { logWithIP } from "@/utils/logUtils";
+import { checkIfSelectionHasReviews } from "@/repositories/selection.repository";
 
 export async function GET(
   req: Request,
@@ -212,10 +214,12 @@ export async function PUT(
     }
 
     const formData : FormData = await request.formData();
-    // 데이터 유효성 검사
+    if (await checkIfSelectionHasReviews(selectionId)) {
+      throw new ForbiddenError("리뷰가 있는 선택지는 수정할 수 없습니다.");
+    }
+
     const data: ISelectionCreateCompleteData =
       await prepareAndValidateSelectionCreateFormData(formData);
-    // add logic for updating temporary selection
     
     await editSelection(
       transaction,
@@ -232,8 +236,13 @@ export async function PUT(
       }
     });
   } catch (error: any) {
+    await logWithIP(
+      'POST /api/selections - ' + error.message,
+      request,
+      'error'
+    );
+
     await transaction.rollback();
-    console.error(error);
     return new Response(error.message, {
       status: error.statusCode || 500,
       headers: {

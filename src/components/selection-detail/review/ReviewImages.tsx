@@ -49,7 +49,7 @@ const ReviewImages = ({ images }: IReveiewImageProps) => {
             alt={"Image 1"}
             width={180}
             height={180}
-            className={"object-cover rounded-lg"}
+            className={"w-[160px] h-[160px] object-cover rounded-lg"}
           />
         </div>
       ) : (

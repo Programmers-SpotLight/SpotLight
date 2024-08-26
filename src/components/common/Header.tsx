@@ -12,8 +12,11 @@ import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import useCheckSignUpParams from "@/hooks/useCheckSignUpParams";
 import { toast } from "react-toastify";
-
-const Header = () => {
+import { Session } from "next-auth";
+interface IHeaderProps {
+  session: Session | null; // null일 수도 있으므로
+}
+const Header: React.FC<IHeaderProps>  = ({session}) => {
   const router = useRouter();
   const [tagValue, setTagValue] = useState<string>("");
   const [isDropDownVisible, setIsDropDownVisible] = useState<boolean>(false);
@@ -28,7 +31,6 @@ const Header = () => {
   } = useSearchAutoComplete();
   useClickOutside(dropdownRef, () => setIsDropDownVisible(false));
   const { openModal } = useModalStore();
-  const { data: session, status } = useSession();
   const imageUrl = session?.user?.image ? session?.user?.image : "";
 
   useCheckSignUpParams();
@@ -64,6 +66,9 @@ const Header = () => {
     openModal("signin");
   };
 
+  useEffect(() => {
+  }, [session]);
+
   return (
     <div className="w-full h-[74px] bg-grey0 shadow-md px-6 flex items-center justify-between">
       <Link href={"/"}>
@@ -98,7 +103,6 @@ const Header = () => {
           />
         )}
       </div>
-
       {
         /**로그인 X */
         !session && (

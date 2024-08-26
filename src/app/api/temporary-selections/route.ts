@@ -4,6 +4,7 @@ import { createTemporarySelection } from "@/services/selectionCreate.services";
 import { prepareAndValidateTemporarySelectionCreateFormData } from "@/services/selectionCreate.validation";
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import { UnauthorizedError } from "@/utils/errors";
+import { logWithIP } from "@/utils/logUtils";
 import { NextRequest } from "next/server";
 
 
@@ -32,8 +33,12 @@ export async function POST(request: NextRequest) {
       }
     });
   } catch (error: any) {
+    await logWithIP(
+      'POST /api/temporary-selections - ' + error.message,
+      request,
+      'error'
+    );
     await transaction.rollback();
-    console.error(error);
     return new Response(error.message, {
       status: error.statusCode || 500,
       headers: {
