@@ -14,7 +14,7 @@
 /out/
 
 /.swc/
-
+/.logs/
 # production
 /build
 
