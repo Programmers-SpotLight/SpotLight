@@ -40,7 +40,7 @@ const ModalSignIn = () => {
   const handleSignin = (provider: "kakao" | "google") => {
     signIn(provider, {
       redirect: false,
-      callbackUrl: "http://localhost:3000"
+      callbackUrl: "https://spot-light.ovh"
     });
   };
   const handleGoogleSignin = () => {};

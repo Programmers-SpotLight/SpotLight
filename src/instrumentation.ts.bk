@@ -23,6 +23,9 @@ export const register = async () => {
     const {
       sortSelectionIdByBookmarkCountDesc,
     } = await import('./repositories/selection.repository');
+    const {
+      requestSelectionHashtagComparison
+    } = await import('./services/selection.services');
     const { dbConnectionPool } = await import('./libs/db');
 
 
@@ -88,21 +91,7 @@ export const register = async () => {
             ...popularSelectionHashtagQueryResult.map((row) => row.hashtags)
           ];
 
-          const response = await fetch('http://127.0.0.1:5000/predict', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          });
-
-          const responseJson : {category: Array<number[]>} = (await response.json());
-          if (!responseJson.category) {
-            throw new Error('AI 서버에서 응답을 받지 못했습니다');
-          }
-
-          // AI 서버에서 응답을 받은 후 추천 점수를 추출
-          const result : number[] = responseJson.category[0];
+          const result = await requestSelectionHashtagComparison(data);
           result.shift();
 
           // 추천 점수가 높은 순으로 20개 추출
@@ -157,13 +146,7 @@ export const register = async () => {
 
       const trx = await dbConnectionPool.transaction();
       try {
-        const userHashtagQueryResult = await trx('user_hashtag')
-          .select([
-            'hashtag.htag_name as hashtag',
-          ])
-          .leftJoin('hashtag', 'user_hashtag.htag_id', 'hashtag.htag_id')
-          .where('user_hashtag.user_id', String(userId));
-
+        const userHashtagQueryResult = await selectAllUserHashtagByUserId(userId);
         if (userHashtagQueryResult.length === 0) {
           throw new Error('유저가 등록한 최애 해시태그가 없습니다');
         }
@@ -215,19 +198,7 @@ export const register = async () => {
           ...popularSelectionHashtagQueryResult.map((row) => row.hashtags)
         ];
 
-        const response = await fetch('http://127.0.0.1:5000/predict', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        const responseJson : {category: Array<number[]>} = (await response.json());
-        if (!responseJson.category) {
-          throw new Error('AI 서버에서 응답을 받지 못했습니다');
-        }
-        const result : number[] = responseJson.category[0];
+        const result = await requestSelectionHashtagComparison(data);
         result.shift();
 
         // 추천 점수가 높은 순으로 20개 추출

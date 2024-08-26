@@ -1,5 +1,6 @@
 import { requestHashtagsSuggestionFromAI } from "@/services/selectionCreate.services";
 import { validateHashtagsSuggestionPrompt } from "@/services/selectionCreate.validation";
+import { logWithIP } from "@/utils/logUtils";
 import { NextRequest } from "next/server";
 
 
@@ -27,6 +28,12 @@ export const POST = async (request: NextRequest) => {
       }
     });
   } catch (error: any) {
+    await logWithIP(
+      'POST /api/selections/suggest-hashtags - ' + error.message,
+      request,
+      'error'
+    );
+
     return new Response(error.message, {
       status: error.statusCode || 500,
       headers: {

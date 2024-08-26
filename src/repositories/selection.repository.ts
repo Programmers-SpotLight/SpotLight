@@ -36,7 +36,6 @@ export const insertSelectionGetId = async (
         slt_img      
       }, ['slt_id']);
   } catch (error : any) {
-    console.error(error);
     throw new InternalServerError('셀렉션 생성에 실패했습니다');
   }
 }
@@ -65,7 +64,6 @@ export const insertSelectionTemporary = async (
         slt_temp_img      
       }, ['slt_temp_id']);
   } catch (error : any) {
-    console.error(error);
     throw new InternalServerError('임시 셀렉션 생성에 실패했습니다');
   }
 }
@@ -81,11 +79,11 @@ export async function sortSelectionIdByBookmarkCountDesc(
         transaction.raw(`COUNT(bookmark.slt_id) as bookmarkCount`)
       ])
       .leftJoin("bookmark", "selection.slt_id", "bookmark.slt_id")
+      .whereIn("selection.slt_id", selectionIds)
       .groupBy("selection.slt_id")
       .orderBy("bookmarkCount", "desc");
     
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션 북마크 수로 정렬하는데 실패했습니다');
   }
 }
@@ -107,7 +105,6 @@ export async function selectAllSelectionCategoriesWhereIdIn(
 
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션 카테고리를 가져오는데 실패했습니다');
   }
 }
@@ -123,7 +120,6 @@ export async function selectAllSelectionLocationOptionsWhereIdIn(
     
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션 지역을 가져오는데 실패했습니다');
   }
 }
@@ -142,7 +138,6 @@ export async function selectAllSelectionCategories(): Promise<ISelectionCategory
     
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션 카테고리를 가져오는데 실패했습니다');
   }
 }
@@ -168,7 +163,6 @@ export async function selectAllSelectionLocations(): Promise<ISelectionLocationQ
 
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션 지역을 가져오는데 실패했습니다');
   }
 };
@@ -193,7 +187,6 @@ export async function selectAllSelectionWhereImageEqual(
 
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션을 가져오는데 실패했습니다');
   }
 }
@@ -217,7 +210,6 @@ export async function selectAllSelectionTemporaryWhereImageEqual(
     
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('임시 셀렉션을 가져오는데 실패했습니다');
   }
 }
@@ -263,7 +255,6 @@ export async function selectSelectionWhereIdEqual(
 
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션을 가져오는데 실패했습니다');
   }
 }
@@ -307,10 +298,29 @@ export async function selectTemporarySelectionWhereIdEqual(
     
     return queryResult;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('임시 셀렉션을 가져오는데 실패했습니다');
   }
 }
+
+export async function checkIfSelectionHasReviews(
+  selectionId: number
+): Promise<boolean> {
+  try {
+    const queryResult = await dbConnectionPool("selection_review")
+      .select("slt_id")
+      .where("slt_id", selectionId)
+      .first();
+
+    const queryResult2 = await dbConnectionPool("spot_review")
+      .select("spot_id")
+      .whereRaw("spot_id IN (SELECT spot_id FROM spot WHERE slt_id = ?)", [selectionId])
+      .first();
+    
+    return !!queryResult || !!queryResult2;
+  } catch (error) {
+    throw new InternalServerError('셀렉션 리뷰를 확인하는데 실패했습니다');
+  }
+};
 
 export async function updateSelectionWhereIdEqual(
   transaction: Knex.Transaction<any, any[]>,
@@ -344,7 +354,6 @@ export async function updateSelectionWhereIdEqual(
       throw new InternalServerError('셀렉션 수정에 실패했습니다');
     }
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('셀렉션 수정에 실패했습니다');
   }
 }
@@ -377,7 +386,6 @@ export async function updateTemporarySelectionWhereIdEqual(
       throw new InternalServerError('임시 셀렉션 수정에 실패했습니다');
     }
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('임시 셀렉션 수정에 실패했습니다');
   }
 }
@@ -395,7 +403,6 @@ export async function deleteTemporarySelectionWhereIdEqual(
       throw new InternalServerError('임시 셀렉션 삭제에 실패했습니다');
     }
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('임시 셀렉션 삭제에 실패했습니다');
   }
 }

@@ -42,6 +42,7 @@
     "tailwind-scrollbar-hide": "^1.1.7",
     "tsx": "^4.17.0",
     "uuid": "^10.0.0",
+    "winston": "^3.14.2",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

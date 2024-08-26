@@ -8,7 +8,6 @@ export const dynamic = 'force-dynamic';
 export const GET = async (request: NextRequest) => {
   try {
     const categories : ISelectionCategory[] = await getSelectionCategories();
-
     return new Response(JSON.stringify(categories), {
       status: 200,
       headers: {
