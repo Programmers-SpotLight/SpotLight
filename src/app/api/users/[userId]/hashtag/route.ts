@@ -3,7 +3,6 @@ import { ErrorResponse } from "@/models/searchResult.model";
 import { SuccessResponse } from "@/models/user.model";
 import { getUserHashTags, serviceDeleteUserHashtagById, servicePostUserHashtag } from "@/services/user.services";
 import { userIdValidator } from "@/utils/authUtils";
-import { hash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 export interface IResponsePostUserHashtag {
@@ -17,7 +16,6 @@ export interface IResponseGetUserHashtag {
 export async function GET(req : NextRequest, { params }: { params: { userId: string }}) : Promise<NextResponse<IResponseGetUserHashtag | ErrorResponse>> {
     try {
         const userId = params.userId
-        console.log(userId);
         const validationError = getHashtagValdator(userId);
         const hashtags = await getUserHashTags(userId);
         return  NextResponse.json({ data : hashtags});
