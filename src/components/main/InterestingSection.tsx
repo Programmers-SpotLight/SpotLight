@@ -1,6 +1,5 @@
 'use client';
 
-import Link from "next/link";
 import React from "react";
 import { NextArrow, PrevArrow } from "./RecommendationSection";
 import Slider from "react-slick";
@@ -16,10 +15,18 @@ const settings = {
   nextArrow: <NextArrow />
 };
 
-const InterestingSection = () => {
-  const{data : recommendations, isLoading, isError} = useFetchRecommendationSelection();
+const Skeleton = () => (
+  <div className="flex space-x-4">
+    {[...Array(4)].map((_, index) => (
+      <div key={index} className="w-[248px] h-[389px] bg-grey2 rounded-lg animate-pulse" />
+    ))}
+  </div>
+);
 
-  if(!recommendations) return null;
+const InterestingSection = () => {
+  const { data: recommendations, isLoading, isError } = useFetchRecommendationSelection();
+
+  if (isError) return <div>오류가 발생했습니다.</div>;
 
   return (
     <div className="pl-5 pr-5 relative mb-10">
@@ -31,11 +38,15 @@ const InterestingSection = () => {
           사용자님이 관심이 있을만한 셀렉션으로 구성해봤어요
         </h2>
       </div>
-      <Slider {...settings}>
-        {recommendations.map((data) => (
-          <ColCard key={data.selectionId} {...data} />
-        ))}
-      </Slider>
+      {isLoading || !recommendations ? (
+        <Skeleton />
+      ) : (
+        <Slider {...settings}>
+          {recommendations.map((data) => (
+            <ColCard key={data.selectionId} {...data} />
+          ))}
+        </Slider>
+      )}
     </div>
   );
 };

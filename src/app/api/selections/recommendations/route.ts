@@ -3,7 +3,7 @@ import { manualRecommendationQueue } from '@/libs/queue';
 import { Ihashtags } from '@/models/hashtag.model';
 import { IsearchData } from '@/models/searchResult.model';
 import { ErrorResponse } from '@/models/user.model';
-import { serviceRandomSelection, serviceRecommendationSelection } from '@/services/selectionMain.services';
+import { serviceLoginRandomSelection, serviceRandomSelection, serviceRecommendationSelection } from '@/services/selectionMain.services';
 import { getUserHashTags } from '@/services/user.services';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
@@ -16,7 +16,7 @@ export async function GET(req : NextRequest) : Promise<NextResponse<any | ErrorR
         if(session_userId) {
             const hashtags = await getUserHashTags(session_userId)
             if(hashtags.length === 0) {
-            data = await serviceRandomSelection();
+            data = await serviceLoginRandomSelection(session_userId);
             } else {
             await manualRecommendationQueue.add('recommendation', { userId: session_userId }); 
             data = await serviceRecommendationSelection(session_userId)
