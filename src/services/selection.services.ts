@@ -107,3 +107,39 @@ export const removeBookMarks = async (selectionId: number, userId: number) => {
     throw error;
   }
 };
+
+
+export const requestSelectionHashtagComparison = async (
+  hashtags: string[]
+): Promise<number[]> => {
+  try {
+    if (hashtags.length < 2) {
+      throw new Error('해시태그가 2개 이상 필요합니다');
+    }
+
+    if (process.env.AI_SERVER_ADDR === undefined) {
+      throw new Error('AI 서버 주소가 설정되지 않았습니다');
+    }
+
+    const response = await fetch(`${process.env.AI_SERVER_ADDR}/predict`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(hashtags),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to request selection hashtag comparison');
+    }
+
+    const jsonData = await response.json();
+    if (!jsonData.category) {
+      throw new Error('AI 서버에서 응답을 받지 못했습니다');
+    }
+
+    return jsonData.category[0];
+  } catch (error) {
+    throw error;
+  }
+}
