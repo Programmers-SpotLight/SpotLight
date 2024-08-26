@@ -31,7 +31,7 @@ export async function GET(req : NextRequest) : Promise<NextResponse<any | ErrorR
 
         const mappingResults = mapSearchResults(data);
 
-        return  NextResponse.json({ mappingResults });
+        return  NextResponse.json(mappingResults);
     } catch (error) {
         return NextResponse.json({ error: "조회에 실패하였습니다." }, { status: 500 });
     }
