@@ -11,7 +11,7 @@ const useFetchSelectionDetailForEdit = (
   isTemporary: boolean
 ) => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const {
     setId,
@@ -41,8 +41,7 @@ const useFetchSelectionDetailForEdit = (
         passDetailToStore(data);
       }
     } catch (error: any) {
-      console.error(error);
-      setError(error.message);
+      setError(error);
     } finally {
       setLoading(false);
     }
