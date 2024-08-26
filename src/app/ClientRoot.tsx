@@ -43,7 +43,7 @@ export default function ClientRoot({
         <ReCAPTCHAProvider siteKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}>
           <ModalController />
           <div className="flex flex-col items-stretch min-h-screen relative">
-            <Header />
+            <Header session={session} />
             <div
               className={
                 shouldBeFlex ? "grow flex flex-col relative" : "grow relative"
