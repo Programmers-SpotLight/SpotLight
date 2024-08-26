@@ -1,6 +1,8 @@
 import 'server-only';
-import { NextRequest } from "next/server"
+import { NextRequest } from "next/server";
 import logger from '@/libs/winston';
+import { getTokenForAuthentication } from './authUtils';
+import { JWT } from 'next-auth/jwt';
 
 
 export type TLogLevel = 'info' | 'warn' | 'error' | 'debug' | 'verbose' | 'silly';
@@ -14,9 +16,16 @@ export const logWithIP = async (
     throw new Error('Invalid log level');
   }
 
+  let token : JWT;
+  try {
+    token = await getTokenForAuthentication(request);
+  } catch (error) {
+    token = { userId: null };
+  }
+
   logger.log({
     level,
-    message: `${message} IP: ${getUserIP(request)}`
+    message: `${message} IP: ${getUserIP(request)}` + (token.userId ? ` userId: ${token.userId}` : ''),
   });
 };
 export const checkLogLevel = (level: TLogLevel) => {
