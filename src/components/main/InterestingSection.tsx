@@ -30,9 +30,6 @@ const InterestingSection = () => {
         <h2 className="text-medium font-medium text-grey3 mt-[10px] mb-[20px]">
           사용자님이 관심이 있을만한 셀렉션으로 구성해봤어요
         </h2>
-        <Link href="/search" className="cursor-pointer text-medium font-medium text-grey3 mt-[10px]">
-          전체보기
-        </Link>
       </div>
       <Slider {...settings}>
         {recommendations.map((data) => (
