@@ -5,8 +5,8 @@ import useSpotSearch from "@/hooks/useSpotSearch";
 import { useSelectionSpotCreateStore } from "@/stores/selectionCreateStore";
 import { useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { useStore } from "zustand";
+
 
 const ModalCreateSelectionSpotSearchBar = () => {
   const spotSearchResultRef = useRef<HTMLDivElement>(null);
@@ -26,11 +26,18 @@ const ModalCreateSelectionSpotSearchBar = () => {
   } = useGeocoding();
 
   // 스팟 검색 훅
-  const { searchValue, setSearchValue, spots, fetchSpots, loading, error } =
-    useSpotSearch();
+  const { 
+    searchValue, 
+    setSearchValue, 
+    spots, 
+    fetchSpots, 
+    loading, 
+    error 
+  } = useSpotSearch();
 
   const [isSpotSearchResultOpen, setIsSpotSearchResultOpen] =
     useState<boolean>(false);
+
   useClickOutside(spotSearchResultRef, () => setIsSpotSearchResultOpen(false));
 
   const handleSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +79,6 @@ const ModalCreateSelectionSpotSearchBar = () => {
     }
     if (geocodingLoading) return;
     if (geocodingError) {
-      toast.error("주소를 가져오는데 실패했습니다.");
       return;
     }
 

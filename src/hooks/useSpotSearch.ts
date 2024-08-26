@@ -1,6 +1,7 @@
 import { ISelectionSpotSearchResult } from "@/models/selection.model";
 import { useState } from "react";
 import { fetchSelectionSpotSearch } from "@/http/selectionCreate.api";
+import { toast } from "react-toastify";
 
 
 const useSpotSearch = () => {
@@ -17,6 +18,7 @@ const useSpotSearch = () => {
       const response = await fetchSelectionSpotSearch(searchValue);
       setSpots(response);
     } catch (error : any) {
+      toast.error("스팟 검색에 실패했습니다");
       setError(error);
     }
     setLoading(false);

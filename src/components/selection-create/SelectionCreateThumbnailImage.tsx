@@ -20,6 +20,13 @@ const SelectionCreateThumbnailImage: React.FC = () => {
     }
   };
 
+  const handleThumbnailImageClear = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    setSelectionImage(null);
+  };
+
   return (
     <div className="flex items-start gap-6 py-6">
       <div className="flex items-start grow">
@@ -59,6 +66,19 @@ const SelectionCreateThumbnailImage: React.FC = () => {
             onChange={handleThumbnailImageChange}
             className="absolute inset-0 bg-red-500 cursor-pointer top-0 left-0 w-full h-full opacity-0"
           />
+          {selectionImage && (
+            <button
+              className="absolute top-0 right-0 p-2 rounded-full z-20"
+              onClick={handleThumbnailImageClear}
+            >
+              <Image
+                src="/icons/clear_7C7C7C.svg"
+                width={32}
+                height={32}
+                alt="close"
+              />
+            </button>
+          )}
         </button>
       </div>
       <p className="text-grey4 text-small w-1/3">

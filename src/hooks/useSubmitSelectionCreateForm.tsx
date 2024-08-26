@@ -251,7 +251,11 @@ const useSubmitSelectionCreateForm = () => {
         reset();
       })
       .catch((err) => {
-        toast.error("제출에 실패했습니다.");
+        if (err.response?.data?.error) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error("미리저장에 실패했습니다.");
+        }
         setIsSubmitting(false);
         restoreSpotImages(spots, spotImages);
       });
@@ -269,7 +273,11 @@ const useSubmitSelectionCreateForm = () => {
         reset();
       })
       .catch((err) => {
-        toast.error("수정에 실패했습니다.");
+        if (err.response?.data?.error) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error("미리저장에 실패했습니다.");
+        }
         setIsSubmitting(false);
         restoreSpotImages(spots, spotImages);
       });
@@ -287,7 +295,11 @@ const useSubmitSelectionCreateForm = () => {
         reset();
       })
       .catch((err) => {
-        toast.error("미리저장에 실패했습니다.");
+        if (err.response?.data?.error) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error("미리저장에 실패했습니다.");
+        }
         setIsSubmitting(false);
         restoreSpotImages(spots, spotImages);
       });
@@ -305,7 +317,11 @@ const useSubmitSelectionCreateForm = () => {
         reset();
       })
       .catch((err) => {
-        toast.error("미리저장 수정에 실패했습니다.");
+        if (err.response?.data?.error) {
+          toast.error(err.response.data.error);
+        } else {
+          toast.error("미리저장에 실패했습니다.");
+        }
         setIsSubmitting(false);
         restoreSpotImages(spots, spotImages);
       });

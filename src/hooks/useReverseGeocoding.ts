@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { fetchReverseGeocodingData } from "@/http/selectionCreate.api";
+import { toast } from "react-toastify";
 
 
 const useReverseGeocoding = () => {
@@ -16,6 +17,7 @@ const useReverseGeocoding = () => {
       setAddress(data.formatted_address);
       setPlaceId(data.place_id);
     } catch (error : any) {
+      toast.error("주소를 가져오는데 실패했습니다");
       setError(error);
     }
     setLoading(false);
