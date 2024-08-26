@@ -1,3 +1,4 @@
+import 'server-only';
 import { SELECTION_STATUS } from "@/constants/selection.constants";
 import { checkIfFileExistsInS3 } from "@/libs/s3";
 import { 
