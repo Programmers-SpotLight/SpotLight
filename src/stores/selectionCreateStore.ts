@@ -23,7 +23,7 @@ interface ISelectionCreateStore {
   setCategory: (category: ISelectionCategory | undefined) => void;
   setLocation: (location: ISelectionCreateStoreLocation | undefined) => void;
   setSubLocation: (subLocation: ISelectionCreateStoreLocation | undefined) => void;
-  setSelectionImage: (selectionPhoto: File | string) => void;
+  setSelectionImage: (selectionPhoto: File | string | null) => void;
   addSpot: (spot: ISelectionSpot) => void;
   deleteSpot: (spot: number) => void;
   setSpots: (spots: ISelectionSpot[]) => void;
@@ -56,10 +56,10 @@ interface ISelectionSpotCreateStore {
   setCategory: (category: ISelectionCategory | undefined) => void;
   setSelectedLocation: (selectedLocation: TPoiWithAddress) => void;
   setSpotDescription: (description: string) => void;
-  setSpotImage: (spotImage: File | string) => void;
-  setSpotImage1: (spotImage1: File | string) => void;
-  setSpotImage2: (spotImage2: File | string) => void;
-  setSpotImage3: (spotImage3: File | string) => void;
+  setSpotImage: (spotImage: File | string | null) => void;
+  setSpotImage1: (spotImage1: File | string | null) => void;
+  setSpotImage2: (spotImage2: File | string | null) => void;
+  setSpotImage3: (spotImage3: File | string | null) => void;
   addHashtag: (tag: string) => void;
   deleteHashtag: (tag: string) => void;
   reset: () => void;
@@ -90,7 +90,7 @@ export const useSelectionCreateStore = create<ISelectionCreateStore>()(
     setCategory: (category: ISelectionCategory | undefined) => set({ category }),
     setLocation: (location: ISelectionCreateStoreLocation | undefined) => set({ location }),
     setSubLocation: (subLocation: ISelectionCreateStoreLocation | undefined) => set({ subLocation }),
-    setSelectionImage: (selectionImage: File | string) => set({ selectionImage }),
+    setSelectionImage: (selectionImage: File | string | null) => set({ selectionImage }),
     addSpot: (spot: ISelectionSpot) => set((state) => ({ spots: [...state.spots, spot] })),
     addHashtag: (hashtag: string) => {
       if (typeof hashtag !== "string") return;
