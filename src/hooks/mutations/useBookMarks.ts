@@ -4,6 +4,7 @@ import { QUERY_KEY } from "@/constants/queryKey.constants";
 import { addBookMarks, removeBookMarks } from "@/http/bookmarks.api";
 import { IsearchResult, ItempResult } from "@/models/searchResult.model";
 import { ISelectionInfo } from "@/models/selection.model";
+import { useModalStore } from "@/stores/modalStore";
 import {
   QueryClient,
   useMutation,
@@ -22,7 +23,7 @@ export const useBookMarks = (selectionId: number, userId: number) => {
     page: userSelectionPage,
     limit: userSelectionLimit
   } = useGetUserSelectionListParams();
-
+  const { openModal } = useModalStore();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
 
@@ -101,8 +102,10 @@ export const useBookMarks = (selectionId: number, userId: number) => {
         context?.previousUserSelection
       );
 
-      if (!session?.user) toast.info("로그인이 필요한 서비스입니다.");
-      else toast.error("북마크에 추가하는 데 실패했습니다.");
+      if (!session?.user) {
+        openModal("signin");
+        toast.info("로그인이 필요한 서비스입니다.");
+      } else toast.error("북마크에 추가하는 데 실패했습니다.");
     },
     onSuccess: (data, variables, context) => {
       toast.success("북마크에 추가했습니다.");

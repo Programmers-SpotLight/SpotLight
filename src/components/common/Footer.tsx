@@ -6,12 +6,20 @@ import Link from "next/link";
 import { BiMessageEdit } from "react-icons/bi";
 import { useStore } from "zustand";
 import { useModalStore } from "@/stores/modalStore";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const Footer = () => {
   const { openModal } = useStore(useModalStore);
+  const { data: session } = useSession();
 
   const openFeedbackForm = () => {
-    openModal("feedback");
+    if (!session?.user) {
+      openModal("signin");
+      toast.info("로그인이 필요한 서비스입니다.");
+    } else {
+      openModal("feedback");
+    }
   };
   return (
     <div className="none:container h-[118px] border-solid border-2 border-gray-200 bg-gray-100">
@@ -49,8 +57,11 @@ const Footer = () => {
               />
             </Link>
             <span className="text-xl pb-1">&nbsp;|&nbsp;&nbsp;</span>
-            <div onClick={openFeedbackForm} className="flex items-center">
-              <BiMessageEdit size={25} className="cursor-pointer pr-[2px]" />
+            <div
+              onClick={openFeedbackForm}
+              className="flex items-center cursor-pointer"
+            >
+              <BiMessageEdit size={25} className="pr-[2px]" />
               <span className="text-sm pb-[3px]">문의하기</span>
             </div>
           </div>
