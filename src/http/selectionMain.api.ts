@@ -1,4 +1,7 @@
 import { IsearchData } from "@/models/searchResult.model";
+import { requestHandler } from "./http";
+import { handleHttpError } from "@/utils/errors";
+import axios from "axios";
 
 export const getPopularSelections = async (): Promise<IsearchData[]> => {
     try {
@@ -14,3 +17,13 @@ export const getPopularSelections = async (): Promise<IsearchData[]> => {
       return [];
     }
   }
+
+export const getRecommendationSelections = async () : Promise<any> => {
+  try {
+    const url = `/api/selections/recommendations`;
+    return await requestHandler("get", url);
+  } catch (error) {
+    if (axios.isAxiosError(error)) handleHttpError(error);
+    else throw new Error("An unexpected error occured");
+  }
+}

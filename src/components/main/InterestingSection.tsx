@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { NextArrow, PrevArrow } from "./RecommendationSection";
 import Slider from "react-slick";
 import ColCard, { IColCardProps } from "../common/card/ColCard";
+import axios from "axios";
+import { getRecommendationSelections } from "@/http/selectionMain.api";
 
 const tempData: IColCardProps[] = [
   // 임시 카드 UI 데이터
@@ -32,30 +34,6 @@ const tempData: IColCardProps[] = [
     status: "public",
     hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
   },
-  {
-    thumbnail: "https://file.mk.co.kr/meet/neds/2023/11/image_readtop_2023_846577_16989928215689644.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 3,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    status: "public",
-    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
-  },
-  {
-    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 4,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    status: "public",
-    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
-  }
 ];
 
 const settings = {
@@ -68,6 +46,11 @@ const settings = {
 };
 
 const InterestingSection = () => {
+
+  useEffect(()=>{
+    getRecommendationSelections();
+  }, [])
+  
   return (
     <div className="pl-5 pr-5 relative mb-10">
       <h1 className="text-large font-extrabold">
