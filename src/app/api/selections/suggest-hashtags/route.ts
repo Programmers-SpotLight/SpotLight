@@ -1,44 +1,42 @@
 import { requestHashtagsSuggestionFromAI } from "@/services/selectionCreate.services";
 import { validateHashtagsSuggestionPrompt } from "@/services/selectionCreate.validation";
+import { getTokenForAuthentication } from "@/utils/authUtils";
+import { BadRequestError, InternalServerError, UnauthorizedError } from "@/utils/errors";
 import { logWithIP } from "@/utils/logUtils";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
 export const POST = async (request: NextRequest) => {
-  const formData : FormData = await request.formData();
-  
-  if (formData.has('prompt') === false) {
-    return new Response('프롬프트가 필요합니다.', {
-      status: 400,
-      headers: {
-        "Content-Type": "text/plain"
-      }
-    });
-  }
-
   try {
+    const token = await getTokenForAuthentication(request);
+    if (!token.userId) {
+      throw new UnauthorizedError("userId가 token에 없습니다.");
+    }
+
+    const formData : FormData = await request.formData();
+    if (formData.has('prompt') === false) {
+      throw new BadRequestError("프롬프트가 필요합니다.");
+    }
+
     const prompt = formData.get('prompt') as string;
     await validateHashtagsSuggestionPrompt(prompt);
 
     const hashtags = await requestHashtagsSuggestionFromAI(prompt);
-    return new Response(JSON.stringify(hashtags), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+
+    return NextResponse.json(hashtags, { status: 200 });
   } catch (error: any) {
+    const errorMsg = error instanceof InternalServerError ? 
+      "서버 내부 오류입니다. 다시 시도해주세요." : (error.message || "알 수 없는 오류입니다.");
+
     await logWithIP(
       'POST /api/selections/suggest-hashtags - ' + error.message,
       request,
       'error'
     );
 
-    return new Response(error.message, {
-      status: error.statusCode || 500,
-      headers: {
-        "Content-Type": "text/plain"
-      }
-    });
+    return NextResponse.json(
+      { error: errorMsg }, 
+      { status: error.statusCode || 500 }
+    );
   }
 };
