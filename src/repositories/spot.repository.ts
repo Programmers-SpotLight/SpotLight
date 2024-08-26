@@ -20,7 +20,6 @@ export const insertMultipleSpotTemporary = async (
     await transaction('spot_temporary')
       .insert(spots);
   } catch (error : any) {
-    console.error(error);
     throw new InternalServerError('임시 스팟 생성에 실패했습니다');
   }
 }
@@ -33,7 +32,6 @@ export const insertMultipleSpot = async (
     await transaction('spot')
       .insert(spots);
   } catch (error : any) {
-    console.error(error);
     throw new InternalServerError('스팟 생성에 실패했습니다');
   }
 };
@@ -62,7 +60,6 @@ export async function insertMultipleSpotImage(
       .onConflict(['spot_id', 'spot_photo_url'])
       .merge();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 이미지를 생성하는데 실패했습니다');
   }
 }
@@ -91,7 +88,6 @@ export async function insertMultipleSpotTemporaryImage(
       .onConflict(['spot_temp_id', 'spot_temp_img_url'])
       .ignore();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 이미지를 생성하는데 실패했습니다');
   }
 }
@@ -158,7 +154,6 @@ export async function selectMultipleSpotBySelectionId(
       }
     });
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟을 가져오는데 실패했습니다');
   }
 }
@@ -191,7 +186,6 @@ export async function selectMultipleSpotTemporaryBySelectionId(
       }
     });
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟을 가져오는데 실패했습니다');
   }
 }
@@ -212,7 +206,6 @@ export async function selectMultipleSpotImageBySpotId(
       }
     });
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 이미지를 가져오는데 실패했습니다');
   }
 }
@@ -233,7 +226,6 @@ export async function selectMultipleSpotTemporaryImageBySpotId(
       };
     });
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 이미지를 가져오는데 실패했습니다');
   }
 }
@@ -300,7 +292,6 @@ export async function updateMultipleSpotTemporary(
       }
     }
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 수정에 실패했습니다');
   }
 }
@@ -329,7 +320,6 @@ export async function updateMultipleSpot(
       }
     }
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 수정에 실패했습니다');
   }
 }
@@ -343,7 +333,6 @@ export async function deleteAllSpotBySelectionId(
       .where('slt_id', selectionId)
       .delete();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 삭제에 실패했습니다');
   }
 }
@@ -357,7 +346,6 @@ export async function deleteAllSpotTemporaryBySelectionId(
       .where('slt_temp_id', selectionId)
       .delete();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 삭제에 실패했습니다');
   }
 }
@@ -374,7 +362,6 @@ export async function deleteMultipleSpotBySelectionIdAndNotInPlaceId(
       AND slt_id = ?
     `, [...placeIds, selectionId]);
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 삭제에 실패했습니다');
   }
 }
@@ -391,7 +378,6 @@ export async function deleteMultipleSpotTemporaryBySelectionIdAndNotInPlaceId(
       AND slt_temp_id = ?
     `, [...placeIds, selectionId]);
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 삭제에 실패했습니다');
   }
 }
@@ -405,7 +391,6 @@ export async function deleteAllSpotImageBySelectionId(
       .whereRaw('spot_id IN (SELECT spot_id FROM spot WHERE slt_id = ?)', [selectionId])
       .delete();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 이미지 삭제에 실패했습니다');
   }
 }
@@ -419,7 +404,6 @@ export async function deleteAllSpotTemporaryImageBySelectionId(
       .whereRaw('spot_temp_id IN (SELECT spot_temp_id FROM spot_temporary WHERE slt_temp_id = ?)', [selectionId])
       .delete();
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 이미지 삭제에 실패했습니다');
   }
 }
@@ -440,7 +424,6 @@ export async function deleteMultipleSpotImageBySelectionIdAndNotInImageUrl(
       )
     `, [...imageUrls, selectionId]);
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 이미지 삭제에 실패했습니다');
   }
 }
@@ -461,7 +444,6 @@ export async function deleteMultipleSpotTemporaryImageBySelectionIdAndNotInImage
       )
     `, [...imageUrls, selectionId]);
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 이미지 삭제에 실패했습니다');
   }
 }

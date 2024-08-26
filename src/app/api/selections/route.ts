@@ -1,4 +1,5 @@
 import { dbConnectionPool } from "@/libs/db";
+import logger from "@/libs/winston";
 import { 
   ISelectionCreateCompleteData, 
 } from "@/models/selection.model";
@@ -11,11 +12,13 @@ import {
 } from "@/services/selectionCreate.validation";
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import { UnauthorizedError } from "@/utils/errors";
+import { logWithIP } from "@/utils/logUtils";
 import { NextRequest } from "next/server";
 
 
 export const POST = async (request: NextRequest) => {
   const transaction = await dbConnectionPool.transaction();
+
   try {
     const token = await getTokenForAuthentication(request);
     if (!token.userId) {
@@ -44,8 +47,13 @@ export const POST = async (request: NextRequest) => {
       }
     });
   } catch (error: any) {
+    await logWithIP(
+      'POST /api/selections - ' + error.message,
+      request,
+      'error'
+    );
+
     await transaction.rollback();
-    console.error(error);
     return new Response(error.message, {
       status: error.statusCode || 500,
       headers: {
