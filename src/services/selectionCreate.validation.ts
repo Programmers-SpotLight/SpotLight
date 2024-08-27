@@ -162,7 +162,6 @@ export async function validateCategory(
   try {
     queryResult = await selectAllSelectionCategoriesWhereIdIn([category]);
   } catch (error) {
-    console.error(error);
     throw new InternalServerError("카테고리를 확인하는데 실패했습니다");
   }
 
@@ -205,7 +204,6 @@ export async function validateLocation(
       [location.subLocation]
     );
   } catch (error) {
-    console.error(error);
     throw new InternalServerError("위치를 확인하는데 실패했습니다");
   }
 
@@ -243,9 +241,8 @@ export async function validateImg(
 
   // if the image is a file
   if (img instanceof File) {
-    // if the file size is bigger than 2MB
-    if (img.size > 2 * 1024 * 1024) {
-      throw new BadRequestError("이미지는 2MB 이하여야 합니다");
+    if (img.size > 15 * 1024 * 1024) {
+      throw new BadRequestError("이미지는 15MB 이하여야 합니다");
     }
 
     const fileType = await fileTypeFromBlob(img);
@@ -256,7 +253,6 @@ export async function validateImg(
     if (fileType?.mime != "image/jpeg" && fileType?.mime != "image/png") {
       throw new BadRequestError("이미지는 JPEG 또는 PNG 형식이어야 합니다");
     }
-    // if the image is a string (URL), check if it exists in the database
   } else {
     const fileName = extractFileNameFromS3Url(img);
     if (!fileName) {
@@ -355,7 +351,6 @@ export async function validateSpotCategory(
   try {
     queryResult = await selectAllSelectionCategoriesWhereIdIn([categoryId]);
   } catch (error) {
-    console.error(error);
     throw new InternalServerError("카테고리를 확인하는데 실패했습니다");
   }
 
@@ -409,7 +404,6 @@ export async function validateSpotImages(
 
         await checkIfFileExistsInS3(fileName);
       } catch (error) {
-        console.error(error);
         throw new BadRequestError(
           `유효하지 않은 사진입니다. 사진이 존재하지 않습니다`
         );

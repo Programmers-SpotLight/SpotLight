@@ -42,7 +42,6 @@ export const getSpotCategories : () => Promise<ISelectionSpotCategory[]> = async
 
     return spotCategories;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 카테고리를 가져오는데 실패했습니다');
   }
 }
@@ -193,7 +192,6 @@ export const saveSpotPhoto : (imageFile: File) => Promise<string> = async (image
 
     return `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${savePath}`;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 이미지를 저장하는데 실패했습니다');
   }
 };

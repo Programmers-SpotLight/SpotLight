@@ -142,7 +142,6 @@ export async function createHashtagsForSpots(
       }
     });
   } catch (error) {
-    console.error(error);
     throw new InternalServerError('스팟 해시태그를 생성하는데 실패했습니다');
   }
 };
@@ -169,7 +168,6 @@ export async function saveSelectionImage(imageFile: File) : Promise<string> {
 
     return `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${savePath}`;
   } catch (error) {
-    console.error(error);
     throw new InternalServerError("셀렉션 이미지 저장에 실패했습니다");
   }
 }
@@ -209,7 +207,6 @@ export const requestHashtagsSuggestionFromAI = async (prompt: string) => {
     // Return an array of hashtags or an empty array if none are found
     return hashtags || [];
   } catch (error: any) {
-    console.error(error);
     throw new InternalServerError("해시태그 추천에 실패했습니다");
   }
 };
@@ -231,7 +228,6 @@ export const requestGeocoding = async (googleMapsPlaceId: string) => {
 
     return geoData;
   } catch (error: any) {
-    console.error(error);
     throw new InternalServerError("Geocoding에 실패했습니다");
   }
 };
@@ -253,7 +249,6 @@ export const requestReverseGeocoding = async (
 
     return geoData;
   } catch (error: any) {
-    console.error(error);
     throw new InternalServerError("Reverse geocoding에 실패했습니다");
   }
 };

@@ -1,5 +1,3 @@
-import { Ihashtags } from "./hashtag.model";
-
 export interface IUserInfoData {
   user_nickname: string;
   user_email: string;

@@ -6,7 +6,7 @@ import {
   ISelectionLocation,
   ISelectionLocationQueryResultRow
 } from "@/models/selection.model";
-import { BadRequestError, InternalServerError } from "@/utils/errors";
+import { InternalServerError } from "@/utils/errors";
 import {
   selectAllSelectionCategories,
   selectAllSelectionLocations
