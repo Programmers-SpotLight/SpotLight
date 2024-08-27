@@ -69,7 +69,7 @@ const SpotHeader = ({
 
   useEffect(() => {
     setIsLoading(true);
-  }, [images]);
+  }, [title]);
 
   images && images.sort((a, b) => b.order - a.order);
 
