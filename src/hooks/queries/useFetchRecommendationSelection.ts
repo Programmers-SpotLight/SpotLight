@@ -6,17 +6,13 @@ import { IColCardProps } from "@/components/common/card/ColCard";
 
 const useFetchRecommendationSelection = (): UseQueryResult<IColCardProps[]> => {
   return useQuery<IColCardProps[], AxiosError>({
-    queryKey: [
-      QUERY_KEY.RECOMMEND,
-    ],
-    queryFn: () =>
-        getRecommendationSelections(),
+    queryKey: [QUERY_KEY.SELECTION, QUERY_KEY.RECOMMEND],
+    queryFn: () => getRecommendationSelections(),
     staleTime: 300000,
-    refetchOnWindowFocus : false,
-    refetchOnMount : "always",
-    refetchOnReconnect : false
-  },
-);
+    refetchOnWindowFocus: false,
+    refetchOnMount: "always",
+    refetchOnReconnect: false
+  });
 };
 
 export default useFetchRecommendationSelection;
