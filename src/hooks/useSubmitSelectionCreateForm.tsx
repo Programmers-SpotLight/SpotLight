@@ -1,4 +1,8 @@
-import { IReCAPTCHAContextType, useReCAPTCHA } from "@/context/ReCAPTCHAProvider";
+import { QUERY_KEY } from "@/constants/queryKey.constants";
+import {
+  IReCAPTCHAContextType,
+  useReCAPTCHA
+} from "@/context/ReCAPTCHAProvider";
 import {
   submitCompleteSelection,
   submitTemporarySelection
@@ -9,6 +13,7 @@ import {
 } from "@/http/selectionEdit.api";
 import { ISelectionSpot } from "@/models/selection.model";
 import { useSelectionCreateStore } from "@/stores/selectionCreateStore";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -19,6 +24,7 @@ type TTemporarySpotImageStorage = Array<Array<File | string>>;
 const useSubmitSelectionCreateForm = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
   const { execute } = useReCAPTCHA() as IReCAPTCHAContextType;
 
@@ -90,7 +96,7 @@ const useSubmitSelectionCreateForm = () => {
 
     const formData = new FormData();
 
-    const token = await execute('submit');
+    const token = await execute("submit");
     if (!token) {
       toast.error("ReCAPTCHA 검증에 실패했습니다. 다시 시도해주세요.");
       return;
@@ -148,7 +154,7 @@ const useSubmitSelectionCreateForm = () => {
 
     const formData = new FormData();
 
-    const token = await execute('submit');
+    const token = await execute("submit");
     if (!token) {
       toast.error("ReCAPTCHA 검증에 실패했습니다. 다시 시도해주세요.");
       return;
@@ -249,6 +255,10 @@ const useSubmitSelectionCreateForm = () => {
         toast.success("셀렉션이 성공적으로 등록되었습니다.");
         router.push("/");
         reset();
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.SELECTION],
+          exact: false
+        });
       })
       .catch((err) => {
         if (err.response?.data?.error) {
@@ -271,6 +281,10 @@ const useSubmitSelectionCreateForm = () => {
         toast.success("셀렉션 수정이 성공적으로 되었습니다.");
         router.push("/");
         reset();
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.SELECTION],
+          exact: false
+        });
       })
       .catch((err) => {
         if (err.response?.data?.error) {
@@ -293,6 +307,10 @@ const useSubmitSelectionCreateForm = () => {
         toast.success("셀렉션 미리저장이 성공적으로 되었습니다.");
         router.push("/");
         reset();
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.SELECTION],
+          exact: false
+        });
       })
       .catch((err) => {
         if (err.response?.data?.error) {
@@ -315,6 +333,10 @@ const useSubmitSelectionCreateForm = () => {
         toast.success("셀렉션 미리저장 수정이 성공적으로 되었습니다.");
         router.push("/");
         reset();
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.SELECTION],
+          exact: false
+        });
       })
       .catch((err) => {
         if (err.response?.data?.error) {
