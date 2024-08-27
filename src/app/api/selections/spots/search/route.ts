@@ -1,5 +1,6 @@
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import { BadRequestError, InternalServerError, UnauthorizedError } from "@/utils/errors";
+import { logWithIP } from "@/utils/logUtils";
 import { limitAPIUsageWithDuration } from "@/utils/redisUtils";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
@@ -47,6 +48,12 @@ export const GET = async (request: NextRequest) => {
   } catch (error: any) {
     const errorMsg = error instanceof InternalServerError ? 
       "서버 내부 오류입니다. 다시 시도해주세요." : (error.message || "알 수 없는 오류입니다.");
+
+    await logWithIP(
+      'GET /api/selections/spots/search - ' + error.message,
+      request,
+      'error'
+    );
 
     return NextResponse.json(
       { error: errorMsg },
