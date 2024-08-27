@@ -3,6 +3,7 @@ import { validateHashtagsSuggestionPrompt } from "@/services/selectionCreate.val
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import { BadRequestError, InternalServerError, UnauthorizedError } from "@/utils/errors";
 import { logWithIP } from "@/utils/logUtils";
+import { limitAPIUsageWithDuration } from "@/utils/redisUtils";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -12,6 +13,12 @@ export const POST = async (request: NextRequest) => {
     if (!token.userId) {
       throw new UnauthorizedError("userId가 token에 없습니다.");
     }
+
+    await limitAPIUsageWithDuration(
+      `selection-creation-hashtag-suggestion-${token.userId}`,
+      10, 
+      '10초에 1번만 해시태그 제안을 받을 수 있습니다. 잠시 후 다시 시도해주세요.'
+    );
 
     const formData : FormData = await request.formData();
     if (formData.has('prompt') === false) {
