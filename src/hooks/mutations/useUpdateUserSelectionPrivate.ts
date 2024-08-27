@@ -1,9 +1,11 @@
 import { updateUserSelectionPrivate } from "@/http/user.api";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 const useUpdateUserSelectionPrivate = (userId: number) => {
-  const { mutate: selectionPrivate } = useMutation({
+  const queryClient = useQueryClient();
+  
+  const { mutate: selectionPrivate, } = useMutation({
     mutationKey: ["userSelectionPrivate"],
     mutationFn: (selectionId: number) =>
       updateUserSelectionPrivate(userId, selectionId),
@@ -12,7 +14,7 @@ const useUpdateUserSelectionPrivate = (userId: number) => {
     }
   });
 
-  return { selectionPrivate };
+  return { selectionPrivate, queryClient };
 };
 
 export default useUpdateUserSelectionPrivate;

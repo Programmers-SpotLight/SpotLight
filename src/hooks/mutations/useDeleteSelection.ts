@@ -1,3 +1,4 @@
+import { QUERY_KEY } from "@/constants/queryKey.constants";
 import { deleteSelection } from "@/http/user.api";
 import { TuserSelection } from "@/models/user.model";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,9 +20,7 @@ const useDeleteSelection = () => {
     },
     onSuccess: () => {
       toast.success("성공적으로 삭제하였습니다.");
-      queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === "userSelectionList"
-      });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.SELECTION], exact : false});
       queryClient.invalidateQueries({ queryKey: ["userinfo"] });
     }
   });

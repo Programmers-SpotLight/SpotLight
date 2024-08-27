@@ -6,11 +6,12 @@ import { toast } from "react-toastify";
 import useUpdateUserSelectionPrivate from "./mutations/useUpdateUserSelectionPrivate";
 import { CARD_MENU } from "@/constants/selection.constants";
 import { useRouter } from "next/navigation";
+import { QUERY_KEY } from "@/constants/queryKey.constants";
 
 const useHandleCardMenu = (status: TselectionStatus, userId: number) => {
   const [showMenu, setShowMenu] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<TselectionStatus>(status);
-  const { selectionPrivate } = useUpdateUserSelectionPrivate(userId);
+  const { selectionPrivate, queryClient } = useUpdateUserSelectionPrivate(userId);
   const { openModal } = useModalStore();
   const router = useRouter();
 
@@ -41,6 +42,7 @@ const useHandleCardMenu = (status: TselectionStatus, userId: number) => {
               ? "비공개 설정을 해제하였습니다"
               : "비공개 설정하였습니다"
           );
+          queryClient.invalidateQueries({queryKey : [QUERY_KEY.SELECTION], exact : false})
           setCurrentStatus(updateStatus);
         },
         onError: () => {
