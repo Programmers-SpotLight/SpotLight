@@ -1,7 +1,8 @@
 "use client";
+import Spinner from "@/components/common/Spinner";
 import { ISpotImage } from "@/models/spot.model";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 
 interface ISpotImagesProps {
@@ -11,16 +12,20 @@ interface ISpotImagesProps {
 
 const SpotImages = ({ images, title }: ISpotImagesProps) => {
   const [imgIndex, setImgIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+  }, [imgIndex]);
 
   const nextBtnClickHandler = () => {
-    if (imgIndex + 1 === images.length) setImgIndex(0);
-    else setImgIndex((prev) => prev + 1);
+    setImgIndex((prev) => (prev + 1) % images.length);
   };
 
   const prevBtnClickHandler = () => {
-    if (imgIndex - 1 < 0) setImgIndex(images.length - 1);
-    else setImgIndex((prev) => prev - 1);
+    setImgIndex((prev) => (prev - 1 + images.length) % images.length);
   };
+
   return (
     <div className="relative flex items-center justify-center h-[100vh]">
       <p className="text-white absolute top-10 text-extraLarge">{title}</p>
@@ -30,11 +35,18 @@ const SpotImages = ({ images, title }: ISpotImagesProps) => {
       </p>
 
       <div className="w-screen h-screen relative">
+        {isLoading && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Spinner size="large" />
+          </div>
+        )}
         <Image
           src={images[imgIndex].url}
           alt="spot image"
           fill
           className="object-scale-down"
+          onLoadingComplete={() => setIsLoading(false)}
+          style={{ visibility: isLoading ? "hidden" : "visible" }}
         />
       </div>
 
