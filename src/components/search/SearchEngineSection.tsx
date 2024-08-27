@@ -11,6 +11,7 @@ import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 import Dropdown from "../common/Dropdown";
 import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
 import { ISelectionCategory, ISelectionLocation } from "@/models/selection.model";
+import { useGetSearchParams } from "./SearchResultSection";
 
 interface ISearchEngineSectionProps {
   selectionCategories :ISelectionCategory[]
@@ -22,6 +23,7 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
   const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion, searchValidator} = useSearchAutoComplete();
+  const { category_id, region_id } = useGetSearchParams();
 
   useEffect(() => {
     if (tagInputRef.current) tagInputRef.current?.focus();
@@ -73,6 +75,8 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
     deleteQueryString(QUERY_STRING_NAME.tags, tag);
   };
 
+  
+
   return (
     <div className="px-5">
       <div className="flex gap-5 mb-5 ">
@@ -80,11 +84,13 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
           title="카테고리"
           query={QUERY_STRING_NAME.category_id}
           contents={selectionCategories}
+          setId={parseInt(category_id)}
         />
         <Dropdown
           title="지역"
           query={QUERY_STRING_NAME.region_id}
           contents={regionCategories}
+          setId={parseInt(region_id)}
         />
       </div>
       <form onSubmit={handleSubmit} className="relative">
