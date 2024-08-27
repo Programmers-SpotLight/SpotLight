@@ -31,7 +31,7 @@ export async function GET(
 
     const hasReview = await checkIfSelectionHasReviews(selectionId);
     if (hasReview) {
-      throw new ForbiddenError("해당 셀렉션에 리뷰가 존재합니다.");
+      throw new ForbiddenError("해당 셀렉션에 리뷰가 존재하여 수정할 수 없습니다.");
     }
 
     return NextResponse.json(selectionDetail, { status: 200 });

@@ -1,5 +1,6 @@
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import { BadRequestError, InternalServerError, UnauthorizedError } from "@/utils/errors";
+import { limitAPIUsageWithDuration } from "@/utils/redisUtils";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,6 +11,12 @@ export const GET = async (request: NextRequest) => {
     if (!token.userId) {
       throw new UnauthorizedError("userId가 token에 없습니다.");
     }
+
+    await limitAPIUsageWithDuration(
+      `selection-creation-spot-place-search-${token.userId}`,
+      10, 
+      '10초에 1번만 위치 정보를 가져올 수 있습니다. 잠시 후 다시 시도해주세요.'
+    );
 
     const { searchParams } = new URL(request.url);
     const query : string | null = searchParams.get("query");
