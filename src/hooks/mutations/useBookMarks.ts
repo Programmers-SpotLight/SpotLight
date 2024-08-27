@@ -1,3 +1,4 @@
+import { IColCardProps } from "@/components/common/card/ColCard";
 import { useGetSearchParams } from "@/components/search/SearchResultSection";
 import { useGetUserSelectionListParams } from "@/components/user/my/UserSelectionSection";
 import { QUERY_KEY } from "@/constants/queryKey.constants";
@@ -13,7 +14,7 @@ import {
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
-export const useBookMarks = (selectionId: number, userId: number) => {
+export const useBookMarks = (selectionId: number) => {
   const { category_id, region_id, tags, sort, page, limit } =
     useGetSearchParams();
   const {
@@ -46,9 +47,11 @@ export const useBookMarks = (selectionId: number, userId: number) => {
     userSelectionLimit
   ];
 
+  const recommendationQueryKey = [QUERY_KEY.SELECTION, QUERY_KEY.RECOMMEND];
+
   const { mutate: addBookMarksMutate } = useMutation({
     mutationKey: [QUERY_KEY.BOOKMARK, selectionId],
-    mutationFn: () => addBookMarks(selectionId, userId),
+    mutationFn: () => addBookMarks(selectionId),
 
     onMutate: async () => {
       await queryClient.cancelQueries({
@@ -77,10 +80,18 @@ export const useBookMarks = (selectionId: number, userId: number) => {
           true
         );
 
+        const previousRecommendationSelection = updateRecommendationData(
+          queryClient,
+          recommendationQueryKey,
+          selectionId,
+          true
+        );
+
         return {
           previousSelectionDetail,
           previousSearchResult,
-          previousUserSelection
+          previousUserSelection,
+          previousRecommendationSelection
         };
       }
     },
@@ -102,6 +113,11 @@ export const useBookMarks = (selectionId: number, userId: number) => {
         context?.previousUserSelection
       );
 
+      queryClient.setQueryData(
+        recommendationQueryKey,
+        context?.previousRecommendationSelection
+      );
+
       if (!session?.user) {
         openModal("signin");
         toast.info("로그인이 필요한 서비스입니다.");
@@ -120,7 +136,7 @@ export const useBookMarks = (selectionId: number, userId: number) => {
 
   const { mutate: removeBookMarksMutate } = useMutation({
     mutationKey: [QUERY_KEY.BOOKMARK, selectionId],
-    mutationFn: () => removeBookMarks(selectionId, userId),
+    mutationFn: () => removeBookMarks(selectionId),
 
     onMutate: async () => {
       await queryClient.cancelQueries({
@@ -147,10 +163,18 @@ export const useBookMarks = (selectionId: number, userId: number) => {
         false
       );
 
+      const previousRecommendationSelection = updateRecommendationData(
+        queryClient,
+        recommendationQueryKey,
+        selectionId,
+        false
+      );
+
       return {
         previousSelectionDetail,
         previousSearchResult,
-        previousUserSelection
+        previousUserSelection,
+        previousRecommendationSelection
       };
     },
 
@@ -169,6 +193,11 @@ export const useBookMarks = (selectionId: number, userId: number) => {
       queryClient.setQueryData(
         userSelectionQueryKey,
         context?.previousUserSelection
+      );
+
+      queryClient.setQueryData(
+        recommendationQueryKey,
+        context?.previousRecommendationSelection
       );
       toast.error("북마크에서 제거하는 데 실패했습니다.");
     },
@@ -255,4 +284,26 @@ const updateUserSelectionData = (
   }
 
   return previousUserSelection;
+};
+
+const updateRecommendationData = (
+  queryClient: QueryClient,
+  recommendationQueryKey: (string | number)[],
+  selectionId: number,
+  booked: boolean
+) => {
+  const previousRecommendation = queryClient.getQueryData<IColCardProps[]>(
+    recommendationQueryKey
+  );
+
+  if (previousRecommendation) {
+    const updatedRecommendation = previousRecommendation.map((selection) =>
+      selection.selectionId === selectionId
+        ? { ...selection, booked }
+        : selection
+    );
+    queryClient.setQueryData(recommendationQueryKey, updatedRecommendation);
+  }
+
+  return previousRecommendation;
 };

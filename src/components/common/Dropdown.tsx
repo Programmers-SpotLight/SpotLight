@@ -13,8 +13,9 @@ import { MdNavigateNext } from "react-icons/md";
 
 interface DropdownProps {
   title: string;
-  query?: string;
   contents: ISelectionCategory[] | ISelectionLocation[] | any;
+  query?: string;
+  setId? : number;
   setCategory?: React.Dispatch<
     React.SetStateAction<ISelectionCategory | undefined>
   > | ((category: ISelectionCategory) => void);
@@ -35,7 +36,8 @@ const Dropdown = ({
   contents,
   query,
   setCategory,
-  setLocation
+  setLocation,
+  setId
 }: DropdownProps) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [categoryList, setCategoryList] = useState<
@@ -62,6 +64,12 @@ const Dropdown = ({
     }
   }, [contents, query, title]);
 
+  useEffect(() => {
+    if (setId !== undefined && categoryList.length > 0 && categoryList[setId]) {
+      setCurrentCategory(categoryList[setId].name);
+    }
+  }, [setId, categoryList]); 
+  
   const handleDropdownToggle = () => {
     setIsClicked((prev) => !prev);
   };

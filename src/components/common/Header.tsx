@@ -13,10 +13,8 @@ import { useSession, signOut } from "next-auth/react";
 import useCheckSignUpParams from "@/hooks/useCheckSignUpParams";
 import { toast } from "react-toastify";
 import { Session } from "next-auth";
-interface IHeaderProps {
-  session: Session | null; // null일 수도 있으므로
-}
-const Header: React.FC<IHeaderProps>  = ({session}) => {
+
+const Header = () => {
   const router = useRouter();
   const [tagValue, setTagValue] = useState<string>("");
   const [isDropDownVisible, setIsDropDownVisible] = useState<boolean>(false);
@@ -31,6 +29,7 @@ const Header: React.FC<IHeaderProps>  = ({session}) => {
   } = useSearchAutoComplete();
   useClickOutside(dropdownRef, () => setIsDropDownVisible(false));
   const { openModal } = useModalStore();
+  const { data: session, status } = useSession();
   const imageUrl = session?.user?.image ? session?.user?.image : "";
 
   useCheckSignUpParams();

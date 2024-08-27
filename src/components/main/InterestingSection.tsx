@@ -1,62 +1,10 @@
-"use client";
+'use client';
 
-import Link from "next/link";
 import React from "react";
 import { NextArrow, PrevArrow } from "./RecommendationSection";
 import Slider from "react-slick";
-import ColCard, { IColCardProps } from "../common/card/ColCard";
-
-const tempData: IColCardProps[] = [
-  // 임시 카드 UI 데이터
-  {
-    thumbnail: "https://img.newspim.com/news/2016/12/22/1612220920255890.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 1,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    status: "public",
-    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
-  },
-  {
-    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 2,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    status: "public",
-    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
-  },
-  {
-    thumbnail: "https://file.mk.co.kr/meet/neds/2023/11/image_readtop_2023_846577_16989928215689644.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 3,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    status: "public",
-    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
-  },
-  {
-    thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    title: "조커2 개봉기념 조커 계단 장소",
-    category: "영화",
-    description:
-      "뉴욕을 배경으로 했던 영화 조커에서 나왔던 장소 정리했습니다! 조커2보기전에 한번쯤 보시면 좋을것 같습니다",
-    selectionId: 4,
-    userName: "이창우",
-    userImage: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
-    status: "public",
-    hashtags : [{htag_id : 1, htag_name : "반갑다", htag_type: "none"}]
-  }
-];
+import ColCard from "../common/card/ColCard";
+import useFetchRecommendationSelection from "@/hooks/queries/useFetchRecommendationSelection";
 
 const settings = {
   infinite: true,
@@ -67,7 +15,19 @@ const settings = {
   nextArrow: <NextArrow />
 };
 
+const Skeleton = () => (
+  <div className="flex space-x-4">
+    {[...Array(4)].map((_, index) => (
+      <div key={index} className="w-[248px] h-[389px] bg-grey2 rounded-lg animate-pulse" />
+    ))}
+  </div>
+);
+
 const InterestingSection = () => {
+  const { data: recommendations, isLoading, isError } = useFetchRecommendationSelection();
+
+  if (isError) return <div>오류가 발생했습니다.</div>;
+
   return (
     <div className="pl-5 pr-5 relative mb-10">
       <h1 className="text-large font-extrabold">
@@ -77,15 +37,16 @@ const InterestingSection = () => {
         <h2 className="text-medium font-medium text-grey3 mt-[10px] mb-[20px]">
           사용자님이 관심이 있을만한 셀렉션으로 구성해봤어요
         </h2>
-        <Link href="/search" className="cursor-pointer text-medium font-medium text-grey3 mt-[10px]">
-          전체보기
-        </Link>
       </div>
-      <Slider {...settings}>
-        {tempData.map((data) => (
-          <ColCard key={data.selectionId} {...data} />
-        ))}
-      </Slider>
+      {isLoading || !recommendations ? (
+        <Skeleton />
+      ) : (
+        <Slider {...settings}>
+          {recommendations.map((data) => (
+            <ColCard key={data.selectionId} {...data} />
+          ))}
+        </Slider>
+      )}
     </div>
   );
 };

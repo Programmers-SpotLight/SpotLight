@@ -3,11 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { MdOutlineThumbUp, MdThumbUp } from "react-icons/md";
 import { IBaseCardProps } from "./ColCard";
-import { FaBookmark, FaRegBookmark } from "react-icons/fa";
-import { useSession } from "next-auth/react";
-import { useBookMarks } from "@/hooks/mutations/useBookMarks";
 
 export interface IRowCardProps extends IBaseCardProps {
   userName: string;
@@ -25,19 +21,8 @@ const RowCard = ({
   userName,
   userImage,
   ranking,
-  booked,
   selectionId
 }: IRowCardProps) => {
-  const { data } = useSession();
-  const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
-    selectionId,
-    data?.user.id
-  );
-  const handleBookMarkClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    booked ? removeBookMarksMutate() : addBookMarksMutate();
-  };
 
   return (
     <Link
@@ -61,20 +46,6 @@ const RowCard = ({
 
       <div className="absolute w-[30px] h-[23px] bg-black rounded-tl-lg top-0 left-0 text-white flex items-center justify-center text-small font-bold">
         {ranking}
-      </div>
-
-      <div className="absolute top-2 right-2">
-        {booked ? (
-          <FaBookmark
-            className="w-5 h-5 fill-red-600 cursor-pointer"
-            onClick={handleBookMarkClick}
-          />
-        ) : (
-          <FaRegBookmark
-            className="w-5 h-5 fill-grey3 cursor-pointer"
-            onClick={handleBookMarkClick}
-          />
-        )}
       </div>
 
       <div className="w-[270px] py-5 px-5">

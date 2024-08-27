@@ -92,7 +92,7 @@ const ReviewForm = ({
         {review ? review?.reviewDescription : null}
       </TextAreaInput>
 
-      <div className="text-medium font-extrabold">사진 등록(선택)</div>
+      <div className="text-medium font-extrabold">사진 등록(선택/최대 8장)</div>
       <ReviewModalImage 
         pictures={pictures} 
         onPictureAdd={handlePictureAdd}

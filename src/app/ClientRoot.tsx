@@ -26,24 +26,13 @@ export default function ClientRoot({
     /\/selection\/\d+\/edit$/
   ].some((regex) => regex.test(pathname));
 
-  const [session, setSession] = useState<Session | null>(null);
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      const sessionData = await getSession();
-      setSession(sessionData);
-      // console.log("session 정보 확인 : ", sessionData)
-    };
-    fetchSession();
-  }, []);
-
   return (
-    <SessionProvider session={session}>
+    <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <ReCAPTCHAProvider siteKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}>
           <ModalController />
           <div className="flex flex-col items-stretch min-h-screen relative">
-            <Header session={session} />
+            <Header/>
             <div
               className={
                 shouldBeFlex ? "grow flex flex-col relative" : "grow relative"

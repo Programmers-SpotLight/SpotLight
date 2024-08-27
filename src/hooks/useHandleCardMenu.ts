@@ -4,13 +4,14 @@ import { TselectionStatus } from "@/models/searchResult.model";
 import { useModalStore } from "@/stores/modalStore";
 import { toast } from "react-toastify";
 import useUpdateUserSelectionPrivate from "./mutations/useUpdateUserSelectionPrivate";
-import { CARD_MENU } from "@/constants/selection.constants";
+import { CARD_MENU, CARD_MENU_STATUS } from "@/constants/selection.constants";
 import { useRouter } from "next/navigation";
+import { QUERY_KEY } from "@/constants/queryKey.constants";
 
 const useHandleCardMenu = (status: TselectionStatus, userId: number) => {
   const [showMenu, setShowMenu] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<TselectionStatus>(status);
-  const { selectionPrivate } = useUpdateUserSelectionPrivate(userId);
+  const { selectionPrivate, queryClient } = useUpdateUserSelectionPrivate(userId);
   const { openModal } = useModalStore();
   const router = useRouter();
 
@@ -31,17 +32,18 @@ const useHandleCardMenu = (status: TselectionStatus, userId: number) => {
   ) => {
     e.preventDefault();
     e.stopPropagation();
-    if (action === CARD_MENU.prviate) {
+    if (action === CARD_MENU.private) {
       const prvStatus = currentStatus;
-      const updateStatus = currentStatus === "private" ? "public" : "private";
+      const updateStatus = currentStatus === CARD_MENU_STATUS.private ? CARD_MENU_STATUS.public : CARD_MENU_STATUS.private;
       selectionPrivate(selectionId, {
         onSuccess: () => {
           toast.success(
-            currentStatus === "private"
+            currentStatus === CARD_MENU_STATUS.private
               ? "비공개 설정을 해제하였습니다"
               : "비공개 설정하였습니다"
           );
-          setCurrentStatus(updateStatus);
+          queryClient.invalidateQueries({queryKey : [QUERY_KEY.SELECTION], exact : false})
+          setCurrentStatus(updateStatus as TselectionStatus);
         },
         onError: () => {
           toast.error("오류가 발생하였습니다"); 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextInput from "../../input/TextInput";
 import Button from "../../button/Button";
 import PictureInput from "../../input/PictureInput";
@@ -8,21 +8,29 @@ import { useStore } from "zustand";
 import { useModalStore } from "@/stores/modalStore";
 import { useSendFeedback } from "@/hooks/queries/useSendFeedback";
 import Spinner from "../../Spinner";
+import {
+  IReCAPTCHAContextType,
+  useReCAPTCHA
+} from "@/context/ReCAPTCHAProvider";
+import { toast } from "react-toastify";
 
 export interface IFeedbackFormData {
   type: string;
   title: string;
   contents: string;
   pictures: IReviewImage[];
+  token: string;
 }
 
 const ModalFeedbackForm = () => {
   const { closeModal } = useStore(useModalStore);
+  const { execute } = useReCAPTCHA() as IReCAPTCHAContextType;
   const [formData, setFormData] = useState<IFeedbackFormData>({
     type: "",
     title: "",
     contents: "",
-    pictures: []
+    pictures: [],
+    token: ""
   });
   const { send, isPending } = useSendFeedback(formData);
 
@@ -31,6 +39,12 @@ const ModalFeedbackForm = () => {
     title: "",
     contents: ""
   });
+
+  useEffect(() => {
+    if (formData.token) {
+      send();
+    }
+  }, [formData.token]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -95,10 +109,20 @@ const ModalFeedbackForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const verifyBeforeSubmit = async () => {
+    const token = await execute("submit");
+    if (!token) {
+      toast.error("ReCAPTCHA 검증에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
+    setFormData((prevFormData) => ({ ...prevFormData, token }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (validate()) {
-      send();
+      await verifyBeforeSubmit();
     }
   };
 

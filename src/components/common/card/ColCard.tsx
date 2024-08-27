@@ -12,7 +12,7 @@ import useHandleCardMenu from "@/hooks/useHandleCardMenu";
 import { useSession } from "next-auth/react";
 import { TuserSelection } from "@/models/user.model";
 import { useBookMarks } from "@/hooks/mutations/useBookMarks";
-import { CARD_MENU } from "@/constants/selection.constants";
+import { CARD_MENU, CARD_MENU_STATUS } from "@/constants/selection.constants";
 
 export interface IBaseCardProps {
   thumbnail: string;
@@ -34,21 +34,6 @@ export interface IColCardProps extends IBaseCardProps {
   onClick?: () => void;
 }
 
-const menuList = [
-  {
-    title: CARD_MENU.modify,
-    icon: <BiSolidPencil />
-  },
-  {
-    title: CARD_MENU.prviate,
-    icon: <IoMdLock />
-  },
-  {
-    title: CARD_MENU.delete,
-    icon: <FaTrash />
-  }
-];
-
 const ColCard = ({
   thumbnail,
   title,
@@ -65,10 +50,27 @@ const ColCard = ({
   userSelectionType
 }: IColCardProps) => {
   const { data } = useSession();
-  const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
-    selectionId,
-    data?.user.id
-  );
+  const { addBookMarksMutate, removeBookMarksMutate } =
+    useBookMarks(selectionId);
+
+  const menuList = [
+    {
+      action: CARD_MENU.modify,
+      title : CARD_MENU.modify,
+      icon: <BiSolidPencil />,
+      
+    },
+    {
+      action: CARD_MENU.private,
+      title : status === CARD_MENU_STATUS.private ? CARD_MENU.public : CARD_MENU.private,
+      icon: <IoMdLock />
+    },
+    {
+      action: CARD_MENU.delete,
+      title : CARD_MENU.delete,
+      icon: <FaTrash />
+    }
+  ];  
 
   const {
     showMenu,
@@ -141,7 +143,7 @@ const ColCard = ({
                       }`}
                       key={menu.title}
                       onClick={(e) =>
-                        handleMenuItemClick(e, menu.title, selectionId, title)
+                        handleMenuItemClick(e, menu.action, selectionId, title)
                       }
                     >
                       {menu.icon}

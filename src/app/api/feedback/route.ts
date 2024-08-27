@@ -1,8 +1,11 @@
+import { verifyCaptchaUsingToken } from "@/utils/captcha";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 export async function POST(req: Request, res: Response) {
-  const { type, title, contents, pictures } = await req.json();
+  const { type, title, contents, pictures, token } = await req.json();
+
+  await verifyCaptchaUsingToken(token);
 
   const transporter = nodemailer.createTransport({
     service: process.env.NEXT_PUBLIC_EMAIL_SERVICE,
