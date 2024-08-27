@@ -28,6 +28,7 @@ export const logWithIP = async (
     message: `${message} IP: ${getUserIP(request)}` + (token.userId ? ` userId: ${token.userId}` : ''),
   });
 };
+
 export const checkLogLevel = (level: TLogLevel) => {
   return ['info', 'warn', 'error', 'debug', 'verbose', 'silly'].includes(level);
 };
