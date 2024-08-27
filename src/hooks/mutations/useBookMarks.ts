@@ -126,10 +126,13 @@ export const useBookMarks = (selectionId: number) => {
     onSuccess: (data, variables, context) => {
       toast.success("북마크에 추가했습니다.");
     },
-    onSettled: () => {
+    onSettled: () => { 
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.SELECTION],
-        exact: false
+        exact: false,
+        predicate: (query) => {
+          return !query.queryKey.includes(QUERY_KEY.RECOMMEND);
+        },
       });
     }
   });
@@ -204,10 +207,13 @@ export const useBookMarks = (selectionId: number) => {
     onSuccess: (data, variables, context) => {
       toast.success("북마크에서 제거했습니다.");
     },
-    onSettled: () => {
+    onSettled: () => { 
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.SELECTION],
-        exact: false
+        exact: false,
+        predicate: (query) => {
+          return !query.queryKey.includes(QUERY_KEY.RECOMMEND);
+        },
       });
     }
   });
@@ -271,6 +277,7 @@ const updateUserSelectionData = (
   >(userSelectionQueryKey);
 
   if (previousUserSelection) {
+    console.log
     const updatedSearchResult = {
       ...previousUserSelection,
       data: previousUserSelection.data.map((selection) =>
