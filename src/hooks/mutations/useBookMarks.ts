@@ -14,7 +14,7 @@ import {
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
-export const useBookMarks = (selectionId: number, userId: number) => {
+export const useBookMarks = (selectionId: number) => {
   const { category_id, region_id, tags, sort, page, limit } =
     useGetSearchParams();
   const {
@@ -51,7 +51,7 @@ export const useBookMarks = (selectionId: number, userId: number) => {
 
   const { mutate: addBookMarksMutate } = useMutation({
     mutationKey: [QUERY_KEY.BOOKMARK, selectionId],
-    mutationFn: () => addBookMarks(selectionId, userId),
+    mutationFn: () => addBookMarks(selectionId),
 
     onMutate: async () => {
       await queryClient.cancelQueries({
@@ -136,7 +136,7 @@ export const useBookMarks = (selectionId: number, userId: number) => {
 
   const { mutate: removeBookMarksMutate } = useMutation({
     mutationKey: [QUERY_KEY.BOOKMARK, selectionId],
-    mutationFn: () => removeBookMarks(selectionId, userId),
+    mutationFn: () => removeBookMarks(selectionId),
 
     onMutate: async () => {
       await queryClient.cancelQueries({

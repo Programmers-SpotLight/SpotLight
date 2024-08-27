@@ -65,10 +65,8 @@ const ColCard = ({
   userSelectionType
 }: IColCardProps) => {
   const { data } = useSession();
-  const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
-    selectionId,
-    data?.user.id
-  );
+  const { addBookMarksMutate, removeBookMarksMutate } =
+    useBookMarks(selectionId);
 
   const {
     showMenu,
