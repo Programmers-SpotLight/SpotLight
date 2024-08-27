@@ -40,16 +40,18 @@ const SearchEngineSection = ({
 
   useEffect(() => {
     if (tagInputRef.current) tagInputRef.current?.focus();
-    const addtagList = [];
+    const addtagList: string[] = [];
     const HeaderSearchTag = searchParams.get(QUERY_STRING_NAME.tags);
-    if (HeaderSearchTag) {
+    if (HeaderSearchTag && !addtagList.includes(HeaderSearchTag)) {
       addtagList.push(HeaderSearchTag);
     }
+    console.log(addtagList, HeaderSearchTag)
     const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags);
     if (storedTags) {
       const parseStoredTags = JSON.parse(storedTags);
       parseStoredTags.forEach((tag: string) => {
-        addtagList.push(tag);
+        if(!addtagList.includes(tag)) addtagList.push(tag);
+        console.log(addtagList, tag)
       });
     }
 
