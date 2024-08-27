@@ -10,59 +10,73 @@ import { useSearchParams } from "next/navigation";
 import useSearchAutoComplete from "@/hooks/useSearchAutoComplete";
 import Dropdown from "../common/Dropdown";
 import { QUERY_STRING_NAME } from "@/constants/queryString.constants";
-import { ISelectionCategory, ISelectionLocation } from "@/models/selection.model";
+import {
+  ISelectionCategory,
+  ISelectionLocation
+} from "@/models/selection.model";
 import { useGetSearchParams } from "./SearchResultSection";
 
 interface ISearchEngineSectionProps {
-  selectionCategories :ISelectionCategory[]
-  regionCategories : ISelectionLocation[]
+  selectionCategories: ISelectionCategory[];
+  regionCategories: ISelectionLocation[];
 }
 
-const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEngineSectionProps) => {
+const SearchEngineSection = ({
+  selectionCategories,
+  regionCategories
+}: ISearchEngineSectionProps) => {
   const searchParams = useSearchParams();
   const [tagValue, setTagValue] = useState<string>("");
   const [tagList, setTagList] = useState<string[]>([]);
-  const {tagInputRef, tagACRef, handleKeyDown, visibleAutoCompletion, setVisibleAutoCompletion, searchValidator} = useSearchAutoComplete();
+  const {
+    tagInputRef,
+    tagACRef,
+    handleKeyDown,
+    visibleAutoCompletion,
+    setVisibleAutoCompletion,
+    searchValidator
+  } = useSearchAutoComplete();
   const { category_id, region_id } = useGetSearchParams();
 
   useEffect(() => {
     if (tagInputRef.current) tagInputRef.current?.focus();
     const addtagList = [];
     const HeaderSearchTag = searchParams.get(QUERY_STRING_NAME.tags);
-    if (HeaderSearchTag) {addtagList.push(HeaderSearchTag);}
+    if (HeaderSearchTag) {
+      addtagList.push(HeaderSearchTag);
+    }
     const storedTags = sessionStorage.getItem(QUERY_STRING_NAME.tags);
     if (storedTags) {
       const parseStoredTags = JSON.parse(storedTags);
       parseStoredTags.forEach((tag: string) => {
-      addtagList.push(tag);
+        addtagList.push(tag);
       });
     }
 
     if (addtagList.length > 0) {
       addtagList.forEach((tag: string) => {
-      addQueryString(QUERY_STRING_NAME.tags, tag);
-    });
-    setTagList(addtagList);
-  }
+        addQueryString(QUERY_STRING_NAME.tags, tag);
+      });
+      setTagList(addtagList);
+    }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-      const addTag = tagValue.replace(/\s+/g, "");
-      if(searchValidator(addTag, tagList)){
-        const updatedTagList = [...tagList, addTag];
-        setTagList(updatedTagList);
-        sessionStorage.setItem(
-          QUERY_STRING_NAME.tags,
-          JSON.stringify(updatedTagList)
-        );
-        addQueryString(QUERY_STRING_NAME.tags, addTag);
-        setVisibleAutoCompletion(false);
-      } else {
-        setTagValue("");
-        setVisibleAutoCompletion(false);
-
-      }
+  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+    if (e) e.preventDefault();
+    const addTag = tagValue.replace(/\s+/g, "");
+    if (searchValidator(addTag, tagList)) {
+      const updatedTagList = [...tagList, addTag];
+      setTagList(updatedTagList);
+      sessionStorage.setItem(
+        QUERY_STRING_NAME.tags,
+        JSON.stringify(updatedTagList)
+      );
+      addQueryString(QUERY_STRING_NAME.tags, addTag);
+      setVisibleAutoCompletion(false);
+    } else {
+      setTagValue("");
+      setVisibleAutoCompletion(false);
+    }
   };
 
   const cancelHashtag = (tag: string, index: number) => {
@@ -74,8 +88,6 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
     );
     deleteQueryString(QUERY_STRING_NAME.tags, tag);
   };
-
-  
 
   return (
     <div className="px-5">
@@ -107,6 +119,7 @@ const SearchEngineSection = ({selectionCategories, regionCategories} : ISearchEn
             setVisibleAutoCompletion(true);
           }}
           onKeyDown={handleKeyDown}
+          onClick={handleSubmit}
         />
         {visibleAutoCompletion && (
           <AutoCompletion
