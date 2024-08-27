@@ -134,6 +134,10 @@ export const useBookMarks = (selectionId: number) => {
           return !query.queryKey.includes(QUERY_KEY.RECOMMEND);
         },
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.USERINFO],
+        exact: false
+      })
     }
   });
 
@@ -215,6 +219,10 @@ export const useBookMarks = (selectionId: number) => {
           return !query.queryKey.includes(QUERY_KEY.RECOMMEND);
         },
       });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.USERINFO],
+        exact: false
+      })
     }
   });
 

@@ -65,10 +65,10 @@ const userSelectionQueryBuilder = async (
         .innerJoin("bookmark as b", "b.slt_id", "selection.slt_id")
         .where("b.user_id", userId)
         .andWhere((qb : any) => {
-          qb.where("selection.user_id", userId) // 사용자가 만든 셀렉션
+          qb.where("selection.user_id", userId)
             .orWhere((qb : any) => {
-              qb.where("selection.user_id", "!=", userId) // 다른 사람이 만든 셀렉션
-                .andWhere("selection.slt_status", "public"); // public 상태인 경우만
+              qb.where("selection.user_id", "!=", userId)
+                .andWhere("selection.slt_status", "public");
             });
         });
     }

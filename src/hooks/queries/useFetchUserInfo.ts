@@ -1,11 +1,12 @@
 import { IResponseGetUserHashtag } from "@/app/api/users/[userId]/hashtag/route";
+import { QUERY_KEY } from "@/constants/queryKey.constants";
 import { getUserHashTag, getUserInfo } from "@/http/user.api";
 import { IUserInfoMapping } from "@/models/user.model";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 export const useFetchUserInfo = (userId: string) : UseQueryResult<IUserInfoMapping> => {
     return useQuery({
-      queryKey: ["userinfo", userId],
+      queryKey: [QUERY_KEY.USERINFO, userId],
       queryFn: () => getUserInfo(userId)
     });
     };
