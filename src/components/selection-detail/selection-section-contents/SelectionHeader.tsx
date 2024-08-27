@@ -1,7 +1,6 @@
 import Hashtag from "@/components/common/Hashtag";
 import { useBookMarks } from "@/hooks/mutations/useBookMarks";
 import { ISelectionInfo } from "@/models/selection.model";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -14,10 +13,8 @@ interface SelectionHeaderProps {
 }
 
 const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
-  const { data } = useSession();
   const { addBookMarksMutate, removeBookMarksMutate } = useBookMarks(
-    selectionData.id,
-    data?.user.id
+    selectionData.id
   );
 
   const shareClickHandler = () => {
