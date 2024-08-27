@@ -22,3 +22,4 @@ rm -r /application/*
 
 chown -R user /home/user/application/
 chmod -R 772 /home/user/application/.next
+chmod -R 777 /home/user/application/.logs
