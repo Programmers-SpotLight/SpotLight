@@ -18,7 +18,7 @@ const checkIfRedisIsConnected = async () => {
 
 export const setData = async (
   key: string, 
-  value: string,
+  value: string | number | Buffer,
   options: { expire?: number }
 ) => {
   await checkIfRedisIsConnected();
@@ -36,7 +36,7 @@ export const setData = async (
 
 export const setDataIfNotExists = async (
   key: string,
-  value: string,
+  value: string | number | Buffer,
   options: { expire?: number }
 ) => {
   await checkIfRedisIsConnected();
@@ -70,3 +70,12 @@ export const deleteData = async (key: string) => {
     throw new InternalServerError('Failed to delete data from Redis');
   }
 };
+
+export const incrementData = async (key: string) => {
+  await checkIfRedisIsConnected();
+  try {
+    await connection.incr(key);
+  } catch (error) {
+    throw new InternalServerError('Failed to increment data in Redis');
+  }
+}

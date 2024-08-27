@@ -1,4 +1,4 @@
-import { getData, setData } from "@/libs/redis";
+import { getData, incrementData, setData } from "@/libs/redis";
 import { BadRequestError } from "./errors";
 
 
@@ -26,23 +26,23 @@ export async function limitAPIUsageWithCount(
   count: number,
   errorMsg: string
 ) : Promise<void> {
-  const data = await getData(key);
-  if (!data) {
-    await setData(
-      key, 
-      '1', 
-      { expire: duration }
-    );
-    return;
-  }
+  try {
+    const data = await getData(key);
+    if (!data) {
+      await setData(
+        key, 
+        1,
+        { expire: duration }
+      );
+      return;
+    }
 
-  if (Number(data) >= count) {
-    throw new BadRequestError(errorMsg || 'API 사용량이 초과되었습니다. 잠시 후 다시 시도해주세요.');
-  }
+    if (Number(data) >= count) {
+      throw new BadRequestError(errorMsg || 'API 사용량이 초과되었습니다. 잠시 후 다시 시도해주세요.');
+    }
 
-  await setData(
-    key, 
-    String(Number(data) + 1), 
-    { expire: duration }
-  );
+    await incrementData(key);
+  } catch (error) {
+    throw error;
+  }
 }
