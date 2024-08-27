@@ -68,7 +68,7 @@ const SelectionCreateThumbnailImage: React.FC = () => {
           />
           {selectionImage && (
             <button
-              className="absolute top-0 right-0 p-2 rounded-full z-20"
+              className="absolute top-0 right-0 p-2 rounded-full"
               onClick={handleThumbnailImageClear}
             >
               <Image
