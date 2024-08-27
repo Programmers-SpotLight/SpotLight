@@ -20,7 +20,11 @@ const useGeocoding = () => {
       });
       setAddress(data.formatted_address);
     } catch (error : any) {
-      toast.error("해당 위치의 정보를 가져오는데 실패했습니다");
+      if (error.response) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("해당 위치의 정보를 가져오는데 실패했습니다");
+      }
       setError(error);
     }
     setLoading(false);
