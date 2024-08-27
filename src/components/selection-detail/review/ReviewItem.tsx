@@ -38,9 +38,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
   const renderText = () => {
     if (isExpanded) {
       return (
-        <span className="whitespace-pre-wrap">
-          {review.reviewDescription}
-        </span>
+        <span className="whitespace-pre-wrap">{review.reviewDescription}</span>
       );
     }
     return (
@@ -53,11 +51,14 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
   };
 
   const openReviewEditModal = () => {
-    openModal("review", { review, sltOrSpotId, onSubmit: updateReview }); 
+    openModal("review", { review, sltOrSpotId, onSubmit: updateReview });
   };
 
   const openReviewDeleteModal = () => {
-    openModal("review-delete", { reviewId: review.reviewId , onSubmit: deleteReview });
+    openModal("review-delete", {
+      reviewId: review.reviewId,
+      onSubmit: deleteReview
+    });
   };
 
   return (
@@ -65,42 +66,47 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <Link href={`/user/${review.user.userId}`}>
-          {review.user.userImage ? (
-            <div className="w-[38px] h-[38px] bg-grey1 rounded-full flex items-center justify-center">
-              <img
-                src={review.user.userImage}
-                alt="user-image"
-                className="w-[38px] h-[38px] rounded-full"
-              />
-            </div>
-          ) : (
-            <div className="w-[38px] h-[38px] bg-grey1 rounded-full flex items-center justify-center">
-              <IoPersonSharp size={25} className="text-primary" />
-            </div>
-          )}
+            {review.user.userImage ? (
+              <div className="w-[38px] h-[38px] bg-grey1 rounded-full flex items-center justify-center">
+                <img
+                  src={review.user.userImage}
+                  alt="user-image"
+                  className="w-[38px] h-[38px] rounded-full"
+                />
+              </div>
+            ) : (
+              <div className="w-[38px] h-[38px] bg-grey1 rounded-full flex items-center justify-center">
+                <IoPersonSharp size={25} className="text-primary" />
+              </div>
+            )}
           </Link>
 
           <div className="space-y-1 text-small w-[80px] ml-2">
-            <Link href={`/user/${review.user.userId}`}>{review.user.userNickname}</Link>
+            <Link href={`/user/${review.user.userId}`}>
+              {review.user.userNickname}
+            </Link>
             <div className="text-grey3">{review.createdDate}</div>
           </div>
         </div>
 
-        {
-          review.user.isLiked !== null && user
-          ?  <ReviewLikeButton 
-              liked={review.user.isLiked} 
-              likeCount={review.likeCount} 
-              reviewType={reviewType} 
-              sltOrSpotId={sltOrSpotId} 
-              reviewId={review.reviewId} 
-              userId={user.id} 
-            />
-          : <div className={"text-grey3 flex items-center space-x-1 text-bold left-0"}>
-              <AiFillLike size={15} />
-              <div className="text-small">{review.likeCount}</div>
-            </div>
-        }
+        {review.user.isLiked !== null && user ? (
+          <ReviewLikeButton
+            liked={review.user.isLiked}
+            likeCount={review.likeCount}
+            reviewType={reviewType}
+            sltOrSpotId={sltOrSpotId}
+            reviewId={review.reviewId}
+          />
+        ) : (
+          <div
+            className={
+              "text-grey3 flex items-center space-x-1 text-bold left-0"
+            }
+          >
+            <AiFillLike size={15} />
+            <div className="text-small">{review.likeCount}</div>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between">
