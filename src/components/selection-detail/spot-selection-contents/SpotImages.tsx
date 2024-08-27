@@ -23,17 +23,12 @@ const SpotImages = ({ images, title }: ISpotImagesProps) => {
   };
   return (
     <div className="relative flex items-center justify-center h-[100vh]">
-      <button
-        className="absolute top-1/2 left-10 transform -translate-y-1/2 hover:scale-110 transition-transform duration-200"
-        onClick={prevBtnClickHandler}
-      >
-        <IoIosArrowBack size={50} fill="white" />
-      </button>
       <p className="text-white absolute top-10 text-extraLarge">{title}</p>
 
       <p className="text-white absolute top-10 left-10 text-extraLarge">
         {imgIndex + 1}/{images.length}
       </p>
+
       <div className="w-screen h-screen relative">
         <Image
           src={images[imgIndex].url}
@@ -42,6 +37,13 @@ const SpotImages = ({ images, title }: ISpotImagesProps) => {
           className="object-scale-down"
         />
       </div>
+
+      <button
+        className="absolute top-1/2 left-10 transform -translate-y-1/2 hover:scale-110 transition-transform duration-200"
+        onClick={prevBtnClickHandler}
+      >
+        <IoIosArrowBack size={50} fill="white" />
+      </button>
 
       <button
         className="absolute top-1/2 right-10 transform -translate-y-1/2 hover:scale-110 transition-transform duration-200"
