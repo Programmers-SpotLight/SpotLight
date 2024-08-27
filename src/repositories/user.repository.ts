@@ -1,3 +1,4 @@
+import 'server-only';
 import { dbConnectionPool } from "@/libs/db"
 import { InternalServerError } from "@/utils/errors";
 import { Knex } from "knex";

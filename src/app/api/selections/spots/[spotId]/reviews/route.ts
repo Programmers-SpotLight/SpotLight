@@ -2,8 +2,11 @@ import authOptions from "@/libs/authOptions";
 import { uploadFileToS3 } from "@/libs/s3";
 import { countReviews } from "@/services/selectionReview.services";
 import { getSpotReviews, postSpotReviews } from "@/services/spotReview.services";
+import { BadRequestError } from "@/utils/errors";
+import { logWithIP } from "@/utils/logUtils";
 import { uuidToBinary, uuidToString } from "@/utils/uuidToBinary";
 import { getServerSession } from "next-auth";
+import { NextRequest } from "next/server";
 import { posix } from "path";
 
 export async function GET(
@@ -45,7 +48,7 @@ export async function GET(
 }
 
 export async function POST (
-  req: Request,
+  req: NextRequest,
   { params }: { params: { spotId: string } }
 ) {
   try {
@@ -54,10 +57,10 @@ export async function POST (
     const userId = session?.user?.id;
 
     if (!userId) {
-      return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
+      throw new BadRequestError("User is not authorized");
     }
 
-    const data:IReviewFormData = await req.json();
+    const data : IReviewFormData = await req.json();
     const reviewId = uuidToBinary();
 
     // 이미지 업로드 처리
@@ -99,9 +102,7 @@ export async function POST (
     await postSpotReviews(review);
 
     if (!review) {
-      return new Response(JSON.stringify({ message: 'Bad Request' }), {
-        status: 400,
-      });
+      throw new BadRequestError("Bad Request");
     }
 
     return new Response(
@@ -110,8 +111,13 @@ export async function POST (
         status: 201,
       }
     );
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    await logWithIP(
+      'POST /api/selections/spots/%5BspotId%5D/reviews - ' + err.message,
+      req,
+      'error'
+    );
+
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
     });

@@ -116,6 +116,12 @@ export async function DELETE (
       return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
 
+    if (!reviewId) {
+      return new Response(JSON.stringify({ message: 'Bad Request' }), {
+        status: 400,
+      });
+    }
+
     const reviewImg = await getSpotReviewImages(reviewId);
 
     await Promise.all(reviewImg.map(async (img) => {
@@ -127,12 +133,6 @@ export async function DELETE (
     }));
 
     await deleteSpotReviews(reviewId);
-
-    if (!reviewId) {
-      return new Response(JSON.stringify({ message: 'Bad Request' }), {
-        status: 400,
-      });
-    }
 
     return new Response(
       JSON.stringify({ message: 'Review has been created.' }),

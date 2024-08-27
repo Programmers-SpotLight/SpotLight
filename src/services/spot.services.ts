@@ -1,5 +1,4 @@
-'use server';
-
+import 'server-only';
 import { dbConnectionPool } from "@/libs/db";
 import { uploadFileToS3 } from "@/libs/s3";
 import { ISelectionSpot, ISelectionSpotCategory } from "@/models/selection.model";

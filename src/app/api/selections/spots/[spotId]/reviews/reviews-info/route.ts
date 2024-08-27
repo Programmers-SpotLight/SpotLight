@@ -1,4 +1,4 @@
-import { averageReviews, countReviews, getSelectionReviews } from "@/services/selectionReview.services";
+import { averageReviews, countReviews } from "@/services/selectionReview.services";
 
 export async function GET(
   req: Request,

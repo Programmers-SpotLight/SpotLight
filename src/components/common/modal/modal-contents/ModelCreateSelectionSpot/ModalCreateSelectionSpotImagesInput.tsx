@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 interface ModalCreateSelectionSpotImagesInputProps {
   spotImage: File | string | null;
-  setSpotImage: (photo: File | string) => void;
+  setSpotImage: (photo: File | string | null) => void;
 }
 
 const ModalCreateSelectionSpotImagesInput = ({
@@ -17,6 +17,11 @@ const ModalCreateSelectionSpotImagesInput = ({
     } else {
       toast.error("png, jpg, jpeg 파일만 업로드 가능합니다.");
     }
+  };
+
+  const handleImageClear = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setSpotImage(null);
   };
 
   return (
@@ -56,6 +61,19 @@ const ModalCreateSelectionSpotImagesInput = ({
         onChange={handleImageChange}
         className="absolute inset-0 bg-red-500 cursor-pointer top-0 left-0 w-full h-full opacity-0"
       />
+      { spotImage && (
+      <button
+        className="absolute top-0 right-0 p-2 rounded-full z-20"
+        onClick={handleImageClear}
+      >
+        <Image
+          src="/icons/clear_7C7C7C.svg"
+          width={28}
+          height={28}
+          alt="close"
+        />
+      </button>
+      )}
     </button>
   );
 };

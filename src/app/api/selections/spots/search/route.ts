@@ -1,22 +1,29 @@
+import { getTokenForAuthentication } from "@/utils/authUtils";
+import { BadRequestError, InternalServerError, UnauthorizedError } from "@/utils/errors";
 import axios from "axios";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
 export const GET = async (request: NextRequest) => {
-  const { searchParams } = new URL(request.url);
-  const query : string | null = searchParams.get("query");
-
-  if (query === null) {
-    return new Response("Please provide a query", { status: 400 });
-  }
-
-  const API_URL = 'https://places.googleapis.com/v1/places:searchText';
-  const inputData = {
-    textQuery: query,
-    languageCode: 'ko',
-  };
-
   try {
+    const token = await getTokenForAuthentication(request);
+    if (!token.userId) {
+      throw new UnauthorizedError("userId가 token에 없습니다.");
+    }
+
+    const { searchParams } = new URL(request.url);
+    const query : string | null = searchParams.get("query");
+
+    if (query === null) {
+      throw new BadRequestError("쿼리를 입력해주세요.");
+    }
+
+    const API_URL = 'https://places.googleapis.com/v1/places:searchText';
+    const inputData = {
+      textQuery: query,
+      languageCode: 'ko',
+    };
+
     const response = await axios.post(
       API_URL, 
       inputData,
@@ -29,8 +36,14 @@ export const GET = async (request: NextRequest) => {
       }
     );
 
-    return new Response(JSON.stringify(response.data.places), { status: 200 });
+    return NextResponse.json(response.data.places, { status: 200 });
   } catch (error: any) {
-    return new Response(error.message, { status: error.statusCode || 500 });
+    const errorMsg = error instanceof InternalServerError ? 
+      "서버 내부 오류입니다. 다시 시도해주세요." : (error.message || "알 수 없는 오류입니다.");
+
+    return NextResponse.json(
+      { error: errorMsg },
+      { status: error.statusCode || 500 }
+    );
   }
 };

@@ -2,7 +2,6 @@ import useReverseGeocoding from "@/hooks/useReverseGeocoding";
 import { useSelectionSpotCreateStore } from "@/stores/selectionCreateStore";
 import { AdvancedMarker, Map, useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useRef } from "react";
-import { toast } from "react-toastify";
 import { useStore } from "zustand";
 
 const ModalCreateSelectionSpotSearchMap = () => {
@@ -63,7 +62,6 @@ const ModalCreateSelectionSpotSearchMap = () => {
     }
     if (reverseGeocodingLoading) return;
     if (reverseGeocodingError) {
-      toast.error("주소를 가져오는데 실패했습니다.");
       return;
     }
 

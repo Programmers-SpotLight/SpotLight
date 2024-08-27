@@ -177,6 +177,10 @@ export async function saveSelectionImage(imageFile: File) : Promise<string> {
 export const requestHashtagsSuggestionFromAI = async (prompt: string) => {
   const finalPrompt = `${prompt}와 관련된 해시태그 8개 추천좀 해줘`;
 
+  if (!process.env.OPENAI_API_KEY) {
+    throw new InternalServerError("OpenAI API 키가 설정되지 않았습니다");
+  }
+
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
