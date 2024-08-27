@@ -124,12 +124,11 @@ const SpotHeader = ({
           {/**hashtag */}
           <div className="flex">
             {hashtags.map((hashtag) => (
-              <Link
-                href={`/search?tags=${hashtag.htag_name}`}
+              <Hashtag
+                size="big"
+                name={hashtag.htag_name}
                 key={hashtag.htag_id}
-              >
-                <Hashtag size="big" name={hashtag.htag_name} />
-              </Link>
+              />
             ))}
           </div>
         </div>
