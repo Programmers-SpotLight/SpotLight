@@ -78,6 +78,7 @@ export async function PUT(
     await transaction.commit();
     return NextResponse.json(data, { status: 200 });
   } catch (error: any) {
+    console.error('PUT /api/temporary-selections/%5BselectionId%5D - ' + error.message);
     const errorMsg = error instanceof InternalServerError ? 
       "서버 내부 오류입니다. 다시 시도해주세요." : (error.message || "알 수 없는 오류입니다.");
 

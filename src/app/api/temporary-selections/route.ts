@@ -3,7 +3,7 @@ import { ISelectionCreateTemporaryData } from "@/models/selection.model";
 import { createTemporarySelection } from "@/services/selectionCreate.services";
 import { prepareAndValidateTemporarySelectionCreateFormData } from "@/services/selectionCreate.validation";
 import { getTokenForAuthentication } from "@/utils/authUtils";
-import { BadRequestError, InternalServerError, UnauthorizedError } from "@/utils/errors";
+import { InternalServerError, UnauthorizedError } from "@/utils/errors";
 import { logWithIP } from "@/utils/logUtils";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     const errorMsg = error instanceof InternalServerError ? 
       "서버 내부 오류입니다. 다시 시도해주세요." : (error.message || "알 수 없는 오류입니다.");
 
+    console.error('POST /api/temporary-selections - ' + error.message);
     await logWithIP(
       'POST /api/temporary-selections - ' + error.message,
       request,
