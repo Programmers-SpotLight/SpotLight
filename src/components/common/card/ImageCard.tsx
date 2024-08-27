@@ -15,7 +15,7 @@ const ImageCard = ({ thumbnail, title, selectionId, subTitle }: IImageCardProps)
   return (
     <Link
       href={`/selection/${selectionId}`}
-      className="flex w-[335px] h-[288px] rounded-lg shadow-lg relative border-[0.5px] border-solid border-grey2 overflow-hidden hover:brightness-75"
+      className="flex w-[335px] h-[288px] rounded-lg shadow-lg relative border-[0.5px] border-solid border-grey2 overflow-hidden hover:brightness-90"
     >
       <Image
         src={thumbnail}
