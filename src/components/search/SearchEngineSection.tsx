@@ -73,6 +73,7 @@ const SearchEngineSection = ({
       );
       addQueryString(QUERY_STRING_NAME.tags, addTag);
       setVisibleAutoCompletion(false);
+      setTagValue("");
     } else {
       setTagValue("");
       setVisibleAutoCompletion(false);
