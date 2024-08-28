@@ -212,7 +212,7 @@ export const requestHashtagsSuggestionFromAI = async (prompt: string) => {
 };
 
 export const requestGeocoding = async (googleMapsPlaceId: string) => {
-  const API_URL = `https://maps.googleapis.com/maps/api/geocode/json?&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&place_id=${googleMapsPlaceId}&language=ko`;
+  const API_URL = `https://maps.googleapis.com/maps/api/geocode/json?&key=${process.env.GOOGLE_MAPS_API_KEY}&place_id=${googleMapsPlaceId}&language=ko`;
 
   try {
     const response = await axios.get(API_URL);
@@ -237,7 +237,7 @@ export const requestReverseGeocoding = async (
   longitude: string
 ) => {
   const API_URL_PART1 = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}`;
-  const API_URL_PART2 = `&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&language=ko&result_type=street_address`;
+  const API_URL_PART2 = `&key=${process.env.GOOGLE_MAPS_API_KEY}&language=ko&result_type=street_address`;
 
   try {
     const response = await axios.get(API_URL_PART1 + API_URL_PART2);
