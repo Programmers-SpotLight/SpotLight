@@ -26,11 +26,14 @@ export const getUserInfo = async (userId: string) => {
                        AND selection.slt_status != 'delete') AS selection_count
                 `),
         dbConnectionPool.raw(`
-                    (SELECT COUNT(*) 
-                     FROM bookmark 
-                     JOIN selection ON selection.slt_id = bookmark.slt_id
-                     WHERE bookmark.user_id = user.user_id 
-                       AND selection.slt_status != 'delete') AS bookmark_count
+                  (SELECT COUNT(*) 
+                   FROM bookmark AS b
+                   JOIN selection AS s ON s.slt_id = b.slt_id
+                   WHERE b.user_id = user.user_id 
+                     AND (
+                       (s.user_id = user.user_id AND s.slt_status != 'delete') OR
+                       (s.user_id != user.user_id AND s.slt_status = 'public')
+                     )) AS bookmark_count
                 `),
         dbConnectionPool.raw(`
                     (SELECT COUNT(*) 
@@ -86,7 +89,10 @@ export const serviceUserDescription = async (
   }
 };
 
-export const serviceUserUpdateProfile = async (userId: string, imgUrl: string) => {
+export const serviceUserUpdateProfile = async (
+  userId: string,
+  imgUrl: string
+) => {
   try {
     const queryData = await dbConnectionPool("user")
       .where({ user_id: userId })
@@ -99,34 +105,36 @@ export const serviceUserUpdateProfile = async (userId: string, imgUrl: string) =
 };
 
 export const deleteUserProfileImage = async (userId: string) => {
-    try {
-        const imgUrl = await serviceGetUserProfile(userId);
+  try {
+    const imgUrl = await serviceGetUserProfile(userId);
 
-        if (imgUrl) {
-            const fileName = imgUrl.split('/').slice(3).join('/');
-            const exists = await checkIfFileExistsInS3(fileName);
-            if (exists) {
-                await deleteFileFromS3(fileName);
-            }
-        }
-    } catch (error) {
-        console.error("Error deleting user image:", error);
-        throw error;
+    if (imgUrl) {
+      const fileName = imgUrl.split("/").slice(3).join("/");
+      const exists = await checkIfFileExistsInS3(fileName);
+      if (exists) {
+        await deleteFileFromS3(fileName);
+      }
     }
+  } catch (error) {
+    console.error("Error deleting user image:", error);
+    throw error;
+  }
 };
 
-export const serviceGetUserProfile = async (userId: string): Promise<string | null> => {
-    try {
-      const [user] = await dbConnectionPool("user")
-        .select("user_img")
-        .where({ user_id: userId });
-      
-      return user ? user.user_img : null;
-    } catch (error) {
-      console.error("Error fetching user getProfile:", error);
-      throw error;
-    }
-  };
+export const serviceGetUserProfile = async (
+  userId: string
+): Promise<string | null> => {
+  try {
+    const [user] = await dbConnectionPool("user")
+      .select("user_img")
+      .where({ user_id: userId });
+
+    return user ? user.user_img : null;
+  } catch (error) {
+    console.error("Error fetching user getProfile:", error);
+    throw error;
+  }
+};
 
 export const servicePostUserHashtag = async (
   userId: string,

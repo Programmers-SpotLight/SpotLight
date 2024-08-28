@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   try {
-    const popularSelections = await fetchHandler("api/selections/popular", 30);
+    const popularSelections = await fetchHandler("api/selections/popular", 1);
     return (
       <Suspense fallback={<PageLoading />}>
         <main className="w-[1086px] bg-grey0 border border-solid border-grey2 m-auto pt-10 flex flex-col gap-10 box-border h-auto">

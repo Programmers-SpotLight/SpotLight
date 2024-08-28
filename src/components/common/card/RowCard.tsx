@@ -27,7 +27,7 @@ const RowCard = ({
   return (
     <Link
       href={`/selection/${selectionId}`}
-      className="flex w-[512px] h-[150px] rounded-lg relative border-[0.5px] border-solid border-grey2 hover:brightness-75 bg-white"
+      className="flex w-[512px] h-[150px] rounded-lg relative border-[0.5px] border-solid border-grey2 hover:brightness-95 bg-white"
     >
       {thumbnail ? (
         <Image

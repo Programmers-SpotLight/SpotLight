@@ -111,7 +111,7 @@ export async function GET(
       session_userId,
       isMyPage === "true"
     );
-
+    
     const mappedResults = mapSearchResults(pageResult);
     return NextResponse.json({ data: mappedResults, pagination });
   } catch (error) {
