@@ -99,6 +99,7 @@ const SpotHeader = ({
                 sizes="width:375px height:194px"
                 onLoadingComplete={() => setIsLoading(false)}
                 style={{ visibility: isLoading ? "hidden" : "visible" }}
+                unoptimized
               />
             </div>
             <div className="absolute bottom-0 right-0 rounded-tl-md bg-black w-11 h-7 text-white flex items-center justify-center text-medium font-bold">
