@@ -327,6 +327,8 @@ export async function upsertTemporarySpots(
       selectionId,
       spotsIdsImages.map((spot) => spot.images as string[]).flat()
     )
+  } else {
+    await deleteAllSpotImageBySelectionId(transaction, selectionId);
   }
 }
 
@@ -456,5 +458,7 @@ export async function upsertSpots(
       transaction, 
       spotsIdsImages as Array<{id: string, images: Array<string>}>
     );
+  } else {
+    await deleteAllSpotImageBySelectionId(transaction, selectionId);
   }
 }
