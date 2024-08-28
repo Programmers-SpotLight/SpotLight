@@ -2,12 +2,23 @@ import { dbConnectionPool } from "@/libs/db";
 
 export const getPopularSelection = async () => {
   try {
+    const filteredSelectionsQuery = dbConnectionPool("selection")
+      .select("selection.slt_id")
+      .whereNotIn("selection.slt_status", ["private", "delete"])
+      .as("FilteredSelections");
+
     const topSltIdsQuery = dbConnectionPool("bookmark")
-      .select("slt_id")
+      .select("bookmark.slt_id")
       .count("* as bookmark_count")
-      .groupBy("slt_id")
+      .groupBy("bookmark.slt_id")
       .orderBy("bookmark_count", "desc")
       .limit(4)
+      .join(
+        filteredSelectionsQuery,
+        "bookmark.slt_id",
+        "=",
+        "FilteredSelections.slt_id"
+      )
       .as("TopSltIds");
 
     const query = dbConnectionPool("selection")
@@ -18,7 +29,7 @@ export const getPopularSelection = async () => {
         "user.user_img",
         "selection_category.slt_category_name",
         "selection_location_option.slt_location_option_name"
-      )
+            )
       .join("user", "selection.user_id", "=", "user.user_id")
       .join(
         "selection_hashtag",
@@ -38,16 +49,17 @@ export const getPopularSelection = async () => {
         "=",
         "selection_location_option.slt_location_option_id"
       )
-      .join(topSltIdsQuery, "selection.slt_id", "=", "TopSltIds.slt_id")
-      .whereNotIn("selection.slt_status", ["private", "delete"]);
+      .join(topSltIdsQuery, "selection.slt_id", "=", "TopSltIds.slt_id");
 
     const results = await query;
-    
+
     return results;
   } catch (error) {
+    console.log(error)
     throw new Error(`Failed to fetch search Result`);
   }
 };
+
 export const serviceRecommendationSelection = async (userId: number) => {
   try {
     const userBookmarkSubquery = dbConnectionPool('bookmark')

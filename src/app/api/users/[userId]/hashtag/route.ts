@@ -57,8 +57,8 @@ const postUserHashtagValidator = async (userId : string, hashtag : string): Prom
     if (!hashtag) {
         return NextResponse.json({ error: "유효하지 않은 데이터입니다." }, { status: 400 });
     }
-    if(hashtag.length > 10) {
-        return NextResponse.json({ error: "10자 이내로 입력해주세요" }, { status: 400 });
+    if(hashtag.length > 40) {
+        return NextResponse.json({ error: "40자 이내로 입력해주세요" }, { status: 400 });
     }
     // Todo: 쿠키로 받은 데이터와 ID가 일치하는지 유효성 추가
     return null;

@@ -46,8 +46,8 @@ const Header = () => {
       setTagValue("");
       return false;
     }
-    if (addTag.length > 10) {
-      toast.error("10글자 이내로 작성해주세요");
+    if (addTag.length > 40) {
+      toast.error("40글자 이내로 작성해주세요");
       setTagValue("");
       return false;
     }
