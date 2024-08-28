@@ -1,7 +1,9 @@
 import { requestReverseGeocoding } from "@/services/selectionCreate.services";
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import { BadRequestError, InternalServerError, UnauthorizedError } from "@/utils/errors";
+import { logWithIP } from "@/utils/logUtils";
 import { limitAPIUsageWithDuration } from "@/utils/redisUtils";
+import { AxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -41,6 +43,14 @@ export const GET = async (request: NextRequest) => {
     const geoData = await requestReverseGeocoding(latitude, longitude);
     return NextResponse.json(geoData, { status: 200 });
   } catch (error: any) {
+    if (error instanceof AxiosError) {
+      console.error('GET /api/selections/spots/search - ' + error.response?.data);
+      await logWithIP(
+        'GET /api/selections/spots/search - ' + error.response?.data,
+        request,
+        'error'
+      );
+    }
     const errorMsg = error instanceof InternalServerError ? 
       "서버 내부 오류입니다. 다시 시도해주세요." : (error.message || "알 수 없는 오류입니다.");
 
