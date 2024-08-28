@@ -1,5 +1,7 @@
+<img src="https://github.com/user-attachments/assets/821dae4c-fa28-49aa-a5db-8e5b9c96adcf" style="width: 100px; height:100px; border-radius: 8px;" />
+
 # SpotLight
-## 프로젝트 시작 가이드
+## 📄 프로젝트 시작 가이드
 ### 패키지 설치
 ```bash
 npm install
@@ -53,10 +55,10 @@ NEXTAUTH_SECRET=**<NEXTAUTH SECRET>**
 REDIS_URL=**<REDIS URL>**
 ```
 
-## 프로젝트 소개
+## ✨ 프로젝트 소개
 Spotlight는 영화, 아이돌, 책 등 다양한 카테고리와 지역별 카테고리, 해시태그를 활용하여 Selection을 검색할 수 있습니다. 또한 셀렉션은 다양한 장소와 카테고리를 가진 Spot들을 가지고 있습니다.
 
-## 기술 스택
+## 📚 기술 스택
 <div style='display: flex;'>
   <img src="https://img.shields.io/badge/Tailwind CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
@@ -66,7 +68,7 @@ Spotlight는 영화, 아이돌, 책 등 다양한 카테고리와 지역별 카�
   <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white">
 </div>
 
-## 팀원 소개
+## 👥 팀원 소개
 <table>
   <thead>
     <tr style="background-color:#f2f2f2;">
@@ -145,7 +147,7 @@ Spotlight는 영화, 아이돌, 책 등 다양한 카테고리와 지역별 카�
 </table>
 
 
-## 화면 구성 및 서비스 기능
+## 🖥️ 화면 구성 및 서비스 기능
 ### 소셜 로그인
 ![Animation](https://github.com/user-attachments/assets/03812a0e-b60f-42d8-a802-46b6ec10a0a0)
 - 구글 또는 카카오로 로그인 할 수 있습니다.
