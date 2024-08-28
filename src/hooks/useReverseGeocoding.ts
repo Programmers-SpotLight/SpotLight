@@ -17,7 +17,11 @@ const useReverseGeocoding = () => {
       setAddress(data.formatted_address);
       setPlaceId(data.place_id);
     } catch (error : any) {
-      toast.error("주소를 가져오는데 실패했습니다");
+      if (error.response) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("주소를 가져오는데 실패했습니다");
+      }
       setError(error);
     }
     setLoading(false);

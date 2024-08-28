@@ -30,7 +30,6 @@ import { getUserInfo } from "@/services/user.services";
 import { getServerSession } from "next-auth";
 
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
 import { BadRequestError, ForbiddenError, UnauthorizedError } from "@/utils/errors";
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import authOptions from "@/libs/authOptions";
@@ -219,25 +218,18 @@ export async function PUT(
     );
 
     await transaction.commit();
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+    return NextResponse.json(data, { status: 200 });
   } catch (error: any) {
     await logWithIP(
-      'POST /api/selections - ' + error.message,
+      'PUT /api/selections/[selectionId] - ' + error.message,
       request,
       'error'
     );
 
     await transaction.rollback();
-    return new Response(error.message, {
-      status: error.statusCode || 500,
-      headers: {
-        "Content-Type": "text/plain"
-      }
-    });
+    return NextResponse.json(
+      { error: error.message || "Internal Server Error" },
+      { status: error.statusCode || 500 }
+    );
   }
 }

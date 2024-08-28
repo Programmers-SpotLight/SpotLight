@@ -9,6 +9,7 @@ import { useStore } from "zustand";
 
 
 const ModalCreateSelectionSpotSearchBar = () => {
+  const firstRendered = useRef<boolean>(true);
   const spotSearchResultRef = useRef<HTMLDivElement>(null);
   const geocodingRequested = useRef<boolean>(false);
   const map = useMap();
@@ -45,8 +46,10 @@ const ModalCreateSelectionSpotSearchBar = () => {
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.isComposing) return;
     if (e.key === "Enter") {
       setIsSpotSearchResultOpen(true);
+      firstRendered.current = false;
       fetchSpots();
     }
   };
@@ -124,6 +127,9 @@ const ModalCreateSelectionSpotSearchBar = () => {
           className="absolute top-[110%] p-3 border border-solid border-black w-full bg-white rounded-[8px]"
         >
           <ul className="text-grey4 w-full max-h-[192px] overflow-y-auto">
+            {firstRendered.current && (
+              <li className="py-2 text-center">원하시는 스팟의 이름이나 주소를 입력해주세요</li>
+            )}
             {/* 검색 결과 로딩 시 */}
             {loading && <li className="py-2">로딩 중...</li>}
 
@@ -138,7 +144,12 @@ const ModalCreateSelectionSpotSearchBar = () => {
                   key={spot.id}
                   className="py-2 cursor-pointer hover:bg-grey1"
                 >
-                  <button onClick={() => handleGeocodingClick(spot.id)}>
+                  <button onClick={(
+                    e: React.MouseEvent<HTMLButtonElement>
+                  ) => {
+                    e.preventDefault();
+                    handleGeocodingClick(spot.id)
+                  }}>
                     {spot.displayName.text}
                   </button>
                 </li>

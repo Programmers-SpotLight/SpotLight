@@ -44,7 +44,7 @@ const modalDatas: ImodalDatas[] = [
     type: "GoogleMapsAddSelectionSpot",
     title: "스팟 추가",
     size: "large",
-    overlayClose: true,
+    overlayClose: false,
     component: ModalCreateSelectionSpot
   },
   {

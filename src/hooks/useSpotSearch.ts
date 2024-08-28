@@ -18,7 +18,11 @@ const useSpotSearch = () => {
       const response = await fetchSelectionSpotSearch(searchValue);
       setSpots(response);
     } catch (error : any) {
-      toast.error("스팟 검색에 실패했습니다");
+      if (error.response) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("스팟 검색에 실패했습니다");
+      }
       setError(error);
     }
     setLoading(false);

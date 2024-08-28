@@ -1,6 +1,6 @@
 import { dbConnectionPool } from "@/libs/db";
 import { checkIfFileExistsInS3, deleteFileFromS3 } from "@/libs/s3";
-import { Ihashtags, ThtagType } from "@/models/hashtag.model";
+import { Ihashtags } from "@/models/hashtag.model";
 import { IUserInfoData } from "@/models/user.model";
 
 // 회원가입 & 로그인

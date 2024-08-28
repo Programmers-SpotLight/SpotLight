@@ -37,7 +37,7 @@ export const GET = async (request: NextRequest) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-Goog-Api-Key': process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+          'X-Goog-Api-Key': process.env.GOOGLE_MAPS_API_KEY,
           'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.attributions,places.id,places.name,nextPageToken',
         }
       }

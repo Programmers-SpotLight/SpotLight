@@ -36,7 +36,7 @@ const Modal = ({ size, title, children, closeModal }: ModalProps) => {
     return (
       <div style={{ width: getModalSize() }}>
         <IoClose
-          className="top-6 right-10 absolute w-12 h-12 cursor-pointer transition-transform duration-200 hover:scale-110 z-10"
+          className="top-6 right-10 absolute w-12 h-12 cursor-pointer transition-transform duration-200 hover:scale-110 z-20"
           fill="white"
           onClick={closeModal}
         />
