@@ -114,7 +114,6 @@ export async function DELETE(
   }: { params: { selectionId: number; user_selection: TuserSelection } }
 ): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
   try {
-    console.log('동작')
     const url = req.nextUrl;
     const query = url.searchParams;
     const selectionId = params.selectionId;

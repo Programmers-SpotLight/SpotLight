@@ -3,6 +3,7 @@ import { addBookMarks, removeBookMarks } from "@/services/selection.services";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
+
 export async function POST(req: Request) {
   const { selectionId } = await req.json();
   const session = await getServerSession(authOptions());
