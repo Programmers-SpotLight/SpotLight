@@ -47,6 +47,7 @@ const SpotImages = ({ images, title }: ISpotImagesProps) => {
           className="object-scale-down"
           onLoadingComplete={() => setIsLoading(false)}
           style={{ visibility: isLoading ? "hidden" : "visible" }}
+          unoptimized
         />
       </div>
 
