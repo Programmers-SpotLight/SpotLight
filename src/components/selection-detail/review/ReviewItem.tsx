@@ -137,7 +137,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
 
       {review.reviewImg && <ReviewImages images={review.reviewImg} />}
 
-      <div className="text-grey4 text-small">
+      <div className="text-grey4 text-small leading-normal">
         {renderText()}
         {review.reviewDescription.length > 90 && (
           <button onClick={toggleExpand}>
