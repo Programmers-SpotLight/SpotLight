@@ -80,7 +80,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
           )}
           </Link>
 
-          <div className="space-y-1 text-small w-[80px] ml-2">
+          <div className="space-y-1 text-small w-auto ml-2">
             <Link href={`/user/${review.user.userId}`}>{review.user.userNickname}</Link>
             <div className="text-grey3">{review.createdDate}</div>
           </div>

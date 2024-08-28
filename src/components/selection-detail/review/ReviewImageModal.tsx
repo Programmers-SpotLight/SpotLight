@@ -82,8 +82,6 @@ const ReviewImageModal = () => {
     nextArrow: <NextArrow show={currentSlide < images.length - 1} />
   };
 
-  console.log(images);
-
   return (
     <div
       className="w-screen h-screen flex justify-center items-center fixed inset-0 bg-black  z-20"
