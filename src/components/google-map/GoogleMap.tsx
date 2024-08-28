@@ -48,7 +48,8 @@ const GoogleMap = ({
       const options: google.maps.MapOptions = {
         center: locationMap,
         zoom: 15,
-        mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID
+        mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID,
+        streetViewControl: false,
       };
 
       const map = new Map(mapRef.current as HTMLDivElement, options);
