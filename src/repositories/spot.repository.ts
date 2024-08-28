@@ -21,6 +21,7 @@ export const insertMultipleSpotTemporary = async (
     await transaction('spot_temporary')
       .insert(spots);
   } catch (error : any) {
+    console.log(error);
     throw new InternalServerError('임시 스팟 생성에 실패했습니다');
   }
 }
