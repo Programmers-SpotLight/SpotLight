@@ -49,7 +49,7 @@ const SelectionPage = () => {
     if (!selectionData) return;
 
     if (selectionData.status === "delete") {
-      toast.error("존재하지 않는 셀렉션 정보입니다.", {
+      toast.error("더이상 존재하지 않는 셀렉션입니다.", {
         position: "top-center"
       });
       router.replace("/");
