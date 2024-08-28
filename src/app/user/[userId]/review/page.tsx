@@ -1,6 +1,7 @@
 "use client";
 
 import SearchLoading from "@/components/search/search-contents/SearchLoading";
+import MyReviewEmptyResults from "@/components/user/my/review/MyReviewEmptyResults";
 import MyReviewList from "@/components/user/my/review/MyReviewList";
 import MyReviewPagination from "@/components/user/my/review/MyReviewPagination";
 import MyReviewTab from "@/components/user/my/review/MyReviewTab";
@@ -53,9 +54,7 @@ const UserSelectionPage = () => {
             </>
           )
             :
-              <div className="h-32 flex items-center justify-center text-center text-xl font-semibold text-grey4">
-                등록된 리뷰가 없습니다.
-              </div>
+            <MyReviewEmptyResults />
           )
         }
       </div>
