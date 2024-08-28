@@ -241,6 +241,7 @@ export async function editSelectionTemporary(
     await deleteAllTemporarySelectionHashtagBySelectionId(transaction, selectionId);
   }
 
+
   if (formData.spots && formData.spots.length > 0) {
     await upsertTemporarySpots(
       transaction, 

@@ -20,7 +20,8 @@ import {
   selectMultipleSpotTemporaryByInPlaceId, 
   selectMultipleSpotByInPlaceId, 
   updateMultipleSpot, 
-  updateMultipleSpotTemporary
+  updateMultipleSpotTemporary,
+  deleteAllSpotTemporaryImageBySelectionId
 } from "@/repositories/spot.repository";
 import { InternalServerError } from "@/utils/errors";
 import { createDirectory, saveFile } from "@/utils/fileStorage";
@@ -327,6 +328,8 @@ export async function upsertTemporarySpots(
       selectionId,
       spotsIdsImages.map((spot) => spot.images as string[]).flat()
     )
+  } else {
+    await deleteAllSpotTemporaryImageBySelectionId(transaction, selectionId);
   }
 }
 
@@ -456,5 +459,7 @@ export async function upsertSpots(
       transaction, 
       spotsIdsImages as Array<{id: string, images: Array<string>}>
     );
+  } else {
+    await deleteAllSpotImageBySelectionId(transaction, selectionId);
   }
 }
