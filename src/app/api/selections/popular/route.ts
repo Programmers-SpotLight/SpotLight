@@ -9,7 +9,6 @@ export const dynamic = "force-dynamic";
 export async function GET(
   req: NextRequest
 ): Promise<NextResponse<IRowCardProps[] | ErrorResponse>> {
-  // Todo : 쿠키로 userId를 받고, 로그인 되면 booked 값 설정
   try {
     const popularSelections = await getPopularSelection();
     const MappingResults: IRowCardProps[] = popularSelections.map((item) => ({
@@ -20,7 +19,7 @@ export async function GET(
       description: item.slt_description,
       userName: item.user_nickname,
       userImage: item.user_img,
-      booked: false, // 추가 로직 필요,
+      booked: false,
       selectionId: item.slt_id
     }));
     return NextResponse.json(MappingResults);
