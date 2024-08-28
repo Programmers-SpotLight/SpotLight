@@ -34,6 +34,7 @@ const ModalCreateSelectionSpotImagesInput = ({
           alt="thumbnail"
           width={200}
           height={200}
+          unoptimized
         />
       )}
       {/* 이미지가 File이면 URL.createObjectURL로 보여준다. */}
@@ -61,18 +62,18 @@ const ModalCreateSelectionSpotImagesInput = ({
         onChange={handleImageChange}
         className="absolute inset-0 bg-red-500 cursor-pointer top-0 left-0 w-full h-full opacity-0"
       />
-      { spotImage && (
-      <button
-        className="absolute top-0 right-0 p-2 rounded-full z-20"
-        onClick={handleImageClear}
-      >
-        <Image
-          src="/icons/clear_7C7C7C.svg"
-          width={28}
-          height={28}
-          alt="close"
-        />
-      </button>
+      {spotImage && (
+        <button
+          className="absolute top-0 right-0 p-2 rounded-full z-20"
+          onClick={handleImageClear}
+        >
+          <Image
+            src="/icons/clear_7C7C7C.svg"
+            width={28}
+            height={28}
+            alt="close"
+          />
+        </button>
       )}
     </button>
   );
