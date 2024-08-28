@@ -2,6 +2,7 @@ import { fetchHashtagSuggestions } from "@/http/selectionCreate.api";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
+
 const useHashtagSuggestion = () => {
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -27,12 +28,16 @@ const useHashtagSuggestion = () => {
     const formData = new FormData();
     formData.append("prompt", text);
 
-    const responseData = await fetchHashtagSuggestions(formData);
-
-    if (responseData) {
-      setHashtags(responseData);
-      setSuccess(true);
-    } else {
+    try {
+      const responseData = await fetchHashtagSuggestions(formData);
+      if (responseData && Array.isArray(responseData)) {
+        setHashtags(responseData);
+        setSuccess(true);
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      toast.error("관련 해시태그를 불러오기 실패했습니다.");
       setError(true);
     }
 

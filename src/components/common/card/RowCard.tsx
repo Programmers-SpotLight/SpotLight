@@ -27,7 +27,7 @@ const RowCard = ({
   return (
     <Link
       href={`/selection/${selectionId}`}
-      className="flex w-[512px] h-[150px] rounded-lg relative border-[0.5px] border-solid border-grey2 hover:brightness-75 bg-white"
+      className="flex w-[512px] h-[150px] rounded-lg relative border-[0.5px] border-solid border-grey2 hover:brightness-95 bg-white"
     >
       {thumbnail ? (
         <Image
@@ -59,7 +59,6 @@ const RowCard = ({
           {description}
         </p>
 
-        {userImage && userName && (
           <div className="flex justify-between items-center text-grey4 mt-auto">
             <div className="flex items-center gap-1">
               <div className="relative w-[16px] h-[16px]">
@@ -71,13 +70,12 @@ const RowCard = ({
                     fill
                   />
                 ) : (
-                  <div className="w-full h-full flex justify-center items-center font-bold text-large" />
+                  <div className="w-[16px] h-[16px] rounded-full relative font-bold text-large bg-grey2" />
                 )}
               </div>
               <span className="text-extraSmall font-semibold">{userName}</span>
             </div>
           </div>
-        )}
       </div>
     </Link>
   );

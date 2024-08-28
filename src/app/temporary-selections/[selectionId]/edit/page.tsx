@@ -2,6 +2,7 @@
 
 import SelectionCreateForm from "@/components/selection-create/SelectionCreateForm";
 import SelectionCreateFormLoadingSpinner from "@/components/selection-create/SelectionCreateFormLoadingSpinner";
+import useErrorComponents from "@/hooks/useErrorComponents";
 import useFetchSelectionDetailForEdit from "@/hooks/useFetchSelectionTemporaryDetailForEdit";
 
 
@@ -13,6 +14,9 @@ const EditTemporarySelectionPage = ({ params }: { params: { selectionId: string 
     Number(params.selectionId),
     true
   );
+
+  const errorComponent = useErrorComponents(error);
+  if (error) return errorComponent;
 
   return (
     <div className="grow flex flex-col w-[1086px] m-auto py-16 px-14 bg-grey0 border-[1px] border-solid border-grey2">

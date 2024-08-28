@@ -31,7 +31,7 @@ import { getServerSession } from "next-auth";
 
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { ForbiddenError, UnauthorizedError } from "@/utils/errors";
+import { BadRequestError, ForbiddenError, UnauthorizedError } from "@/utils/errors";
 import { getTokenForAuthentication } from "@/utils/authUtils";
 import authOptions from "@/libs/authOptions";
 import { logWithIP } from "@/utils/logUtils";
@@ -186,28 +186,18 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { selectionId: number } }
 ) {
-  const selectionId = params.selectionId;
-
-  if (!selectionId) {
-    return new Response(JSON.stringify({ error: "Invalid selection ID" }), {
-      status: 400,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-  }
-
-  if (isNaN(selectionId)) {
-    return new Response(JSON.stringify({ error: "Invalid selection ID" }), {
-      status: 400,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-  }
-
   const transaction = await dbConnectionPool.transaction();
   try {
+    const selectionId = params.selectionId;
+
+    if (!selectionId) {
+      throw new BadRequestError("셀렉션 ID가 없습니다.");
+    }
+
+    if (isNaN(selectionId)) {
+      throw new BadRequestError("셀렉션 ID가 숫자가 아닙니다.");
+    }
+
     const token = await getTokenForAuthentication(request);
     if (!token.userId) {
       throw new UnauthorizedError("userId가 token에 없습니다.");

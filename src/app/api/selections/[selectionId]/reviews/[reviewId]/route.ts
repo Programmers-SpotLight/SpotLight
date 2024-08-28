@@ -1,12 +1,14 @@
 import authOptions from "@/libs/authOptions";
 import { checkIfFileExistsInS3, deleteFileFromS3, uploadFileToS3 } from "@/libs/s3";
 import { deleteSelectionReviews, extractFilePathFromUrl, getSelectionReviewImages, putSelectionReviews } from "@/services/selectionReview.services";
+import { logWithIP } from "@/utils/logUtils";
 import { uuidToBinary, uuidToString } from "@/utils/uuidToBinary";
 import { getServerSession } from "next-auth";
+import { NextRequest } from "next/server";
 import { posix } from "path";
 
 export async function PUT (
-  req: Request,
+  req: NextRequest,
   { params }: { params: { selectionId: string, reviewId: string } }
 ) {
   try {
@@ -20,7 +22,7 @@ export async function PUT (
       return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
 
-    const data:IReviewFormData = await req.json();
+    const data : IReviewFormData = await req.json();
 
     // 현재 리뷰의 기존 이미지 가져오기
     const oldReviewImages = await getSelectionReviewImages(reviewId);
@@ -93,8 +95,13 @@ export async function PUT (
         status: 201,
       }
     );
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    await logWithIP(
+      'PUT /api/selections/:selectionId/reviews/:reviewId - ' + err.message,
+      req,
+      'error'
+    );
+
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
     });
@@ -139,7 +146,6 @@ export async function DELETE (
       }
     );
   } catch (err) {
-    console.error(err);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
     });

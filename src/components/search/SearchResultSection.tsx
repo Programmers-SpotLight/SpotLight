@@ -21,7 +21,7 @@ import SearchErrorPage from "./search-contents/SearchErrorPage";
 const SearchResultSection = () => {
   const { category_id, region_id, tags, sort, page, limit } =
     useGetSearchParams();
-
+    
   const {
     data: results,
     isError,

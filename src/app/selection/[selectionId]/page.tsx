@@ -3,11 +3,13 @@
 import GoogleMap from "@/components/google-map/GoogleMap";
 import Drawer from "@/components/selection-detail/Drawer";
 import ReviewImageModal from "@/components/selection-detail/review/ReviewImageModal";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import MapLoading from "@/components/google-map/MapLoading";
 import useSelectionDetail from "@/hooks/queries/useSelectionDetail";
 import useErrorComponents from "@/hooks/useErrorComponents";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
 const SelectionPage = () => {
   const params = useParams();
@@ -17,6 +19,8 @@ const SelectionPage = () => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedSpotId, setSelectedSpotId] = useState<Buffer | null>(null);
   const prevSelectedSpotId = useRef<Buffer | null>(null);
+  const { data: session } = useSession();
+  const router = useRouter();
 
   const {
     data: selectionData,
@@ -40,6 +44,25 @@ const SelectionPage = () => {
       prevSelectedSpotId.current = selectedSpotId;
     }
   }, [selectedSpotId]);
+
+  useEffect(() => {
+    if (!selectionData) return;
+
+    if (selectionData.status === "delete") {
+      toast.error("존재하지 않는 셀렉션 정보입니다.", {
+        position: "top-center"
+      });
+      router.replace("/");
+    } else if (
+      selectionData.status === "private" &&
+      selectionData.writerId !== session?.user.id
+    ) {
+      toast.error("해당 셀렉션은 비공개 처리되었습니다.", {
+        position: "top-center"
+      });
+      router.replace("/");
+    }
+  }, [selectionData, session, router]);
 
   const toggleDrawer = useCallback(() => {
     if (isSpotDrawerOpen) setIsSpotDrawerOpen((prev) => !prev);
@@ -74,6 +97,7 @@ const SelectionPage = () => {
   if (isError) {
     return ErrorComponent;
   }
+
   if (!selectionData) return null;
 
   return (

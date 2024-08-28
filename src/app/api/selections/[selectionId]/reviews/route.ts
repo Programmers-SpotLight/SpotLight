@@ -1,8 +1,11 @@
 import authOptions from "@/libs/authOptions";
 import { uploadFileToS3 } from "@/libs/s3";
 import { countReviews, getSelectionReviews, postSelectionReviews } from "@/services/selectionReview.services";
+import { BadRequestError, UnauthorizedError } from "@/utils/errors";
+import { logWithIP } from "@/utils/logUtils";
 import { uuidToBinary, uuidToString } from "@/utils/uuidToBinary";
 import { getServerSession, Session } from "next-auth";
+import { NextRequest } from "next/server";
 import { posix } from "path";
 
 export async function GET(
@@ -44,7 +47,7 @@ export async function GET(
 }
 
 export async function POST (
-  req: Request,
+  req: NextRequest,
   { params }: { params: { selectionId: string } }
 ) {
   try {
@@ -54,7 +57,7 @@ export async function POST (
     const userId = session?.user?.id;
 
     if (!userId) {
-      return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
+      throw new UnauthorizedError("User is not authorized");
     }
 
     const data: IReviewFormData = await req.json();
@@ -100,9 +103,7 @@ export async function POST (
     await postSelectionReviews(review);
 
     if (!review) {
-      return new Response(JSON.stringify({ message: 'Bad Request' }), {
-        status: 400,
-      });
+      throw new BadRequestError("Bad Request");
     }
 
     return new Response(
@@ -111,8 +112,13 @@ export async function POST (
         status: 201,
       }
     );
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    await logWithIP(
+      'POST /api/selections/%5BselectionId%5D/reviews - ' + err.message,
+      req,
+      'error'
+    );
+
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
     });

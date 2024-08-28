@@ -6,6 +6,7 @@ interface ITextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   height?: "small" | "smallPlus" | "medium" | "large";
   icon?: ReactNode;
   iconPosition?: "left" | "right";
+  onClick? : () => void
 }
 
 const TextInput = forwardRef<HTMLInputElement, ITextInputProps>(({
@@ -14,6 +15,7 @@ const TextInput = forwardRef<HTMLInputElement, ITextInputProps>(({
   height = "small",
   icon,
   iconPosition = "left",
+  onClick,
   ...props
 }, ref) => {
   const baseStyles = "border rounded-lg text-medium p-3 focus:outline-none focus:border-2";
@@ -41,7 +43,8 @@ const TextInput = forwardRef<HTMLInputElement, ITextInputProps>(({
   return (
     <div className={`relative flex flex-col ${widthSize[width]}`}>
       {icon && (
-        <div className={`absolute inset-y-0 flex items-center ${iconPadding}`}>
+        <div className={`absolute inset-y-0 flex items-center ${onClick ? `cursor-pointer` : ``} ${iconPadding}`}
+        onClick={onClick}>
           {icon}
         </div>
       )}

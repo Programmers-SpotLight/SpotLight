@@ -7,7 +7,6 @@ interface ILikeButton {
   reviewType: ReviewType;
   sltOrSpotId: string | number;
   reviewId: string;
-  userId: number;
 }
 
 const ReviewLikeButton = ({
@@ -15,17 +14,12 @@ const ReviewLikeButton = ({
   likeCount,
   reviewType,
   sltOrSpotId,
-  reviewId,
-  userId
+  reviewId
 }: ILikeButton) => {
-  const { 
-    addLikeMutate, 
-    removeLikeMutate 
-  } = useReviewsLikes(
+  const { addLikeMutate, removeLikeMutate } = useReviewsLikes(
     sltOrSpotId,
-    reviewId, 
-    reviewType,
-    userId
+    reviewId,
+    reviewType
   );
 
   const likeToggle = async () => {
@@ -36,10 +30,9 @@ const ReviewLikeButton = ({
         addLikeMutate();
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error("Error toggling like:", error);
     }
   };
-
 
   const colorClass = liked ? "text-primary" : "text-grey3";
 
@@ -47,11 +40,7 @@ const ReviewLikeButton = ({
     <div
       className={`${colorClass} flex items-center space-x-1 text-bold left-0 `}
     >
-      <AiFillLike
-        size={15}
-        className="cursor-pointer"
-        onClick={likeToggle}
-      />
+      <AiFillLike size={15} className="cursor-pointer" onClick={likeToggle} />
       <div className="text-small">{likeCount}</div>
     </div>
   );

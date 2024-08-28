@@ -63,7 +63,14 @@ const userSelectionQueryBuilder = async (
     } else if (userSelectionType === "bookmark") {
       queryBuilder
         .innerJoin("bookmark as b", "b.slt_id", "selection.slt_id")
-        .where("b.user_id", userId);
+        .where("b.user_id", userId)
+        .andWhere((qb : any) => {
+          qb.where("selection.user_id", userId)
+            .orWhere((qb : any) => {
+              qb.where("selection.user_id", "!=", userId)
+                .andWhere("selection.slt_status", "public");
+            });
+        });
     }
   }
   

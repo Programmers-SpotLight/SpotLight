@@ -15,7 +15,6 @@ const SelectionCreateHashtagsSuggestionList = () => {
     hashtags,
     isLoading,
     success,
-    error,
     suggestHashtags,
     deleteHashtag
   } = useHashtagSuggestion();
@@ -32,9 +31,6 @@ const SelectionCreateHashtagsSuggestionList = () => {
   return (
     <div className="text-small">
       <p className="text-grey4">이런 태그는 어떠세요?</p>
-      { /* error가 true일 때만 에러 메시지를 렌더링 */ }
-      { error && <p className="mt-4 text-red-500">관련 해시태그를 불러오기 실패 했습니다</p> }
-
       { /* isLoading이 true일 때만 로딩 스피너를 렌더링 */ }
       { isLoading && ( 
         <button 

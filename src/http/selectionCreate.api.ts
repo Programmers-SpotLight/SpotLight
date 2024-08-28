@@ -30,6 +30,7 @@ export const fetchHashtagSuggestions : (formData: FormData) => Promise<string[]>
     formData,
     {headers: {'Content-Type': 'multipart/form-data'}} 
   );
+
   return response;
 }
 

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchMyReview, fetchReviewsDelete, fetchReviewsUpdate } from "@/http/review.api";
 import { toast } from "react-toastify";
+import { QUERY_KEY } from "@/constants/queryKey.constants";
 
 interface IMyReviewProps {
   reviewType: ReviewType;
@@ -66,6 +67,10 @@ const useMyReview = ({ reviewType, page } : IMyReviewProps) => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myReview', reviewType, page] });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.USERINFO],
+        exact: false
+      })
       toast.success("리뷰가 삭제 되었습니다.");
     }
   });

@@ -1,5 +1,4 @@
 import { dbConnectionPool } from "@/libs/db";
-import logger from "@/libs/winston";
 import { 
   ISelectionCreateCompleteData, 
 } from "@/models/selection.model";
@@ -11,9 +10,9 @@ import {
   prepareAndValidateSelectionCreateFormData,
 } from "@/services/selectionCreate.validation";
 import { getTokenForAuthentication } from "@/utils/authUtils";
-import { UnauthorizedError } from "@/utils/errors";
+import { InternalServerError, UnauthorizedError } from "@/utils/errors";
 import { logWithIP } from "@/utils/logUtils";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
 export const POST = async (request: NextRequest) => {
@@ -40,13 +39,11 @@ export const POST = async (request: NextRequest) => {
     }
 
     await transaction.commit();
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+    return NextResponse.json(data, { status: 201 });
   } catch (error: any) {
+    const errorMsg = error instanceof InternalServerError ? 
+      "서버 내부 오류입니다. 다시 시도해주세요." : (error.message || "알 수 없는 오류입니다.");
+
     await logWithIP(
       'POST /api/selections - ' + error.message,
       request,
@@ -54,11 +51,9 @@ export const POST = async (request: NextRequest) => {
     );
 
     await transaction.rollback();
-    return new Response(error.message, {
-      status: error.statusCode || 500,
-      headers: {
-        "Content-Type": "text/plain"
-      }
-    });
+    return NextResponse.json(
+      { error: errorMsg }, 
+      { status: error.statusCode || 500 }
+    );
   } 
 };

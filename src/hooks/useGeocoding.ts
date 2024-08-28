@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { fetchGeocodingData as fetchGeo } from "@/http/selectionCreate.api";
+import { toast } from "react-toastify";
 
 
 const useGeocoding = () => {
@@ -19,6 +20,7 @@ const useGeocoding = () => {
       });
       setAddress(data.formatted_address);
     } catch (error : any) {
+      toast.error("해당 위치의 정보를 가져오는데 실패했습니다");
       setError(error);
     }
     setLoading(false);

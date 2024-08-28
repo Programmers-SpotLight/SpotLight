@@ -1,40 +1,24 @@
+import { checkIfSelectionHasReviews } from "@/repositories/selection.repository";
 import { getSelectionForEdit } from "@/services/selectionEdit.services";
 import { getTokenForAuthentication } from "@/utils/authUtils";
-import { UnauthorizedError } from "@/utils/errors";
-import { NextRequest } from "next/server";
+import { BadRequestError, ForbiddenError, UnauthorizedError } from "@/utils/errors";
+import { logWithIP } from "@/utils/logUtils";
+import { NextRequest, NextResponse } from "next/server";
 
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { selectionId: number } }
 ) {
-  const selectionId = params.selectionId;
-
-  if (!selectionId) {
-    return new Response(
-      JSON.stringify({ error: "Invalid selection ID" }),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
-  }
-
-  if (isNaN(selectionId)) {
-    return new Response(
-      JSON.stringify({ error: "Invalid selection ID" }),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
-  }
-
   try {
+    const selectionId = params.selectionId;
+    if (!selectionId) {
+      throw new BadRequestError("셀렉션 ID가 없습니다.");
+    }
+    if (isNaN(selectionId)) {
+      throw new BadRequestError("셀렉션 ID가 숫자가 아닙니다.");
+    }
+
     const token = await getTokenForAuthentication(request);
     if (!token.userId) {
       throw new UnauthorizedError("userId가 token에 없습니다.");
@@ -45,25 +29,22 @@ export async function GET(
       selectionId
     );
 
-    return new Response(
-      JSON.stringify(selectionDetail),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    ); 
+    const hasReview = await checkIfSelectionHasReviews(selectionId);
+    if (hasReview) {
+      throw new ForbiddenError("해당 셀렉션에 리뷰가 존재하여 수정할 수 없습니다.");
+    }
+
+    return NextResponse.json(selectionDetail, { status: 200 });
   } catch (error: any) {
-    console.error(error);
-    return new Response(
-      error.message,
-      {
-        status: error.statusCode || 500,
-        headers: {
-          "Content-Type": "text/plain"
-        }
-      }
+    await logWithIP(
+      'GET /api/selections/:selectionId - ' + error.message,
+      request,
+      'error'
+    );
+
+    return NextResponse.json(
+      { error: error.message || "Internal Server Error" },
+      { status: error.statusCode || 500 }
     );
   }
 }
