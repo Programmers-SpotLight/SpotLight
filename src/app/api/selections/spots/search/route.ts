@@ -47,7 +47,7 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json(response.data.places, { status: 200 });
   } catch (error: any) {
     if (error instanceof AxiosError) {
-      console.error('GET /api/selections/spots/search - ' + error.response?.data);
+      console.error('GET /api/selections/spots/search - ' + error.response?.data.message);
       await logWithIP(
         'GET /api/selections/spots/search - ' + error.response?.data,
         request,
