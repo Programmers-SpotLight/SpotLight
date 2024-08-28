@@ -53,6 +53,7 @@ const SelectionPage = () => {
         position: "top-center"
       });
       router.replace("/");
+      router.refresh();
     } else if (
       selectionData.status === "private" &&
       selectionData.writerId !== session?.user.id
@@ -61,6 +62,7 @@ const SelectionPage = () => {
         position: "top-center"
       });
       router.replace("/");
+      router.refresh();
     }
   }, [selectionData, session, router]);
 
