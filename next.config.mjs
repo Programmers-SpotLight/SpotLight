@@ -12,12 +12,14 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "jeeh-1006.s3.ap-northeast-2.amazonaws.com",
-        port: ""
+        port: "",
+        pathname: "**"
       },
       {
         protocol: "https",
         hostname: "places.googleapis.com",
-        port: ""
+        port: "",
+        pathname: "**"
       }
     ]
   },
