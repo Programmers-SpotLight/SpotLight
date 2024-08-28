@@ -56,21 +56,23 @@ const ColCard = ({
   const menuList = [
     {
       action: CARD_MENU.modify,
-      title : CARD_MENU.modify,
-      icon: <BiSolidPencil />,
-      
+      title: CARD_MENU.modify,
+      icon: <BiSolidPencil />
     },
     {
       action: CARD_MENU.private,
-      title : status === CARD_MENU_STATUS.private ? CARD_MENU.public : CARD_MENU.private,
+      title:
+        status === CARD_MENU_STATUS.private
+          ? CARD_MENU.public
+          : CARD_MENU.private,
       icon: <IoMdLock />
     },
     {
       action: CARD_MENU.delete,
-      title : CARD_MENU.delete,
+      title: CARD_MENU.delete,
       icon: <FaTrash />
     }
-  ];  
+  ];
 
   const {
     showMenu,
@@ -191,7 +193,7 @@ const ColCard = ({
             <div>
               {booked ? (
                 <FaBookmark
-                  className="w-5 h-5 fill-red-600 cursor-pointer"
+                  className="w-5 h-5 fill-primary cursor-pointer"
                   onClick={handleBookMarkClick}
                 />
               ) : (
