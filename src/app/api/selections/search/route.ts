@@ -105,8 +105,8 @@ const getSearchResultValidator = (
   }
 
   for (const tag of tags) {
-    if (tag.length > 10) {
-      return { error: "해시태그는 10글자 이내여야 합니다." };
+    if (tag.length > 40) {
+      return { error: "해시태그는 40글자 이내여야 합니다." };
     }
   }
 

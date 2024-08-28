@@ -29,8 +29,8 @@ const useSearchAutoComplete = () => {
         toast.error("해시태그를 입력해주세요.");
         return false;
     }
-    if (tag.length > 10) {
-        toast.error("10글자 이내로 작성해주세요");
+    if (tag.length > 40) {
+        toast.error("40글자 이내로 작성해주세요");
         return false;
     }
     if (Array.isArray(hashtags) && hashtags.length >= 8) {

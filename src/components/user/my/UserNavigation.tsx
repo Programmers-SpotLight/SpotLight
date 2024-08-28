@@ -6,9 +6,7 @@ import { usePathname } from 'next/navigation';
 
 const userNavigationListData = [
   { name: '셀렉션 관리', url: '/' },
-  { name: '리뷰 관리', url: '/review' },
-  { name: '계정 관리', url: '/account' }
-];
+  { name: '리뷰 관리', url: '/review' }];
 
 const UserNavigation: React.FC = () => {
   const currentPath = usePathname();
