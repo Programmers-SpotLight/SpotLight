@@ -63,7 +63,7 @@ const SelectionHeader = ({ selectionData }: SelectionHeaderProps) => {
             />
             {selectionData.booked ? (
               <FaBookmark
-                className="w-5 h-5 fill-red-600 cursor-pointer"
+                className="w-5 h-5 fill-primary cursor-pointer"
                 onClick={bookMarkClickHandler}
               />
             ) : (
