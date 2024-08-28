@@ -34,6 +34,7 @@ const ModalCreateSelectionSpotImagesInput = ({
           alt="thumbnail"
           width={200}
           height={200}
+          unoptimized
         />
       )}
       {/* 이미지가 File이면 URL.createObjectURL로 보여준다. */}
