@@ -81,7 +81,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
             )}
           </Link>
 
-          <div className="space-y-1 text-small w-[80px] ml-2">
+          <div className="space-y-1 text-small w-auto ml-2">
             <Link href={`/user/${review.user.userId}`}>
               {review.user.userNickname}
             </Link>
@@ -137,7 +137,7 @@ const ReviewItem = ({ sltOrSpotId, review, reviewType }: IReviewProps) => {
 
       {review.reviewImg && <ReviewImages images={review.reviewImg} />}
 
-      <div className="text-grey4 text-small">
+      <div className="text-grey4 text-small leading-normal">
         {renderText()}
         {review.reviewDescription.length > 90 && (
           <button onClick={toggleExpand}>
