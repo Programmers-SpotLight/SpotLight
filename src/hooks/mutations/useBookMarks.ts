@@ -285,7 +285,6 @@ const updateUserSelectionData = (
   >(userSelectionQueryKey);
 
   if (previousUserSelection) {
-    console.log
     const updatedSearchResult = {
       ...previousUserSelection,
       data: previousUserSelection.data.map((selection) =>

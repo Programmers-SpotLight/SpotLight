@@ -25,7 +25,7 @@ export default async function Home() {
       </Suspense>
     );
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return <PageError/>
   }
 }
