@@ -32,8 +32,6 @@ const ModalCreateSelectionSpotImagesInput = ({
           src={spotImage}
           className="w-auto h-full object-cover"
           alt="thumbnail"
-          width="200px"
-          height="200px"
         />
       )}
       {/* 이미지가 File이면 URL.createObjectURL로 보여준다. */}
