@@ -28,27 +28,27 @@ const SpotImages = ({ images, title }: ISpotImagesProps) => {
 
   return (
     <div className="relative flex items-center justify-center h-[100vh]">
-      <p className="text-white absolute top-10 text-extraLarge">{title}</p>
+      <p className="text-white absolute top-10 text-extraLarge z-10">{title}</p>
 
       <p className="text-white absolute top-10 left-10 text-extraLarge">
         {imgIndex + 1}/{images.length}
       </p>
 
-      <div className="w-screen h-screen relative">
+      <div className="w-screen h-screen relative flex items-center justify-center">
         {isLoading && (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <Spinner size="large" />
           </div>
         )}
-        <Image
-          src={images[imgIndex].url}
-          alt="spot image"
-          fill
-          className="object-scale-down"
-          onLoadingComplete={() => setIsLoading(false)}
-          style={{ visibility: isLoading ? "hidden" : "visible" }}
-          unoptimized
-        />
+        <div className="w-4/5 h-full flex items-center justify-center">
+          <img
+            src={images[imgIndex].url}
+            alt="spot image"
+            onLoad={() => setIsLoading(false)}
+            className="object-scale-down\"
+            style={{ visibility: isLoading ? "hidden" : "visible" }}
+          />
+        </div>
       </div>
 
       <button
