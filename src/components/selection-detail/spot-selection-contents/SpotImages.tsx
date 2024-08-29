@@ -49,15 +49,6 @@ const SpotImages = ({ images, title }: ISpotImagesProps) => {
             style={{ visibility: isLoading ? "hidden" : "visible" }}
           />
         </div>
-        {/* <Image
-          src={images[imgIndex].url}
-          alt="spot image"
-          fill
-          className="object-scale-down"
-          onLoadingComplete={() => setIsLoading(false)}
-          style={{ visibility: isLoading ? "hidden" : "visible" }}
-          unoptimized
-        /> */}
       </div>
 
       <button
