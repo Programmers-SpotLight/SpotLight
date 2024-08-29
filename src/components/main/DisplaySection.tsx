@@ -32,20 +32,20 @@ const tempData: IImageCardProps[] = [
     thumbnail: "https://img.newspim.com/news/2016/12/22/1612220920255890.jpg",
     title: "너의 이름은 무대 탐방 셀렉션",
     subTitle: "애니메이션 좋아한다면 필수!",
-    selectionId: 1
+    selectionId: 198
   },
   {
     thumbnail:
       "https://file.mk.co.kr/meet/neds/2023/11/image_readtop_2023_846577_16989928215689644.jpg",
     title: "BTS 정국 맛집 탐방 셀렉션",
     subTitle: "ARMY라면 죽기 전에 꼭 가봐야 할",
-    selectionId: 2
+    selectionId: 205
   },
   {
     thumbnail: "https://thumb.mt.co.kr/06/2024/04/2024041711227227340_1.jpg",
     title: "선재 업고 튀어 무대 탐방 셀렉션",
     subTitle: "드라마 속 두근 거림을 또 한번 느끼는",
-    selectionId: 3
+    selectionId: 209
   }
 ];
 
