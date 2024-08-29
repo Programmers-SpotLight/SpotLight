@@ -92,14 +92,15 @@ const SpotHeader = ({
                   <Spinner size="small" />
                 </div>
               )}
-              <Image
+              <img
                 src={images[0].url}
                 alt="spot image"
-                fill
-                sizes="width:375px height:194px"
-                onLoadingComplete={() => setIsLoading(false)}
-                style={{ visibility: isLoading ? "hidden" : "visible" }}
-                unoptimized
+                style={{
+                  visibility: isLoading ? "hidden" : "visible",
+                  width: "375px",
+                  height: "194px"
+                }}
+                onLoad={() => setIsLoading(false)}
               />
             </div>
             <div className="absolute bottom-0 right-0 rounded-tl-md bg-black w-11 h-7 text-white flex items-center justify-center text-medium font-bold">

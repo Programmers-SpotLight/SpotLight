@@ -28,13 +28,12 @@ const ModalCreateSelectionSpotImagesInput = ({
     <button className="relative border border-solid border-grey2 w-3/4 h-[155px] rounded-[8px] bg-white flex flex-col items-center justify-center">
       {/* 이미지가 string이면 이미지를 보여주고, File이면 URL.createObjectURL로 보여준다. */}
       {typeof spotImage === "string" && (
-        <Image
+        <img
           src={spotImage}
           className="w-auto h-full object-cover"
           alt="thumbnail"
-          width={200}
-          height={200}
-          unoptimized
+          width="200px"
+          height="200px"
         />
       )}
       {/* 이미지가 File이면 URL.createObjectURL로 보여준다. */}
