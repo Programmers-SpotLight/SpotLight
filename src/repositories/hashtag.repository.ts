@@ -10,6 +10,7 @@ import {
 } from "@/models/hashtag.model";
 import { InternalServerError } from "@/utils/errors";
 import { Knex } from "knex";
+import { logWithIP } from '@/utils/logUtils';
 
 
 export const insertHashtagsGetIds = async (
@@ -160,6 +161,7 @@ export async function insertMultipleSpotTemporaryHashtag(
       .onConflict(['spot_temp_id', 'htag_id'])
       .ignore();
   } catch (error) {
+    console.log(error);
     throw new InternalServerError('스팟 해시태그를 생성하는데 실패했습니다');
   }
 }

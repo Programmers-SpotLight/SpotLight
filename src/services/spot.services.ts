@@ -10,26 +10,19 @@ import {
 } from "@/repositories/hashtag.repository";
 import { 
   deleteAllSpotImageBySelectionId,
-  deleteMultipleSpotBySelectionIdAndNotInPlaceId,
-  deleteMultipleSpotTemporaryBySelectionIdAndNotInPlaceId,
   deleteMultipleSpotTemporaryImageBySelectionIdAndNotInImageUrl,
   insertMultipleSpot, 
   insertMultipleSpotImage, 
   insertMultipleSpotTemporary, 
   insertMultipleSpotTemporaryImage, 
-  selectMultipleSpotTemporaryByInPlaceId, 
-  selectMultipleSpotByInPlaceId, 
-  updateMultipleSpot, 
-  updateMultipleSpotTemporary,
   deleteAllSpotTemporaryImageBySelectionId,
   deleteAllSpotTemporaryBySelectionId,
   deleteAllSpotBySelectionId
 } from "@/repositories/spot.repository";
 import { InternalServerError } from "@/utils/errors";
-import { createDirectory, saveFile } from "@/utils/fileStorage";
 import { fileTypeFromBlob, FileTypeResult } from "file-type";
 import { Knex } from "knex";
-import path, { posix } from "path";
+import { posix } from "path";
 import { v4 as uuidv4 } from 'uuid';
 
 
